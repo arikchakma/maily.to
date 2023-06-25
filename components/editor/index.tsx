@@ -6,7 +6,6 @@ import TextStyle from '@tiptap/extension-text-style'
 import Heading from '@tiptap/extension-heading'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { Editor as EditorType } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import React from 'react'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -116,35 +115,22 @@ const MenuBar = ({ editor }: {
 
 export function Editor() {
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: 'prose',
+        spellCheck: 'false',
+      }
+    },
     extensions: [
       Document,
       Paragraph,
       Text,
       Bold,
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
-      TextStyle.configure({ types: [ListItem.name] }),
-      TextAlign.configure({ types: [Paragraph.name, Heading.name] }),
+      TextStyle.configure(),
+      TextAlign.configure({ types: [Paragraph.name, Heading.name], defaultAlignment: "left", }),
       Heading.extend({
         levels: [1, 2, 3],
-        // addAttributes() {
-        //   return {
-        //     align: {
-        //       default: null,
-        //       parseHTML: element => {
-        //         return element.style.textAlign || null
-        //       },
-        //       renderHTML: attributes => {
-        //         if (!attributes.align) {
-        //           return {}
-        //         }
-
-        //         return {
-        //           style: `text-align: ${attributes.align}`,
-        //         }
-        //       },
-        //     },
-        //   }
-        // },
       }),
     ],
     content: `

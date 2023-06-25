@@ -3,10 +3,16 @@
 import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
+import Heading from '@tiptap/extension-heading'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { Editor as EditorType } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
+import TextAlign from '@tiptap/extension-text-align'
 import React from 'react'
+import Paragraph from '@tiptap/extension-paragraph'
+import Document from '@tiptap/extension-document'
+import Text from '@tiptap/extension-text'
+import Bold from '@tiptap/extension-bold'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -29,45 +35,6 @@ const MenuBar = ({ editor }: {
         className={editor.isActive('bold') ? 'is-active' : ''}
       >
         bold
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .toggleItalic()
-            .run()
-        }
-        className={editor.isActive('italic') ? 'is-active' : ''}
-      >
-        italic
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .toggleStrike()
-            .run()
-        }
-        className={editor.isActive('strike') ? 'is-active' : ''}
-      >
-        strike
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .toggleCode()
-            .run()
-        }
-        className={editor.isActive('code') ? 'is-active' : ''}
-      >
-        code
       </button>
       <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
         clear marks
@@ -100,77 +67,43 @@ const MenuBar = ({ editor }: {
         h3
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-        className={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}
+        onClick={() => {
+          // If the selected node has style textAlign `center`, make it `left`
+          if (editor.isActive({ textAlign: 'center' })) {
+            editor.chain().focus().unsetTextAlign().run()
+          } else {
+            editor.chain().focus().setTextAlign('center').run()
+          }
+        }}
+        className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}
+      >Center</button>
+      <button
+        onClick={() => {
+          // If the selected node has style textAlign `center`, make it `left`
+          if (editor.isActive({ textAlign: 'left' })) {
+            editor.chain().focus().unsetTextAlign().run()
+          } else {
+            editor.chain().focus().setTextAlign('left').run()
+          }
+        }}
+        className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}
       >
-        h4
+        Left
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-        className={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}
+        onClick={() => {
+          // If the selected node has style textAlign `center`, make it `left`
+          if (editor.isActive({ textAlign: 'right' })) {
+            editor.chain().focus().unsetTextAlign().run()
+          } else {
+            editor.chain().focus().setTextAlign('right').run()
+          }
+        }}
+        className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}
       >
-        h5
+        Right
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-        className={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
-      >
-        h6
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('bulletList') ? 'is-active' : ''}
-      >
-        bullet list
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'is-active' : ''}
-      >
-        ordered list
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={editor.isActive('codeBlock') ? 'is-active' : ''}
-      >
-        code block
-      </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={editor.isActive('blockquote') ? 'is-active' : ''}
-      >
-        blockquote
-      </button>
-      <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-        horizontal rule
-      </button>
-      <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-        hard break
-      </button>
-      <button
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .undo()
-            .run()
-        }
-      >
-        undo
-      </button>
-      <button
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .redo()
-            .run()
-        }
-      >
-        redo
-      </button>
+
       <button
         onClick={() => editor.chain().focus().setColor('#958DF1').run()}
         className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'is-active' : ''}
@@ -184,50 +117,44 @@ const MenuBar = ({ editor }: {
 export function Editor() {
   const editor = useEditor({
     extensions: [
+      Document,
+      Paragraph,
+      Text,
+      Bold,
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure({ types: [ListItem.name] }),
-      StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
-        },
-        orderedList: {
-          keepMarks: true,
-          keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
-        },
+      TextAlign.configure({ types: [Paragraph.name, Heading.name] }),
+      Heading.extend({
+        levels: [1, 2, 3],
+        // addAttributes() {
+        //   return {
+        //     align: {
+        //       default: null,
+        //       parseHTML: element => {
+        //         return element.style.textAlign || null
+        //       },
+        //       renderHTML: attributes => {
+        //         if (!attributes.align) {
+        //           return {}
+        //         }
+
+        //         return {
+        //           style: `text-align: ${attributes.align}`,
+        //         }
+        //       },
+        //     },
+        //   }
+        // },
       }),
     ],
     content: `
-      <h2>
+      <h1>
         Hi there,
-      </h2>
-      <p>
-        this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-      </p>
-      <ul>
-        <li>
-          That’s a bullet list with one …
-        </li>
-        <li>
-          … or two list items.
-        </li>
-      </ul>
-      <p>
-        Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-      </p>
-      <pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-      <p>
-        I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-      </p>
-      <blockquote>
-        Wow, that’s amazing. Good work, boy! 👏
-        <br />
-        — Mom
-      </blockquote>
+      </h1>
     `,
   })
+
+  console.log(editor?.getJSON())
 
   return (
     <div>

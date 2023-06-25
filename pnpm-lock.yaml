@@ -9,6 +9,7 @@ specifiers:
   '@tiptap/extension-list-item': ^2.0.3
   '@tiptap/extension-paragraph': ^2.0.3
   '@tiptap/extension-text': ^2.0.3
+  '@tiptap/extension-text-align': ^2.0.3
   '@tiptap/extension-text-style': ^2.0.3
   '@tiptap/pm': ^2.0.3
   '@tiptap/react': ^2.0.3
@@ -35,6 +36,7 @@ dependencies:
   '@tiptap/extension-list-item': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-paragraph': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-text': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-text-align': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-text-style': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/pm': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/react': 2.0.3_z5e47atshj3jlb5plbd4qpvzwi
@@ -808,6 +810,14 @@ packages:
 
   /@tiptap/extension-strike/2.0.3_@tiptap+core@2.0.3:
     resolution: {integrity: sha512-RO4/EYe2iPD6ifDHORT8fF6O9tfdtnzxLGwZIKZXnEgtweH+MgoqevEzXYdS+54Wraq4TUQGNcsYhe49pv7Rlw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
+    dev: false
+
+  /@tiptap/extension-text-align/2.0.3_@tiptap+core@2.0.3:
+    resolution: {integrity: sha512-VlLgqncKdjMjVjbU60/ALYhFs0wUdjAyvjDXnH1OoM/HuzbILvufPMYz4DUieJIWVJOYUKHQgg4XwBWceAM2Tw==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
     dependencies:

@@ -77,3 +77,7 @@ button[disabled],input[disabled],select[disabled] {
     background: black;
     color: #fff
 }
+
+.ProseMirror:focus {
+    outline: none
+}

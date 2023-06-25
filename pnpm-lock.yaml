@@ -1,6 +1,15 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@tiptap/core': ^2.0.3
+  '@tiptap/extension-bold': ^2.0.3
+  '@tiptap/extension-color': ^2.0.3
+  '@tiptap/extension-document': ^2.0.3
+  '@tiptap/extension-heading': ^2.0.3
+  '@tiptap/extension-list-item': ^2.0.3
+  '@tiptap/extension-paragraph': ^2.0.3
+  '@tiptap/extension-text': ^2.0.3
+  '@tiptap/extension-text-style': ^2.0.3
   '@tiptap/pm': ^2.0.3
   '@tiptap/react': ^2.0.3
   '@tiptap/starter-kit': ^2.0.3
@@ -18,6 +27,15 @@ specifiers:
   typescript: 5.1.3
 
 dependencies:
+  '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
+  '@tiptap/extension-bold': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-color': 2.0.3_yvcui447lws44fuh5cet63uozq
+  '@tiptap/extension-document': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-heading': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-list-item': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-paragraph': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-text': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-text-style': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/pm': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/react': 2.0.3_z5e47atshj3jlb5plbd4qpvzwi
   '@tiptap/starter-kit': 2.0.3_@tiptap+pm@2.0.3
@@ -671,6 +689,16 @@ packages:
       '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
     dev: false
 
+  /@tiptap/extension-color/2.0.3_yvcui447lws44fuh5cet63uozq:
+    resolution: {integrity: sha512-LYj3CWahhuJOy4/bwOur+cob8eky7xx7wyyBFIYELuzLcZt9hBmZwXxinQzD7BaQv4YdT+3oqr8BhChuPNj52w==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/extension-text-style': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
+      '@tiptap/extension-text-style': 2.0.3_@tiptap+core@2.0.3
+    dev: false
+
   /@tiptap/extension-document/2.0.3_@tiptap+core@2.0.3:
     resolution: {integrity: sha512-PsYeNQQBYIU9ayz1R11Kv/kKNPFNIV8tApJ9pxelXjzcAhkjncNUazPN/dyho60mzo+WpsmS3ceTj/gK3bCtWA==}
     peerDependencies:
@@ -780,6 +808,14 @@ packages:
 
   /@tiptap/extension-strike/2.0.3_@tiptap+core@2.0.3:
     resolution: {integrity: sha512-RO4/EYe2iPD6ifDHORT8fF6O9tfdtnzxLGwZIKZXnEgtweH+MgoqevEzXYdS+54Wraq4TUQGNcsYhe49pv7Rlw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
+    dev: false
+
+  /@tiptap/extension-text-style/2.0.3_@tiptap+core@2.0.3:
+    resolution: {integrity: sha512-yHIYtZVewSwfBfI6TffnsDRiOuXzytppcCsaDlsZFm8OtLG8v9ioH0ItMoOstmZZBiWJOm8iOy2yWSc4rNQEJw==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
     dependencies:

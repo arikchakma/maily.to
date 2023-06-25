@@ -9,6 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tiptap/core": "^2.0.3",
+    "@tiptap/extension-bold": "^2.0.3",
+    "@tiptap/extension-color": "^2.0.3",
+    "@tiptap/extension-document": "^2.0.3",
+    "@tiptap/extension-heading": "^2.0.3",
+    "@tiptap/extension-list-item": "^2.0.3",
+    "@tiptap/extension-paragraph": "^2.0.3",
+    "@tiptap/extension-text": "^2.0.3",
+    "@tiptap/extension-text-style": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",

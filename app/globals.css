@@ -57,27 +57,6 @@
   margin: 2rem 0;
 }
 
-button,input,select {
-    font-size: inherit;
-    font-family: inherit;
-    color: #000;
-    margin: .1rem;
-    border: 1px solid black;
-    border-radius: .3rem;
-    padding: .1rem .4rem;
-    background: white;
-    accent-color: black
-}
-
-button[disabled],input[disabled],select[disabled] {
-    opacity: .3
-}
-
-.is-active {
-    background: black;
-    color: #fff
-}
-
 .ProseMirror:focus {
     outline: none
 }

@@ -7,50 +7,6 @@
   margin-top: 0.75em;
 }
 
-.ProseMirror ul,
-.ProseMirror ol {
-  padding: 0 1rem;
-}
-
-.ProseMirror h1,
-.ProseMirror h2,
-.ProseMirror h3,
-.ProseMirror h4,
-.ProseMirror h5,
-.ProseMirror h6 {
-  line-height: 1.1;
-}
-
-.ProseMirror code {
-  background-color: rgba(97, 97, 97, 0.1);
-  color: #616161;
-}
-
-.ProseMirror pre {
-  background: #0D0D0D;
-  color: #FFF;
-  font-family: 'JetBrainsMono', monospace;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-}
-
-.ProseMirror pre code {
-  color: inherit;
-  padding: 0;
-  background: none;
-  font-size: 0.8rem;
-}
-
-.ProseMirror img {
-  max-width: 100%;
-  height: auto;
-}
-
-.ProseMirror blockquote {
-  padding-left: 1rem;
-  border-left: 2px solid rgba(13, 13, 13, 0.1);
-}
-
 .ProseMirror:focus {
     outline: none
 }

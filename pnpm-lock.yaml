@@ -6,12 +6,14 @@ specifiers:
   '@tiptap/core': ^2.0.3
   '@tiptap/extension-bold': ^2.0.3
   '@tiptap/extension-bubble-menu': ^2.0.3
+  '@tiptap/extension-bullet-list': ^2.0.3
   '@tiptap/extension-color': ^2.0.3
   '@tiptap/extension-document': ^2.0.3
   '@tiptap/extension-heading': ^2.0.3
   '@tiptap/extension-horizontal-rule': ^2.0.3
   '@tiptap/extension-italic': ^2.0.3
   '@tiptap/extension-list-item': ^2.0.3
+  '@tiptap/extension-ordered-list': ^2.0.3
   '@tiptap/extension-paragraph': ^2.0.3
   '@tiptap/extension-strike': ^2.0.3
   '@tiptap/extension-text': ^2.0.3
@@ -43,12 +45,14 @@ dependencies:
   '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
   '@tiptap/extension-bold': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-bubble-menu': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
+  '@tiptap/extension-bullet-list': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-color': 2.0.3_yvcui447lws44fuh5cet63uozq
   '@tiptap/extension-document': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-heading': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-horizontal-rule': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
   '@tiptap/extension-italic': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-list-item': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-ordered-list': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-paragraph': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-strike': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-text': 2.0.3_@tiptap+core@2.0.3

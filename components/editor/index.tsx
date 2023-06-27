@@ -15,11 +15,13 @@ import Bold from '@tiptap/extension-bold'
 import Italic from '@tiptap/extension-italic'
 import Strike from '@tiptap/extension-strike'
 import { Button } from '../ui/button'
-import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon, BulletListIcon, ListIcon, ListOrderedIcon } from 'lucide-react'
+import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon, ListIcon, ListOrderedIcon, ImageIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
+import Image from '@tiptap/extension-image'
+import Dropcursor from '@tiptap/extension-dropcursor'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -91,6 +93,19 @@ const MenuBar = ({ editor }: {
       <Button
         variant="secondary"
         size="sm"
+        onClick={() => {
+          const imageUrl = prompt('Image URL: ') || ''
+          if (!imageUrl) {
+            return
+          }
+          editor.chain().focus().setImage({ src: imageUrl }).run()
+        }}
+      >
+        <ImageIcon className="h-3.5 w-3.5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().setColor('#958DF1').run()}
         className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'is-active' : ''}
       >
@@ -119,6 +134,11 @@ export function Editor() {
       BulletList,
       OrderedList,
       ListItem,
+      Image,
+      Dropcursor.configure({
+        color: "#555",
+        width: 2
+      }),
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure(),
       TextAlign.configure({ types: [Paragraph.name, Heading.name] }),

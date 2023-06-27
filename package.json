@@ -16,6 +16,7 @@
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-document": "^2.0.3",
     "@tiptap/extension-heading": "^2.0.3",
+    "@tiptap/extension-horizontal-rule": "^2.0.3",
     "@tiptap/extension-italic": "^2.0.3",
     "@tiptap/extension-list-item": "^2.0.3",
     "@tiptap/extension-paragraph": "^2.0.3",

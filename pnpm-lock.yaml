@@ -9,6 +9,7 @@ specifiers:
   '@tiptap/extension-color': ^2.0.3
   '@tiptap/extension-document': ^2.0.3
   '@tiptap/extension-heading': ^2.0.3
+  '@tiptap/extension-horizontal-rule': ^2.0.3
   '@tiptap/extension-italic': ^2.0.3
   '@tiptap/extension-list-item': ^2.0.3
   '@tiptap/extension-paragraph': ^2.0.3
@@ -45,6 +46,7 @@ dependencies:
   '@tiptap/extension-color': 2.0.3_yvcui447lws44fuh5cet63uozq
   '@tiptap/extension-document': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-heading': 2.0.3_@tiptap+core@2.0.3
+  '@tiptap/extension-horizontal-rule': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
   '@tiptap/extension-italic': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-list-item': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-paragraph': 2.0.3_@tiptap+core@2.0.3

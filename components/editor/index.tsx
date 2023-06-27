@@ -17,6 +17,7 @@ import Strike from '@tiptap/extension-strike'
 import { Button } from '../ui/button'
 import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -26,57 +27,58 @@ const MenuBar = ({ editor }: {
   }
 
   return (
-    <>
-      <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        disabled={
-          !editor.can()
-            .chain()
-            .focus()
-            .toggleBold()
-            .run()
-        }
-        className={editor.isActive('bold') ? 'is-active' : ''}
-      >
-        bold
-      </button>
-      <button onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+    <div className="flex items-center gap-2">
+      <Button
+        variant="secondary"
+        size="sm" onClick={() => editor.chain().focus().unsetAllMarks().run()}>
         clear marks
-      </button>
-      <button onClick={() => editor.chain().focus().clearNodes().run()}>
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm" onClick={() => editor.chain().focus().clearNodes().run()}>
         clear nodes
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().setParagraph().run()}
         className={editor.isActive('paragraph') ? 'is-active' : ''}
       >
         paragraph
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
       >
         h1
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
       >
         h2
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
       >
         h3
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().setColor('#958DF1').run()}
         className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'is-active' : ''}
       >
         purple
-      </button>
-    </>
+      </Button>
+    </div>
   )
 }
 
@@ -95,6 +97,7 @@ export function Editor() {
       Bold,
       Italic,
       Strike,
+      HorizontalRule,
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure(),
       TextAlign.configure({ types: [Paragraph.name, Heading.name] }),

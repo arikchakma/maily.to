@@ -96,10 +96,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       // Doubleclick an empty paragraph returns a node size of 2.
       // So we check also for an empty text size.
       const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(state.selection)
-
-      const hasEditorFocus = view.hasFocus()
-
-      if (!hasEditorFocus || empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image")) {
+      if (empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image")) {
         return false
       }
 

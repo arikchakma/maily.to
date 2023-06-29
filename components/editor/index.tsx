@@ -15,14 +15,14 @@ import Bold from '@tiptap/extension-bold'
 import Italic from '@tiptap/extension-italic'
 import Strike from '@tiptap/extension-strike'
 import { Button } from '../ui/button'
-import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon, ListIcon, ListOrderedIcon, ImageIcon } from 'lucide-react'
+import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon, ListIcon, ListOrderedIcon, ImageIcon, UnderlineIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import Image from '@tiptap/extension-image'
 import Dropcursor from '@tiptap/extension-dropcursor'
-// import BubbleMenu from '@tiptap/extension-bubble-menu'
+import Underline from '@tiptap/extension-underline'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -131,6 +131,7 @@ export function Editor() {
       Bold,
       Italic,
       Strike,
+      Underline,
       HorizontalRule,
       BulletList,
       OrderedList,
@@ -207,6 +208,15 @@ export function Editor() {
             className={cn('px-2.5')}
           >
             <StrikethroughIcon className="h-3.5 w-3.5" />
+          </Button >
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            data-state={editor.isActive('underline')}
+            className={cn('px-2.5')}
+          >
+            <UnderlineIcon className="h-3.5 w-3.5" />
           </Button >
           <Button
             variant="ghost"

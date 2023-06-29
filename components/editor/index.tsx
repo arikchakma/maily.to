@@ -23,6 +23,7 @@ import OrderedList from '@tiptap/extension-ordered-list'
 import Image from '@tiptap/extension-image'
 import Dropcursor from '@tiptap/extension-dropcursor'
 import Underline from '@tiptap/extension-underline'
+import { EditorBubbleMenu } from './components/editor-bubble-menu'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -163,107 +164,7 @@ export function Editor() {
         <MenuBar editor={editor} />
       </div>
       <div className="p-2 border-t">
-        {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className='flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md'
-          shouldShow={({ editor, view, state, oldState, from, to }) => {
-            const { doc, selection } = state
-            const { empty } = selection
-
-            // Sometime check for `empty` is not enough.
-            // Doubleclick an empty paragraph returns a node size of 2.
-            // So we check also for an empty text size.
-            const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(state.selection)
-
-            const hasEditorFocus = view.hasFocus()
-
-            if (!hasEditorFocus || empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image")) {
-              return false
-            }
-
-            return true
-          }}
-          pluginKey="general-bubble-menu">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            data-state={editor.isActive('bold') ? 'on' : 'off'}
-            className={cn('px-2.5')}
-          >
-            <BoldIcon className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            data-state={editor.isActive('italic')}
-            className={cn('px-2.5')}
-          >
-            <ItalicIcon className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            data-state={editor.isActive('strike')}
-            className={cn('px-2.5')}
-          >
-            <StrikethroughIcon className="h-3.5 w-3.5" />
-          </Button >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            data-state={editor.isActive('underline')}
-            className={cn('px-2.5')}
-          >
-            <UnderlineIcon className="h-3.5 w-3.5" />
-          </Button >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              // If the selected node has style textAlign `center`, make it `left`
-              if (editor.isActive({ textAlign: 'left' })) {
-                editor.chain().focus().unsetTextAlign().run()
-              } else {
-                editor.chain().focus().setTextAlign('left').run()
-              }
-            }}
-            className={cn('px-2.5', editor.isActive('strike') ? 'is-active' : '')}
-          >
-            <AlignLeft className="h-3.5 w-3.5" />
-          </Button >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              // If the selected node has style textAlign `center`, make it `left`
-              if (editor.isActive({ textAlign: 'center' })) {
-                editor.chain().focus().unsetTextAlign().run()
-              } else {
-                editor.chain().focus().setTextAlign('center').run()
-              }
-            }}
-            className={cn('px-2.5', editor.isActive('strike') ? 'is-active' : '')}
-          >
-            <AlignCenter className="h-3.5 w-3.5" />
-          </Button >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              // If the selected node has style textAlign `center`, make it `left`
-              if (editor.isActive({ textAlign: 'right' })) {
-                editor.chain().focus().unsetTextAlign().run()
-              } else {
-                editor.chain().focus().setTextAlign('right').run()
-              }
-            }}
-            className={cn('px-2.5', editor.isActive('strike') ? 'is-active' : '')}
-          >
-            <AlignRight className="h-3.5 w-3.5" />
-          </Button >
-        </BubbleMenu >}
+        {editor && <EditorBubbleMenu editor={editor} />}
         <EditorContent editor={editor} />
       </div >
     </div>

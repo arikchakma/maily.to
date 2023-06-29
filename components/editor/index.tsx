@@ -5,7 +5,7 @@ import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
 import Heading from '@tiptap/extension-heading'
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react'
-import { Editor as EditorType } from '@tiptap/core'
+import { Editor as EditorType, isTextSelection } from '@tiptap/core'
 import TextAlign from '@tiptap/extension-text-align'
 import React from 'react'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -157,13 +157,35 @@ export function Editor() {
   console.log(editor?.getJSON())
 
   return (
-    <div className="p-2 rounded border">
-      <MenuBar editor={editor} />
-      <div className="mt-4">
-        {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className='flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md' shouldShow={({ editor, view, state, oldState, from, to }) => {
-          // Show the bubble menu not in image nodes
-          return !editor.isActive('image')
-        }} pluginKey="general-bubble-menu">
+    <div className="rounded border">
+      <div className="p-2">
+        <MenuBar editor={editor} />
+      </div>
+      <div className="p-2 border-t">
+        {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className='flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md'
+          shouldShow={({ editor, view, state, oldState, from, to }) => {
+            const { doc, selection } = state
+            const { empty } = selection
+
+            // Sometime check for `empty` is not enough.
+            // Doubleclick an empty paragraph returns a node size of 2.
+            // So we check also for an empty text size.
+            const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(state.selection)
+
+            // When clicking on a element inside the bubble menu the editor "blur" event
+            // is called and the bubble menu item is focussed. In this case we should
+            // consider the menu as part of the editor and keep showing the menu
+            // const isChildOfMenu = this.element.contains(document.activeElement)
+
+            const hasEditorFocus = view.hasFocus()
+
+            if (!hasEditorFocus || empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image")) {
+              return false
+            }
+
+            return true
+          }}
+          pluginKey="general-bubble-menu">
           <Button
             variant="ghost"
             size="sm"

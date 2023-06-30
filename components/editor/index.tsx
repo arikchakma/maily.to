@@ -1,29 +1,12 @@
 "use client"
 
-import { Color } from '@tiptap/extension-color'
-import ListItem from '@tiptap/extension-list-item'
-import TextStyle from '@tiptap/extension-text-style'
-import Heading from '@tiptap/extension-heading'
-import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react'
-import { Editor as EditorType, isTextSelection } from '@tiptap/core'
-import TextAlign from '@tiptap/extension-text-align'
+import { EditorContent, useEditor } from '@tiptap/react'
+import { Editor as EditorType } from '@tiptap/core'
 import React from 'react'
-import Paragraph from '@tiptap/extension-paragraph'
-import Document from '@tiptap/extension-document'
-import Text from '@tiptap/extension-text'
-import Bold from '@tiptap/extension-bold'
-import Italic from '@tiptap/extension-italic'
-import Strike from '@tiptap/extension-strike'
 import { Button } from '../ui/button'
-import { AlignCenter, AlignLeft, AlignRight, BoldIcon, ItalicIcon, StrikethroughIcon, ListIcon, ListOrderedIcon, ImageIcon, UnderlineIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import HorizontalRule from '@tiptap/extension-horizontal-rule'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import Image from '@tiptap/extension-image'
-import Dropcursor from '@tiptap/extension-dropcursor'
-import Underline from '@tiptap/extension-underline'
+import { ListIcon, ListOrderedIcon, ImageIcon } from 'lucide-react'
 import { EditorBubbleMenu } from './components/editor-bubble-menu'
+import { TiptapExtensions } from './extensions'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -125,30 +108,7 @@ export function Editor() {
         spellCheck: 'false',
       }
     },
-    extensions: [
-      Document,
-      Paragraph,
-      Text,
-      Bold,
-      Italic,
-      Strike,
-      Underline,
-      HorizontalRule,
-      BulletList,
-      OrderedList,
-      ListItem,
-      Image,
-      Dropcursor.configure({
-        color: "#555",
-        width: 2
-      }),
-      Color.configure({ types: [TextStyle.name, ListItem.name] }),
-      TextStyle.configure(),
-      TextAlign.configure({ types: [Paragraph.name, Heading.name] }),
-      Heading.extend({
-        levels: [1, 2, 3],
-      }),
-    ],
+    extensions: TiptapExtensions,
     content: `
       <h1>
         Hi there,

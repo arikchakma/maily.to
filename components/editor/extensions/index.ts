@@ -19,6 +19,7 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import Underline from '@tiptap/extension-underline'
 import { History } from '@tiptap/extension-history'
 import Placeholder from '@tiptap/extension-placeholder'
+import { TiptapLogoExtension } from "./logo";
 
 export const TiptapExtensions = [
   Document,
@@ -32,6 +33,7 @@ export const TiptapExtensions = [
   OrderedList,
   ListItem,
   Image,
+  TiptapLogoExtension,
   Dropcursor.configure({
     color: "#555",
     width: 3

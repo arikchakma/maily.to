@@ -11,15 +11,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { BubbleMenuButton } from "./bubble-menu-button";
 
 export interface BubbleMenuItem {
   name: string;
   isActive: () => boolean;
   command: () => void;
-  icon: typeof BoldIcon;
+  icon?: typeof BoldIcon;
 }
 
-type EditorBubbleMenuProps = Omit<BubbleMenuProps, "children">;
+export type EditorBubbleMenuProps = Omit<BubbleMenuProps, "children">;
 
 export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
@@ -96,7 +97,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       // Doubleclick an empty paragraph returns a node size of 2.
       // So we check also for an empty text size.
       const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(state.selection)
-      if (empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image")) {
+      if (empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image") || editor.isActive("logo")) {
         return false
       }
 
@@ -113,18 +114,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       className='flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md'
     >
       {items.map((item, index) => (
-        <Button
-          key={index}
-          variant="ghost"
-          size="sm"
-          onClick={item.command}
-          data-state={item.isActive()}
-          className={cn('px-2.5')}
-        >
-          <item.icon
-            className={cn("h-3.5 w-3.5")}
-          />
-        </Button>
+        <BubbleMenuButton key={index} {...item} />
       ))}
     </BubbleMenu>
   );

@@ -4,9 +4,10 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { Editor as EditorType } from '@tiptap/core'
 import React from 'react'
 import { Button } from '../ui/button'
-import { ListIcon, ListOrderedIcon, ImageIcon } from 'lucide-react'
+import { ListIcon, ListOrderedIcon, ImageIcon, AlignCenterIcon } from 'lucide-react'
 import { EditorBubbleMenu } from './components/editor-bubble-menu'
 import { TiptapExtensions } from './extensions'
+import { LogoBubbleMenu } from './components/logo-bubble-menu'
 
 const MenuBar = ({ editor }: {
   editor: EditorType | null
@@ -83,10 +84,29 @@ const MenuBar = ({ editor }: {
           if (!imageUrl) {
             return
           }
+          {/* editor.chain().focus().updateAttributes('image', { 'data-mailbox': 'logo', src: imageUrl }).run() */ }
           editor.chain().focus().setImage({ src: imageUrl }).run()
         }}
       >
         <ImageIcon className="h-3.5 w-3.5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => {
+          editor.chain().focus().setLogoImage({ src: 'https://binsta.dev/api/v1/files/4eR1893USp/transform?format=webp&size=lg&quality=md' }).run()
+        }}
+      >
+        <ImageIcon className="h-3.5 w-3.5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => {
+          editor.chain().focus().setLogoAttributes({ size: "lg" }).run()
+        }}
+      >
+        <AlignCenterIcon className="h-3.5 w-3.5" />
       </Button>
       <Button
         variant="secondary"
@@ -125,6 +145,7 @@ export function Editor() {
       </div>
       <div className="p-2 border-t">
         {editor && <EditorBubbleMenu editor={editor} />}
+        {editor && <LogoBubbleMenu editor={editor} />}
         <EditorContent editor={editor} />
       </div >
     </div>

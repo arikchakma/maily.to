@@ -25,3 +25,7 @@
   pointer-events: none;
   height: 0;
 }
+
+.ProseMirror-selectednode {
+    outline: 3px solid #555;
+}

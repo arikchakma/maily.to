@@ -20,6 +20,7 @@ import Underline from '@tiptap/extension-underline'
 import { History } from '@tiptap/extension-history'
 import Placeholder from '@tiptap/extension-placeholder'
 import { TiptapLogoExtension } from "./logo";
+import { Spacer } from "../nodes/spacer";
 
 export const TiptapExtensions = [
   Document,
@@ -75,5 +76,6 @@ export const TiptapExtensions = [
     },
     includeChildren: true,
   }),
-  History
+  History,
+  Spacer
 ];

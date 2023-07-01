@@ -130,27 +130,3 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
     ]
   }
 })
-
-// {
-//   "doc": {
-//     "type": "doc",
-//       "content": [
-//         {
-//           "type": "paragraph",
-//           "attrs": {
-//             "textAlign": "left"
-//           }
-//         },
-//         {
-//           "type": "logo",
-//           "attrs": {
-//             "src": "https://binsta.dev/api/v1/files/4eR1893USp/transform?format=webp&size=lg&quality=md",
-//             "alt": "",
-//             "size": "lg",
-//             "alignment": "center",
-//             "mailed-component": "logo"
-//           }
-//         }
-//       ]
-//   }
-// }

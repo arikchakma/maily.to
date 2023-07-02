@@ -24,6 +24,9 @@ import HardBreak from "@tiptap/extension-hard-break";
 import { TiptapLogoExtension } from "./logo";
 import { Spacer } from "../nodes/spacer";
 import { Footer } from "../nodes/footer";
+import { Variable } from "../nodes/variable";
+import { suggestions } from "../nodes/suggestion";
+import { SuggestionOptions } from "@tiptap/suggestion";
 
 export const TiptapExtensions = [
   Document,
@@ -83,5 +86,14 @@ export const TiptapExtensions = [
   Spacer,
   Gapcursor,
   HardBreak,
-  Footer
+  Footer,
+  Variable.configure({
+    suggestion: suggestions as unknown as SuggestionOptions,
+    renderLabel({ node }) {
+      return `${node.attrs.label ?? node.attrs.id}`
+    },
+    HTMLAttributes: {
+      class: 'py-1 px-2 bg-slate-100 border border-blue-300 rounded-md'
+    }
+  })
 ];

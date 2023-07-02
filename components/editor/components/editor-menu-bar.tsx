@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Editor as EditorType } from '@tiptap/core'
-import { ListIcon, ListOrderedIcon, ImageIcon, AlignCenterIcon, SpaceIcon } from 'lucide-react'
+import { ListIcon, ListOrderedIcon, ImageIcon, AlignCenterIcon, SpaceIcon, FootprintsIcon } from 'lucide-react'
 
 
 export const EditorMenuBar = ({ editor }: {
@@ -11,7 +11,7 @@ export const EditorMenuBar = ({ editor }: {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <Button
         variant="secondary"
         size="sm" onClick={() => editor.chain().focus().unsetAllMarks().run()}>
@@ -110,6 +110,15 @@ export const EditorMenuBar = ({ editor }: {
         }}
       >
         <SpaceIcon className="h-3.5 w-3.5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => {
+          editor.chain().focus().setFooter().run()
+        }}
+      >
+        <FootprintsIcon className="h-3.5 w-3.5" />
       </Button>
       <Button
         variant="secondary"

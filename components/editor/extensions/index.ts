@@ -23,6 +23,7 @@ import Gapcursor from '@tiptap/extension-gapcursor'
 import HardBreak from "@tiptap/extension-hard-break";
 import { TiptapLogoExtension } from "./logo";
 import { Spacer } from "../nodes/spacer";
+import { Footer } from "../nodes/footer";
 
 export const TiptapExtensions = [
   Document,
@@ -82,4 +83,5 @@ export const TiptapExtensions = [
   Spacer,
   Gapcursor,
   HardBreak,
+  Footer
 ];

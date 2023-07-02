@@ -19,6 +19,8 @@ import Dropcursor from '@tiptap/extension-dropcursor'
 import Underline from '@tiptap/extension-underline'
 import { History } from '@tiptap/extension-history'
 import Placeholder from '@tiptap/extension-placeholder'
+import Gapcursor from '@tiptap/extension-gapcursor'
+import HardBreak from "@tiptap/extension-hard-break";
 import { TiptapLogoExtension } from "./logo";
 import { Spacer } from "../nodes/spacer";
 
@@ -77,5 +79,7 @@ export const TiptapExtensions = [
     includeChildren: true,
   }),
   History,
-  Spacer
+  Spacer,
+  Gapcursor,
+  HardBreak,
 ];

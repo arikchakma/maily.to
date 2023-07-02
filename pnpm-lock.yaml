@@ -9,6 +9,8 @@ specifiers:
   '@tiptap/extension-color': ^2.0.3
   '@tiptap/extension-document': ^2.0.3
   '@tiptap/extension-dropcursor': ^2.0.3
+  '@tiptap/extension-gapcursor': ^2.0.3
+  '@tiptap/extension-hard-break': ^2.0.3
   '@tiptap/extension-heading': ^2.0.3
   '@tiptap/extension-history': ^2.0.3
   '@tiptap/extension-horizontal-rule': ^2.0.3
@@ -51,6 +53,8 @@ dependencies:
   '@tiptap/extension-color': 2.0.3_yvcui447lws44fuh5cet63uozq
   '@tiptap/extension-document': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-dropcursor': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
+  '@tiptap/extension-gapcursor': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
+  '@tiptap/extension-hard-break': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-heading': 2.0.3_@tiptap+core@2.0.3
   '@tiptap/extension-history': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
   '@tiptap/extension-horizontal-rule': 2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4
@@ -767,6 +771,24 @@ packages:
       '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
       '@tiptap/pm': 2.0.3_@tiptap+core@2.0.3
       tippy.js: 6.3.7
+    dev: false
+
+  /@tiptap/extension-gapcursor/2.0.3_7qxxgdyo6i4mk7xrbxa2xtsga4:
+    resolution: {integrity: sha512-6I9EzzsYOyyqDvDvxIK6Rv3EXB+fHKFj8ntHO8IXmeNJ6pkhOinuXVsW6Yo7TcDYoTj4D5I2MNFAW2rIkgassw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
+      '@tiptap/pm': 2.0.3_@tiptap+core@2.0.3
+    dev: false
+
+  /@tiptap/extension-hard-break/2.0.3_@tiptap+core@2.0.3:
+    resolution: {integrity: sha512-RCln6ARn16jvKTjhkcAD5KzYXYS0xRMc0/LrHeV8TKdCd4Yd0YYHe0PU4F9gAgAfPQn7Dgt4uTVJLN11ICl8sQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.0.3_@tiptap+pm@2.0.3
     dev: false
 
   /@tiptap/extension-heading/2.0.3_@tiptap+core@2.0.3:

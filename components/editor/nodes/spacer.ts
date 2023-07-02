@@ -70,37 +70,14 @@ export const Spacer = Node.create<SpacerOptions>({
 
   addCommands() {
     return {
-      setSpacer: (options) => ({ chain }) => {
+      setSpacer: (options) => ({ chain, commands }) => {
         return (
-          chain().insertContent({
+          commands.insertContent({
             type: this.name,
             attrs: {
               height: options.height,
             }
           })
-            // set cursor after horizontal rule
-            .command(({ tr, dispatch }) => {
-              if (dispatch) {
-                const { $to } = tr.selection
-                const posAfter = $to.end()
-
-                if ($to.nodeAfter) {
-                  tr.setSelection(TextSelection.create(tr.doc, $to.pos))
-                } else {
-                  const node = $to.parent.type.contentMatch.defaultType?.create()
-
-                  if (node) {
-                    tr.insert(posAfter, node)
-                    tr.setSelection(TextSelection.create(tr.doc, posAfter))
-                  }
-                }
-
-                tr.scrollIntoView()
-              }
-
-              return true
-            })
-            .run()
         )
       },
 
@@ -116,16 +93,6 @@ export const Spacer = Node.create<SpacerOptions>({
       }
     }
   },
-
-  addKeyboardShortcuts() {
-    return {
-      'Mod-Shift-0': () => this.editor.commands.setSpacer({ height: "sm" }),
-      'Mod-Shift-1': () => this.editor.commands.setSpacer({ height: "md" }),
-      'Mod-Shift-2': () => this.editor.commands.setSpacer({ height: "lg" }),
-      'Mod-Shift-3': () => this.editor.commands.setSpacer({ height: "xl" }),
-    }
-  },
-
   renderHTML({ HTMLAttributes, node }) {
     const { height } = node.attrs as SpacerOptions
     switch (height) {

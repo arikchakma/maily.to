@@ -6,6 +6,7 @@ import { EditorBubbleMenu } from './components/editor-bubble-menu'
 import { TiptapExtensions } from './extensions'
 import { LogoBubbleMenu } from './components/logo-bubble-menu'
 import { EditorMenuBar } from './components/editor-menu-bar'
+import { SpacerBubbleMenu } from './components/spacer-bubble-menu'
 
 export function Editor() {
   const editor = useEditor({
@@ -33,6 +34,7 @@ export function Editor() {
       <div className="p-2 border-t">
         {editor && <EditorBubbleMenu editor={editor} />}
         {editor && <LogoBubbleMenu editor={editor} />}
+        {editor && <SpacerBubbleMenu editor={editor} />}
         <EditorContent editor={editor} />
       </div >
     </div>

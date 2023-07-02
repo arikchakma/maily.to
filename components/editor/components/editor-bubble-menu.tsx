@@ -9,8 +9,6 @@ import {
   AlignCenterIcon,
   AlignRightIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { BubbleMenuButton } from "./bubble-menu-button";
 
 export interface BubbleMenuItem {
@@ -97,7 +95,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       // Doubleclick an empty paragraph returns a node size of 2.
       // So we check also for an empty text size.
       const isEmptyTextBlock = !doc.textBetween(from, to).length && isTextSelection(state.selection)
-      if (empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image") || editor.isActive("logo")) {
+      if (empty || isEmptyTextBlock || !editor.isEditable || editor.isActive("image") || editor.isActive("logo") || editor.isActive("spacer")) {
         return false
       }
 

@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.pattern-background {
-	background-color: #ffffff;
-	opacity: 1;
-	background-image: radial-gradient(#000000 0.65px, transparent 0.65px),
-		radial-gradient(#000000 0.65px, #ffffff 0.65px);
-	background-size: 26px 26px;
-	background-position: 0 0, 13px 13px;
-}
-
 .ProseMirror {
 	word-wrap: break-word;
 	white-space: pre-wrap;

@@ -2,34 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+.patter-background {
+	background-color: #ffffff;
+	opacity: 1;
+	background-image: radial-gradient(#000000 0.65px, transparent 0.65px),
+		radial-gradient(#000000 0.65px, #ffffff 0.65px);
+	background-size: 26px 26px;
+	background-position: 0 0, 13px 13px;
+}
+
 .ProseMirror {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    white-space: break-spaces;
-    -webkit-font-variant-ligatures: none;
-    font-variant-ligatures: none;
-    font-feature-settings: "liga" 0;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	white-space: break-spaces;
+	-webkit-font-variant-ligatures: none;
+	font-variant-ligatures: none;
+	font-feature-settings: 'liga' 0;
 }
 
 .ProseMirror:focus {
-    outline: none
+	outline: none;
 }
 
 .ProseMirror .is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
+	content: attr(data-placeholder);
+	float: left;
+	color: #adb5bd;
+	pointer-events: none;
+	height: 0;
 }
 .ProseMirror .is-empty::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
+	content: attr(data-placeholder);
+	float: left;
+	color: #adb5bd;
+	pointer-events: none;
+	height: 0;
 }
 
 .ProseMirror-selectednode {
-    outline: 3px solid #555;
+	outline: 3px solid #555;
 }

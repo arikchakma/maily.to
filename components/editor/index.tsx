@@ -175,11 +175,11 @@ export function Editor() {
   console.log(editor?.getHTML())
 
   return (
-    <div className="rounded border max-w-[600px]">
-      <div className="p-2">
+    <div className="rounded border max-w-[600px] bg-white mx-auto">
+      <div className="p-4">
         <EditorMenuBar editor={editor} />
       </div>
-      <div className="p-2 border-t">
+      <div className="p-4 border-t">
         {editor && <EditorBubbleMenu editor={editor} />}
         {editor && <LogoBubbleMenu editor={editor} />}
         {editor && <SpacerBubbleMenu editor={editor} />}

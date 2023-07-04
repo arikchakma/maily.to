@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.patter-background {
+.pattern-background {
 	background-color: #ffffff;
 	opacity: 1;
 	background-image: radial-gradient(#000000 0.65px, transparent 0.65px),

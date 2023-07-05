@@ -14,7 +14,7 @@ export function Editor() {
       attributes: {
         class: 'prose',
         spellCheck: 'false',
-      }
+      },
     },
     extensions: TiptapExtensions,
     content: {

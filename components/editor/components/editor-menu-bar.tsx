@@ -25,6 +25,15 @@ export const EditorMenuBar = ({ editor }: {
       <Button
         variant="secondary"
         size="sm"
+        onClick={() => {
+          editor.chain().focus().selectParentNode().deleteSelection().run()
+        }}
+      >
+        Delete Line
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
         onClick={() => editor.chain().focus().setParagraph().run()}
         className={editor.isActive('paragraph') ? 'is-active' : ''}
       >
@@ -78,7 +87,6 @@ export const EditorMenuBar = ({ editor }: {
           if (!imageUrl) {
             return
           }
-          {/* editor.chain().focus().updateAttributes('image', { 'data-mailbox': 'logo', src: imageUrl }).run() */ }
           editor.chain().focus().setImage({ src: imageUrl }).run()
         }}
       >
@@ -128,6 +136,6 @@ export const EditorMenuBar = ({ editor }: {
       >
         purple
       </Button>
-    </div>
+    </div >
   )
 }

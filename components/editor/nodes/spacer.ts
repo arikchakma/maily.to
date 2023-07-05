@@ -112,7 +112,9 @@ export const Spacer = Node.create<SpacerOptions>({
         HTMLAttributes.style = "width: 100%; height: 8px;"
         break
     }
-    return ['div', mergeAttributes(HTMLAttributes, {
+    return ['div', mergeAttributes(
+      this.options.HTMLAttributes,
+      HTMLAttributes, {
       class: "spacer",
       contenteditable: false,
     })]

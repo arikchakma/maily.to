@@ -25,8 +25,7 @@ import { TiptapLogoExtension } from "./logo";
 import { Spacer } from "../nodes/spacer";
 import { Footer } from "../nodes/footer";
 import { Variable } from "../nodes/variable";
-import { suggestions } from "../nodes/suggestion";
-import { SuggestionOptions } from "@tiptap/suggestion";
+import { SlashCommand } from "./slash-command";
 
 export const TiptapExtensions = [
   Document,
@@ -87,13 +86,6 @@ export const TiptapExtensions = [
   Gapcursor,
   HardBreak,
   Footer,
-  Variable.configure({
-    suggestion: suggestions as unknown as SuggestionOptions,
-    renderLabel({ node }) {
-      return `${node.attrs.label ?? node.attrs.id}`
-    },
-    HTMLAttributes: {
-      class: 'py-1 px-2 bg-slate-100 border border-blue-300 rounded-md'
-    }
-  })
+  Variable,
+  SlashCommand
 ];

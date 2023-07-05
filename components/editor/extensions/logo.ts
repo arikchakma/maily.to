@@ -4,9 +4,6 @@ import TiptapImage, { ImageOptions } from '@tiptap/extension-image'
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     logo: {
-      /**
-       * Comments will be added to the autocomplete.
-       */
       setLogoImage: (options: {
         src: string;
         alt?: string;
@@ -23,7 +20,8 @@ declare module '@tiptap/core' {
 
 export interface TiptapLogoAttributes {
   size: "sm" | "md" | "lg"
-  alignment: "left" | "center" | "right"
+  alignment: "left" | "center" | "right",
+  HTMLAttributes: Record<string, any>
 }
 
 export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
@@ -120,7 +118,7 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
         HTMLAttributes.style = "position:relative; margin-top:0; margin-right:auto; margin-left:0;"
         break
     }
-    return ['img', mergeAttributes(HTMLAttributes)]
+    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
   },
   parseHTML() {
     return [

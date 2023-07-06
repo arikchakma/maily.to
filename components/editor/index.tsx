@@ -183,17 +183,18 @@ export function Editor() {
     },
   })
 
+  if (!editor) {
+    return null
+  }
   console.log(editor?.getHTML())
 
   return (
-    <div className="rounded border max-w-[600px] bg-white mx-auto">
-      <div className="p-4">
-        <EditorMenuBar editor={editor} />
-      </div>
-      <div className="p-4 border-t">
-        {editor && <EditorBubbleMenu editor={editor} />}
-        {editor && <LogoBubbleMenu editor={editor} />}
-        {editor && <SpacerBubbleMenu editor={editor} />}
+    <div className="max-w-[600px] mx-auto">
+      <EditorMenuBar editor={editor} />
+      <div className="p-4 rounded border bg-white mt-4">
+        <EditorBubbleMenu editor={editor} />
+        <LogoBubbleMenu editor={editor} />
+        <SpacerBubbleMenu editor={editor} />
         <EditorContent editor={editor} />
       </div >
     </div>

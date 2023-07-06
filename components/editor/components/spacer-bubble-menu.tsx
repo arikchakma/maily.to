@@ -29,7 +29,7 @@ export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    shouldShow: ({ editor, view, state, oldState, from, to }) => {
+    shouldShow: ({ editor }) => {
       if (!editor.isActive("spacer")) {
         return false
       }

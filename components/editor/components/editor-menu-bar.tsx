@@ -1,141 +1,87 @@
-import { Button } from '@/components/ui/button'
 import { Editor as EditorType } from '@tiptap/core'
-import { ListIcon, ListOrderedIcon, ImageIcon, AlignCenterIcon, SpaceIcon, FootprintsIcon } from 'lucide-react'
+import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal } from 'lucide-react'
+import { BubbleMenuItem } from './editor-bubble-menu'
+import { BubbleMenuButton } from './bubble-menu-button'
+import { useMemo } from 'react'
 
 
+interface EditorMenuItem extends BubbleMenuItem {
+  group: "alignment" | "image" | "mark" | "custom"
+}
 export const EditorMenuBar = ({ editor }: {
-  editor: EditorType | null
+  editor: EditorType
 }) => {
+  const items: EditorMenuItem[] = useMemo(() => [
+    {
+      name: 'bold',
+      command: () => editor.chain().focus().toggleBold().run(),
+      isActive: () => editor.isActive('bold'),
+      group: 'mark',
+      icon: BoldIcon
+    },
+    {
+      name: 'italic',
+      command: () => editor.chain().focus().toggleItalic().run(),
+      isActive: () => editor.isActive('italic'),
+      group: 'mark',
+      icon: ItalicIcon
+    },
+    {
+      name: "underline",
+      command: () => editor.chain().focus().toggleUnderline().run(),
+      isActive: () => editor.isActive('underline'),
+      group: 'mark',
+      icon: UnderlineIcon
+    },
+    {
+      name: 'strike',
+      command: () => editor.chain().focus().toggleStrike().run(),
+      isActive: () => editor.isActive('strike'),
+      group: 'mark',
+      icon: StrikethroughIcon
+    },
+    {
+      name: 'delete-line',
+      command: () => editor.chain().focus().selectParentNode().deleteSelection().run(),
+      isActive: () => false,
+      group: 'mark',
+      icon: EraserIcon
+    },
+    {
+      name: 'divider',
+      command: () => editor.chain().focus().setHorizontalRule().run(),
+      isActive: () => editor.isActive('horizontalRule'),
+      group: 'custom',
+      icon: SeparatorHorizontal
+    }
+  ], [editor])
+
+  const groups = useMemo(() => items.reduce((acc, item) => {
+    if (!acc.includes(item.group)) {
+      acc.push(item.group)
+    }
+    return acc
+  }, [] as string[]), [items])
+
   if (!editor) {
     return null
   }
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <Button
-        variant="secondary"
-        size="sm" onClick={() => editor.chain().focus().unsetAllMarks().run()}>
-        clear marks
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm" onClick={() => editor.chain().focus().clearNodes().run()}>
-        clear nodes
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          editor.chain().focus().selectParentNode().deleteSelection().run()
-        }}
-      >
-        Delete Line
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        className={editor.isActive('paragraph') ? 'is-active' : ''}
-      >
-        paragraph
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-      >
-        h1
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-      >
-        h2
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-      >
-        h3
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-      >
-        <ListIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-      >
-        <ListOrderedIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          const imageUrl = prompt('Image URL: ') || ''
-          if (!imageUrl) {
-            return
-          }
-          editor.chain().focus().setImage({ src: imageUrl }).run()
-        }}
-      >
-        <ImageIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          editor.chain().focus().setLogoImage({ src: 'https://binsta.dev/api/v1/files/4eR1893USp/transform?format=webp&size=lg&quality=md' }).run()
-        }}
-      >
-        <ImageIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          editor.chain().focus().setLogoAttributes({ size: "lg" }).run()
-        }}
-      >
-        <AlignCenterIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          editor.chain().focus().setSpacer({ height: "xl" }).run()
-        }}
-      >
-        <SpaceIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => {
-          editor.chain().focus().setFooter().run()
-        }}
-      >
-        <FootprintsIcon className="h-3.5 w-3.5" />
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => editor.chain().focus().setColor('#958DF1').run()}
-        className={editor.isActive('textStyle', { color: '#958DF1' }) ? 'is-active' : ''}
-      >
-        purple
-      </Button>
-    </div >
+    <div className="flex items-center gap-3">
+      {
+        groups.map((group, index) => (
+          <div key={index} className="flex items-center gap-2 bg-white p-1 border rounded-md">
+            {
+              items.filter((item) => item.group === group).map((item, index) => (
+                <BubbleMenuButton
+                  key={index}
+                  {...item}
+                />
+              ))}
+          </div>
+        ))
+      }
+    </div>
   )
 }

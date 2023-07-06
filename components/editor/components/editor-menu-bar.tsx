@@ -1,5 +1,5 @@
 import { Editor as EditorType } from '@tiptap/core'
-import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal } from 'lucide-react'
+import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
 import { BubbleMenuItem } from './editor-bubble-menu'
 import { BubbleMenuButton } from './bubble-menu-button'
 import { useMemo } from 'react'
@@ -53,6 +53,27 @@ export const EditorMenuBar = ({ editor }: {
       isActive: () => editor.isActive('horizontalRule'),
       group: 'custom',
       icon: SeparatorHorizontal
+    },
+    {
+      name: 'left',
+      command: () => editor.chain().focus().setTextAlign('left').run(),
+      isActive: () => editor.isActive({ textAlign: 'left' }),
+      group: 'alignment',
+      icon: AlignLeft
+    },
+    {
+      name: 'center',
+      command: () => editor.chain().focus().setTextAlign('center').run(),
+      isActive: () => editor.isActive({ textAlign: 'center' }),
+      group: 'alignment',
+      icon: AlignCenter
+    },
+    {
+      name: 'right',
+      command: () => editor.chain().focus().setTextAlign('right').run(),
+      isActive: () => editor.isActive({ textAlign: 'right' }),
+      group: 'alignment',
+      icon: AlignRight
     }
   ], [editor])
 
@@ -71,7 +92,7 @@ export const EditorMenuBar = ({ editor }: {
     <div className="flex items-center gap-3">
       {
         groups.map((group, index) => (
-          <div key={index} className="flex items-center gap-2 bg-white p-1 border rounded-md">
+          <div key={index} className="flex items-center gap-1 bg-white p-1 border rounded-md">
             {
               items.filter((item) => item.group === group).map((item, index) => (
                 <BubbleMenuButton

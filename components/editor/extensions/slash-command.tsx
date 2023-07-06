@@ -11,6 +11,7 @@ import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
 import { ReactRenderer } from "@tiptap/react";
 import tippy, { GetReferenceClientRect } from "tippy.js";
 import {
+  EraserIcon,
   Heading1,
   Heading2,
   Heading3,
@@ -135,6 +136,15 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       icon: <ListOrdered className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+      },
+    },
+    {
+      title: "Clear Line",
+      description: "Clear the current line.",
+      searchTerms: ["clear", "line"],
+      icon: <EraserIcon className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().selectParentNode().deleteSelection().run()
       },
     },
     // TODO: add support for quote and code blocks

@@ -89,6 +89,16 @@ const styleMapping: {
 			...attributeStyles(attrs),
 		].join('');
 	},
+	hr: (attrs) => {
+		return [
+			'width: 100%;',
+			'border: none;',
+			'border-top: 1px solid #eaeaea;',
+			'margin-top: 32px;',
+			'margin-bottom: 32px;',
+			...attributeStyles(attrs),
+		].join('');
+	},
 };
 
 const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
@@ -96,7 +106,7 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 		if (node.marks) {
 			return node.marks.reduce((acc, mark) => {
 				return markMapping[mark.type](mark, acc);
-			}, node.text || ' ');
+			}, node.text || '');
 		}
 
 		return node.text || '';
@@ -111,11 +121,16 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 			.join('')}</h${node?.attrs?.level}>`;
 	},
 	paragraph: (node) => {
-		return `<p style="${styleMapping['p'](node?.attrs)}">${node.content
-			?.map((node) => {
-				return nodeMapping[node.type](node);
-			})
-			.join('')}</p>`;
+		return `<p style="${styleMapping['p'](node?.attrs)}">${
+			node.content
+				?.map((node) => {
+					return nodeMapping[node.type](node);
+				})
+				.join('') || ''
+		}</p>`;
+	},
+	horizontalRule: (node) => {
+		return `<hr style="${styleMapping['hr'](node?.attrs)}">`;
 	},
 };
 

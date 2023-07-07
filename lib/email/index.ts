@@ -40,8 +40,15 @@ function attributeStyles(attrs: Record<string, any> | undefined) {
 	});
 }
 
+function nodeTable(html: string) {
+	return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>${html}</td></tr></tbody></table>`;
+}
+
 const styleMapping: {
-	[key: string]: (attrs: Record<string, any> | undefined) => string;
+	[key: string]: (
+		attrs: Record<string, any> | undefined,
+		parent?: TiptapNode
+	) => string;
 } = {
 	textAlign: (attrs) => {
 		return `text-align: ${attrs?.textAlign};`;
@@ -76,18 +83,22 @@ const styleMapping: {
 			...attributeStyles(attrs),
 		].join('');
 	},
-	p: (attrs) => {
-		return [
+	p: (attrs, parent) => {
+		let style = [
 			'font-size: 15px;',
 			'line-height: 24px;',
 			'margin: 16px 0;',
-			'margin-bottom: 20px;',
 			'margin-top: 0px;',
 			'color: rgb(55, 65, 81);',
 			'-webkit-font-smoothing: antialiased;',
 			'-moz-osx-font-smoothing: grayscale;',
-			...attributeStyles(attrs),
-		].join('');
+		];
+		if (parent?.type === 'listItem') {
+			style.push('margin-bottom: 0;');
+		} else {
+			style.push('margin-bottom: 20px;');
+		}
+		return [...style, ...attributeStyles(attrs)].join('');
 	},
 	hr: (attrs) => {
 		return [
@@ -99,9 +110,38 @@ const styleMapping: {
 			...attributeStyles(attrs),
 		].join('');
 	},
+	ul: (attrs) => {
+		return [
+			'padding-left: 26px;',
+			'margin-bottom: 20px;',
+			'margin-top: 0px;',
+			'list-style-type: disc;',
+			...attributeStyles(attrs),
+		].join('');
+	},
+	ol: (attrs) => {
+		return [
+			'padding-left: 26px;',
+			'margin-bottom: 20px;',
+			'margin-top: 0px;',
+			'list-style-type: decimal;',
+			...attributeStyles(attrs),
+		].join('');
+	},
+	li: (attrs) => {
+		return [
+			'margin-bottom: 8px;',
+			'padding-left: 6px;',
+			'-webkit-font-smoothing: antialiased;',
+			'-moz-osx-font-smoothing: grayscale;',
+			...attributeStyles(attrs),
+		].join('');
+	},
 };
 
-const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
+const nodeMapping: {
+	[key: string]: (node: TiptapNode, parent?: TiptapNode) => string;
+} = {
 	text: (node) => {
 		if (node.marks) {
 			return node.marks.reduce((acc, mark) => {
@@ -120,8 +160,8 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 			})
 			.join('')}</h${node?.attrs?.level}>`;
 	},
-	paragraph: (node) => {
-		return `<p style="${styleMapping['p'](node?.attrs)}">${
+	paragraph: (node, parent) => {
+		return `<p style="${styleMapping['p'](node?.attrs, parent)}">${
 			node.content
 				?.map((node) => {
 					return nodeMapping[node.type](node);
@@ -131,6 +171,23 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 	},
 	horizontalRule: (node) => {
 		return `<hr style="${styleMapping['hr'](node?.attrs)}">`;
+	},
+
+	listItem: (node) => {
+		return `<li style="${styleMapping['li'](node?.attrs)}">${node.content
+			?.map((childNode) => {
+				return nodeMapping[childNode.type](childNode, node);
+			})
+			.join('')}</li>`;
+	},
+	bulletList: (node) => {
+		return nodeTable(
+			`<ul style="${styleMapping['ul'](node?.attrs)}">${node.content
+				?.map((node) => {
+					return nodeMapping[node.type](node);
+				})
+				.join('')}</ul>`
+		);
 	},
 };
 

@@ -8,6 +8,7 @@ import {
   AlignLeftIcon,
   AlignCenterIcon,
   AlignRightIcon,
+  LinkIcon,
 } from "lucide-react";
 import { BubbleMenuButton } from "./bubble-menu-button";
 
@@ -82,7 +83,32 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       },
       icon: AlignRightIcon,
     },
+    {
+      name: 'link',
+      command: () => {
+        const previousUrl = props.editor.getAttributes('link').href
+        const url = window.prompt('URL', previousUrl)
 
+        // If the user cancels the prompt, we don't want to toggle the link
+        if (url === null) {
+          return
+        }
+
+        // If the user deletes the URL entirely, we'll unlink the selected text
+        if (url === '') {
+          props.editor.chain().focus().extendMarkRange('link').unsetLink()
+            .run()
+
+          return
+        }
+
+        // Otherwise, we set the link to the given URL
+        props.editor.chain().focus().extendMarkRange('link').setLink({ href: url })
+          .run()
+      },
+      isActive: () => props.editor.isActive('link'),
+      icon: LinkIcon
+    },
   ];
 
   const bubbleMenuProps: EditorBubbleMenuProps = {

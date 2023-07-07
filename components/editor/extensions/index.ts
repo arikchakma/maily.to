@@ -26,6 +26,7 @@ import { Spacer } from "../nodes/spacer";
 import { Footer } from "../nodes/footer";
 import { Variable } from "../nodes/variable";
 import { SlashCommand } from "./slash-command";
+import TiptapLink from '@tiptap/extension-link'
 
 export const TiptapExtensions = [
   Document,
@@ -87,5 +88,12 @@ export const TiptapExtensions = [
   HardBreak,
   Footer,
   Variable,
-  SlashCommand
+  SlashCommand,
+  TiptapLink.configure({
+    HTMLAttributes: {
+      target: '_blank',
+      rel: 'noopener noreferrer nofollow',
+    },
+    openOnClick: false,
+  })
 ];

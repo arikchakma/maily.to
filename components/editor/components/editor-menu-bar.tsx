@@ -1,5 +1,5 @@
 import { Editor as EditorType } from '@tiptap/core'
-import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
+import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal, AlignLeft, AlignCenter, AlignRight, LinkIcon } from 'lucide-react'
 import { BubbleMenuItem } from './editor-bubble-menu'
 import { BubbleMenuButton } from './bubble-menu-button'
 import { useMemo } from 'react'
@@ -53,6 +53,33 @@ export const EditorMenuBar = ({ editor }: {
       isActive: () => editor.isActive('horizontalRule'),
       group: 'custom',
       icon: SeparatorHorizontal
+    },
+    {
+      name: 'link',
+      command: () => {
+        const previousUrl = editor.getAttributes('link').href
+        const url = window.prompt('URL', previousUrl)
+
+        // If the user cancels the prompt, we don't want to toggle the link
+        if (url === null) {
+          return
+        }
+
+        // If the user deletes the URL entirely, we'll unlink the selected text
+        if (url === '') {
+          editor.chain().focus().extendMarkRange('link').unsetLink()
+            .run()
+
+          return
+        }
+
+        // Otherwise, we set the link to the given URL
+        editor.chain().focus().extendMarkRange('link').setLink({ href: url })
+          .run()
+      },
+      isActive: () => editor.isActive('link'),
+      group: 'custom',
+      icon: LinkIcon
     },
     {
       name: 'left',

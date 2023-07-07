@@ -22,6 +22,18 @@ const markMapping: {
 	},
 };
 
+function attributeStyles(attrs: Record<string, any> | undefined) {
+	if (!attrs) {
+		return [];
+	}
+	return Object.keys(attrs).map((key) => {
+		if (!styleMapping[key]) {
+			return '';
+		}
+		return styleMapping[key](attrs);
+	});
+}
+
 const styleMapping: {
 	[key: string]: (attrs: Record<string, any> | undefined) => string;
 } = {
@@ -29,22 +41,26 @@ const styleMapping: {
 		return `text-align: ${attrs?.textAlign};`;
 	},
 	h1: (attrs) => {
-		let mappedAttrs: string[] = [];
-		if (attrs) {
-			mappedAttrs = Object.keys(attrs)?.map((key) => {
-				if (!styleMapping[key]) {
-					return '';
-				}
-				return styleMapping[key](attrs);
-			});
-		}
 		return [
 			'font-size: 36px;',
 			'font-weight: 800;',
 			'line-height: 40px;',
 			'margin-bottom: 12px;',
 			'color: rgb(17, 24, 39);',
-			...mappedAttrs,
+			...attributeStyles(attrs),
+		].join('');
+	},
+	p: (attrs) => {
+		return [
+			'font-size: 15px;',
+			'line-height: 24px;',
+			'margin: 16px 0;',
+			'margin-bottom: 20px;',
+			'margin-top: 0px;',
+			'color: rgb(55, 65, 81);',
+			'-webkit-font-smoothing: antialiased;',
+			'-moz-osx-font-smoothing: grayscale;',
+			...attributeStyles(attrs),
 		].join('');
 	},
 };
@@ -67,6 +83,13 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 				return nodeMapping[node.type](node);
 			})
 			.join('')}</h${node?.attrs?.level}>`;
+	},
+	paragraph: (node) => {
+		return `<p style="${styleMapping['p'](node?.attrs)}">${node.content
+			?.map((node) => {
+				return nodeMapping[node.type](node);
+			})
+			.join('')}</p>`;
 	},
 };
 
@@ -104,7 +127,28 @@ console.log(
         "text": "Chakma"
       }
     ]
-  }
+  },
+  {
+    "type": "paragraph",
+    "attrs": {
+        "textAlign": "left"
+    },
+    "content": [
+        {
+            "type": "text",
+            "text": "Hello "
+        },
+        {
+            "type": "text",
+            "marks": [
+                {
+                    "type": "bold"
+                }
+            ],
+            "text": "Arikko"
+        }
+    ]
+}
 ]`
 		)
 	)

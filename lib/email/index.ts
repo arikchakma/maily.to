@@ -20,6 +20,12 @@ const markMapping: {
 	underline: (mark, text) => {
 		return `<u>${text}</u>`;
 	},
+	italic: (mark, text) => {
+		return `<em>${text}</em>`;
+	},
+	strike: (mark, text) => {
+		return `<s style="text-decoration: line-through;">${text}</s>`;
+	},
 };
 
 function attributeStyles(attrs: Record<string, any> | undefined) {

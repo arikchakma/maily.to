@@ -50,6 +50,26 @@ const styleMapping: {
 			...attributeStyles(attrs),
 		].join('');
 	},
+	h2: (attrs) => {
+		return [
+			'font-size: 30px;',
+			'font-weight: 700;',
+			'line-height: 40px;',
+			'margin-bottom: 12px;',
+			'color: rgb(17, 24, 39);',
+			...attributeStyles(attrs),
+		].join('');
+	},
+	h3: (attrs) => {
+		return [
+			'font-size: 24px;',
+			'font-weight: 600;',
+			'line-height: 38px;',
+			'margin-bottom: 12px;',
+			'color: rgb(17, 24, 39);',
+			...attributeStyles(attrs),
+		].join('');
+	},
 	p: (attrs) => {
 		return [
 			'font-size: 15px;',
@@ -94,62 +114,14 @@ const nodeMapping: { [key: string]: (node: TiptapNode) => string } = {
 };
 
 const tiptapToHtml = (tiptap: TiptapNode[]) => {
-	return tiptap
-		.map((node) => {
-			return nodeMapping[node.type](node);
-		})
-		.join('');
+	const baseEmailTemplate = (html: string) =>
+		`
+  <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:Inter;font-style:normal;font-weight:400;mso-font-alt:Verdana;src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:Inter,Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
+	return baseEmailTemplate(
+		tiptap
+			.map((node) => {
+				return nodeMapping[node.type](node);
+			})
+			.join('')
+	);
 };
-console.log(
-	tiptapToHtml(
-		JSON.parse(
-			`[{
-    "type": "heading",
-    "attrs": {
-      "textAlign": "left",
-      "level": 1
-    },
-    "content": [
-      {
-        "type": "text",
-        "text": "Arik "
-      },
-      {
-        "type": "text",
-        "marks": [
-          {
-            "type": "bold"
-          },
-          {
-            "type": "underline"
-          }
-        ],
-        "text": "Chakma"
-      }
-    ]
-  },
-  {
-    "type": "paragraph",
-    "attrs": {
-        "textAlign": "left"
-    },
-    "content": [
-        {
-            "type": "text",
-            "text": "Hello "
-        },
-        {
-            "type": "text",
-            "marks": [
-                {
-                    "type": "bold"
-                }
-            ],
-            "text": "Arikko"
-        }
-    ]
-}
-]`
-		)
-	)
-);

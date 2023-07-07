@@ -186,7 +186,7 @@ export function Editor() {
   if (!editor) {
     return null
   }
-  console.log(editor?.getHTML())
+  console.log(editor?.getJSON())
 
   return (
     <div className="max-w-[600px] mx-auto">

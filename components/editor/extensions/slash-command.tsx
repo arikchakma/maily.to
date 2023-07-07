@@ -248,8 +248,9 @@ const CommandList = ({
       {items.map((item: CommandItemProps, index: number) => {
         return (
           <button
-            className={cn('flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100', index === selectedIndex ? "bg-gray-100 text-gray-900" : '')}
+            className={cn('flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900', index === selectedIndex ? "bg-gray-100 text-gray-900" : '')}
             key={index}
+            onMouseOver={() => setSelectedIndex(index)}
             onClick={() => selectItem(index)}
           >
             <div className="w-6 h-6 flex items-center justify-center">

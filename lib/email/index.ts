@@ -1,18 +1,18 @@
 interface TiptapMark {
 	type: string;
-	attrs?: Record<string, any>;
+	attrs?: Record<string, string | number>;
 }
 
 interface TiptapNode {
 	type: string;
-	attrs?: Record<string, any>;
+	attrs?: Record<string, string | number>;
 	text?: string;
 	marks?: TiptapMark[];
 	content?: TiptapNode[];
 }
 
 const startTime = performance.now();
-function attributeStyles(attrs: Record<string, any> | undefined) {
+function attributeStyles(attrs: TiptapNode['attrs'] | undefined) {
 	if (!attrs) {
 		return [];
 	}

@@ -1,8 +1,9 @@
 import { Editor as EditorType } from '@tiptap/core'
-import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal, AlignLeft, AlignCenter, AlignRight, LinkIcon } from 'lucide-react'
+import { BoldIcon, ItalicIcon, UnderlineIcon, StrikethroughIcon, EraserIcon, SeparatorHorizontal, AlignLeft, AlignCenter, AlignRight, LinkIcon, MailIcon } from 'lucide-react'
 import { BubbleMenuItem } from './editor-bubble-menu'
 import { BubbleMenuButton } from './bubble-menu-button'
 import { useMemo } from 'react'
+import { tiptapToHtml } from '@/lib/email'
 
 
 interface EditorMenuItem extends BubbleMenuItem {
@@ -59,17 +60,12 @@ export const EditorMenuBar = ({ editor }: {
       command: () => {
         const previousUrl = editor.getAttributes('link').href
         const url = window.prompt('URL', previousUrl)
-
         // If the user cancels the prompt, we don't want to toggle the link
-        if (url === null) {
-          return
-        }
-
+        if (url === null) return
         // If the user deletes the URL entirely, we'll unlink the selected text
         if (url === '') {
           editor.chain().focus().extendMarkRange('link').unsetLink()
             .run()
-
           return
         }
 
@@ -101,6 +97,17 @@ export const EditorMenuBar = ({ editor }: {
       isActive: () => editor.isActive({ textAlign: 'right' }),
       group: 'alignment',
       icon: AlignRight
+    },
+    {
+      name: 'email',
+      command: () => {
+        const json = editor.getJSON()
+        const html = tiptapToHtml(json.content!)
+        console.log(html)
+      },
+      isActive: () => false,
+      group: 'custom',
+      icon: MailIcon
     }
   ], [editor])
 

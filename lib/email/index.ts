@@ -1,28 +1,43 @@
 interface TiptapMark {
 	type: string;
-	attrs?: Record<string, string | number>;
+	attrs?: Record<string, any>;
+	[key: string]: any;
 }
 
 interface TiptapNode {
-	type: string;
-	attrs?: Record<string, string | number>;
-	text?: string;
-	marks?: TiptapMark[];
+	type?: string;
+	attrs?: Record<string, any>;
 	content?: TiptapNode[];
+	marks?: {
+		type: string;
+		attrs?: Record<string, any>;
+		[key: string]: any;
+	}[];
+	text?: string;
+	[key: string]: any;
 }
 
-const startTime = performance.now();
-function attributeStyles(attrs: TiptapNode['attrs'] | undefined) {
+function attributeStyles(
+	attrs: TiptapNode['attrs'] | undefined,
+	parent?: TiptapNode | undefined,
+	nextNode?: TiptapNode,
+	prevNode?: TiptapNode
+) {
 	if (!attrs) {
 		return [];
 	}
 	return Object.keys(attrs).map((key) => {
-		return styleMapping(key, attrs);
+		return styleMapping(key, attrs, parent, nextNode, prevNode);
 	});
 }
 
-function nodeTable(html: string) {
-	return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>${html}</td></tr></tbody></table>`;
+function nodeTable(
+	html: string,
+	attrs?: TiptapNode['attrs'] | undefined,
+	parent?: TiptapNode | undefined
+) {
+	const style = [...attributeStyles(attrs, parent)].join('');
+	return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="${style}"><tbody><tr><td>${html}</td></tr></tbody></table>`;
 }
 
 function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
@@ -38,54 +53,96 @@ function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
 function styleMapping(
 	key: string,
 	attrs: Record<string, any> | undefined,
-	parent?: TiptapNode
+	parent?: TiptapNode,
+	nextNode?: TiptapNode,
+	prevNode?: TiptapNode
 ): string {
+	let style = [];
 	switch (key) {
 		case 'textAlign':
 			return `text-align: ${attrs?.textAlign};`;
+		case 'height':
+			let height = 'auto';
+			if (parent?.type === 'spacer') {
+				switch (attrs?.height) {
+					case 'sm':
+						height = '8px';
+						break;
+					case 'md':
+						height = '16px';
+						break;
+					case 'lg':
+						height = '32px';
+						break;
+					case 'xl':
+						height = '64px';
+						break;
+					default:
+						height = 'auto';
+						break;
+				}
+			}
+			return `height: ${height};`;
 		case 'h1':
-			return [
+			style = [
 				'font-size: 36px;',
 				'font-weight: 800;',
-				'line-height: 40px;',
 				'margin-bottom: 12px;',
+				'line-height: 40px;',
 				'color: rgb(17, 24, 39);',
-				...attributeStyles(attrs),
-			].join('');
+				...attributeStyles(attrs, parent, nextNode, prevNode),
+			];
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
+			}
+			return style.join('');
+
 		case 'h2':
-			return [
+			style = [
 				'font-size: 30px;',
 				'font-weight: 700;',
 				'line-height: 40px;',
 				'margin-bottom: 12px;',
 				'color: rgb(17, 24, 39);',
 				...attributeStyles(attrs),
-			].join('');
+			];
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
+			}
+			return style.join('');
 		case 'h3':
-			return [
+			style = [
 				'font-size: 24px;',
 				'font-weight: 600;',
 				'line-height: 38px;',
 				'margin-bottom: 12px;',
 				'color: rgb(17, 24, 39);',
 				...attributeStyles(attrs),
-			].join('');
+			];
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
+			}
+			return style.join('');
 		case 'p':
-			let style = [
+			style = [
 				'font-size: 15px;',
 				'line-height: 24px;',
 				'margin: 16px 0;',
 				'margin-top: 0px;',
+				'margin-bottom: 20px;',
 				'color: rgb(55, 65, 81);',
 				'-webkit-font-smoothing: antialiased;',
 				'-moz-osx-font-smoothing: grayscale;',
+				...attributeStyles(attrs, parent, nextNode, prevNode),
 			];
 			if (parent?.type === 'listItem') {
+				style = style.filter((s) => !s.startsWith('margin'));
 				style.push('margin-bottom: 0;');
-			} else {
-				style.push('margin-bottom: 20px;');
 			}
-			return [...style, ...attributeStyles(attrs)].join('');
+			return style.join('');
 		case 'hr':
 			return [
 				'width: 100%;',
@@ -120,6 +177,7 @@ function styleMapping(
 				...attributeStyles(attrs),
 			].join('');
 		default:
+			console.log('Unknown style key', key);
 			return '';
 	}
 }
@@ -135,11 +193,17 @@ function markMapping(mark: TiptapMark, text: string): string {
 		case 'strike':
 			return `<s style="text-decoration: line-through;">${text}</s>`;
 		default:
+			console.log('Unknown mark type', mark.type);
 			return text;
 	}
 }
 
-function nodeMapping(node: TiptapNode, parent?: TiptapNode): string {
+function nodeMapping(
+	node: TiptapNode,
+	parent?: TiptapNode,
+	nextNode?: TiptapNode,
+	prevNode?: TiptapNode
+): string {
 	const { type, attrs, content } = node;
 	let style = '';
 	let mappedContent = '';
@@ -155,42 +219,48 @@ function nodeMapping(node: TiptapNode, parent?: TiptapNode): string {
 
 		case 'heading':
 			const level = attrs?.level || 1;
-			style = styleMapping(`h${level}`, attrs);
+			style = styleMapping(`h${level}`, attrs, parent, nextNode, prevNode);
 			mappedContent = getMappedContent(node);
 			return `<h${level} style="${style}">${mappedContent}</h${level}>`;
 
 		case 'paragraph':
-			style = styleMapping('p', attrs, parent);
+			style = styleMapping('p', attrs, parent, nextNode, prevNode);
 			mappedContent = getMappedContent(node, parent);
 			return `<p style="${style}">${mappedContent}</p>`;
 
 		case 'horizontalRule':
-			style = styleMapping('hr', attrs);
+			style = styleMapping('hr', attrs, parent, nextNode, prevNode);
 			return `<hr style="${style}">`;
 
 		case 'listItem':
-			style = styleMapping('li', attrs);
+			style = styleMapping('li', attrs, parent, nextNode, prevNode);
 			mappedContent = getMappedContent(node);
 			return `<li style="${style}">${mappedContent}</li>`;
 
 		case 'bulletList':
-			style = styleMapping('ul', attrs);
+			style = styleMapping('ul', attrs, parent, nextNode, prevNode);
 			mappedContent = getMappedContent(node);
 			return nodeTable(`<ul style="${style}">${mappedContent}</ul>`);
 
+		case 'spacer':
+			return nodeTable('', attrs, parent);
+
 		default:
+			console.log(`Node type ${type} not supported`);
 			return '';
 	}
 }
 
-const tiptapToHtml = (tiptap: TiptapNode[]) => {
+export const tiptapToHtml = (tiptap: TiptapNode[]) => {
 	const baseEmailTemplate = (html: string) =>
 		`
-  <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:Inter;font-style:normal;font-weight:400;mso-font-alt:Verdana;src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:Inter,Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
+  <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:'Inter';font-style:normal;font-weight:400;mso-font-alt:'Verdana';src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:'Inter',Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
 	return baseEmailTemplate(
 		tiptap
-			.map((node) => {
-				return nodeMapping(node);
+			.map((node, index) => {
+				const nextNode = tiptap[index + 1] || null;
+				const prevNode = tiptap[index - 1] || null;
+				return nodeMapping(node, node, nextNode, prevNode);
 			})
 			.join('')
 	);

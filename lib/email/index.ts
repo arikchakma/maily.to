@@ -11,23 +11,6 @@ interface TiptapNode {
 	content?: TiptapNode[];
 }
 
-const markMapping: {
-	[key: string]: (mark: TiptapMark, text: string) => string;
-} = {
-	bold: (mark, text) => {
-		return `<strong>${text}</strong>`;
-	},
-	underline: (mark, text) => {
-		return `<u>${text}</u>`;
-	},
-	italic: (mark, text) => {
-		return `<em>${text}</em>`;
-	},
-	strike: (mark, text) => {
-		return `<s style="text-decoration: line-through;">${text}</s>`;
-	},
-};
-
 function attributeStyles(attrs: Record<string, any> | undefined) {
 	if (!attrs) {
 		return [];
@@ -43,6 +26,26 @@ function attributeStyles(attrs: Record<string, any> | undefined) {
 function nodeTable(html: string) {
 	return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>${html}</td></tr></tbody></table>`;
 }
+
+function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
+	return (
+		node?.content
+			?.map((node) => {
+				return nodeMapping[node.type](node, parent);
+			})
+			.join('') || ''
+	);
+}
+
+const markMapping: {
+	[key: string]: (mark: TiptapMark, text: string) => string;
+} = {
+	bold: (mark, text) => `<strong>${text}</strong>`,
+	underline: (mark, text) => `<u>${text}</u>`,
+	italic: (mark, text) => `<em>${text}</em>`,
+	strike: (mark, text) =>
+		`<s style="text-decoration: line-through;">${text}</s>`,
+};
 
 const styleMapping: {
 	[key: string]: (
@@ -152,42 +155,30 @@ const nodeMapping: {
 		return node.text || '';
 	},
 	heading: (node) => {
-		return `<h${node?.attrs?.level} style="${styleMapping[
-			`h${node?.attrs?.level}`
-		](node?.attrs)}">${node.content
-			?.map((node) => {
-				return nodeMapping[node.type](node);
-			})
-			.join('')}</h${node?.attrs?.level}>`;
+		const level = node?.attrs?.level || 1;
+		const style = styleMapping[`h${level}`](node?.attrs);
+		const mappedContent = getMappedContent(node);
+		return `<h${level} style="${style}">${mappedContent}</h${level}>`;
 	},
 	paragraph: (node, parent) => {
-		return `<p style="${styleMapping['p'](node?.attrs, parent)}">${
-			node.content
-				?.map((node) => {
-					return nodeMapping[node.type](node);
-				})
-				.join('') || ''
-		}</p>`;
+		const style = styleMapping['p'](node?.attrs, parent);
+		const mappedContent = getMappedContent(node, parent);
+		return `<p style="${style}">${mappedContent}</p>`;
 	},
 	horizontalRule: (node) => {
-		return `<hr style="${styleMapping['hr'](node?.attrs)}">`;
+		const style = styleMapping['hr'](node?.attrs);
+		return `<hr style="${style}">`;
 	},
 
 	listItem: (node) => {
-		return `<li style="${styleMapping['li'](node?.attrs)}">${node.content
-			?.map((childNode) => {
-				return nodeMapping[childNode.type](childNode, node);
-			})
-			.join('')}</li>`;
+		const style = styleMapping['li'](node?.attrs);
+		const mappedContent = getMappedContent(node);
+		return `<li style="${style}">${mappedContent}</li>`;
 	},
 	bulletList: (node) => {
-		return nodeTable(
-			`<ul style="${styleMapping['ul'](node?.attrs)}">${node.content
-				?.map((node) => {
-					return nodeMapping[node.type](node);
-				})
-				.join('')}</ul>`
-		);
+		const style = styleMapping['ul'](node?.attrs);
+		const mappedContent = getMappedContent(node);
+		return nodeTable(`<ul style="${style}">${mappedContent}</ul>`);
 	},
 };
 

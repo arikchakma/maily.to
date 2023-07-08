@@ -18,6 +18,7 @@ import {
   ImageIcon,
   List,
   ListOrdered,
+  MoveVertical,
   Text,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -154,6 +155,15 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
+      title: 'Spacer',
+      description: 'Add a spacer to the page. Useful for adding space between sections.',
+      searchTerms: ['space', 'gap', 'divider'],
+      icon: <MoveVertical className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).setSpacer({ height: 'sm' }).run();
+      },
+    },
+    {
       title: 'Clear Line',
       description: 'Clear the current line.',
       searchTerms: ['clear', 'line'],
@@ -271,7 +281,7 @@ const CommandList = ({
             onMouseOver={() => setSelectedIndex(index)}
             onClick={() => selectItem(index)}
           >
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="w-6 h-6 flex items-center justify-center shrink-0">
               {item.icon}
             </div>
             <div>

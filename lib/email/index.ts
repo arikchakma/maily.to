@@ -11,15 +11,13 @@ interface TiptapNode {
 	content?: TiptapNode[];
 }
 
+const startTime = performance.now();
 function attributeStyles(attrs: Record<string, any> | undefined) {
 	if (!attrs) {
 		return [];
 	}
 	return Object.keys(attrs).map((key) => {
-		if (!styleMapping[key]) {
-			return '';
-		}
-		return styleMapping[key](attrs);
+		return styleMapping(key, attrs);
 	});
 }
 
@@ -31,156 +29,159 @@ function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
 	return (
 		node?.content
 			?.map((node) => {
-				return nodeMapping[node.type](node, parent);
+				return nodeMapping(node, parent);
 			})
 			.join('') || ''
 	);
 }
 
-const markMapping: {
-	[key: string]: (mark: TiptapMark, text: string) => string;
-} = {
-	bold: (mark, text) => `<strong>${text}</strong>`,
-	underline: (mark, text) => `<u>${text}</u>`,
-	italic: (mark, text) => `<em>${text}</em>`,
-	strike: (mark, text) =>
-		`<s style="text-decoration: line-through;">${text}</s>`,
-};
+function styleMapping(
+	key: string,
+	attrs: Record<string, any> | undefined,
+	parent?: TiptapNode
+): string {
+	switch (key) {
+		case 'textAlign':
+			return `text-align: ${attrs?.textAlign};`;
+		case 'h1':
+			return [
+				'font-size: 36px;',
+				'font-weight: 800;',
+				'line-height: 40px;',
+				'margin-bottom: 12px;',
+				'color: rgb(17, 24, 39);',
+				...attributeStyles(attrs),
+			].join('');
+		case 'h2':
+			return [
+				'font-size: 30px;',
+				'font-weight: 700;',
+				'line-height: 40px;',
+				'margin-bottom: 12px;',
+				'color: rgb(17, 24, 39);',
+				...attributeStyles(attrs),
+			].join('');
+		case 'h3':
+			return [
+				'font-size: 24px;',
+				'font-weight: 600;',
+				'line-height: 38px;',
+				'margin-bottom: 12px;',
+				'color: rgb(17, 24, 39);',
+				...attributeStyles(attrs),
+			].join('');
+		case 'p':
+			let style = [
+				'font-size: 15px;',
+				'line-height: 24px;',
+				'margin: 16px 0;',
+				'margin-top: 0px;',
+				'color: rgb(55, 65, 81);',
+				'-webkit-font-smoothing: antialiased;',
+				'-moz-osx-font-smoothing: grayscale;',
+			];
+			if (parent?.type === 'listItem') {
+				style.push('margin-bottom: 0;');
+			} else {
+				style.push('margin-bottom: 20px;');
+			}
+			return [...style, ...attributeStyles(attrs)].join('');
+		case 'hr':
+			return [
+				'width: 100%;',
+				'border: none;',
+				'border-top: 1px solid #eaeaea;',
+				'margin-top: 32px;',
+				'margin-bottom: 32px;',
+				...attributeStyles(attrs),
+			].join('');
+		case 'ul':
+			return [
+				'padding-left: 26px;',
+				'margin-bottom: 20px;',
+				'margin-top: 0px;',
+				'list-style-type: disc;',
+				...attributeStyles(attrs),
+			].join('');
+		case 'ol':
+			return [
+				'padding-left: 26px;',
+				'margin-bottom: 20px;',
+				'margin-top: 0px;',
+				'list-style-type: decimal;',
+				...attributeStyles(attrs),
+			].join('');
+		case 'li':
+			return [
+				'margin-bottom: 8px;',
+				'padding-left: 6px;',
+				'-webkit-font-smoothing: antialiased;',
+				'-moz-osx-font-smoothing: grayscale;',
+				...attributeStyles(attrs),
+			].join('');
+		default:
+			return '';
+	}
+}
 
-const styleMapping: {
-	[key: string]: (
-		attrs: Record<string, any> | undefined,
-		parent?: TiptapNode
-	) => string;
-} = {
-	textAlign: (attrs) => {
-		return `text-align: ${attrs?.textAlign};`;
-	},
-	h1: (attrs) => {
-		return [
-			'font-size: 36px;',
-			'font-weight: 800;',
-			'line-height: 40px;',
-			'margin-bottom: 12px;',
-			'color: rgb(17, 24, 39);',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	h2: (attrs) => {
-		return [
-			'font-size: 30px;',
-			'font-weight: 700;',
-			'line-height: 40px;',
-			'margin-bottom: 12px;',
-			'color: rgb(17, 24, 39);',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	h3: (attrs) => {
-		return [
-			'font-size: 24px;',
-			'font-weight: 600;',
-			'line-height: 38px;',
-			'margin-bottom: 12px;',
-			'color: rgb(17, 24, 39);',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	p: (attrs, parent) => {
-		let style = [
-			'font-size: 15px;',
-			'line-height: 24px;',
-			'margin: 16px 0;',
-			'margin-top: 0px;',
-			'color: rgb(55, 65, 81);',
-			'-webkit-font-smoothing: antialiased;',
-			'-moz-osx-font-smoothing: grayscale;',
-		];
-		if (parent?.type === 'listItem') {
-			style.push('margin-bottom: 0;');
-		} else {
-			style.push('margin-bottom: 20px;');
-		}
-		return [...style, ...attributeStyles(attrs)].join('');
-	},
-	hr: (attrs) => {
-		return [
-			'width: 100%;',
-			'border: none;',
-			'border-top: 1px solid #eaeaea;',
-			'margin-top: 32px;',
-			'margin-bottom: 32px;',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	ul: (attrs) => {
-		return [
-			'padding-left: 26px;',
-			'margin-bottom: 20px;',
-			'margin-top: 0px;',
-			'list-style-type: disc;',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	ol: (attrs) => {
-		return [
-			'padding-left: 26px;',
-			'margin-bottom: 20px;',
-			'margin-top: 0px;',
-			'list-style-type: decimal;',
-			...attributeStyles(attrs),
-		].join('');
-	},
-	li: (attrs) => {
-		return [
-			'margin-bottom: 8px;',
-			'padding-left: 6px;',
-			'-webkit-font-smoothing: antialiased;',
-			'-moz-osx-font-smoothing: grayscale;',
-			...attributeStyles(attrs),
-		].join('');
-	},
-};
+function markMapping(mark: TiptapMark, text: string): string {
+	switch (mark.type) {
+		case 'bold':
+			return `<strong>${text}</strong>`;
+		case 'underline':
+			return `<u>${text}</u>`;
+		case 'italic':
+			return `<em>${text}</em>`;
+		case 'strike':
+			return `<s style="text-decoration: line-through;">${text}</s>`;
+		default:
+			return text;
+	}
+}
 
-const nodeMapping: {
-	[key: string]: (node: TiptapNode, parent?: TiptapNode) => string;
-} = {
-	text: (node) => {
-		if (node.marks) {
-			return node.marks.reduce((acc, mark) => {
-				return markMapping[mark.type](mark, acc);
-			}, node.text || '');
-		}
+function nodeMapping(node: TiptapNode, parent?: TiptapNode): string {
+	const { type, attrs, content } = node;
+	let style = '';
+	let mappedContent = '';
 
-		return node.text || '';
-	},
-	heading: (node) => {
-		const level = node?.attrs?.level || 1;
-		const style = styleMapping[`h${level}`](node?.attrs);
-		const mappedContent = getMappedContent(node);
-		return `<h${level} style="${style}">${mappedContent}</h${level}>`;
-	},
-	paragraph: (node, parent) => {
-		const style = styleMapping['p'](node?.attrs, parent);
-		const mappedContent = getMappedContent(node, parent);
-		return `<p style="${style}">${mappedContent}</p>`;
-	},
-	horizontalRule: (node) => {
-		const style = styleMapping['hr'](node?.attrs);
-		return `<hr style="${style}">`;
-	},
+	switch (type) {
+		case 'text':
+			if (node.marks) {
+				return node.marks.reduce((acc, mark) => {
+					return markMapping(mark, acc);
+				}, node.text || '');
+			}
+			return node.text || '';
 
-	listItem: (node) => {
-		const style = styleMapping['li'](node?.attrs);
-		const mappedContent = getMappedContent(node);
-		return `<li style="${style}">${mappedContent}</li>`;
-	},
-	bulletList: (node) => {
-		const style = styleMapping['ul'](node?.attrs);
-		const mappedContent = getMappedContent(node);
-		return nodeTable(`<ul style="${style}">${mappedContent}</ul>`);
-	},
-};
+		case 'heading':
+			const level = attrs?.level || 1;
+			style = styleMapping(`h${level}`, attrs);
+			mappedContent = getMappedContent(node);
+			return `<h${level} style="${style}">${mappedContent}</h${level}>`;
+
+		case 'paragraph':
+			style = styleMapping('p', attrs, parent);
+			mappedContent = getMappedContent(node, parent);
+			return `<p style="${style}">${mappedContent}</p>`;
+
+		case 'horizontalRule':
+			style = styleMapping('hr', attrs);
+			return `<hr style="${style}">`;
+
+		case 'listItem':
+			style = styleMapping('li', attrs);
+			mappedContent = getMappedContent(node);
+			return `<li style="${style}">${mappedContent}</li>`;
+
+		case 'bulletList':
+			style = styleMapping('ul', attrs);
+			mappedContent = getMappedContent(node);
+			return nodeTable(`<ul style="${style}">${mappedContent}</ul>`);
+
+		default:
+			return '';
+	}
+}
 
 const tiptapToHtml = (tiptap: TiptapNode[]) => {
 	const baseEmailTemplate = (html: string) =>
@@ -189,7 +190,7 @@ const tiptapToHtml = (tiptap: TiptapNode[]) => {
 	return baseEmailTemplate(
 		tiptap
 			.map((node) => {
-				return nodeMapping[node.type](node);
+				return nodeMapping(node);
 			})
 			.join('')
 	);

@@ -46,8 +46,29 @@ function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
 			?.map((node) => {
 				return nodeMapping(node, parent);
 			})
-			.join('') || ''
+			.join('') || '&nbsp'
 	);
+}
+
+function markMapping(mark: TiptapMark, text: string): string {
+	switch (mark.type) {
+		case 'bold':
+			return `<strong>${text}</strong>`;
+		case 'underline':
+			return `<u>${text}</u>`;
+		case 'italic':
+			return `<em>${text}</em>`;
+		case 'strike':
+			return `<s style="text-decoration: line-through;">${text}</s>`;
+		case 'link':
+			return `<a href="${
+				mark?.attrs?.href || ''
+			}" target="_blank" style="${styleMapping('a', mark?.attrs)}">${text}</a>`;
+
+		default:
+			console.log('Unknown mark type', mark.type);
+			return text;
+	}
 }
 
 function styleMapping(
@@ -61,8 +82,32 @@ function styleMapping(
 	switch (key) {
 		case 'textAlign':
 			return `text-align: ${attrs?.textAlign};`;
+
+		case 'alignment':
+			if (attrs?.alignment === 'center') {
+				return 'margin-left: auto; margin-right: auto;';
+			} else if (attrs?.alignment === 'right') {
+				return 'margin-left: auto;';
+			}
+			return '';
+
+		case 'size':
+			switch (parent?.type) {
+				case 'logo':
+					if (attrs?.size === 'sm') {
+						return styleMapping('height', { height: '40px' });
+					} else if (attrs?.size === 'md') {
+						return styleMapping('height', { height: '48px' });
+					} else if (attrs?.size === 'lg') {
+						return styleMapping('height', { height: '64px' });
+					}
+					return '';
+				default:
+					return '';
+			}
+
 		case 'height':
-			let height = 'auto';
+			let height = attrs?.height || 'auto';
 			if (parent?.type === 'spacer') {
 				switch (attrs?.height) {
 					case 'sm':
@@ -176,25 +221,65 @@ function styleMapping(
 				'-moz-osx-font-smoothing: grayscale;',
 				...attributeStyles(attrs),
 			].join('');
+
+		case 'img':
+			return [
+				'display: block;',
+				'outline: none;',
+				'border: none;',
+				'text-decoration: none;',
+				'margin-bottom: 32px;',
+				'margin-top: 0px;',
+				'height: auto;',
+				'width: auto;',
+				'max-width: 100%;',
+			].join('');
+
+		case 'logo':
+			console.log(attrs);
+			style = [
+				'display: block;',
+				'outline: none;',
+				'border: none;',
+				'text-decoration: none;',
+				'margin-bottom: 32px;',
+				'margin-top: 0px;',
+				...attributeStyles(attrs, parent, nextNode, prevNode),
+			];
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
+			}
+			return style.join('');
+
+		case 'footer':
+			style = [
+				'font-size: 13px;',
+				'line-height: 24px;',
+				'margin: 16px 0;',
+				'margin-bottom: 20px;',
+				'margin-top: 0px;',
+				'-webkit-font-smoothing: antialiased;',
+				'-moz-osx-font-smoothing: grayscale;',
+				'color: rgb(100, 116, 139);',
+				...attributeStyles(attrs),
+			];
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
+			}
+			return style.join('');
+
+		case 'a':
+			return [
+				'font-weight: 500;',
+				'color: rgb(17, 24, 39);',
+				'text-decoration-line: underline;',
+			].join('');
+
 		default:
 			console.log('Unknown style key', key);
 			return '';
-	}
-}
-
-function markMapping(mark: TiptapMark, text: string): string {
-	switch (mark.type) {
-		case 'bold':
-			return `<strong>${text}</strong>`;
-		case 'underline':
-			return `<u>${text}</u>`;
-		case 'italic':
-			return `<em>${text}</em>`;
-		case 'strike':
-			return `<s style="text-decoration: line-through;">${text}</s>`;
-		default:
-			console.log('Unknown mark type', mark.type);
-			return text;
 	}
 }
 
@@ -215,18 +300,18 @@ function nodeMapping(
 					return markMapping(mark, acc);
 				}, node.text || '');
 			}
-			return node.text || '';
+			return node.text || '&nbsp';
 
 		case 'heading':
 			const level = attrs?.level || 1;
 			style = styleMapping(`h${level}`, attrs, parent, nextNode, prevNode);
-			mappedContent = getMappedContent(node);
-			return `<h${level} style="${style}">${mappedContent}</h${level}>`;
+			return `<h${level} style="${style}">${getMappedContent(
+				node
+			)}</h${level}>`;
 
 		case 'paragraph':
 			style = styleMapping('p', attrs, parent, nextNode, prevNode);
-			mappedContent = getMappedContent(node, parent);
-			return `<p style="${style}">${mappedContent}</p>`;
+			return `<p style="${style}">${getMappedContent(node)}</p>`;
 
 		case 'horizontalRule':
 			style = styleMapping('hr', attrs, parent, nextNode, prevNode);
@@ -234,16 +319,36 @@ function nodeMapping(
 
 		case 'listItem':
 			style = styleMapping('li', attrs, parent, nextNode, prevNode);
-			mappedContent = getMappedContent(node);
-			return `<li style="${style}">${mappedContent}</li>`;
+			return `<li style="${style}">${getMappedContent(node)}</li>`;
 
 		case 'bulletList':
 			style = styleMapping('ul', attrs, parent, nextNode, prevNode);
-			mappedContent = getMappedContent(node);
-			return nodeTable(`<ul style="${style}">${mappedContent}</ul>`);
+			return nodeTable(`<ul style="${style}">${getMappedContent(node)}</ul>`);
 
 		case 'spacer':
 			return nodeTable('', attrs, parent);
+
+		case 'hardBreak':
+			return '<br>';
+
+		case 'logo':
+			style = styleMapping('logo', attrs, parent, nextNode, prevNode);
+			return `<img alt="${attrs?.alt || ''}" src="${
+				attrs?.src
+			}" style="${style}">`;
+
+		case 'image':
+			style = styleMapping('img', attrs, parent, nextNode, prevNode);
+			return `<img alt="${attrs?.alt || attrs?.title || ''}" src="${
+				attrs?.src
+			}" style="${style}">`;
+
+		case 'footer':
+			style = styleMapping('footer', attrs, parent, nextNode, prevNode);
+			return `<p style="${style}">${getMappedContent(node)}</p>`;
+
+		case 'variable':
+			return `{{${attrs?.id}}}`;
 
 		default:
 			console.log(`Node type ${type} not supported`);

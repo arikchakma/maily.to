@@ -1,28 +1,57 @@
 "use client";
 
-import React from "react";
-import { EditorContent, JSONContent, useEditor } from "@tiptap/react";
+import React, { useEffect } from "react";
+import {
+  EditorContent,
+  JSONContent,
+  useEditor,
+  Editor as TipTapEditor,
+} from "@tiptap/react";
 import { EditorBubbleMenu } from "./components/editor-bubble-menu";
 import { TiptapExtensions } from "./extensions";
 import { LogoBubbleMenu } from "./components/logo-bubble-menu";
 import { EditorMenuBar } from "./components/editor-menu-bar";
 import { SpacerBubbleMenu } from "./components/spacer-bubble-menu";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/editor/components/toaster";
 import { Inter } from "next/font/google";
 
 import "./editor.css";
+import { tiptapToHtml } from "@/components/editor/utils/email";
 const inter = Inter({
   subsets: ["latin"],
 });
 
-type EditorProps = {
-  editorClassName?: string;
+export type MailEditor = {
+  getEmailHtml: () => string;
+  getJSON: () => JSONContent[];
+  getEditor: () => TipTapEditor;
+};
+
+export type EditorProps = {
   contentHtml?: string;
   contentJson?: JSONContent[];
+  onMount?: (editor: MailEditor) => void;
+  config?: {
+    hasMenuBar?: boolean;
+    spellCheck?: boolean;
+    wrapClassName?: string;
+    toolbarClassName?: string;
+    contentClassName?: string;
+  };
 };
 
 export function Editor(props: EditorProps) {
-  const { contentHtml, contentJson } = props;
+  const {
+    onMount,
+    config: {
+      wrapClassName = "",
+      contentClassName = "",
+      hasMenuBar = true,
+      spellCheck = false,
+    } = {},
+    contentHtml,
+    contentJson,
+  } = props;
 
   let formattedContent: any = null;
   if (contentJson) {
@@ -52,8 +81,8 @@ export function Editor(props: EditorProps) {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: `prose ${props.editorClassName}`,
-        spellCheck: "false",
+        class: `prose w-full ${contentClassName}`,
+        spellCheck: spellCheck ? "true" : "false",
       },
       handleDOMEvents: {
         keydown: (_view, event) => {
@@ -71,15 +100,31 @@ export function Editor(props: EditorProps) {
     content: formattedContent,
   });
 
+  useEffect(() => {
+    if (!editor || !onMount) {
+      return;
+    }
+
+    const editorJson = editor.getJSON();
+
+    onMount?.({
+      getJSON: () => editorJson.content || [],
+      getEmailHtml: () => tiptapToHtml(editorJson.content || []),
+      getEditor: () => editor,
+    });
+  }, [onMount, editor]);
+
   if (!editor) {
     return null;
   }
 
   return (
-    <div className={`max-w-[600px] mx-auto antialiased ${inter.className}`}>
+    <div
+      className={`mail-editor antialiased ${inter.className} ${wrapClassName}`}
+    >
       <Toaster />
 
-      <EditorMenuBar editor={editor} />
+      {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
       <div className="p-4 rounded border bg-white mt-4">
         <EditorBubbleMenu editor={editor} />
         <LogoBubbleMenu editor={editor} />

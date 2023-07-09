@@ -2,7 +2,7 @@ import Mention from "@tiptap/extension-mention";
 import { ReactRenderer } from "@tiptap/react";
 import tippy, { GetReferenceClientRect, Instance } from "tippy.js";
 import { SuggestionOptions } from "@tiptap/suggestion";
-import { Button } from "@/components/ui/button";
+import { BaseButton } from "@/components/editor/components/base-button";
 import React, {
   forwardRef,
   useEffect,
@@ -50,22 +50,22 @@ export const VariableList = forwardRef((props: any, ref) => {
     <div className="z-50 h-auto rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all">
       {props?.items?.length ? (
         props?.items?.map((item: string, index: number) => (
-          <Button
+          <BaseButton
             variant="secondary"
             key={index}
             onClick={() => selectItem(index)}
             className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100"
           >
             {item}
-          </Button>
+          </BaseButton>
         ))
       ) : (
-        <Button
+        <BaseButton
           variant="secondary"
           className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100"
         >
           No result
-        </Button>
+        </BaseButton>
       )}
     </div>
   );

@@ -15,14 +15,23 @@ import {
 import { BubbleMenuItem } from "./editor-bubble-menu";
 import { BubbleMenuButton } from "./bubble-menu-button";
 import { useMemo } from "react";
-import { tiptapToHtml } from "@/lib/email";
 import copy from "copy-to-clipboard";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/editor/hooks/use-toast";
+import { EditorProps } from "@/components/editor";
+import { tiptapToHtml } from "@/components/editor/utils/email";
 
 interface EditorMenuItem extends BubbleMenuItem {
   group: "alignment" | "image" | "mark" | "custom" | "email";
 }
-export const EditorMenuBar = ({ editor }: { editor: EditorType }) => {
+
+type EditorMenuBarProps = {
+  config: EditorProps["config"];
+  editor: EditorType;
+};
+
+export const EditorMenuBar = (props: EditorMenuBarProps) => {
+  const { editor, config } = props;
+
   const { toast } = useToast();
   const items: EditorMenuItem[] = useMemo(
     () => [
@@ -150,7 +159,7 @@ export const EditorMenuBar = ({ editor }: { editor: EditorType }) => {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className={`flex items-center gap-3 ${config?.toolbarClassName}`}>
       {groups.map((group, index) => (
         <div
           key={index}

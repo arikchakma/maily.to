@@ -21,7 +21,7 @@ import {
   MoveVertical,
   Text,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/components/editor/utils/tailwind";
 
 interface CommandItemProps {
   title: string;

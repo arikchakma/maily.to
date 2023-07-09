@@ -1,101 +1,101 @@
-.prose p:where([class~="text-sm"]) {
+.mail-editor .prose p:where([class~="text-sm"]) {
   font-size: 16px;
 }
 
-.prose h1,
-.prose h2,
-.prose h3 {
+.mail-editor .prose h1,
+.mail-editor .prose h2,
+.mail-editor .prose h3 {
   margin-top: 0;
   margin-bottom: 12px;
 }
 
-.prose h1 {
+.mail-editor .prose h1 {
   font-size: 36px;
 }
 
-.prose h2 {
+.mail-editor .prose h2 {
   font-size: 30px;
 }
 
-.prose h3 {
+.mail-editor .prose h3 {
   font-size: 24px;
 }
 
-.prose p {
+.mail-editor .prose p {
   font-size: 15px;
   margin-bottom: 20px;
 }
 
-.prose h1 + p,
-.prose h2 + p,
-.prose h3 + p,
-.prose hr + p {
+.mail-editor .prose h1 + p,
+.mail-editor .prose h2 + p,
+.mail-editor .prose h3 + p,
+.mail-editor .prose hr + p {
   margin-top: 0;
 }
 
-.prose ol,
-.prose ul {
+.mail-editor .prose ol,
+.mail-editor .prose ul {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.prose li:not(:last-child) {
+.mail-editor .prose li:not(:last-child) {
   margin-bottom: 8px;
 }
 
-.prose li > p {
+.mail-editor .prose li > p {
   margin: 0;
 }
 
-.prose img {
+.mail-editor .prose img {
   margin-top: 0;
   margin-bottom: 32px;
 }
 
-.prose blockquote {
+.mail-editor .prose blockquote {
   margin-block: 26px;
 }
 
-.prose hr {
+.mail-editor .prose hr {
   margin-block: 32px;
 }
 
-.prose .footer {
+.mail-editor .prose .footer {
   display: block;
   font-size: 13px;
   margin-bottom: 20px;
   color: rgb(100, 116, 139);
 }
 
-.prose .spacer + * {
+.mail-editor .prose .spacer + * {
   margin-top: 0;
 }
 
-.prose p + .spacer {
+.mail-editor .prose p + .spacer {
   margin-top: -20px;
 }
 
-.prose h1 + .spacer,
-.prose h2 + .spacer,
-.prose h3 + .spacer {
+.mail-editor .prose h1 + .spacer,
+.mail-editor .prose h2 + .spacer,
+.mail-editor .prose h3 + .spacer {
   margin-top: -12px;
 }
 
-.prose ol + .spacer,
-.prose ul + .spacer {
+.mail-editor .prose ol + .spacer,
+.mail-editor .prose ul + .spacer {
   margin-top: -20px;
 }
 
-.prose img + .spacer {
+.mail-editor .prose img + .spacer {
   margin-top: -32px;
 }
 
-.prose .node-button + .spacer,
-.prose footer + .spacer {
+.mail-editor .prose .node-button + .spacer,
+.mail-editor .prose footer + .spacer {
   margin-top: -20px;
 }
 
-.prose .node-button {
+.mail-editor .prose .node-button {
   margin-top: 0;
   margin-bottom: 20px;
 }

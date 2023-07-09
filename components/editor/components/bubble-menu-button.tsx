@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { BaseButton } from "@/components/editor/components/base-button";
 import { BubbleMenuItem } from "./editor-bubble-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/components/editor/utils/tailwind";
 
 export function BubbleMenuButton(item: BubbleMenuItem) {
   return (
-    <Button
+    <BaseButton
       variant="ghost"
       size="sm"
       onClick={item.command}
@@ -16,6 +16,6 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       ) : (
         <span className="text-sm font-medium text-slate-600">{item.name}</span>
       )}
-    </Button>
+    </BaseButton>
   );
 }

@@ -11,7 +11,6 @@ import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import Image from "@tiptap/extension-image";
@@ -21,12 +20,13 @@ import { History } from "@tiptap/extension-history";
 import Placeholder from "@tiptap/extension-placeholder";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import HardBreak from "@tiptap/extension-hard-break";
-import { TiptapLogoExtension } from "./logo";
+import { TiptapLogoExtension } from "../nodes/logo";
 import { Spacer } from "../nodes/spacer";
 import { Footer } from "../nodes/footer";
 import { Variable } from "../nodes/variable";
 import { SlashCommand } from "./slash-command";
 import TiptapLink from "@tiptap/extension-link";
+import { HorizontalRule } from "@/components/editor/extensions/horizontal-rule";
 
 export const TiptapExtensions = [
   Document,
@@ -40,45 +40,25 @@ export const TiptapExtensions = [
   OrderedList,
   ListItem,
   Image,
-  TiptapLogoExtension,
   Dropcursor.configure({
     color: "#555",
     width: 3,
   }),
+  TiptapLogoExtension,
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
   TextStyle.configure(),
   TextAlign.configure({ types: [Paragraph.name, Heading.name] }),
   Heading.extend({
     levels: [1, 2, 3],
   }),
-  // patch to fix horizontal rule bug: https://github.com/ueberdosis/tiptap/pull/3859#issuecomment-1536799740
-  HorizontalRule.extend({
-    addInputRules() {
-      return [
-        new InputRule({
-          find: /^(?:---|—-|___\s|\*\*\*\s)$/,
-          handler: ({ state, range }) => {
-            const attributes = {};
-
-            const { tr } = state;
-            const start = range.from;
-            let end = range.to;
-
-            tr.insert(start - 1, this.type.create(attributes)).delete(
-              tr.mapping.map(start),
-              tr.mapping.map(end),
-            );
-          },
-        }),
-      ];
-    },
-  }),
+  HorizontalRule,
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name === "heading") {
         return `Heading ${node.attrs.level}`;
       }
-      return "Write something...";
+
+      return "Write something ..";
     },
     includeChildren: true,
   }),

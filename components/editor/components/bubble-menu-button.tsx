@@ -9,18 +9,13 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       size="sm"
       onClick={item.command}
       data-state={item.isActive()}
-      className={cn('px-2.5')}
+      className={cn("px-2.5")}
     >
-      {
-        item.icon ?
-          <item.icon
-            className={cn("h-3.5 w-3.5")}
-          /> : (
-            <span className="text-sm font-medium text-slate-600">
-              {item.name}
-            </span>
-          )
-      }
+      {item.icon ? (
+        <item.icon className={cn("h-3.5 w-3.5")} />
+      ) : (
+        <span className="text-sm font-medium text-slate-600">{item.name}</span>
+      )}
     </Button>
-  )
+  );
 }

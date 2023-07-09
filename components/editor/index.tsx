@@ -11,7 +11,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
 
 import "./editor.css";
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 type EditorProps = {
   editorClassName?: string;

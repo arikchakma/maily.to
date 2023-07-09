@@ -1,10 +1,6 @@
 import { BubbleMenu, BubbleMenuProps, isTextSelection } from "@tiptap/react";
 import { FC } from "react";
-import {
-  AlignLeftIcon,
-  AlignCenterIcon,
-  AlignRightIcon,
-} from "lucide-react";
+import { AlignLeftIcon, AlignCenterIcon, AlignRightIcon } from "lucide-react";
 import { BubbleMenuItem, EditorBubbleMenuProps } from "./editor-bubble-menu";
 import { BubbleMenuButton } from "./bubble-menu-button";
 
@@ -12,71 +8,95 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
       name: "left",
-      isActive: () => props.editor.isActive('logo', { alignment: 'left' }),
+      isActive: () => props.editor.isActive("logo", { alignment: "left" }),
       command: () => {
-        if (props.editor.isActive('logo', { alignment: 'left' })) {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'left' }).run()
+        if (props.editor.isActive("logo", { alignment: "left" })) {
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "left" })
+            .run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'left' }).run()
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "left" })
+            .run();
         }
       },
       icon: AlignLeftIcon,
     },
     {
       name: "center",
-      isActive: () => props.editor.isActive('logo', { alignment: 'center' }),
+      isActive: () => props.editor.isActive("logo", { alignment: "center" }),
       command: () => {
-        console.log(props.editor.isActive('logo', { alignment: 'center' }))
-        if (props.editor.isActive('logo', { alignment: 'center' })) {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'left' }).run()
+        console.log(props.editor.isActive("logo", { alignment: "center" }));
+        if (props.editor.isActive("logo", { alignment: "center" })) {
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "left" })
+            .run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'center' }).run()
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "center" })
+            .run();
         }
       },
       icon: AlignCenterIcon,
     },
     {
       name: "right",
-      isActive: () => props.editor.isActive('logo', { alignment: 'right' }),
+      isActive: () => props.editor.isActive("logo", { alignment: "right" }),
       command: () => {
-        if (props.editor.isActive('logo', { alignment: 'right' })) {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'left' }).run()
+        if (props.editor.isActive("logo", { alignment: "right" })) {
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "left" })
+            .run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ alignment: 'right' }).run()
+          props.editor
+            .chain()
+            .focus()
+            .setLogoAttributes({ alignment: "right" })
+            .run();
         }
       },
       icon: AlignRightIcon,
     },
     {
       name: "sm",
-      isActive: () => props.editor.isActive('logo', { size: 'sm' }),
+      isActive: () => props.editor.isActive("logo", { size: "sm" }),
       command: () => {
-        if (props.editor.isActive('logo', { size: 'sm' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run()
+        if (props.editor.isActive("logo", { size: "sm" })) {
+          props.editor.chain().focus().setLogoAttributes({ size: "sm" }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run()
+          props.editor.chain().focus().setLogoAttributes({ size: "sm" }).run();
         }
       },
     },
     {
       name: "md",
-      isActive: () => props.editor.isActive('logo', { size: 'md' }),
+      isActive: () => props.editor.isActive("logo", { size: "md" }),
       command: () => {
-        if (props.editor.isActive('logo', { size: 'md' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run()
+        if (props.editor.isActive("logo", { size: "md" })) {
+          props.editor.chain().focus().setLogoAttributes({ size: "sm" }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'md' }).run()
+          props.editor.chain().focus().setLogoAttributes({ size: "md" }).run();
         }
       },
     },
     {
       name: "lg",
-      isActive: () => props.editor.isActive('logo', { size: 'lg' }),
+      isActive: () => props.editor.isActive("logo", { size: "lg" }),
       command: () => {
-        if (props.editor.isActive('logo', { size: 'lg' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run()
+        if (props.editor.isActive("logo", { size: "lg" })) {
+          props.editor.chain().focus().setLogoAttributes({ size: "sm" }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'lg' }).run()
+          props.editor.chain().focus().setLogoAttributes({ size: "lg" }).run();
         }
       },
     },
@@ -86,10 +106,10 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     ...props,
     shouldShow: ({ editor, view, state, oldState, from, to }) => {
       if (!editor.isActive("logo")) {
-        return false
+        return false;
       }
 
-      return true
+      return true;
     },
     tippyOptions: {
       moveTransition: "transform 0.15s ease-out",
@@ -99,7 +119,7 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className='flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md'
+      className="flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md"
     >
       {items.map((item, index) => (
         <BubbleMenuButton key={index} {...item} />

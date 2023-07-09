@@ -1,22 +1,24 @@
-.prose p:where([class~=text-sm]) {
+.prose p:where([class~="text-sm"]) {
   font-size: 16px;
 }
 
-.prose h1,.prose h2,.prose h3 {
+.prose h1,
+.prose h2,
+.prose h3 {
   margin-top: 0;
-  margin-bottom: 12px
+  margin-bottom: 12px;
 }
 
 .prose h1 {
-  font-size: 36px
+  font-size: 36px;
 }
 
 .prose h2 {
-  font-size: 30px
+  font-size: 30px;
 }
 
 .prose h3 {
-  font-size: 24px
+  font-size: 24px;
 }
 
 .prose p {
@@ -24,33 +26,39 @@
   margin-bottom: 20px;
 }
 
-.prose h1+p,.prose h2+p,.prose h3+p,.prose hr+p {
-  margin-top: 0
+.prose h1 + p,
+.prose h2 + p,
+.prose h3 + p,
+.prose hr + p {
+  margin-top: 0;
 }
 
-.prose ol,.prose ul {
+.prose ol,
+.prose ul {
   margin-top: 0;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .prose li:not(:last-child) {
-  margin-bottom: 8px
+  margin-bottom: 8px;
 }
 
-.prose li>p {
-  margin: 0
+.prose li > p {
+  margin: 0;
 }
 
 .prose img {
   margin-top: 0;
-  margin-bottom: 32px
+  margin-bottom: 32px;
 }
 
 .prose blockquote {
-  margin-block:26px}
+  margin-block: 26px;
+}
 
 .prose hr {
-  margin-block:32px}
+  margin-block: 32px;
+}
 
 .prose .footer {
   display: block;
@@ -59,33 +67,37 @@
   color: rgb(100, 116, 139);
 }
 
-.prose .spacer+* {
-  margin-top: 0
+.prose .spacer + * {
+  margin-top: 0;
 }
 
-.prose p+.spacer {
-  margin-top: -20px
+.prose p + .spacer {
+  margin-top: -20px;
 }
 
-.prose h1+.spacer,.prose h2+.spacer,.prose h3+.spacer {
-  margin-top: -12px
+.prose h1 + .spacer,
+.prose h2 + .spacer,
+.prose h3 + .spacer {
+  margin-top: -12px;
 }
 
-.prose ol+.spacer,.prose ul+.spacer {
-  margin-top: -20px
+.prose ol + .spacer,
+.prose ul + .spacer {
+  margin-top: -20px;
 }
 
-.prose img+.spacer {
-  margin-top: -32px
+.prose img + .spacer {
+  margin-top: -32px;
 }
 
-.prose .node-button+.spacer,.prose footer+.spacer {
-  margin-top: -20px
+.prose .node-button + .spacer,
+.prose footer + .spacer {
+  margin-top: -20px;
 }
 
 .prose .node-button {
   margin-top: 0;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .ProseMirror {

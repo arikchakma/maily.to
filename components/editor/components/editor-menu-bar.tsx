@@ -1,4 +1,4 @@
-import { Editor as EditorType } from '@tiptap/core';
+import { Editor as EditorType } from "@tiptap/core";
 import {
   BoldIcon,
   ItalicIcon,
@@ -11,74 +11,74 @@ import {
   AlignRight,
   LinkIcon,
   MailIcon,
-} from 'lucide-react';
-import { BubbleMenuItem } from './editor-bubble-menu';
-import { BubbleMenuButton } from './bubble-menu-button';
-import { useMemo } from 'react';
-import { tiptapToHtml } from '@/lib/email';
-import copy from 'copy-to-clipboard';
-import { useToast } from '@/components/ui/use-toast';
+} from "lucide-react";
+import { BubbleMenuItem } from "./editor-bubble-menu";
+import { BubbleMenuButton } from "./bubble-menu-button";
+import { useMemo } from "react";
+import { tiptapToHtml } from "@/lib/email";
+import copy from "copy-to-clipboard";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EditorMenuItem extends BubbleMenuItem {
-  group: 'alignment' | 'image' | 'mark' | 'custom' | 'email';
+  group: "alignment" | "image" | "mark" | "custom" | "email";
 }
 export const EditorMenuBar = ({ editor }: { editor: EditorType }) => {
   const { toast } = useToast();
   const items: EditorMenuItem[] = useMemo(
     () => [
       {
-        name: 'bold',
+        name: "bold",
         command: () => editor.chain().focus().toggleBold().run(),
-        isActive: () => editor.isActive('bold'),
-        group: 'mark',
+        isActive: () => editor.isActive("bold"),
+        group: "mark",
         icon: BoldIcon,
       },
       {
-        name: 'italic',
+        name: "italic",
         command: () => editor.chain().focus().toggleItalic().run(),
-        isActive: () => editor.isActive('italic'),
-        group: 'mark',
+        isActive: () => editor.isActive("italic"),
+        group: "mark",
         icon: ItalicIcon,
       },
       {
-        name: 'underline',
+        name: "underline",
         command: () => editor.chain().focus().toggleUnderline().run(),
-        isActive: () => editor.isActive('underline'),
-        group: 'mark',
+        isActive: () => editor.isActive("underline"),
+        group: "mark",
         icon: UnderlineIcon,
       },
       {
-        name: 'strike',
+        name: "strike",
         command: () => editor.chain().focus().toggleStrike().run(),
-        isActive: () => editor.isActive('strike'),
-        group: 'mark',
+        isActive: () => editor.isActive("strike"),
+        group: "mark",
         icon: StrikethroughIcon,
       },
       {
-        name: 'delete-line',
+        name: "delete-line",
         command: () =>
           editor.chain().focus().selectParentNode().deleteSelection().run(),
         isActive: () => false,
-        group: 'mark',
+        group: "mark",
         icon: EraserIcon,
       },
       {
-        name: 'divider',
+        name: "divider",
         command: () => editor.chain().focus().setHorizontalRule().run(),
-        isActive: () => editor.isActive('horizontalRule'),
-        group: 'custom',
+        isActive: () => editor.isActive("horizontalRule"),
+        group: "custom",
         icon: SeparatorHorizontal,
       },
       {
-        name: 'link',
+        name: "link",
         command: () => {
-          const previousUrl = editor.getAttributes('link').href;
-          const url = window.prompt('URL', previousUrl);
+          const previousUrl = editor.getAttributes("link").href;
+          const url = window.prompt("URL", previousUrl);
           // If the user cancels the prompt, we don't want to toggle the link
           if (url === null) return;
           // If the user deletes the URL entirely, we'll unlink the selected text
-          if (url === '') {
-            editor.chain().focus().extendMarkRange('link').unsetLink().run();
+          if (url === "") {
+            editor.chain().focus().extendMarkRange("link").unsetLink().run();
             return;
           }
 
@@ -86,52 +86,52 @@ export const EditorMenuBar = ({ editor }: { editor: EditorType }) => {
           editor
             .chain()
             .focus()
-            .extendMarkRange('link')
+            .extendMarkRange("link")
             .setLink({ href: url })
             .run();
         },
-        isActive: () => editor.isActive('link'),
-        group: 'custom',
+        isActive: () => editor.isActive("link"),
+        group: "custom",
         icon: LinkIcon,
       },
       {
-        name: 'left',
-        command: () => editor.chain().focus().setTextAlign('left').run(),
-        isActive: () => editor.isActive({ textAlign: 'left' }),
-        group: 'alignment',
+        name: "left",
+        command: () => editor.chain().focus().setTextAlign("left").run(),
+        isActive: () => editor.isActive({ textAlign: "left" }),
+        group: "alignment",
         icon: AlignLeft,
       },
       {
-        name: 'center',
-        command: () => editor.chain().focus().setTextAlign('center').run(),
-        isActive: () => editor.isActive({ textAlign: 'center' }),
-        group: 'alignment',
+        name: "center",
+        command: () => editor.chain().focus().setTextAlign("center").run(),
+        isActive: () => editor.isActive({ textAlign: "center" }),
+        group: "alignment",
         icon: AlignCenter,
       },
       {
-        name: 'right',
-        command: () => editor.chain().focus().setTextAlign('right').run(),
-        isActive: () => editor.isActive({ textAlign: 'right' }),
-        group: 'alignment',
+        name: "right",
+        command: () => editor.chain().focus().setTextAlign("right").run(),
+        isActive: () => editor.isActive({ textAlign: "right" }),
+        group: "alignment",
         icon: AlignRight,
       },
       {
-        name: 'email',
+        name: "email",
         command: () => {
           const json = editor.getJSON();
           const html = tiptapToHtml(json.content!);
           copy(html);
           toast({
-            title: 'Copied to clipboard',
-            description: 'The HTML code has been copied!',
+            title: "Copied to clipboard",
+            description: "The HTML code has been copied!",
           });
         },
         isActive: () => false,
-        group: 'email',
+        group: "email",
         icon: MailIcon,
       },
     ],
-    [editor, toast]
+    [editor, toast],
   );
 
   const groups = useMemo(
@@ -142,7 +142,7 @@ export const EditorMenuBar = ({ editor }: { editor: EditorType }) => {
         }
         return acc;
       }, [] as string[]),
-    [items]
+    [items],
   );
 
   if (!editor) {

@@ -236,7 +236,6 @@ function styleMapping(
 			].join('');
 
 		case 'logo':
-			console.log(attrs);
 			style = [
 				'display: block;',
 				'outline: none;',

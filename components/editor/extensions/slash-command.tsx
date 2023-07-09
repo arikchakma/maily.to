@@ -141,6 +141,21 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
+      title: 'Logo',
+      description: 'Add your brand logo',
+      searchTerms: ['image', 'logo'],
+      icon: <ImageIcon className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        const logoUrl = prompt('Logo URL: ') || '';
+
+        if (!logoUrl) {
+          return;
+        }
+        editor.chain().focus().deleteRange(range).run()
+        editor.chain().focus().setLogoImage({ src: logoUrl }).run();
+      },
+    },
+    {
       title: 'Image',
       description: 'Full width image',
       searchTerms: ['image'],

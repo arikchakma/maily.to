@@ -72,15 +72,11 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
   },
   addCommands() {
     return {
-      setLogoImage: (options) => ({ tr, dispatch }) => {
-        const { selection } = tr
-        const node = this.type.create(options)
-
-        if (dispatch) {
-          tr.replaceRangeWith(selection.from, selection.to, node)
-        }
-
-        return true
+      setLogoImage: (options) => ({ commands }) => {
+        return commands.insertContent({
+          type: this.name,
+          attrs: options,
+        })
       },
       setLogoAttributes: (attributes) => ({ commands }) => {
         return commands.updateAttributes("logo", attributes)

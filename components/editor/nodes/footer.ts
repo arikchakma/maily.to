@@ -51,7 +51,7 @@ export const Footer = Node.create<FooterOptions>({
     return ['small', mergeAttributes(
       this.options.HTMLAttributes,
       HTMLAttributes, {
-      class: "text-slate-500 footer",
+      class: "footer",
     }), 0]
   }
 })

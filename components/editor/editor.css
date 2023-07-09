@@ -1,5 +1,108 @@
 .mail-editor {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
+
+.mail-editor p:where([class~=text-sm]) {
+  font-size: 16px;
+}
+
+.mail-editor span:where([data-type="variable"]) {
+  border-width: 1px;
+  border-radius: 6px;
+  border-color: rgb(147,197,253);
+  background-color: rgb(241,245,249);
+  padding: 4px 8px;
+}
+
+.mail-editor h1,.mail-editor h2,.mail-editor h3 {
+  margin-top: 0;
+  margin-bottom: 12px
+}
+
+.mail-editor h1 {
+  font-size: 36px
+}
+
+.mail-editor h2 {
+  font-size: 30px
+}
+
+.mail-editor h3 {
+  font-size: 24px
+}
+
+.mail-editor p {
+  font-size: 15px;
+  line-height: 24px;
+  margin-bottom: 20px;
+  color: rgb(55, 65, 81);
+}
+
+.mail-editor h1+p,.mail-editor h2+p,.mail-editor h3+p,.mail-editor hr+p {
+  margin-top: 0
+}
+
+.mail-editor ol,.mail-editor ul {
+  margin-top: 0;
+  margin-bottom: 20px
+}
+
+.mail-editor li:not(:last-child) {
+  margin-bottom: 8px
+}
+
+.mail-editor li>p {
+  margin: 0
+}
+
+.mail-editor img {
+  margin-top: 0;
+  margin-bottom: 32px
+}
+
+.mail-editor blockquote {
+  margin-block:26px}
+
+.mail-editor hr {
+  margin-block:32px}
+
+.mail-editor .footer {
+  display: block;
+  font-size: 13px;
+  line-height: 24px;
+  margin-bottom: 20px;
+  color: rgb(100, 116, 139);
+}
+
+.mail-editor .spacer+* {
+  margin-top: 0
+}
+
+.mail-editor p+.spacer {
+  margin-top: -20px
+}
+
+.mail-editor h1+.spacer,.mail-editor h2+.spacer,.mail-editor h3+.spacer {
+  margin-top: -12px
+}
+
+.mail-editor ol+.spacer,.mail-editor ul+.spacer {
+  margin-top: -20px
+}
+
+.mail-editor img+.spacer {
+  margin-top: -32px
+}
+
+.mail-editor .node-button+.spacer,.mail-editor footer+.spacer {
+  margin-top: -20px
+}
+
+.mail-editor .node-button {
+  margin-top: 0;
+  margin-bottom: 20px
 }
 
 .ProseMirror {

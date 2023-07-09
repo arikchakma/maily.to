@@ -74,54 +74,60 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
     return {
       setLogoImage:
         (options) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          });
-        },
+          ({ commands }) => {
+            return commands.insertContent({
+              type: this.name,
+              attrs: options,
+            });
+          },
       setLogoAttributes:
         (attributes) =>
-        ({ commands }) => {
-          return commands.updateAttributes("logo", attributes);
-        },
+          ({ commands }) => {
+            return commands.updateAttributes("logo", attributes);
+          },
     };
   },
   renderHTML({ HTMLAttributes, node }) {
     const { size, alignment } = node.attrs as TiptapLogoAttributes;
+    const style = [
+      "position:relative",
+      "margin-top:0",
+    ]
     switch (size) {
       case "sm":
-        HTMLAttributes.class = "h-10";
+        style.push("height:40px")
         break;
       case "md":
-        HTMLAttributes.class = "h-12";
+        style.push("height:48px")
         break;
       case "lg":
-        HTMLAttributes.class = "h-16";
+        style.push("height:64px")
         break;
       default:
-        HTMLAttributes.class = "h-10";
+        style.push("height:40px")
         break;
     }
 
     switch (alignment) {
       case "left":
-        HTMLAttributes.style =
-          "position:relative; margin-top:0; margin-right:auto; margin-left:0;";
+        style.push("margin-right:auto")
+        style.push("margin-left:0")
         break;
       case "center":
-        HTMLAttributes.style =
-          "position:relative; margin-top:0; margin-right:auto; margin-left:auto;";
+        style.push("margin-right:auto")
+        style.push("margin-left:auto")
         break;
       case "right":
-        HTMLAttributes.style =
-          "position:relative; margin-top:0; margin-right:0; margin-left:auto;";
+        style.push("margin-right:0")
+        style.push("margin-left:auto")
         break;
       default:
-        HTMLAttributes.style =
-          "position:relative; margin-top:0; margin-right:auto; margin-left:0;";
+        style.push("margin-right:auto")
+        style.push("margin-left:0")
         break;
     }
+
+    HTMLAttributes.style = style.join(";");
     return [
       "img",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),

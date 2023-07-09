@@ -50,7 +50,7 @@ export function Editor(props: EditorProps) {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: `mail-editor ${props.editorClassName}`,
+        class: `prose ${props.editorClassName}`,
         spellCheck: "false",
       },
       handleDOMEvents: {

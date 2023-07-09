@@ -137,10 +137,13 @@ export const Variable = Mention.extend({
         tag: 'span[data-type="variable"]',
       },
     ]
-  }
+  },
 }).configure({
   suggestion,
   renderLabel({ node }) {
     return `${node.attrs.label ?? node.attrs.id}`
   },
+  HTMLAttributes: {
+    class: 'py-1 px-2 bg-slate-100 border border-blue-300 rounded-md'
+  }
 })

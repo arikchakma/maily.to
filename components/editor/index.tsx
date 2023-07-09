@@ -112,7 +112,7 @@ export function Editor(props: EditorProps) {
       getEmailHtml: () => tiptapToHtml(editorJson.content || []),
       getEditor: () => editor,
     });
-  }, [onMount, editor]);
+  }, [editor]);
 
   if (!editor) {
     return null;

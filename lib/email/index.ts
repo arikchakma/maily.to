@@ -184,8 +184,12 @@ function styleMapping(
 				...attributeStyles(attrs, parent, nextNode, prevNode),
 			];
 			if (parent?.type === 'listItem') {
-				style = style.filter((s) => !s.startsWith('margin'));
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
 				style.push('margin-bottom: 0;');
+			}
+			if (nextNode?.type === 'spacer') {
+				style = style.filter((s) => !s.startsWith('margin-bottom'));
+				style.push('margin-bottom: 0px;');
 			}
 			return style.join('');
 		case 'hr':

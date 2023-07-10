@@ -61,9 +61,8 @@ function markMapping(mark: TiptapMark, text: string): string {
     case "strike":
       return `<s style="text-decoration: line-through;">${text}</s>`;
     case "link":
-      return `<a href="${
-        mark?.attrs?.href || ""
-      }" target="_blank" style="${styleMapping("a", mark?.attrs)}">${text}</a>`;
+      return `<a href="${mark?.attrs?.href || ""
+        }" target="_blank" style="${styleMapping("a", mark?.attrs)}">${text}</a>`;
 
     default:
       console.log("Unknown mark type", mark.type);
@@ -183,13 +182,9 @@ function styleMapping(
         "-moz-osx-font-smoothing: grayscale;",
         ...attributeStyles(attrs, parent, nextNode, prevNode),
       ];
-      if (parent?.type === "listItem") {
+      if (parent?.type === "listItem" || nextNode?.type === "spacer") {
         style = style.filter((s) => !s.startsWith("margin-bottom"));
         style.push("margin-bottom: 0;");
-      }
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
       }
       return style.join("");
     case "hr":
@@ -322,11 +317,15 @@ function nodeMapping(
 
     case "listItem":
       style = styleMapping("li", attrs, parent, nextNode, prevNode);
-      return `<li style="${style}">${getMappedContent(node)}</li>`;
+      return `<li style="${style}">${getMappedContent(node, node)}</li>`;
 
     case "bulletList":
       style = styleMapping("ul", attrs, parent, nextNode, prevNode);
       return nodeTable(`<ul style="${style}">${getMappedContent(node)}</ul>`);
+
+    case "orderedList":
+      style = styleMapping("ol", attrs, parent, nextNode, prevNode);
+      return nodeTable(`<ol style="${style}">${getMappedContent(node)}</ol>`);
 
     case "spacer":
       return nodeTable("", attrs, parent);
@@ -336,15 +335,13 @@ function nodeMapping(
 
     case "logo":
       style = styleMapping("logo", attrs, parent, nextNode, prevNode);
-      return `<img alt="${
-        attrs?.alt || ""
-      }" src="${attrs?.src}" style="${style}">`;
+      return `<img alt="${attrs?.alt || ""
+        }" src="${attrs?.src}" style="${style}">`;
 
     case "image":
       style = styleMapping("img", attrs, parent, nextNode, prevNode);
-      return `<img alt="${
-        attrs?.alt || attrs?.title || ""
-      }" src="${attrs?.src}" style="${style}">`;
+      return `<img alt="${attrs?.alt || attrs?.title || ""
+        }" src="${attrs?.src}" style="${style}">`;
 
     case "footer":
       style = styleMapping("footer", attrs, parent, nextNode, prevNode);

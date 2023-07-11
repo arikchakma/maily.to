@@ -25,37 +25,15 @@ declare module "@tiptap/core" {
 
 export const Spacer = Node.create<SpacerOptions>({
   name: "spacer",
+  priority: 1000,
 
-  addOptions() {
-    return {
-      height: "sm",
-      HTMLAttributes: {},
-    };
-  },
   group: "block",
   draggable: true,
   addAttributes() {
     return {
-      "mailbox-component": {
-        default: "spacer",
-        renderHTML: (attributes) => {
-          return {
-            "data-mailbox-component": attributes["mailbox-component"],
-          };
-        },
-        parseHTML: (element) => {
-          return {
-            "data-mailbox-component": element.dataset.mailboxComponent,
-          };
-        },
-      },
       height: {
-        default: "sm",
-        parseHTML: (element) => {
-          return {
-            height: element.dataset.height,
-          };
-        },
+        default: null,
+        parseHTML: (element) => element.getAttribute("data-height"),
         renderHTML: (attributes) => {
           return {
             "data-height": attributes.height,
@@ -69,29 +47,29 @@ export const Spacer = Node.create<SpacerOptions>({
     return {
       setSpacer:
         (options) =>
-        ({ chain, commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: {
-              height: options.height,
-            },
-          });
-        },
+          ({ chain, commands }) => {
+            return commands.insertContent({
+              type: this.name,
+              attrs: {
+                height: options.height,
+              },
+            });
+          },
 
       setSpacerSize:
         (height) =>
-        ({ commands }) => {
-          if (!["sm", "md", "lg", "xl"].includes(height)) {
-            throw new Error("Invalid spacer height");
-          }
-          return commands.updateAttributes("spacer", { height });
-        },
+          ({ commands }) => {
+            if (!["sm", "md", "lg", "xl"].includes(height)) {
+              throw new Error("Invalid spacer height");
+            }
+            return commands.updateAttributes("spacer", { height });
+          },
 
       unsetSpacer:
         () =>
-        ({ commands }) => {
-          return commands.deleteNode("spacer");
-        },
+          ({ commands }) => {
+            return commands.deleteNode("spacer");
+          },
     };
   },
   renderHTML({ HTMLAttributes, node }) {
@@ -115,13 +93,15 @@ export const Spacer = Node.create<SpacerOptions>({
     }
     return [
       "div",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      mergeAttributes({
+        "data-mailbox-component": this.name,
+      }, this.options.HTMLAttributes, HTMLAttributes, {
         class: "spacer",
         contenteditable: false,
       }),
     ];
   },
   parseHTML() {
-    return [{ tag: 'img[data-mailbox-component="spacer"]' }];
+    return [{ tag: `div[data-mailbox-component="${this.name}"]` }];
   },
 });

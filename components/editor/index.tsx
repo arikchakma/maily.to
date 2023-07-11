@@ -112,6 +112,7 @@ export function Editor(props: EditorProps) {
       getEmailHtml: () => tiptapToHtml(editorJson.content || []),
       getEditor: () => editor,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
 
   if (!editor) {

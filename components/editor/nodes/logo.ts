@@ -26,6 +26,7 @@ export interface TiptapLogoAttributes {
 
 export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
   name: "logo",
+  priority: 1000,
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -74,17 +75,17 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
     return {
       setLogoImage:
         (options) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          });
-        },
+          ({ commands }) => {
+            return commands.insertContent({
+              type: this.name,
+              attrs: options,
+            });
+          },
       setLogoAttributes:
         (attributes) =>
-        ({ commands }) => {
-          return commands.updateAttributes("logo", attributes);
-        },
+          ({ commands }) => {
+            return commands.updateAttributes("logo", attributes);
+          },
     };
   },
   renderHTML({ HTMLAttributes, node }) {
@@ -133,7 +134,7 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
   parseHTML() {
     return [
       {
-        tag: 'img[data-mailbox-component="logo"]',
+        tag: `img[data-mailbox-component="${this.name}"]`
       },
     ];
   },

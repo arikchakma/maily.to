@@ -25,11 +25,7 @@ export const Footer = Node.create<FooterOptions>({
             "data-mailbox-component": attributes["mailbox-component"],
           };
         },
-        parseHTML: (element) => {
-          return {
-            "data-mailbox-component": element.dataset.mailboxComponent,
-          };
-        },
+        parseHTML: (element) => element.getAttribute("data-mailbox-component"),
       },
     };
   },
@@ -38,9 +34,9 @@ export const Footer = Node.create<FooterOptions>({
     return {
       setFooter:
         () =>
-        ({ commands }) => {
-          return commands.setNode(this.name);
-        },
+          ({ commands }) => {
+            return commands.setNode(this.name);
+          },
     };
   },
 

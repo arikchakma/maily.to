@@ -37,19 +37,11 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
             "data-mailbox-component": attributes["mailbox-component"],
           };
         },
-        parseHTML: (element) => {
-          return {
-            "data-mailbox-component": element.dataset.mailboxComponent,
-          };
-        },
+        parseHTML: (element) => element.getAttribute("data-mailbox-component"),
       },
       size: {
         default: "sm",
-        parseHTML: (element) => {
-          return {
-            size: element.dataset.size,
-          };
-        },
+        parseHTML: (element) => element.getAttribute("data-size"),
         renderHTML: (attributes) => {
           return {
             "data-size": attributes.size,
@@ -58,11 +50,7 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
       },
       alignment: {
         default: "left",
-        parseHTML: (element) => {
-          return {
-            alignment: element.dataset.alignment,
-          };
-        },
+        parseHTML: (element) => element.getAttribute("data-alignment"),
         renderHTML: (attributes) => {
           return {
             "data-alignment": attributes.alignment,

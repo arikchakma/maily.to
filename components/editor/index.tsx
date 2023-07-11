@@ -119,6 +119,9 @@ export function Editor(props: EditorProps) {
     return null;
   }
 
+  console.log(editor.getJSON())
+  console.log(editor.getHTML())
+
   return (
     <div
       className={`mail-editor antialiased ${inter.className} ${wrapClassName}`}

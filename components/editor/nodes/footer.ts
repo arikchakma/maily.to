@@ -1,10 +1,10 @@
-import { Node, mergeAttributes } from "@tiptap/core";
+import { mergeAttributes, Node } from '@tiptap/core';
 
 export interface FooterOptions {
   HTMLAttributes: Record<string, any>;
 }
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     footer: {
       setFooter: () => ReturnType;
@@ -13,19 +13,19 @@ declare module "@tiptap/core" {
 }
 
 export const Footer = Node.create<FooterOptions>({
-  name: "footer",
-  group: "block",
-  content: "text*",
+  name: 'footer',
+  group: 'block',
+  content: 'text*',
   addAttributes() {
     return {
-      "mailbox-component": {
-        default: "footer",
+      'mailbox-component': {
+        default: 'footer',
         renderHTML: (attributes) => {
           return {
-            "data-mailbox-component": attributes["mailbox-component"],
+            'data-mailbox-component': attributes['mailbox-component'],
           };
         },
-        parseHTML: (element) => element.getAttribute("data-mailbox-component"),
+        parseHTML: (element) => element.getAttribute('data-mailbox-component'),
       },
     };
   },
@@ -34,9 +34,9 @@ export const Footer = Node.create<FooterOptions>({
     return {
       setFooter:
         () =>
-          ({ commands }) => {
-            return commands.setNode(this.name);
-          },
+        ({ commands }) => {
+          return commands.setNode(this.name);
+        },
     };
   },
 
@@ -46,9 +46,9 @@ export const Footer = Node.create<FooterOptions>({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      "small",
+      'small',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        class: "footer",
+        class: 'footer',
       }),
       0,
     ];

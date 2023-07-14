@@ -1,4 +1,4 @@
-.mail-editor .prose p:where([class~="text-sm"]) {
+.mail-editor .prose p:where([class~='text-sm']) {
   font-size: 16px;
 }
 
@@ -105,7 +105,7 @@
   white-space: break-spaces;
   -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
-  font-feature-settings: "liga" 0;
+  font-feature-settings: 'liga' 0;
 }
 
 .ProseMirror:focus {

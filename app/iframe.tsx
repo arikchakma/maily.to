@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 export const IFrame = ({
   innerHTML,
@@ -22,7 +22,7 @@ export const IFrame = ({
     iframeDocument.body.innerHTML = innerHTML;
 
     const unmount = () => {
-      iframeDocument.body.innerHTML = "";
+      iframeDocument.body.innerHTML = '';
     };
 
     return unmount;

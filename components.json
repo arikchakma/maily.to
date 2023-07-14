@@ -9,7 +9,7 @@
     "cssVariables": false
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils"
+    "components": "@/components/editor/components",
+    "utils": "@/components/editor/utils/tailwind"
   }
 }

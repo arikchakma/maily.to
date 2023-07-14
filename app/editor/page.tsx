@@ -1,175 +1,179 @@
-"use client";
+'use client';
 
-import { Editor, MailEditor } from "@/components/editor";
-import { useState } from "react";
-import { IFrame } from "@/app/iframe";
+import { useState } from 'react';
+
+import { Editor, MailEditor } from '@/components/editor';
+import { IFrame } from '@/app/iframe';
 
 export default function Home() {
   const [mailEditor, setMailEditor] = useState<MailEditor>();
-  const [emailHtml, setEmailHtml] = useState("");
+  const [emailHtml, setEmailHtml] = useState('');
   const defaultContent = [
     {
-      type: "logo",
+      type: 'logo',
       attrs: {
-        src: "https://roadmap.sh/images/brand.png",
+        src: 'https://roadmap.sh/images/brand.png',
         alt: null,
         title: null,
-        "mailbox-component": "logo",
-        size: "sm",
-        alignment: "left",
+        'mailbox-component': 'logo',
+        size: 'sm',
+        alignment: 'left',
       },
     },
     {
-      type: "spacer",
+      type: 'spacer',
       attrs: {
-        "mailbox-component": "spacer",
-        height: "xl",
+        'mailbox-component': 'spacer',
+        height: 'xl',
       },
     },
     {
-      type: "paragraph",
+      type: 'paragraph',
       attrs: {
-        textAlign: "left",
+        textAlign: 'left',
       },
       content: [
         {
-          type: "text",
-          text: "Hey ",
+          type: 'text',
+          text: 'Hey ',
         },
         {
-          type: "variable",
+          type: 'variable',
           attrs: {
-            id: "username",
+            id: 'username',
             label: null,
           },
         },
         {
-          type: "text",
-          text: ",",
+          type: 'text',
+          text: ',',
         },
       ],
     },
     {
-      type: "paragraph",
+      type: 'paragraph',
       attrs: {
-        textAlign: "left",
+        textAlign: 'left',
       },
       content: [
         {
-          type: "text",
-          text: "Thank you so much for joining the waitlist. We are excited to welcome you to the [product name] community.",
+          type: 'text',
+          text: 'Thank you so much for joining the waitlist. We are excited to welcome you to the [product name] community.',
         },
       ],
     },
     {
-      type: "paragraph",
+      type: 'paragraph',
       attrs: {
-        textAlign: "left",
+        textAlign: 'left',
       },
       content: [
         {
-          type: "text",
+          type: 'text',
           text: "Stay tuned. And we're just an email away if you have any questions. We'd be more than happy to answer your questions.",
         },
       ],
     },
     {
-      type: "spacer",
+      type: 'spacer',
       attrs: {
-        "mailbox-component": "spacer",
-        height: "xl",
+        'mailbox-component': 'spacer',
+        height: 'xl',
       },
     },
     {
-      type: "paragraph",
+      type: 'paragraph',
       attrs: {
-        textAlign: "left",
+        textAlign: 'left',
       },
       content: [
         {
-          type: "text",
-          text: "Cheers,",
+          type: 'text',
+          text: 'Cheers,',
         },
         {
-          type: "hardBreak",
+          type: 'hardBreak',
         },
         {
-          type: "text",
-          text: "James, ",
+          type: 'text',
+          text: 'James, ',
         },
         {
-          type: "text",
+          type: 'text',
           marks: [
             {
-              type: "italic",
+              type: 'italic',
             },
           ],
-          text: "creator of [product name]",
+          text: 'creator of [product name]',
         },
       ],
     },
     {
-      type: "horizontalRule",
+      type: 'horizontalRule',
     },
     {
-      type: "footer",
+      type: 'footer',
       attrs: {
-        "mailbox-component": "footer",
+        'mailbox-component': 'footer',
       },
       content: [
         {
-          type: "text",
-          text: "You are receiving this email because you joined the waitlist for [product name].",
+          type: 'text',
+          text: 'You are receiving this email because you joined the waitlist for [product name].',
         },
       ],
     },
     {
-      type: "footer",
+      type: 'footer',
       attrs: {
-        "mailbox-component": "footer",
+        'mailbox-component': 'footer',
       },
       content: [
         {
-          type: "text",
-          text: "© 2023 [Product name]",
+          type: 'text',
+          text: '© 2023 [Product name]',
         },
         {
-          type: "hardBreak",
+          type: 'hardBreak',
         },
         {
-          type: "text",
-          text: "[address]",
+          type: 'text',
+          text: '[address]',
         },
       ],
     },
     {
-      type: "footer",
+      type: 'footer',
       attrs: {
-        "mailbox-component": "footer",
+        'mailbox-component': 'footer',
       },
       content: [
         {
-          type: "text",
-          text: "Unsubscribe from emails",
+          type: 'text',
+          text: 'Unsubscribe from emails',
         },
       ],
     },
   ];
 
   return (
-    <div className="max-w-[600px] my-[40px] mx-auto">
+    <div className="mx-auto my-[40px] max-w-[600px]">
       <Editor
         config={{
           hasMenuBar: true,
-          wrapClassName: "editor-wrap",
-          contentClassName: "editor-content",
-          toolbarClassName: "editor-toolbar",
+          wrapClassName: 'editor-wrap',
+          contentClassName: 'editor-content',
+          toolbarClassName: 'editor-toolbar',
           spellCheck: false,
         }}
         onMount={(editor) => {
           setMailEditor(editor);
         }}
-        contentJson={defaultContent}
+        contentHtml={`
+          <p>Hey <a data-mailbox-component="variable" id="username" label="Username">Username</a>,</p>
+          <a data-mailbox-component="button" count="0"></a>
+          `}
       />
     </div>
   );

@@ -1,14 +1,15 @@
-import Mention from "@tiptap/extension-mention";
-import { ReactRenderer } from "@tiptap/react";
-import tippy, { GetReferenceClientRect, Instance } from "tippy.js";
-import { SuggestionOptions } from "@tiptap/suggestion";
-import { BaseButton } from "@/components/editor/components/base-button";
 import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useState,
-} from "react";
+} from 'react';
+import Mention from '@tiptap/extension-mention';
+import { ReactRenderer } from '@tiptap/react';
+import { SuggestionOptions } from '@tiptap/suggestion';
+import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
+
+import { BaseButton } from '@/components/editor/components/base-button';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -25,19 +26,19 @@ export const VariableList = forwardRef((props: any, ref) => {
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-      if (event.key === "ArrowUp") {
+      if (event.key === 'ArrowUp') {
         setSelectedIndex(
-          (selectedIndex + props.items.length - 1) % props.items.length,
+          (selectedIndex + props.items.length - 1) % props.items.length
         );
         return true;
       }
 
-      if (event.key === "ArrowDown") {
+      if (event.key === 'ArrowDown') {
         setSelectedIndex((selectedIndex + 1) % props.items.length);
         return true;
       }
 
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         selectItem(selectedIndex);
         return true;
       }
@@ -71,9 +72,9 @@ export const VariableList = forwardRef((props: any, ref) => {
   );
 });
 
-VariableList.displayName = "VariableList";
+VariableList.displayName = 'VariableList';
 
-export const suggestion: Omit<SuggestionOptions, "editor"> = {
+export const suggestion: Omit<SuggestionOptions, 'editor'> = {
   items: ({ query }) => {
     return [query.toLowerCase()];
   },
@@ -93,14 +94,14 @@ export const suggestion: Omit<SuggestionOptions, "editor"> = {
           return;
         }
 
-        popup = tippy("body", {
+        popup = tippy('body', {
           getReferenceClientRect: props.clientRect as GetReferenceClientRect,
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
+          trigger: 'manual',
+          placement: 'bottom-start',
         });
       },
 
@@ -117,7 +118,7 @@ export const suggestion: Omit<SuggestionOptions, "editor"> = {
       },
 
       onKeyDown(props) {
-        if (props.event.key === "Escape") {
+        if (props.event.key === 'Escape') {
           popup?.[0].hide();
 
           return true;
@@ -135,7 +136,7 @@ export const suggestion: Omit<SuggestionOptions, "editor"> = {
 };
 
 export const Variable = Mention.extend({
-  name: "variable",
+  name: 'variable',
   parseHTML() {
     return [
       {
@@ -149,6 +150,6 @@ export const Variable = Mention.extend({
     return `${node.attrs.label ?? node.attrs.id}`;
   },
   HTMLAttributes: {
-    class: "py-1 px-2 bg-slate-100 border border-blue-300 rounded-md",
+    class: 'py-1 px-2 bg-slate-100 border border-blue-300 rounded-md',
   },
 });

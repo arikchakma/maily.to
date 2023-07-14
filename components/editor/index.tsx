@@ -1,24 +1,28 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
+import { Inter } from 'next/font/google';
 import {
   EditorContent,
   JSONContent,
-  useEditor,
   Editor as TipTapEditor,
-} from "@tiptap/react";
-import { EditorBubbleMenu } from "./components/editor-bubble-menu";
-import { TiptapExtensions } from "./extensions";
-import { LogoBubbleMenu } from "./components/logo-bubble-menu";
-import { EditorMenuBar } from "./components/editor-menu-bar";
-import { SpacerBubbleMenu } from "./components/spacer-bubble-menu";
-import { Toaster } from "@/components/editor/components/toaster";
-import { Inter } from "next/font/google";
+  useEditor,
+} from '@tiptap/react';
 
-import "./editor.css";
-import { tiptapToHtml } from "@/components/editor/utils/email";
+import { Toaster } from '@/components/editor/components/toaster';
+
+import { EditorBubbleMenu } from './components/editor-bubble-menu';
+import { EditorMenuBar } from './components/editor-menu-bar';
+import { LogoBubbleMenu } from './components/logo-bubble-menu';
+import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
+import { TiptapExtensions } from './extensions';
+
+import './editor.css';
+
+import { tiptapToHtml } from '@/components/editor/utils/email';
+
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ['latin'],
 });
 
 export type MailEditor = {
@@ -44,8 +48,8 @@ export function Editor(props: EditorProps) {
   const {
     onMount,
     config: {
-      wrapClassName = "",
-      contentClassName = "",
+      wrapClassName = '',
+      contentClassName = '',
       hasMenuBar = true,
       spellCheck = false,
     } = {},
@@ -56,21 +60,21 @@ export function Editor(props: EditorProps) {
   let formattedContent: any = null;
   if (contentJson) {
     formattedContent = {
-      type: "doc",
+      type: 'doc',
       content: contentJson,
     };
   } else if (contentHtml) {
     formattedContent = contentHtml;
   } else {
     formattedContent = {
-      type: "doc",
+      type: 'doc',
       content: [
         {
-          type: "paragraph",
+          type: 'paragraph',
           content: [
             {
-              type: "text",
-              text: "",
+              type: 'text',
+              text: '',
             },
           ],
         },
@@ -82,13 +86,13 @@ export function Editor(props: EditorProps) {
     editorProps: {
       attributes: {
         class: `prose w-full ${contentClassName}`,
-        spellCheck: spellCheck ? "true" : "false",
+        spellCheck: spellCheck ? 'true' : 'false',
       },
       handleDOMEvents: {
         keydown: (_view, event) => {
           // prevent default event listeners from firing when slash command is active
-          if (["ArrowUp", "ArrowDown", "Enter"].includes(event.key)) {
-            const slashCommand = document.querySelector("#slash-command");
+          if (['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
+            const slashCommand = document.querySelector('#slash-command');
             if (slashCommand) {
               return true;
             }
@@ -119,8 +123,8 @@ export function Editor(props: EditorProps) {
     return null;
   }
 
-  console.log(editor.getJSON())
-  console.log(editor.getHTML())
+  console.log(editor.getJSON());
+  console.log(editor.getHTML());
 
   return (
     <div
@@ -129,7 +133,7 @@ export function Editor(props: EditorProps) {
       <Toaster />
 
       {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
-      <div className="p-4 rounded border bg-white mt-4">
+      <div className="mt-4 rounded border bg-white p-4">
         <EditorBubbleMenu editor={editor} />
         <LogoBubbleMenu editor={editor} />
         <SpacerBubbleMenu editor={editor} />

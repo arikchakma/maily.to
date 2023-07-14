@@ -1,32 +1,34 @@
-import { InputRule } from "@tiptap/core";
+import { InputRule } from '@tiptap/core';
+import Bold from '@tiptap/extension-bold';
+import BulletList from '@tiptap/extension-bullet-list';
+import { Color } from '@tiptap/extension-color';
+import Document from '@tiptap/extension-document';
+import Dropcursor from '@tiptap/extension-dropcursor';
+import Gapcursor from '@tiptap/extension-gapcursor';
+import HardBreak from '@tiptap/extension-hard-break';
+import Heading from '@tiptap/extension-heading';
+import { History } from '@tiptap/extension-history';
+import Image from '@tiptap/extension-image';
+import Italic from '@tiptap/extension-italic';
+import TiptapLink from '@tiptap/extension-link';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Paragraph from '@tiptap/extension-paragraph';
+import Placeholder from '@tiptap/extension-placeholder';
+import Strike from '@tiptap/extension-strike';
+import Text from '@tiptap/extension-text';
+import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
 
-import { Color } from "@tiptap/extension-color";
-import ListItem from "@tiptap/extension-list-item";
-import TextStyle from "@tiptap/extension-text-style";
-import Heading from "@tiptap/extension-heading";
-import TextAlign from "@tiptap/extension-text-align";
-import Paragraph from "@tiptap/extension-paragraph";
-import Document from "@tiptap/extension-document";
-import Text from "@tiptap/extension-text";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Strike from "@tiptap/extension-strike";
-import BulletList from "@tiptap/extension-bullet-list";
-import OrderedList from "@tiptap/extension-ordered-list";
-import Image from "@tiptap/extension-image";
-import Dropcursor from "@tiptap/extension-dropcursor";
-import Underline from "@tiptap/extension-underline";
-import { History } from "@tiptap/extension-history";
-import Placeholder from "@tiptap/extension-placeholder";
-import Gapcursor from "@tiptap/extension-gapcursor";
-import HardBreak from "@tiptap/extension-hard-break";
-import { TiptapLogoExtension } from "../nodes/logo";
-import { Spacer } from "../nodes/spacer";
-import { Footer } from "../nodes/footer";
-import { Variable } from "../nodes/variable";
-import { SlashCommand } from "./slash-command";
-import TiptapLink from "@tiptap/extension-link";
-import { HorizontalRule } from "@/components/editor/extensions/horizontal-rule";
+import { HorizontalRule } from '@/components/editor/extensions/horizontal-rule';
+
+import { Footer } from '../nodes/footer';
+import { TiptapLogoExtension } from '../nodes/logo';
+import { Spacer } from '../nodes/spacer';
+import { Variable } from '../nodes/variable';
+import { ButtonExtension } from './button-extension';
+import { SlashCommand } from './slash-command';
 
 export const TiptapExtensions = [
   Document,
@@ -41,7 +43,7 @@ export const TiptapExtensions = [
   ListItem,
   Image,
   Dropcursor.configure({
-    color: "#555",
+    color: '#555',
     width: 3,
   }),
   TiptapLogoExtension,
@@ -54,11 +56,11 @@ export const TiptapExtensions = [
   HorizontalRule,
   Placeholder.configure({
     placeholder: ({ node }) => {
-      if (node.type.name === "heading") {
+      if (node.type.name === 'heading') {
         return `Heading ${node.attrs.level}`;
       }
 
-      return "Write something ..";
+      return 'Write something ..';
     },
     includeChildren: true,
   }),
@@ -71,9 +73,10 @@ export const TiptapExtensions = [
   SlashCommand,
   TiptapLink.configure({
     HTMLAttributes: {
-      target: "_blank",
-      rel: "noopener noreferrer nofollow",
+      target: '_blank',
+      rel: 'noopener noreferrer nofollow',
     },
     openOnClick: false,
   }),
+  ButtonExtension,
 ];

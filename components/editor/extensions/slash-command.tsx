@@ -1,15 +1,14 @@
 import React, {
-  useState,
-  useEffect,
-  useCallback,
   ReactNode,
-  useRef,
+  useCallback,
+  useEffect,
   useLayoutEffect,
-} from "react";
-import { Editor, Range, Extension } from "@tiptap/core";
-import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
-import { ReactRenderer } from "@tiptap/react";
-import tippy, { GetReferenceClientRect } from "tippy.js";
+  useRef,
+  useState,
+} from 'react';
+import { Editor, Extension, Range } from '@tiptap/core';
+import { ReactRenderer } from '@tiptap/react';
+import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import {
   EraserIcon,
   Heading1,
@@ -20,8 +19,10 @@ import {
   ListOrdered,
   MoveVertical,
   Text,
-} from "lucide-react";
-import { cn } from "@/components/editor/utils/tailwind";
+} from 'lucide-react';
+import tippy, { GetReferenceClientRect } from 'tippy.js';
+
+import { cn } from '@/components/editor/utils/tailwind';
 
 interface CommandItemProps {
   title: string;
@@ -35,11 +36,11 @@ interface CommandProps {
 }
 
 const Command = Extension.create({
-  name: "slash-command",
+  name: 'slash-command',
   addOptions() {
     return {
       suggestion: {
-        char: "/",
+        char: '/',
         command: ({
           editor,
           range,
@@ -67,86 +68,86 @@ const Command = Extension.create({
 const getSuggestionItems = ({ query }: { query: string }) => {
   return [
     {
-      title: "Text",
-      description: "Just start typing with plain text.",
-      searchTerms: ["p", "paragraph"],
+      title: 'Text',
+      description: 'Just start typing with plain text.',
+      searchTerms: ['p', 'paragraph'],
       icon: <Text className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
           .focus()
           .deleteRange(range)
-          .toggleNode("paragraph", "paragraph")
+          .toggleNode('paragraph', 'paragraph')
           .run();
       },
     },
     {
-      title: "Heading 1",
-      description: "Big section heading.",
-      searchTerms: ["title", "big", "large"],
+      title: 'Heading 1',
+      description: 'Big section heading.',
+      searchTerms: ['title', 'big', 'large'],
       icon: <Heading1 className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
           .focus()
           .deleteRange(range)
-          .setNode("heading", { level: 1 })
+          .setNode('heading', { level: 1 })
           .run();
       },
     },
     {
-      title: "Heading 2",
-      description: "Medium section heading.",
-      searchTerms: ["subtitle", "medium"],
+      title: 'Heading 2',
+      description: 'Medium section heading.',
+      searchTerms: ['subtitle', 'medium'],
       icon: <Heading2 className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
           .focus()
           .deleteRange(range)
-          .setNode("heading", { level: 2 })
+          .setNode('heading', { level: 2 })
           .run();
       },
     },
     {
-      title: "Heading 3",
-      description: "Small section heading.",
-      searchTerms: ["subtitle", "small"],
+      title: 'Heading 3',
+      description: 'Small section heading.',
+      searchTerms: ['subtitle', 'small'],
       icon: <Heading3 className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
           .focus()
           .deleteRange(range)
-          .setNode("heading", { level: 3 })
+          .setNode('heading', { level: 3 })
           .run();
       },
     },
     {
-      title: "Bullet List",
-      description: "Create a simple bullet list.",
-      searchTerms: ["unordered", "point"],
+      title: 'Bullet List',
+      description: 'Create a simple bullet list.',
+      searchTerms: ['unordered', 'point'],
       icon: <List className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleBulletList().run();
       },
     },
     {
-      title: "Numbered List",
-      description: "Create a list with numbering.",
-      searchTerms: ["ordered"],
+      title: 'Numbered List',
+      description: 'Create a list with numbering.',
+      searchTerms: ['ordered'],
       icon: <ListOrdered className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
       },
     },
     {
-      title: "Logo",
-      description: "Add your brand logo",
-      searchTerms: ["image", "logo"],
+      title: 'Logo',
+      description: 'Add your brand logo',
+      searchTerms: ['image', 'logo'],
       icon: <ImageIcon className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
-        const logoUrl = prompt("Logo URL: ") || "";
+        const logoUrl = prompt('Logo URL: ') || '';
 
         if (!logoUrl) {
           return;
@@ -156,12 +157,12 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: "Image",
-      description: "Full width image",
-      searchTerms: ["image"],
+      title: 'Image',
+      description: 'Full width image',
+      searchTerms: ['image'],
       icon: <ImageIcon className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
-        const imageUrl = prompt("Image URL: ") || "";
+        const imageUrl = prompt('Image URL: ') || '';
 
         if (!imageUrl) {
           return;
@@ -175,24 +176,24 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: "Spacer",
+      title: 'Spacer',
       description:
-        "Add a spacer to the page. Useful for adding space between sections.",
-      searchTerms: ["space", "gap", "divider"],
+        'Add a spacer to the page. Useful for adding space between sections.',
+      searchTerms: ['space', 'gap', 'divider'],
       icon: <MoveVertical className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
           .focus()
           .deleteRange(range)
-          .setSpacer({ height: "sm" })
+          .setSpacer({ height: 'sm' })
           .run();
       },
     },
     {
-      title: "Clear Line",
-      description: "Clear the current line.",
-      searchTerms: ["clear", "line"],
+      title: 'Clear Line',
+      description: 'Clear the current line.',
+      searchTerms: ['clear', 'line'],
       icon: <EraserIcon className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().selectParentNode().deleteSelection().run();
@@ -200,7 +201,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     // TODO: add support for quote and code blocks
   ].filter((item) => {
-    if (typeof query === "string" && query.length > 0) {
+    if (typeof query === 'string' && query.length > 0) {
       const search = query.toLowerCase();
       return (
         item.title.toLowerCase().includes(search) ||
@@ -247,32 +248,32 @@ const CommandList = ({
         command(item);
       }
     },
-    [command, editor, items],
+    [command, editor, items]
   );
 
   useEffect(() => {
-    const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+    const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
     const onKeyDown = (e: KeyboardEvent) => {
       if (navigationKeys.includes(e.key)) {
         e.preventDefault();
-        if (e.key === "ArrowUp") {
+        if (e.key === 'ArrowUp') {
           setSelectedIndex((selectedIndex + items.length - 1) % items.length);
           return true;
         }
-        if (e.key === "ArrowDown") {
+        if (e.key === 'ArrowDown') {
           setSelectedIndex((selectedIndex + 1) % items.length);
           return true;
         }
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
           selectItem(selectedIndex);
           return true;
         }
         return false;
       }
     };
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener('keydown', onKeyDown);
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener('keydown', onKeyDown);
     };
   }, [items, selectedIndex, setSelectedIndex, selectItem]);
 
@@ -300,14 +301,14 @@ const CommandList = ({
         return (
           <button
             className={cn(
-              "flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900",
-              index === selectedIndex ? "bg-gray-100 text-gray-900" : "",
+              'flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900',
+              index === selectedIndex ? 'bg-gray-100 text-gray-900' : ''
             )}
             key={index}
             onMouseOver={() => setSelectedIndex(index)}
             onClick={() => selectItem(index)}
           >
-            <div className="w-6 h-6 flex items-center justify-center shrink-0">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center">
               {item.icon}
             </div>
             <div>
@@ -321,7 +322,7 @@ const CommandList = ({
   ) : null;
 };
 
-const suggestion: Omit<SuggestionOptions, "editor"> = {
+const suggestion: Omit<SuggestionOptions, 'editor'> = {
   items: getSuggestionItems,
   render: () => {
     let component: ReactRenderer<any> | null = null;
@@ -334,14 +335,14 @@ const suggestion: Omit<SuggestionOptions, "editor"> = {
           editor: props.editor,
         });
 
-        popup = tippy("body", {
+        popup = tippy('body', {
           getReferenceClientRect: props.clientRect as GetReferenceClientRect,
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
+          trigger: 'manual',
+          placement: 'bottom-start',
         });
       },
       onUpdate: (props) => {
@@ -353,7 +354,7 @@ const suggestion: Omit<SuggestionOptions, "editor"> = {
           });
       },
       onKeyDown: (props) => {
-        if (props.event.key === "Escape") {
+        if (props.event.key === 'Escape') {
           popup?.[0].hide();
 
           return true;

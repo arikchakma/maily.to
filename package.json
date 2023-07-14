@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format:write": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" --cache",
+    "format": "prettier \"**/*.{css,js,json,jsx,ts,tsx}\" --cache"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.0.6",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.4",
     "@tiptap/core": "^2.0.3",
@@ -59,7 +62,9 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
     "@tailwindcss/typography": "^0.5.9",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1"
   }
 }

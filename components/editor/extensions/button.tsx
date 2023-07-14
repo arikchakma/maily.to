@@ -11,15 +11,10 @@ export default function ButtonComponent(props: NodeViewProps) {
     text,
     alignment,
     variant,
-    borderRadius,
+    borderRadius: _radius,
     buttonColor,
     textColor,
   } = props.node.attrs;
-  // const increase = () => {
-  //   props.updateAttributes({
-  //     count: props.node.attrs.count + 1,
-  //   });
-  // };
 
   return (
     <NodeViewWrapper
@@ -35,7 +30,16 @@ export default function ButtonComponent(props: NodeViewProps) {
       <Popover open={props.selected}>
         <PopoverTrigger asChild>
           <a
-            className={cn(buttonVariants(), 'px-[32px] py-[20px] no-underline')}
+            className={cn(
+              buttonVariants(),
+              'px-[32px] py-[20px] no-underline',
+              {
+                'rounded-full': _radius === 'round',
+                'rounded-md': _radius === 'smooth',
+                'rounded-none': _radius === 'sharp',
+              }
+            )}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             tabIndex={-1}
@@ -48,7 +52,12 @@ export default function ButtonComponent(props: NodeViewProps) {
             {text}
           </a>
         </PopoverTrigger>
-        <PopoverContent className="space-y-2">
+        <PopoverContent
+          className="space-y-2"
+          sideOffset={10}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
           <Input
             placeholder="Add text here"
             value={text}
@@ -69,7 +78,7 @@ export default function ButtonComponent(props: NodeViewProps) {
           />
 
           <div className="w-full space-y-2">
-            <p className="text-regular text-xs text-slate-400">Style</p>
+            <p className="text-xs font-normal text-slate-400">Style</p>
             <div className="flex gap-1">
               <BaseButton
                 data-state={variant === 'filled' ? 'true' : 'false'}
@@ -96,6 +105,51 @@ export default function ButtonComponent(props: NodeViewProps) {
                 }}
               >
                 Outline
+              </BaseButton>
+            </div>
+          </div>
+
+          <div className="w-full space-y-2">
+            <p className="text-xs font-normal text-slate-400">Corner Radius</p>
+            <div className="flex gap-1">
+              <BaseButton
+                data-state={_radius === 'sharp' ? 'true' : 'false'}
+                variant="ghost"
+                className="grow"
+                size="sm"
+                onClick={() => {
+                  props.updateAttributes({
+                    borderRadius: 'sharp',
+                  });
+                }}
+              >
+                Sharp
+              </BaseButton>
+              <BaseButton
+                data-state={_radius === 'smooth' ? 'true' : 'false'}
+                variant="ghost"
+                className="grow"
+                size="sm"
+                onClick={() => {
+                  props.updateAttributes({
+                    borderRadius: 'smooth',
+                  });
+                }}
+              >
+                Smooth
+              </BaseButton>
+              <BaseButton
+                data-state={_radius === 'round' ? 'true' : 'false'}
+                variant="ghost"
+                className="grow"
+                size="sm"
+                onClick={() => {
+                  props.updateAttributes({
+                    borderRadius: 'round',
+                  });
+                }}
+              >
+                Round
               </BaseButton>
             </div>
           </div>

@@ -30,7 +30,7 @@ export const ButtonExtension = Node.create({
         default: 'Button',
       },
       url: {
-        default: 'https://arikko.dev',
+        default: '',
       },
       alignment: {
         default: 'left',
@@ -42,10 +42,10 @@ export const ButtonExtension = Node.create({
         default: 'smooth',
       },
       buttonColor: {
-        default: '#000000',
+        default: 'rgb(0, 0, 0)',
       },
       textColor: {
-        default: '#efefef',
+        default: "rgb(255, 255, 255)"
       },
     };
   },

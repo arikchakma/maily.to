@@ -1,9 +1,101 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
+import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
+import { ChromePicker } from 'react-color';
 
 import { BaseButton, buttonVariants } from '../components/base-button';
 import { Input } from '../components/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { cn } from '../utils/tailwind';
+
+const items = {
+  style(props: NodeViewProps) {
+    return [
+      {
+        name: 'Filled',
+        isActive: props.node.attrs.variant === 'filled',
+        onClick: () => {
+          props.updateAttributes({
+            variant: 'filled',
+          });
+        },
+      },
+      {
+        name: 'Outline',
+        isActive: props.node.attrs.variant === 'outline',
+        onClick: () => {
+          props.updateAttributes({
+            variant: 'outline',
+          });
+        },
+      }
+    ]
+  },
+  cornerRadius(props: NodeViewProps) {
+    return [
+      {
+        name: 'Sharp',
+        isActive: props.node.attrs.borderRadius === 'sharp',
+        onClick: () => {
+          props.updateAttributes({
+            borderRadius: 'sharp',
+          });
+        },
+      },
+      {
+        name: 'Smooth',
+        isActive: props.node.attrs.borderRadius === 'smooth',
+        onClick: () => {
+          props.updateAttributes({
+            borderRadius: 'smooth',
+          });
+        },
+      },
+      {
+        name: 'Round',
+        isActive: props.node.attrs.borderRadius === 'round',
+        onClick: () => {
+          props.updateAttributes({
+            borderRadius: 'round',
+          });
+        },
+      }
+    ]
+  },
+  alignment(props: NodeViewProps) {
+    return [
+      {
+        name: 'Left',
+        icon: AlignLeftIcon,
+        isActive: props.node.attrs.alignment === 'left',
+        onClick: () => {
+          props.updateAttributes({
+            alignment: 'left',
+          });
+        },
+      },
+      {
+        name: 'Center',
+        icon: AlignCenterIcon,
+        isActive: props.node.attrs.alignment === 'center',
+        onClick: () => {
+          props.updateAttributes({
+            alignment: 'center',
+          });
+        },
+      },
+      {
+        name: 'Right',
+        icon: AlignRightIcon,
+        isActive: props.node.attrs.alignment === 'right',
+        onClick: () => {
+          props.updateAttributes({
+            alignment: 'right',
+          });
+        },
+      }
+    ]
+  },
+}
 
 export default function ButtonComponent(props: NodeViewProps) {
   const {
@@ -18,9 +110,8 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${
-        props.selected && 'ProseMirror-selectednode'
-      }`}
+      className={`react-component ${props.selected && 'ProseMirror-selectednode'
+        }`}
       draggable="true"
       data-drag-handle=""
       style={{
@@ -29,30 +120,34 @@ export default function ButtonComponent(props: NodeViewProps) {
     >
       <Popover open={props.selected}>
         <PopoverTrigger asChild>
-          <a
-            className={cn(
-              buttonVariants(),
-              'px-[32px] py-[20px] no-underline',
-              {
-                'rounded-full': _radius === 'round',
-                'rounded-md': _radius === 'smooth',
-                'rounded-none': _radius === 'sharp',
-              }
-            )}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            tabIndex={-1}
-            style={{
-              backgroundColor:
-                variant === 'filled' ? buttonColor : 'transparent',
-              color: textColor,
-            }}
-          >
-            {text}
-          </a>
+          <div>
+            <a
+              className={cn(
+                buttonVariants(),
+                'border-2 px-[32px] py-[20px] no-underline font-medium',
+                {
+                  'rounded-full': _radius === 'round',
+                  'rounded-md': _radius === 'smooth',
+                  'rounded-none': _radius === 'sharp',
+                }
+              )}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={-1}
+              style={{
+                backgroundColor:
+                  variant === 'filled' ? buttonColor : 'transparent',
+                color: textColor,
+                borderColor: buttonColor,
+              }}
+            >
+              {text}
+            </a>
+          </div>
         </PopoverTrigger>
         <PopoverContent
+          align='end'
           className="space-y-2"
           sideOffset={10}
           onOpenAutoFocus={(e) => e.preventDefault()}
@@ -80,81 +175,137 @@ export default function ButtonComponent(props: NodeViewProps) {
           <div className="w-full space-y-2">
             <p className="text-xs font-normal text-slate-400">Style</p>
             <div className="flex gap-1">
-              <BaseButton
-                data-state={variant === 'filled' ? 'true' : 'false'}
-                variant="ghost"
-                className="grow"
-                size="sm"
-                onClick={() => {
-                  props.updateAttributes({
-                    variant: 'filled',
-                  });
-                }}
-              >
-                Filled
-              </BaseButton>
-              <BaseButton
-                data-state={variant === 'outline' ? 'true' : 'false'}
-                variant="ghost"
-                className="grow"
-                size="sm"
-                onClick={() => {
-                  props.updateAttributes({
-                    variant: 'outline',
-                  });
-                }}
-              >
-                Outline
-              </BaseButton>
+              {
+                items.style(props).map((item, index) => (
+                  <BaseButton
+                    key={index}
+                    data-state={item.isActive ? 'true' : 'false'}
+                    variant="ghost"
+                    className="grow font-normal"
+                    size="sm"
+                    onClick={item.onClick}
+                  >
+                    {item.name}
+                  </BaseButton>
+                ))
+              }
             </div>
           </div>
 
           <div className="w-full space-y-2">
             <p className="text-xs font-normal text-slate-400">Corner Radius</p>
             <div className="flex gap-1">
-              <BaseButton
-                data-state={_radius === 'sharp' ? 'true' : 'false'}
-                variant="ghost"
-                className="grow"
-                size="sm"
-                onClick={() => {
+              {
+                items.cornerRadius(props).map((item, index) => (
+                  <BaseButton
+                    key={index}
+                    data-state={item.isActive ? 'true' : 'false'}
+                    variant="ghost"
+                    className="grow font-normal"
+                    size="sm"
+                    onClick={item.onClick}
+                  >
+                    {item.name}
+                  </BaseButton>
+                ))
+              }
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <div>
+              <p className="text-xs font-normal text-slate-400">Alignment</p>
+              <div className="mt-2 flex gap-1">
+                {
+                  items.alignment(props).map((item, index) => (
+                    <BaseButton
+                      key={index}
+                      data-state={item.isActive ? 'true' : 'false'}
+                      variant="ghost"
+                      className="grow"
+                      size="sm"
+                      onClick={item.onClick}
+                    >
+                      <item.icon size={16} />
+                    </BaseButton>
+                  ))
+                }
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-normal text-slate-400">Color</p>
+              <div className="mt-2 flex gap-1">
+                <BackgroundColorPickerPopup color={buttonColor} onChange={(color) => {
                   props.updateAttributes({
-                    borderRadius: 'sharp',
+                    buttonColor: color,
                   });
-                }}
-              >
-                Sharp
-              </BaseButton>
-              <BaseButton
-                data-state={_radius === 'smooth' ? 'true' : 'false'}
-                variant="ghost"
-                className="grow"
-                size="sm"
-                onClick={() => {
+                }} />
+                <TextColorPickerPopup color={textColor} onChange={(color) => {
                   props.updateAttributes({
-                    borderRadius: 'smooth',
+                    textColor: color,
                   });
-                }}
-              >
-                Smooth
-              </BaseButton>
-              <BaseButton
-                data-state={_radius === 'round' ? 'true' : 'false'}
-                variant="ghost"
-                className="grow"
-                size="sm"
-                onClick={() => {
-                  props.updateAttributes({
-                    borderRadius: 'round',
-                  });
-                }}
-              >
-                Round
-              </BaseButton>
+                }} />
+              </div>
             </div>
           </div>
         </PopoverContent>
       </Popover>
     </NodeViewWrapper>
   );
+}
+
+type ColorPickerProps = {
+  color: string;
+  onChange: (color: string) => void;
+};
+
+function BackgroundColorPickerPopup(props: ColorPickerProps) {
+  const { color, onChange } = props;
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <BaseButton variant="ghost" className="" size="sm">
+          <div
+            className="h-4 w-4 rounded"
+            style={{ backgroundColor: color }}
+          />
+        </BaseButton>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-full">
+        <ChromePicker
+          className="!shadow-md"
+          color={color}
+          onChange={(color) => {
+            onChange(color.hex);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function TextColorPickerPopup(props: ColorPickerProps) {
+  const { color, onChange } = props;
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <BaseButton variant="ghost" className="" size="sm">
+          <div className="flex flex-col items-center justify-center gap-[1px]">
+            <span className="font-bolder font-mono text-xs text-slate-700">
+              A
+            </span>
+            <div className="h-[2px] w-3" style={{ backgroundColor: color }} />
+          </div>
+        </BaseButton>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-full">
+        <ChromePicker
+          className="!shadow-md"
+          color={color}
+          onChange={(color) => {
+            onChange(color.hex);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  )
 }

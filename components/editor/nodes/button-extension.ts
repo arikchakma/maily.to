@@ -82,7 +82,12 @@ export const ButtonExtension = Node.create({
       setButton:
         () =>
         ({ commands }) => {
-          return commands.setNode(this.name);
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              mailboxComponent: this.name,
+            },
+          });
         },
     };
   },

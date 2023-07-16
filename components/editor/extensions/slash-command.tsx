@@ -19,6 +19,7 @@ import {
   ImageIcon,
   List,
   ListOrdered,
+  MousePointer,
   MoveVertical,
   Text,
 } from 'lucide-react';
@@ -194,10 +195,9 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: 'Button',
-      description:
-        'Add a button to the page. Useful for adding a call to action.',
-      searchTerms: ['space', 'gap', 'divider'],
-      icon: <MoveVertical className="h-4 w-4" />,
+      description: 'Add a call to action button to the page.',
+      searchTerms: ['link', 'button', 'cta'],
+      icon: <MousePointer className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).setButton().run();
       },
@@ -323,32 +323,49 @@ const CommandList = ({
   }, [selectedIndex]);
 
   return items.length > 0 ? (
-    <div
-      id="slash-command"
-      ref={commandListContainer}
-      className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto scroll-smooth rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all"
-    >
-      {items.map((item: CommandItemProps, index: number) => {
-        return (
-          <button
-            className={cn(
-              'flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900',
-              index === selectedIndex ? 'bg-gray-100 text-gray-900' : ''
-            )}
-            key={index}
-            onMouseOver={() => setSelectedIndex(index)}
-            onClick={() => selectItem(index)}
-          >
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center">
-              {item.icon}
-            </div>
-            <div>
-              <p className="font-medium">{item.title}</p>
-              <p className="text-xs text-gray-400">{item.description}</p>
-            </div>
-          </button>
-        );
-      })}
+    <div className="w-72 rounded-md border border-gray-200 bg-white shadow-md transition-all z-50">
+      <div
+        id="slash-command"
+        ref={commandListContainer}
+        className="h-auto max-h-[330px] overflow-y-auto scroll-smooth px-1 py-2 no-scrollbar"
+      >
+        {items.map((item: CommandItemProps, index: number) => {
+          return (
+            <button
+              className={cn(
+                'flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100 hover:text-gray-900',
+                index === selectedIndex ? 'bg-gray-100 text-gray-900' : ''
+              )}
+              key={index}
+              onClick={() => selectItem(index)}
+            >
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center">
+                {item.icon}
+              </div>
+              <div>
+                <p className="font-medium">{item.title}</p>
+                <p className="text-xs text-gray-400">{item.description}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="border-t border-gray-200 px-1 py-3 pl-4">
+        <div className="flex items-center">
+          <p className="text-center text-xs text-gray-400">
+            <kbd className="rounded border p-1 px-2 font-medium">↑</kbd>
+            <kbd className="ml-1 rounded border p-1 px-2 font-medium">↓</kbd> to
+            navigate
+          </p>
+          <span aria-hidden="true" className="select-none px-1">
+            ·
+          </span>
+          <p className="text-center text-xs text-gray-400">
+            <kbd className="rounded border p-1 px-1.5 font-medium">Enter</kbd>{' '}
+            to select
+          </p>
+        </div>
+      </div>
     </div>
   ) : null;
 };
@@ -373,7 +390,6 @@ const suggestion: Omit<SuggestionOptions, 'editor'> = {
           showOnCreate: true,
           interactive: true,
           trigger: 'manual',
-          placement: 'bottom-start',
         });
       },
       onUpdate: (props) => {

@@ -10,7 +10,9 @@ import { Editor, Extension, Range } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import {
+  DivideIcon,
   EraserIcon,
+  FootprintsIcon,
   Heading1,
   Heading2,
   Heading3,
@@ -188,6 +190,35 @@ const getSuggestionItems = ({ query }: { query: string }) => {
           .deleteRange(range)
           .setSpacer({ height: 'sm' })
           .run();
+      },
+    },
+    {
+      title: 'Button',
+      description:
+        'Add a button to the page. Useful for adding a call to action.',
+      searchTerms: ['space', 'gap', 'divider'],
+      icon: <MoveVertical className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).setButton().run();
+      },
+    },
+    {
+      title: 'Hard Break',
+      description: 'Add a break between lines.',
+      searchTerms: ['break', 'line'],
+      icon: <DivideIcon className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).setHardBreak().run();
+      },
+    },
+    {
+      title: 'Footer',
+      description:
+        'Add a footer text to the page. Useful for adding a footer to the page.',
+      searchTerms: ['footer', 'text'],
+      icon: <FootprintsIcon className="h-4 w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).setFooter().run();
       },
     },
     {

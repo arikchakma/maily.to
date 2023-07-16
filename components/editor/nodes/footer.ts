@@ -15,7 +15,7 @@ declare module '@tiptap/core' {
 export const Footer = Node.create<FooterOptions>({
   name: 'footer',
   group: 'block',
-  content: 'text*',
+  content: 'inline*',
   addAttributes() {
     return {
       'mailbox-component': {

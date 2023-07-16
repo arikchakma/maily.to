@@ -14,6 +14,14 @@ export interface ButtonOptions {
   HTMLAttributes: Record<string, any>;
 }
 
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    button: {
+      setButton: () => ReturnType;
+    };
+  }
+}
+
 export const ButtonExtension = Node.create({
   name: 'button',
   group: 'block',
@@ -67,6 +75,16 @@ export const ButtonExtension = Node.create({
         HTMLAttributes
       ),
     ];
+  },
+
+  addCommands() {
+    return {
+      setButton:
+        () =>
+        ({ commands }) => {
+          return commands.setNode(this.name);
+        },
+    };
   },
 
   addNodeView() {

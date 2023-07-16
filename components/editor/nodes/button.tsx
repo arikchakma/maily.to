@@ -125,7 +125,7 @@ export default function ButtonComponent(props: NodeViewProps) {
             <a
               className={cn(
                 buttonVariants(),
-                'border-2 px-[32px] py-[20px] font-medium no-underline',
+                'border-2 px-[32px] py-[20px] font-semibold no-underline',
                 {
                   'rounded-full': _radius === 'round',
                   'rounded-md': _radius === 'smooth',

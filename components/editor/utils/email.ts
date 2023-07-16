@@ -40,6 +40,32 @@ function nodeTable(
   return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="${style}"><tbody><tr><td>${html}</td></tr></tbody></table>`;
 }
 
+function buttonTable(
+  html: string,
+  attrs?: TiptapNode['attrs'] | undefined,
+  parent?: TiptapNode | undefined,
+  nextNode?: TiptapNode,
+  prevNode?: TiptapNode
+) {
+  const style = ['margin-top:0px;'];
+  if (nextNode?.type === 'spacer') {
+    style.push('margin-bottom:0px;');
+  } else {
+    style.push('margin-bottom:20px;');
+  }
+
+  if (attrs?.alignment === 'center') {
+    style.push('text-align:center;');
+  } else if (attrs?.alignment === 'right') {
+    style.push('text-align:right;');
+  } else {
+    style.push('text-align:left;');
+  }
+
+  return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="${style.join(
+    ''
+  )}"><tbody><tr><td>${html}</td></tr></tbody></table>`;
+}
 function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
   return (
     node?.content
@@ -276,6 +302,38 @@ function styleMapping(
         'text-decoration-line: underline;',
       ].join('');
 
+    case 'button':
+      style = [
+        'border: 2px solid;',
+        'line-height: 1.25rem;',
+        'text-decoration: none;',
+        'display: inline-block;',
+        'max-width: 100%;',
+        'font-size: 0.875rem;',
+        'font-weight: 500;',
+        'text-decoration-line: none;',
+        `color: ${attrs?.textColor};`,
+      ];
+      if (attrs?.variant === 'filled') {
+        style.push(`background-color: ${attrs?.buttonColor};`);
+        style.push(`border-color: ${attrs?.buttonColor};`);
+        style.push('padding: 12px 34px;');
+      } else {
+        style.push(`background-color: transparent;`);
+        style.push(`border-color: ${attrs?.buttonColor};`);
+        style.push('padding: 10px 34px;');
+      }
+
+      if (attrs?.borderRadius === 'round') {
+        style.push(`border-radius: 9999px;`);
+      } else if (attrs?.borderRadius === 'smooth') {
+        style.push(`border-radius: 6px;`);
+      } else {
+        style.push(`border-radius: 0px;`);
+      }
+
+      return style.join('');
+
     default:
       console.log('Unknown style key', key);
       return '';
@@ -290,7 +348,6 @@ function nodeMapping(
 ): string {
   const { type, attrs, content } = node;
   let style = '';
-  let mappedContent = '';
 
   switch (type) {
     case 'text':
@@ -353,6 +410,21 @@ function nodeMapping(
     case 'variable':
       return `{{${attrs?.id}}}`;
 
+    case 'button':
+      style = styleMapping('button', attrs, parent, nextNode, prevNode);
+      return buttonTable(
+        `<a href="${attrs?.url}" style="${style}">
+        <span></span>
+        <span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">
+        ${attrs?.text}</span>
+        <span></span>
+        </a>`,
+        attrs,
+        parent,
+        nextNode,
+        prevNode
+      );
+
     default:
       console.log(`Node type ${type} not supported`);
       return '';
@@ -362,7 +434,7 @@ function nodeMapping(
 export const tiptapToHtml = (tiptap: TiptapNode[]) => {
   const baseEmailTemplate = (html: string) =>
     `
-  <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:'Inter';font-style:normal;font-weight:400;mso-font-alt:'Verdana';src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:'Inter',Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
+      <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:Inter;font-style:normal;font-weight:400;mso-font-alt:Verdana;src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:Inter,Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
   return baseEmailTemplate(
     tiptap
       .map((node, index) => {

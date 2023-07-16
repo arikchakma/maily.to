@@ -27,8 +27,8 @@ const items = {
             variant: 'outline',
           });
         },
-      }
-    ]
+      },
+    ];
   },
   cornerRadius(props: NodeViewProps) {
     return [
@@ -58,8 +58,8 @@ const items = {
             borderRadius: 'round',
           });
         },
-      }
-    ]
+      },
+    ];
   },
   alignment(props: NodeViewProps) {
     return [
@@ -92,10 +92,10 @@ const items = {
             alignment: 'right',
           });
         },
-      }
-    ]
+      },
+    ];
   },
-}
+};
 
 export default function ButtonComponent(props: NodeViewProps) {
   const {
@@ -110,8 +110,9 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${props.selected && 'ProseMirror-selectednode'
-        }`}
+      className={`react-component ${
+        props.selected && 'ProseMirror-selectednode'
+      }`}
       draggable="true"
       data-drag-handle=""
       style={{
@@ -124,7 +125,7 @@ export default function ButtonComponent(props: NodeViewProps) {
             <a
               className={cn(
                 buttonVariants(),
-                'border-2 px-[32px] py-[20px] no-underline font-medium',
+                'border-2 px-[32px] py-[20px] font-medium no-underline',
                 {
                   'rounded-full': _radius === 'round',
                   'rounded-md': _radius === 'smooth',
@@ -147,7 +148,7 @@ export default function ButtonComponent(props: NodeViewProps) {
           </div>
         </PopoverTrigger>
         <PopoverContent
-          align='end'
+          align="end"
           className="space-y-2"
           sideOffset={10}
           onOpenAutoFocus={(e) => e.preventDefault()}
@@ -175,75 +176,76 @@ export default function ButtonComponent(props: NodeViewProps) {
           <div className="w-full space-y-2">
             <p className="text-xs font-normal text-slate-400">Style</p>
             <div className="flex gap-1">
-              {
-                items.style(props).map((item, index) => (
-                  <BaseButton
-                    key={index}
-                    data-state={item.isActive ? 'true' : 'false'}
-                    variant="ghost"
-                    className="grow font-normal"
-                    size="sm"
-                    onClick={item.onClick}
-                  >
-                    {item.name}
-                  </BaseButton>
-                ))
-              }
+              {items.style(props).map((item, index) => (
+                <BaseButton
+                  key={index}
+                  data-state={item.isActive ? 'true' : 'false'}
+                  variant="ghost"
+                  className="grow font-normal"
+                  size="sm"
+                  onClick={item.onClick}
+                >
+                  {item.name}
+                </BaseButton>
+              ))}
             </div>
           </div>
 
           <div className="w-full space-y-2">
             <p className="text-xs font-normal text-slate-400">Corner Radius</p>
             <div className="flex gap-1">
-              {
-                items.cornerRadius(props).map((item, index) => (
-                  <BaseButton
-                    key={index}
-                    data-state={item.isActive ? 'true' : 'false'}
-                    variant="ghost"
-                    className="grow font-normal"
-                    size="sm"
-                    onClick={item.onClick}
-                  >
-                    {item.name}
-                  </BaseButton>
-                ))
-              }
+              {items.cornerRadius(props).map((item, index) => (
+                <BaseButton
+                  key={index}
+                  data-state={item.isActive ? 'true' : 'false'}
+                  variant="ghost"
+                  className="grow font-normal"
+                  size="sm"
+                  onClick={item.onClick}
+                >
+                  {item.name}
+                </BaseButton>
+              ))}
             </div>
           </div>
           <div className="flex gap-2">
             <div>
               <p className="text-xs font-normal text-slate-400">Alignment</p>
               <div className="mt-2 flex gap-1">
-                {
-                  items.alignment(props).map((item, index) => (
-                    <BaseButton
-                      key={index}
-                      data-state={item.isActive ? 'true' : 'false'}
-                      variant="ghost"
-                      className="grow"
-                      size="sm"
-                      onClick={item.onClick}
-                    >
-                      <item.icon size={16} />
-                    </BaseButton>
-                  ))
-                }
+                {items.alignment(props).map((item, index) => (
+                  <BaseButton
+                    key={index}
+                    data-state={item.isActive ? 'true' : 'false'}
+                    variant="ghost"
+                    className="grow"
+                    size="sm"
+                    onClick={item.onClick}
+                  >
+                    <item.icon size={16} />
+                  </BaseButton>
+                ))}
               </div>
             </div>
             <div>
               <p className="text-xs font-normal text-slate-400">Color</p>
               <div className="mt-2 flex gap-1">
-                <BackgroundColorPickerPopup color={buttonColor} onChange={(color) => {
-                  props.updateAttributes({
-                    buttonColor: color,
-                  });
-                }} />
-                <TextColorPickerPopup color={textColor} onChange={(color) => {
-                  props.updateAttributes({
-                    textColor: color,
-                  });
-                }} />
+                <BackgroundColorPickerPopup
+                  variant={variant}
+                  color={buttonColor}
+                  onChange={(color) => {
+                    props.updateAttributes({
+                      buttonColor: color,
+                    });
+                  }}
+                />
+                <TextColorPickerPopup
+                  color={textColor}
+                  onChange={(color) => {
+                    props.updateAttributes({
+                      textColor: color,
+                    });
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -254,6 +256,7 @@ export default function ButtonComponent(props: NodeViewProps) {
 }
 
 type ColorPickerProps = {
+  variant?: 'filled' | 'outline';
   color: string;
   onChange: (color: string) => void;
 };
@@ -266,11 +269,16 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         <BaseButton variant="ghost" className="" size="sm">
           <div
             className="h-4 w-4 rounded"
-            style={{ backgroundColor: color }}
+            style={{
+              backgroundColor:
+                props.variant === 'filled' ? color : 'transparent',
+              border: props.variant === 'outline' ? '2px solid' : 'none',
+              borderColor: color,
+            }}
           />
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full">
+      <PopoverContent className="w-full p-0">
         <ChromePicker
           className="!shadow-md"
           color={color}
@@ -280,7 +288,7 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }
 
 function TextColorPickerPopup(props: ColorPickerProps) {
@@ -297,7 +305,7 @@ function TextColorPickerPopup(props: ColorPickerProps) {
           </div>
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full">
+      <PopoverContent className="w-full p-0">
         <ChromePicker
           className="!shadow-md"
           color={color}
@@ -307,5 +315,5 @@ function TextColorPickerPopup(props: ColorPickerProps) {
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

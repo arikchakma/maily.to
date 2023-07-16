@@ -1,5 +1,4 @@
 import { mergeAttributes, Node } from '@tiptap/core';
-import TiptapLink from '@tiptap/extension-link';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import ButtonComponent from './button';
@@ -45,7 +44,7 @@ export const ButtonExtension = Node.create({
         default: 'rgb(0, 0, 0)',
       },
       textColor: {
-        default: "rgb(255, 255, 255)"
+        default: 'rgb(255, 255, 255)',
       },
     };
   },

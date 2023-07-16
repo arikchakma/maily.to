@@ -23,11 +23,11 @@ import Underline from '@tiptap/extension-underline';
 
 import { HorizontalRule } from '@/components/editor/extensions/horizontal-rule';
 
+import { ButtonExtension } from '../nodes/button-extension';
 import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
 import { Variable } from '../nodes/variable';
-import { ButtonExtension } from './button-extension';
 import { SlashCommand } from './slash-command';
 
 export const TiptapExtensions = [

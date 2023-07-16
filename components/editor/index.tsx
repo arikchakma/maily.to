@@ -110,21 +110,17 @@ export function Editor(props: EditorProps) {
     }
 
     const editorJson = editor.getJSON();
-
     onMount?.({
       getJSON: () => editorJson.content || [],
       getEmailHtml: () => tiptapToHtml(editorJson.content || []),
       getEditor: () => editor,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor]);
+  }, [editor, editor?.getJSON()]);
 
   if (!editor) {
     return null;
   }
-
-  console.log(editor.getJSON());
-  console.log(editor.getHTML());
 
   return (
     <div

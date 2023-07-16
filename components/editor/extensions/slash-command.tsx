@@ -213,8 +213,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     },
     {
       title: 'Footer',
-      description:
-        'Add a footer text to the page. Useful for adding a footer to the page.',
+      description: 'Add a footer text to the page.',
       searchTerms: ['footer', 'text'],
       icon: <FootprintsIcon className="h-4 w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -323,11 +322,11 @@ const CommandList = ({
   }, [selectedIndex]);
 
   return items.length > 0 ? (
-    <div className="w-72 rounded-md border border-gray-200 bg-white shadow-md transition-all z-50">
+    <div className="z-50 w-72 rounded-md border border-gray-200 bg-white shadow-md transition-all">
       <div
         id="slash-command"
         ref={commandListContainer}
-        className="h-auto max-h-[330px] overflow-y-auto scroll-smooth px-1 py-2 no-scrollbar"
+        className="no-scrollbar h-auto max-h-[330px] overflow-y-auto scroll-smooth px-1 py-2"
       >
         {items.map((item: CommandItemProps, index: number) => {
           return (

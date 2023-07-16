@@ -1,0 +1,7 @@
+coverage
+.next
+dist
+CHANGELOG.md
+.contentlayer
+node_modules
+build

@@ -1,31 +1,33 @@
-import { Editor as EditorType } from "@tiptap/core";
+import { useMemo } from 'react';
+import { Editor as EditorType } from '@tiptap/core';
+import copy from 'copy-to-clipboard';
 import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  EraserIcon,
-  SeparatorHorizontal,
-  AlignLeft,
   AlignCenter,
+  AlignLeft,
   AlignRight,
+  BoldIcon,
+  EraserIcon,
+  ItalicIcon,
   LinkIcon,
   MailIcon,
-} from "lucide-react";
-import { BubbleMenuItem } from "./editor-bubble-menu";
-import { BubbleMenuButton } from "./bubble-menu-button";
-import { useMemo } from "react";
-import copy from "copy-to-clipboard";
-import { useToast } from "@/components/editor/hooks/use-toast";
-import { EditorProps } from "@/components/editor";
-import { tiptapToHtml } from "@/components/editor/utils/email";
+  SeparatorHorizontal,
+  StrikethroughIcon,
+  UnderlineIcon,
+} from 'lucide-react';
+
+import { EditorProps } from '@/components/editor';
+import { useToast } from '@/components/editor/hooks/use-toast';
+import { tiptapToHtml } from '@/components/editor/utils/email';
+
+import { BubbleMenuButton } from './bubble-menu-button';
+import { BubbleMenuItem } from './editor-bubble-menu';
 
 interface EditorMenuItem extends BubbleMenuItem {
-  group: "alignment" | "image" | "mark" | "custom" | "email";
+  group: 'alignment' | 'image' | 'mark' | 'custom' | 'email';
 }
 
 type EditorMenuBarProps = {
-  config: EditorProps["config"];
+  config: EditorProps['config'];
   editor: EditorType;
 };
 
@@ -36,58 +38,58 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
   const items: EditorMenuItem[] = useMemo(
     () => [
       {
-        name: "bold",
+        name: 'bold',
         command: () => editor.chain().focus().toggleBold().run(),
-        isActive: () => editor.isActive("bold"),
-        group: "mark",
+        isActive: () => editor.isActive('bold'),
+        group: 'mark',
         icon: BoldIcon,
       },
       {
-        name: "italic",
+        name: 'italic',
         command: () => editor.chain().focus().toggleItalic().run(),
-        isActive: () => editor.isActive("italic"),
-        group: "mark",
+        isActive: () => editor.isActive('italic'),
+        group: 'mark',
         icon: ItalicIcon,
       },
       {
-        name: "underline",
+        name: 'underline',
         command: () => editor.chain().focus().toggleUnderline().run(),
-        isActive: () => editor.isActive("underline"),
-        group: "mark",
+        isActive: () => editor.isActive('underline'),
+        group: 'mark',
         icon: UnderlineIcon,
       },
       {
-        name: "strike",
+        name: 'strike',
         command: () => editor.chain().focus().toggleStrike().run(),
-        isActive: () => editor.isActive("strike"),
-        group: "mark",
+        isActive: () => editor.isActive('strike'),
+        group: 'mark',
         icon: StrikethroughIcon,
       },
       {
-        name: "delete-line",
+        name: 'delete-line',
         command: () =>
           editor.chain().focus().selectParentNode().deleteSelection().run(),
         isActive: () => false,
-        group: "mark",
+        group: 'mark',
         icon: EraserIcon,
       },
       {
-        name: "divider",
+        name: 'divider',
         command: () => editor.chain().focus().setHorizontalRule().run(),
-        isActive: () => editor.isActive("horizontalRule"),
-        group: "custom",
+        isActive: () => editor.isActive('horizontalRule'),
+        group: 'custom',
         icon: SeparatorHorizontal,
       },
       {
-        name: "link",
+        name: 'link',
         command: () => {
-          const previousUrl = editor.getAttributes("link").href;
-          const url = window.prompt("URL", previousUrl);
+          const previousUrl = editor.getAttributes('link').href;
+          const url = window.prompt('URL', previousUrl);
           // If the user cancels the prompt, we don't want to toggle the link
           if (url === null) return;
           // If the user deletes the URL entirely, we'll unlink the selected text
-          if (url === "") {
-            editor.chain().focus().extendMarkRange("link").unsetLink().run();
+          if (url === '') {
+            editor.chain().focus().extendMarkRange('link').unsetLink().run();
             return;
           }
 
@@ -95,52 +97,52 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
           editor
             .chain()
             .focus()
-            .extendMarkRange("link")
+            .extendMarkRange('link')
             .setLink({ href: url })
             .run();
         },
-        isActive: () => editor.isActive("link"),
-        group: "custom",
+        isActive: () => editor.isActive('link'),
+        group: 'custom',
         icon: LinkIcon,
       },
       {
-        name: "left",
-        command: () => editor.chain().focus().setTextAlign("left").run(),
-        isActive: () => editor.isActive({ textAlign: "left" }),
-        group: "alignment",
+        name: 'left',
+        command: () => editor.chain().focus().setTextAlign('left').run(),
+        isActive: () => editor.isActive({ textAlign: 'left' }),
+        group: 'alignment',
         icon: AlignLeft,
       },
       {
-        name: "center",
-        command: () => editor.chain().focus().setTextAlign("center").run(),
-        isActive: () => editor.isActive({ textAlign: "center" }),
-        group: "alignment",
+        name: 'center',
+        command: () => editor.chain().focus().setTextAlign('center').run(),
+        isActive: () => editor.isActive({ textAlign: 'center' }),
+        group: 'alignment',
         icon: AlignCenter,
       },
       {
-        name: "right",
-        command: () => editor.chain().focus().setTextAlign("right").run(),
-        isActive: () => editor.isActive({ textAlign: "right" }),
-        group: "alignment",
+        name: 'right',
+        command: () => editor.chain().focus().setTextAlign('right').run(),
+        isActive: () => editor.isActive({ textAlign: 'right' }),
+        group: 'alignment',
         icon: AlignRight,
       },
       {
-        name: "email",
+        name: 'email',
         command: () => {
           const json = editor.getJSON();
           const html = tiptapToHtml(json.content!);
           copy(html);
           toast({
-            title: "Copied to clipboard",
-            description: "The HTML code has been copied!",
+            title: 'Copied to clipboard',
+            description: 'The HTML code has been copied!',
           });
         },
         isActive: () => false,
-        group: "email",
+        group: 'email',
         icon: MailIcon,
       },
     ],
-    [editor, toast],
+    [editor, toast]
   );
 
   const groups = useMemo(
@@ -151,7 +153,7 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
         }
         return acc;
       }, [] as string[]),
-    [items],
+    [items]
   );
 
   if (!editor) {
@@ -163,7 +165,7 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
       {groups.map((group, index) => (
         <div
           key={index}
-          className="flex items-center gap-1 bg-white p-1 border rounded-md"
+          className="flex items-center gap-1 rounded-md border bg-white p-1"
         >
           {items
             .filter((item) => item.group === group)

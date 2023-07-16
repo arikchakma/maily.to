@@ -1,47 +1,48 @@
-import { BubbleMenu, BubbleMenuProps, isTextSelection } from "@tiptap/react";
-import { FC } from "react";
-import { BubbleMenuItem, EditorBubbleMenuProps } from "./editor-bubble-menu";
-import { BubbleMenuButton } from "./bubble-menu-button";
+import { FC } from 'react';
+import { BubbleMenu, BubbleMenuProps, isTextSelection } from '@tiptap/react';
+
+import { BubbleMenuButton } from './bubble-menu-button';
+import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
 
 export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
-      name: "sm",
-      isActive: () => props.editor.isActive("spacer", { height: "sm" }),
+      name: 'sm',
+      isActive: () => props.editor.isActive('spacer', { height: 'sm' }),
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: "sm" }).run(),
+        props.editor.chain().focus().setSpacer({ height: 'sm' }).run(),
     },
     {
-      name: "md",
-      isActive: () => props.editor.isActive("spacer", { height: "md" }),
+      name: 'md',
+      isActive: () => props.editor.isActive('spacer', { height: 'md' }),
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: "md" }).run(),
+        props.editor.chain().focus().setSpacer({ height: 'md' }).run(),
     },
     {
-      name: "lg",
-      isActive: () => props.editor.isActive("spacer", { height: "lg" }),
+      name: 'lg',
+      isActive: () => props.editor.isActive('spacer', { height: 'lg' }),
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: "lg" }).run(),
+        props.editor.chain().focus().setSpacer({ height: 'lg' }).run(),
     },
     {
-      name: "xl",
-      isActive: () => props.editor.isActive("spacer", { height: "xl" }),
+      name: 'xl',
+      isActive: () => props.editor.isActive('spacer', { height: 'xl' }),
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: "xl" }).run(),
+        props.editor.chain().focus().setSpacer({ height: 'xl' }).run(),
     },
   ];
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     shouldShow: ({ editor }) => {
-      if (!editor.isActive("spacer")) {
+      if (!editor.isActive('spacer')) {
         return false;
       }
 
       return true;
     },
     tippyOptions: {
-      moveTransition: "transform 0.15s ease-out",
+      moveTransition: 'transform 0.15s ease-out',
     },
   };
 

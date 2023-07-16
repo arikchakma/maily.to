@@ -1,16 +1,17 @@
-import { BubbleMenu, BubbleMenuProps, isTextSelection } from "@tiptap/react";
-import { FC } from "react";
+import { FC } from 'react';
+import { BubbleMenu, BubbleMenuProps, isTextSelection } from '@tiptap/react';
 import {
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   BoldIcon,
   ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  AlignLeftIcon,
-  AlignCenterIcon,
-  AlignRightIcon,
   LinkIcon,
-} from "lucide-react";
-import { BubbleMenuButton } from "./bubble-menu-button";
+  StrikethroughIcon,
+  UnderlineIcon,
+} from 'lucide-react';
+
+import { BubbleMenuButton } from './bubble-menu-button';
 
 export interface BubbleMenuItem {
   name: string;
@@ -19,75 +20,75 @@ export interface BubbleMenuItem {
   icon?: typeof BoldIcon;
 }
 
-export type EditorBubbleMenuProps = Omit<BubbleMenuProps, "children">;
+export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'>;
 
 export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
-      name: "bold",
-      isActive: () => props.editor.isActive("bold"),
+      name: 'bold',
+      isActive: () => props.editor.isActive('bold'),
       command: () => props.editor.chain().focus().toggleBold().run(),
       icon: BoldIcon,
     },
     {
-      name: "italic",
-      isActive: () => props.editor.isActive("italic"),
+      name: 'italic',
+      isActive: () => props.editor.isActive('italic'),
       command: () => props.editor.chain().focus().toggleItalic().run(),
       icon: ItalicIcon,
     },
     {
-      name: "underline",
-      isActive: () => props.editor.isActive("underline"),
+      name: 'underline',
+      isActive: () => props.editor.isActive('underline'),
       command: () => props.editor.chain().focus().toggleUnderline().run(),
       icon: UnderlineIcon,
     },
     {
-      name: "strike",
-      isActive: () => props.editor.isActive("strike"),
+      name: 'strike',
+      isActive: () => props.editor.isActive('strike'),
       command: () => props.editor.chain().focus().toggleStrike().run(),
       icon: StrikethroughIcon,
     },
     {
-      name: "left",
-      isActive: () => props.editor.isActive({ textAlign: "left" }),
+      name: 'left',
+      isActive: () => props.editor.isActive({ textAlign: 'left' }),
       command: () => {
-        if (props.editor.isActive({ textAlign: "left" })) {
+        if (props.editor.isActive({ textAlign: 'left' })) {
           props.editor.chain().focus().unsetTextAlign().run();
         } else {
-          props.editor.chain().focus().setTextAlign("left").run();
+          props.editor.chain().focus().setTextAlign('left').run();
         }
       },
       icon: AlignLeftIcon,
     },
     {
-      name: "center",
-      isActive: () => props.editor.isActive({ textAlign: "center" }),
+      name: 'center',
+      isActive: () => props.editor.isActive({ textAlign: 'center' }),
       command: () => {
-        if (props.editor.isActive({ textAlign: "center" })) {
+        if (props.editor.isActive({ textAlign: 'center' })) {
           props.editor.chain().focus().unsetTextAlign().run();
         } else {
-          props.editor.chain().focus().setTextAlign("center").run();
+          props.editor.chain().focus().setTextAlign('center').run();
         }
       },
       icon: AlignCenterIcon,
     },
     {
-      name: "right",
-      isActive: () => props.editor.isActive({ textAlign: "right" }),
+      name: 'right',
+      isActive: () => props.editor.isActive({ textAlign: 'right' }),
       command: () => {
-        if (props.editor.isActive({ textAlign: "right" })) {
+        if (props.editor.isActive({ textAlign: 'right' })) {
           props.editor.chain().focus().unsetTextAlign().run();
         } else {
-          props.editor.chain().focus().setTextAlign("right").run();
+          props.editor.chain().focus().setTextAlign('right').run();
         }
       },
       icon: AlignRightIcon,
     },
     {
-      name: "link",
+      name: 'link',
       command: () => {
-        const previousUrl = props.editor.getAttributes("link").href;
-        const url = window.prompt("URL", previousUrl);
+        const previousUrl = props.editor.getAttributes('link').href;
+        const url = window.prompt('URL', previousUrl);
 
         // If the user cancels the prompt, we don't want to toggle the link
         if (url === null) {
@@ -95,11 +96,11 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         }
 
         // If the user deletes the URL entirely, we'll unlink the selected text
-        if (url === "") {
+        if (url === '') {
           props.editor
             .chain()
             .focus()
-            .extendMarkRange("link")
+            .extendMarkRange('link')
             .unsetLink()
             .run();
 
@@ -110,11 +111,11 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         props.editor
           .chain()
           .focus()
-          .extendMarkRange("link")
+          .extendMarkRange('link')
           .setLink({ href: url })
           .run();
       },
-      isActive: () => props.editor.isActive("link"),
+      isActive: () => props.editor.isActive('link'),
       icon: LinkIcon,
     },
   ];
@@ -130,13 +131,17 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       // So we check also for an empty text size.
       const isEmptyTextBlock =
         !doc.textBetween(from, to).length && isTextSelection(state.selection);
+
       if (
         empty ||
         isEmptyTextBlock ||
         !editor.isEditable ||
-        editor.isActive("image") ||
-        editor.isActive("logo") ||
-        editor.isActive("spacer")
+        editor.isActive('image') ||
+        editor.isActive('logo') ||
+        editor.isActive('spacer') ||
+        editor.isActive({
+          mailboxComponent: 'button',
+        })
       ) {
         return false;
       }
@@ -144,7 +149,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       return true;
     },
     tippyOptions: {
-      moveTransition: "transform 0.15s ease-out",
+      moveTransition: 'transform 0.15s ease-out',
     },
   };
 

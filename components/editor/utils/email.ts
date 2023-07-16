@@ -18,10 +18,10 @@ interface TiptapNode {
 }
 
 function attributeStyles(
-  attrs: TiptapNode["attrs"] | undefined,
+  attrs: TiptapNode['attrs'] | undefined,
   parent?: TiptapNode | undefined,
   nextNode?: TiptapNode,
-  prevNode?: TiptapNode,
+  prevNode?: TiptapNode
 ) {
   if (!attrs) {
     return [];
@@ -33,39 +33,66 @@ function attributeStyles(
 
 function nodeTable(
   html: string,
-  attrs?: TiptapNode["attrs"] | undefined,
-  parent?: TiptapNode | undefined,
+  attrs?: TiptapNode['attrs'] | undefined,
+  parent?: TiptapNode | undefined
 ) {
-  const style = [...attributeStyles(attrs, parent)].join("");
+  const style = [...attributeStyles(attrs, parent)].join('');
   return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="${style}"><tbody><tr><td>${html}</td></tr></tbody></table>`;
 }
 
+function buttonTable(
+  html: string,
+  attrs?: TiptapNode['attrs'] | undefined,
+  parent?: TiptapNode | undefined,
+  nextNode?: TiptapNode,
+  prevNode?: TiptapNode
+) {
+  const style = ['margin-top:0px;'];
+  if (nextNode?.type === 'spacer') {
+    style.push('margin-bottom:0px;');
+  } else {
+    style.push('margin-bottom:20px;');
+  }
+
+  if (attrs?.alignment === 'center') {
+    style.push('text-align:center;');
+  } else if (attrs?.alignment === 'right') {
+    style.push('text-align:right;');
+  } else {
+    style.push('text-align:left;');
+  }
+
+  return `<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="${style.join(
+    ''
+  )}"><tbody><tr><td>${html}</td></tr></tbody></table>`;
+}
 function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
   return (
     node?.content
       ?.map((node) => {
         return nodeMapping(node, parent);
       })
-      .join("") || "&nbsp"
+      .join('') || '&nbsp'
   );
 }
 
 function markMapping(mark: TiptapMark, text: string): string {
   switch (mark.type) {
-    case "bold":
+    case 'bold':
       return `<strong>${text}</strong>`;
-    case "underline":
+    case 'underline':
       return `<u>${text}</u>`;
-    case "italic":
+    case 'italic':
       return `<em>${text}</em>`;
-    case "strike":
+    case 'strike':
       return `<s style="text-decoration: line-through;">${text}</s>`;
-    case "link":
-      return `<a href="${mark?.attrs?.href || ""
-        }" target="_blank" style="${styleMapping("a", mark?.attrs)}">${text}</a>`;
+    case 'link':
+      return `<a href="${
+        mark?.attrs?.href || ''
+      }" target="_blank" style="${styleMapping('a', mark?.attrs)}">${text}</a>`;
 
     default:
-      console.log("Unknown mark type", mark.type);
+      console.log('Unknown mark type', mark.type);
       return text;
   }
 }
@@ -75,209 +102,241 @@ function styleMapping(
   attrs: Record<string, any> | undefined,
   parent?: TiptapNode,
   nextNode?: TiptapNode,
-  prevNode?: TiptapNode,
+  prevNode?: TiptapNode
 ): string {
   let style = [];
   switch (key) {
-    case "textAlign":
+    case 'textAlign':
       return `text-align: ${attrs?.textAlign};`;
 
-    case "alignment":
-      if (attrs?.alignment === "center") {
-        return "margin-left: auto; margin-right: auto;";
-      } else if (attrs?.alignment === "right") {
-        return "margin-left: auto;";
+    case 'alignment':
+      if (attrs?.alignment === 'center') {
+        return 'margin-left: auto; margin-right: auto;';
+      } else if (attrs?.alignment === 'right') {
+        return 'margin-left: auto;';
       }
-      return "";
+      return '';
 
-    case "size":
+    case 'size':
       switch (parent?.type) {
-        case "logo":
-          if (attrs?.size === "sm") {
-            return styleMapping("height", { height: "40px" });
-          } else if (attrs?.size === "md") {
-            return styleMapping("height", { height: "48px" });
-          } else if (attrs?.size === "lg") {
-            return styleMapping("height", { height: "64px" });
+        case 'logo':
+          if (attrs?.size === 'sm') {
+            return styleMapping('height', { height: '40px' });
+          } else if (attrs?.size === 'md') {
+            return styleMapping('height', { height: '48px' });
+          } else if (attrs?.size === 'lg') {
+            return styleMapping('height', { height: '64px' });
           }
-          return "";
+          return '';
         default:
-          return "";
+          return '';
       }
 
-    case "height":
-      let height = attrs?.height || "auto";
-      if (parent?.type === "spacer") {
+    case 'height':
+      let height = attrs?.height || 'auto';
+      if (parent?.type === 'spacer') {
         switch (attrs?.height) {
-          case "sm":
-            height = "8px";
+          case 'sm':
+            height = '8px';
             break;
-          case "md":
-            height = "16px";
+          case 'md':
+            height = '16px';
             break;
-          case "lg":
-            height = "32px";
+          case 'lg':
+            height = '32px';
             break;
-          case "xl":
-            height = "64px";
+          case 'xl':
+            height = '64px';
             break;
           default:
-            height = "auto";
+            height = 'auto';
             break;
         }
       }
       return `height: ${height};`;
-    case "h1":
+    case 'h1':
       style = [
-        "font-size: 36px;",
-        "font-weight: 800;",
-        "margin-bottom: 12px;",
-        "line-height: 40px;",
-        "color: rgb(17, 24, 39);",
+        'font-size: 36px;',
+        'font-weight: 800;',
+        'margin-bottom: 12px;',
+        'line-height: 40px;',
+        'color: rgb(17, 24, 39);',
         ...attributeStyles(attrs, parent, nextNode, prevNode),
       ];
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
+      if (nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0px;');
       }
-      return style.join("");
+      return style.join('');
 
-    case "h2":
+    case 'h2':
       style = [
-        "font-size: 30px;",
-        "font-weight: 700;",
-        "line-height: 40px;",
-        "margin-bottom: 12px;",
-        "color: rgb(17, 24, 39);",
+        'font-size: 30px;',
+        'font-weight: 700;',
+        'line-height: 40px;',
+        'margin-bottom: 12px;',
+        'color: rgb(17, 24, 39);',
         ...attributeStyles(attrs),
       ];
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
+      if (nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0px;');
       }
-      return style.join("");
-    case "h3":
+      return style.join('');
+    case 'h3':
       style = [
-        "font-size: 24px;",
-        "font-weight: 600;",
-        "line-height: 38px;",
-        "margin-bottom: 12px;",
-        "color: rgb(17, 24, 39);",
+        'font-size: 24px;',
+        'font-weight: 600;',
+        'line-height: 38px;',
+        'margin-bottom: 12px;',
+        'color: rgb(17, 24, 39);',
         ...attributeStyles(attrs),
       ];
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
+      if (nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0px;');
       }
-      return style.join("");
-    case "p":
+      return style.join('');
+    case 'p':
       style = [
-        "font-size: 15px;",
-        "line-height: 24px;",
-        "margin: 16px 0;",
-        "margin-top: 0px;",
-        "margin-bottom: 20px;",
-        "color: rgb(55, 65, 81);",
-        "-webkit-font-smoothing: antialiased;",
-        "-moz-osx-font-smoothing: grayscale;",
+        'font-size: 15px;',
+        'line-height: 24px;',
+        'margin: 16px 0;',
+        'margin-top: 0px;',
+        'margin-bottom: 20px;',
+        'color: rgb(55, 65, 81);',
+        '-webkit-font-smoothing: antialiased;',
+        '-moz-osx-font-smoothing: grayscale;',
         ...attributeStyles(attrs, parent, nextNode, prevNode),
       ];
-      if (parent?.type === "listItem" || nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0;");
+      if (parent?.type === 'listItem' || nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0;');
       }
-      return style.join("");
-    case "hr":
+      return style.join('');
+    case 'hr':
       return [
-        "width: 100%;",
-        "border: none;",
-        "border-top: 1px solid #eaeaea;",
-        "margin-top: 32px;",
-        "margin-bottom: 32px;",
+        'width: 100%;',
+        'border: none;',
+        'border-top: 1px solid #eaeaea;',
+        'margin-top: 32px;',
+        'margin-bottom: 32px;',
         ...attributeStyles(attrs),
-      ].join("");
-    case "ul":
+      ].join('');
+    case 'ul':
       return [
-        "padding-left: 26px;",
-        "margin-bottom: 20px;",
-        "margin-top: 0px;",
-        "list-style-type: disc;",
+        'padding-left: 26px;',
+        'margin-bottom: 20px;',
+        'margin-top: 0px;',
+        'list-style-type: disc;',
         ...attributeStyles(attrs),
-      ].join("");
-    case "ol":
+      ].join('');
+    case 'ol':
       return [
-        "padding-left: 26px;",
-        "margin-bottom: 20px;",
-        "margin-top: 0px;",
-        "list-style-type: decimal;",
+        'padding-left: 26px;',
+        'margin-bottom: 20px;',
+        'margin-top: 0px;',
+        'list-style-type: decimal;',
         ...attributeStyles(attrs),
-      ].join("");
-    case "li":
+      ].join('');
+    case 'li':
       return [
-        "margin-bottom: 8px;",
-        "padding-left: 6px;",
-        "-webkit-font-smoothing: antialiased;",
-        "-moz-osx-font-smoothing: grayscale;",
+        'margin-bottom: 8px;',
+        'padding-left: 6px;',
+        '-webkit-font-smoothing: antialiased;',
+        '-moz-osx-font-smoothing: grayscale;',
         ...attributeStyles(attrs),
-      ].join("");
+      ].join('');
 
-    case "img":
+    case 'img':
       return [
-        "display: block;",
-        "outline: none;",
-        "border: none;",
-        "text-decoration: none;",
-        "margin-bottom: 32px;",
-        "margin-top: 0px;",
-        "height: auto;",
-        "width: auto;",
-        "max-width: 100%;",
-      ].join("");
+        'display: block;',
+        'outline: none;',
+        'border: none;',
+        'text-decoration: none;',
+        'margin-bottom: 32px;',
+        'margin-top: 0px;',
+        'height: auto;',
+        'width: auto;',
+        'max-width: 100%;',
+      ].join('');
 
-    case "logo":
+    case 'logo':
       style = [
-        "display: block;",
-        "outline: none;",
-        "border: none;",
-        "text-decoration: none;",
-        "margin-bottom: 32px;",
-        "margin-top: 0px;",
+        'display: block;',
+        'outline: none;',
+        'border: none;',
+        'text-decoration: none;',
+        'margin-bottom: 32px;',
+        'margin-top: 0px;',
         ...attributeStyles(attrs, parent, nextNode, prevNode),
       ];
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
+      if (nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0px;');
       }
-      return style.join("");
+      return style.join('');
 
-    case "footer":
+    case 'footer':
       style = [
-        "font-size: 13px;",
-        "line-height: 24px;",
-        "margin: 16px 0;",
-        "margin-bottom: 20px;",
-        "margin-top: 0px;",
-        "-webkit-font-smoothing: antialiased;",
-        "-moz-osx-font-smoothing: grayscale;",
-        "color: rgb(100, 116, 139);",
+        'font-size: 13px;',
+        'line-height: 24px;',
+        'margin: 16px 0;',
+        'margin-bottom: 20px;',
+        'margin-top: 0px;',
+        '-webkit-font-smoothing: antialiased;',
+        '-moz-osx-font-smoothing: grayscale;',
+        'color: rgb(100, 116, 139);',
         ...attributeStyles(attrs),
       ];
-      if (nextNode?.type === "spacer") {
-        style = style.filter((s) => !s.startsWith("margin-bottom"));
-        style.push("margin-bottom: 0px;");
+      if (nextNode?.type === 'spacer') {
+        style = style.filter((s) => !s.startsWith('margin-bottom'));
+        style.push('margin-bottom: 0px;');
       }
-      return style.join("");
+      return style.join('');
 
-    case "a":
+    case 'a':
       return [
-        "font-weight: 500;",
-        "color: rgb(17, 24, 39);",
-        "text-decoration-line: underline;",
-      ].join("");
+        'font-weight: 500;',
+        'color: rgb(17, 24, 39);',
+        'text-decoration-line: underline;',
+      ].join('');
+
+    case 'button':
+      style = [
+        'border: 2px solid;',
+        'line-height: 1.25rem;',
+        'text-decoration: none;',
+        'display: inline-block;',
+        'max-width: 100%;',
+        'font-size: 0.875rem;',
+        'font-weight: 500;',
+        'text-decoration-line: none;',
+        `color: ${attrs?.textColor};`,
+      ];
+      if (attrs?.variant === 'filled') {
+        style.push(`background-color: ${attrs?.buttonColor};`);
+        style.push(`border-color: ${attrs?.buttonColor};`);
+        style.push('padding: 12px 34px;');
+      } else {
+        style.push(`background-color: transparent;`);
+        style.push(`border-color: ${attrs?.buttonColor};`);
+        style.push('padding: 10px 34px;');
+      }
+
+      if (attrs?.borderRadius === 'round') {
+        style.push(`border-radius: 9999px;`);
+      } else if (attrs?.borderRadius === 'smooth') {
+        style.push(`border-radius: 6px;`);
+      } else {
+        style.push(`border-radius: 0px;`);
+      }
+
+      return style.join('');
 
     default:
-      console.log("Unknown style key", key);
-      return "";
+      console.log('Unknown style key', key);
+      return '';
   }
 }
 
@@ -285,81 +344,97 @@ function nodeMapping(
   node: TiptapNode,
   parent?: TiptapNode,
   nextNode?: TiptapNode,
-  prevNode?: TiptapNode,
+  prevNode?: TiptapNode
 ): string {
   const { type, attrs, content } = node;
-  let style = "";
-  let mappedContent = "";
+  let style = '';
 
   switch (type) {
-    case "text":
+    case 'text':
       if (node.marks) {
         return node.marks.reduce((acc, mark) => {
           return markMapping(mark, acc);
-        }, node.text || "");
+        }, node.text || '');
       }
-      return node.text || "&nbsp";
+      return node.text || '&nbsp';
 
-    case "heading":
+    case 'heading':
       const level = attrs?.level || 1;
       style = styleMapping(`h${level}`, attrs, parent, nextNode, prevNode);
       return `<h${level} style="${style}">${getMappedContent(
-        node,
+        node
       )}</h${level}>`;
 
-    case "paragraph":
-      style = styleMapping("p", attrs, parent, nextNode, prevNode);
+    case 'paragraph':
+      style = styleMapping('p', attrs, parent, nextNode, prevNode);
       return `<p style="${style}">${getMappedContent(node)}</p>`;
 
-    case "horizontalRule":
-      style = styleMapping("hr", attrs, parent, nextNode, prevNode);
+    case 'horizontalRule':
+      style = styleMapping('hr', attrs, parent, nextNode, prevNode);
       return `<hr style="${style}">`;
 
-    case "listItem":
-      style = styleMapping("li", attrs, parent, nextNode, prevNode);
+    case 'listItem':
+      style = styleMapping('li', attrs, parent, nextNode, prevNode);
       return `<li style="${style}">${getMappedContent(node, node)}</li>`;
 
-    case "bulletList":
-      style = styleMapping("ul", attrs, parent, nextNode, prevNode);
+    case 'bulletList':
+      style = styleMapping('ul', attrs, parent, nextNode, prevNode);
       return nodeTable(`<ul style="${style}">${getMappedContent(node)}</ul>`);
 
-    case "orderedList":
-      style = styleMapping("ol", attrs, parent, nextNode, prevNode);
+    case 'orderedList':
+      style = styleMapping('ol', attrs, parent, nextNode, prevNode);
       return nodeTable(`<ol style="${style}">${getMappedContent(node)}</ol>`);
 
-    case "spacer":
-      return nodeTable("", attrs, parent);
+    case 'spacer':
+      return nodeTable('', attrs, parent);
 
-    case "hardBreak":
-      return "<br>";
+    case 'hardBreak':
+      return '<br>';
 
-    case "logo":
-      style = styleMapping("logo", attrs, parent, nextNode, prevNode);
-      return `<img alt="${attrs?.alt || ""
-        }" src="${attrs?.src}" style="${style}">`;
+    case 'logo':
+      style = styleMapping('logo', attrs, parent, nextNode, prevNode);
+      return `<img alt="${
+        attrs?.alt || ''
+      }" src="${attrs?.src}" style="${style}">`;
 
-    case "image":
-      style = styleMapping("img", attrs, parent, nextNode, prevNode);
-      return `<img alt="${attrs?.alt || attrs?.title || ""
-        }" src="${attrs?.src}" style="${style}">`;
+    case 'image':
+      style = styleMapping('img', attrs, parent, nextNode, prevNode);
+      return `<img alt="${
+        attrs?.alt || attrs?.title || ''
+      }" src="${attrs?.src}" style="${style}">`;
 
-    case "footer":
-      style = styleMapping("footer", attrs, parent, nextNode, prevNode);
+    case 'footer':
+      style = styleMapping('footer', attrs, parent, nextNode, prevNode);
       return `<p style="${style}">${getMappedContent(node)}</p>`;
 
-    case "variable":
+    case 'variable':
       return `{{${attrs?.id}}}`;
+
+    case 'button':
+      style = styleMapping('button', attrs, parent, nextNode, prevNode);
+      return buttonTable(
+        `<a href="${attrs?.url}" style="${style}">
+        <span></span>
+        <span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">
+        ${attrs?.text}</span>
+        <span></span>
+        </a>`,
+        attrs,
+        parent,
+        nextNode,
+        prevNode
+      );
 
     default:
       console.log(`Node type ${type} not supported`);
-      return "";
+      return '';
   }
 }
 
 export const tiptapToHtml = (tiptap: TiptapNode[]) => {
   const baseEmailTemplate = (html: string) =>
     `
-  <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:'Inter';font-style:normal;font-weight:400;mso-font-alt:'Verdana';src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:'Inter',Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
+      <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>@font-face{font-family:Inter;font-style:normal;font-weight:400;mso-font-alt:Verdana;src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19) format('woff2')}*{font-family:Inter,Verdana}</style><style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style></head><body><table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:.5rem"><tbody><tr style="width:100%"><td>${html}</td></tr></tbody></table></body></html>`.trim();
   return baseEmailTemplate(
     tiptap
       .map((node, index) => {
@@ -367,6 +442,6 @@ export const tiptapToHtml = (tiptap: TiptapNode[]) => {
         const prevNode = tiptap[index - 1] || null;
         return nodeMapping(node, node, nextNode, prevNode);
       })
-      .join(""),
+      .join('')
   );
 };

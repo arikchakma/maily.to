@@ -26,8 +26,6 @@ const inter = Inter({
 });
 
 export type MailEditor = {
-  getEmailHtml: () => string;
-  getJSON: () => JSONContent[];
   getEditor: () => TipTapEditor;
 };
 
@@ -105,18 +103,15 @@ export function Editor(props: EditorProps) {
   });
 
   useEffect(() => {
-    if (!editor || !onMount) {
+    if (!editor) {
       return;
     }
 
-    const editorJson = editor.getJSON();
     onMount?.({
-      getJSON: () => editorJson.content || [],
-      getEmailHtml: () => tiptapToHtml(editorJson.content || []),
       getEditor: () => editor,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor, editor?.getJSON()]);
+  }, [editor]);
 
   if (!editor) {
     return null;

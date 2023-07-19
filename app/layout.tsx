@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     url: 'https://maily.to',
     locale: 'en-US',
     images: {
-      url: '/preview.png',
+      url: '/og.png',
       width: 1200,
       height: 630,
       alt: 'Maily Preview',

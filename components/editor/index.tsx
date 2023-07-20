@@ -19,8 +19,6 @@ import { TiptapExtensions } from './extensions';
 
 import './editor.css';
 
-import { tiptapToHtml } from '@/components/editor/utils/email';
-
 const inter = Inter({
   subsets: ['latin'],
 });
@@ -98,20 +96,19 @@ export function Editor(props: EditorProps) {
         },
       },
     },
+    onCreate: ({ editor }) => {
+      onMount?.({
+        getEditor: () => editor as TipTapEditor,
+      });
+    },
+    onUpdate: ({ editor }) => {
+      onMount?.({
+        getEditor: () => editor as TipTapEditor,
+      });
+    },
     extensions: TiptapExtensions,
     content: formattedContent,
   });
-
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    onMount?.({
-      getEditor: () => editor,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor]);
 
   if (!editor) {
     return null;

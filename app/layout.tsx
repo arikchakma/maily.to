@@ -1,3 +1,5 @@
+import { Toaster } from '@/components/editor/components/toaster';
+
 import './globals.css';
 
 import { Metadata } from 'next';
@@ -60,7 +62,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        <main>
+          {children}
+          <Toaster />
+        </main>
       </body>
     </html>
   );

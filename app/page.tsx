@@ -167,7 +167,7 @@ export default function LandingPage() {
                 <NextImage
                   src={StarImage}
                   alt="Star Icon"
-                  className="mr-1 h-5 md:mr-2 md:h-7"
+                  className="mr-1 h-5 w-5 md:mr-2 md:h-7 md:w-7"
                 />{' '}
                 <span className="line-through">&nbsp;100k&nbsp;</span>
               </span>

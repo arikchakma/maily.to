@@ -2,13 +2,13 @@
 
 import copy from 'copy-to-clipboard';
 
+import { MailEditor } from './editor';
 import { BaseButton } from './editor/components/base-button';
 import { useToast } from './editor/hooks/use-toast';
 import { tiptapToHtml } from './editor/utils/email';
-import { MailEditor } from './editor';
 
 type Props = {
-  editor: MailEditor
+  editor: MailEditor;
 };
 export function GetHtmlButton(props: Props) {
   const { editor } = props;

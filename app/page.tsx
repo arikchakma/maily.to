@@ -1,5 +1,8 @@
 import NextImage from 'next/image';
+import NextLink from 'next/link';
+import ArrowImage from '@/public/arrow.svg';
 import IconImage from '@/public/brand/icon.svg';
+import StarImage from '@/public/star.svg';
 
 import { Editor } from '@/components/editor';
 import { EditorPreview } from '@/components/editor-preview';
@@ -30,7 +33,6 @@ const comingSoon = [
   'List',
   'Columns',
   'Countdown',
-  'Social',
 ];
 
 export default function LandingPage() {
@@ -40,29 +42,33 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1050px] px-7 sm:px-10">
           <div className="flex items-center justify-start gap-4 py-10 md:py-14 lg:py-20">
             <div className="flex-grow" data-hero-text="">
-              <h1 className="mb-2 text-7xl font-black md:mb-3 md:text-8xl lg:mb-4 lg:text-9xl">
+              <h1 className="mb-2 text-6xl font-black sm:text-7xl md:mb-3 md:text-8xl lg:mb-4 lg:text-9xl">
                 maily.to
               </h1>
               <p className="text-md md:text-2xl lg:text-3xl">
                 Open-source editor for crafting emails.
               </p>
               <div className="mt-4 flex flex-col items-stretch gap-2 sm:flex-row md:mt-8 lg:mt-10">
-                <button className="flex items-center justify-center gap-3 rounded-xl bg-black px-7 py-3 text-2xl font-medium text-white hover:bg-red-500 focus:outline-0 transition-all">
+                <NextLink href="/playground" className="flex min-h-[72px] items-center justify-center gap-3 rounded-xl bg-black px-7 py-3 text-2xl font-medium text-white transition-all hover:bg-red-500 focus:outline-0">
                   <PencilIcon />
                   Open Editor
-                </button>
+                </NextLink>
 
-                <button className="flex items-center justify-center gap-2 rounded-xl border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0">
+                <a
+                  href="https://github.com/arikchakma/maily.to"
+                  target="_blank"
+                  className="flex items-center justify-center gap-2 rounded-xl border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0"
+                >
                   <GitHubIcon />
                   View on Github
-                </button>
+                </a>
               </div>
             </div>
-            <div className="hidden flex-shrink-0 sm:flex">
+            <div className="hidden hidden flex-shrink-0 lg:flex">
               <NextImage
                 src={IconImage}
                 alt="Icon"
-                className="h-[270px] w-[270px]"
+                className="h-[240px] w-[240px] lg:h-[270px] lg:w-[270px]"
                 priority
               />
             </div>
@@ -72,12 +78,12 @@ export default function LandingPage() {
 
       <div className="border-b-8 border-b-black py-24">
         <div className="mx-auto max-w-[1050px] px-7">
-          <h2 className="mb-6 text-6xl font-bold">
+          <h2 className="mb-6 text-4xl font-bold sm:text-6xl">
             Designing Emails is{' '}
             <span className="text-red-500 line-through">&nbsp;Hard&nbsp;</span>{' '}
             Easy
           </h2>
-          <p className="mb-14 text-3xl leading-relaxed">
+          <p className="mb-14 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             Maily is a free and{' '}
             <span className="rounded-md bg-gray-200 px-2 py-1">
               open-source editor
@@ -97,23 +103,25 @@ export default function LandingPage() {
             that you can use to build your emails.
           </p>
 
-          <h2 className="mb-6 text-6xl font-bold">Pre-Designed Components</h2>
-          <p className="mb-9 text-3xl leading-relaxed">
+          <h2 className="mb-6 text-4xl font-bold sm:text-6xl">
+            Pre-Designed Components
+          </h2>
+          <p className="mb-9 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             Here is a list of pre-designed components that you can use to build
             your emails. We are adding more components as we speak.
           </p>
           <ul className="flex flex-wrap gap-3">
             {components.map((component) => (
-              <li>
-                <span className="block rounded-xl border-4 border-black bg-transparent px-6 py-3 text-2xl font-medium text-black">
+              <li key={component}>
+                <span className="block rounded-xl border-4 border-black bg-transparent px-4 py-2 text-base font-medium text-black md:px-6 md:py-3 md:text-2xl">
                   {component}
                 </span>
               </li>
             ))}
 
             {comingSoon.map((component) => (
-              <li>
-                <span className="relative flex overflow-hidden rounded-xl border-4 border-gray-300 bg-transparent px-6 py-3 pr-14 text-2xl font-medium text-gray-300">
+              <li key={component}>
+                <span className="relative flex overflow-hidden rounded-xl border-4 border-gray-300 bg-transparent px-4 py-2 pr-12 text-base font-medium text-gray-300 sm:pr-14 md:px-6 md:py-3 md:text-2xl">
                   {component}
                   <span className="absolute right-0 top-0 ml-1.5 rounded-bl-xl bg-gray-100 p-1 px-2 pl-3 text-xs text-gray-800">
                     soon
@@ -127,19 +135,20 @@ export default function LandingPage() {
 
       <div className="border-b-8 border-b-black py-24">
         <div className="mx-auto max-w-[1050px] px-7">
-          <h2 className="mb-6 text-6xl font-bold">
+          <h2 className="mb-6 text-4xl font-bold sm:text-6xl">
             <span className="text-red-400 line-through">
               &nbsp;So Many&nbsp;
             </span>{' '}
             Not Many Stars
           </h2>
-          <p className="mb-4 text-3xl leading-relaxed">
+          <p className="mb-4 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             I just launched the project —— thus, not many stars.
           </p>
-          <p className="mb-7 text-3xl leading-relaxed">
+          <p className="mb-7 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             Please do{' '}
             <a
-              href="#"
+              href="https://github.com/arikchakma/maily.to"
+              target="_blank"
               className="underline underline-offset-8 hover:text-red-500"
             >
               leave a star on GitHub
@@ -148,17 +157,17 @@ export default function LandingPage() {
             have any feedback or suggestions.
           </p>
 
-          <div className='flex gap-3'>
+          <div className="flex flex-col gap-3 md:flex-row">
             <a
               href="https://github.com/arikchakma/maily.to"
               data-github-link=""
               target="_blank"
-              className="inline-flex items-center justify-center rounded-lg border-black bg-red-300 px-5 py-2 text-lg font-medium hover:bg-red-400 md:text-xl lg:rounded-xl lg:py-4 lg:text-2xl transition-colors"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-lg border-black bg-red-300 px-5 py-2 text-lg font-medium transition-colors hover:bg-red-400 md:text-xl lg:rounded-xl lg:py-4 lg:text-2xl"
             >
               <span className="mr-3 inline-flex items-center">
-                <img
-                  src="/star.svg"
-                  alt="Hero Image"
+                <NextImage
+                  src={StarImage}
+                  alt="Star Icon"
                   className="mr-1 h-5 md:mr-2 md:h-7"
                 />{' '}
                 <span className="line-through">&nbsp;100k&nbsp;</span>
@@ -166,11 +175,13 @@ export default function LandingPage() {
               GitHub Stars
             </a>
 
-            <a href="/docs/installation"
-               className="bg-white gap-2 justify-center text-black flex items-center font-medium text-lg md:text-xl lg:text-2xl border-4 border-black rounded-lg lg:rounded-xl py-2 lg:py-3 px-5 hover:bg-black hover:text-white transition-colors">
+            <NextLink
+              href="/playground"
+              className="flex items-center justify-center gap-2 rounded-lg border-4 border-black bg-white px-5 py-2 text-lg font-medium text-black transition-colors hover:bg-black hover:text-white md:text-xl lg:rounded-xl lg:py-3 lg:text-2xl"
+            >
               <PencilIcon />
               Open Editor
-            </a>
+            </NextLink>
           </div>
         </div>
       </div>
@@ -179,26 +190,28 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1050px] px-7 sm:px-10">
           <p className="text-center text-lg text-white">
             MIT Licensed © 2023
-            <span className="mx-3">·</span>
+            <span className="mx-3 hidden sm:inline-block">·</span>
             <a
-              href="/docs/installation"
-              className="inline-flex items-center hover:text-red-300"
+              href="https://github.com/arikchakma/maily.to"
+              className="hidden items-center hover:text-red-300 sm:inline-flex"
+              target="_blank"
             >
               GitHub
-              <img
-                src="/arrow.svg"
+              <NextImage
+                src={ArrowImage}
                 className="ml-2 inline-block h-3"
                 alt="GitHub"
               />
             </a>
-            <span className="mx-3">·</span>
+            <span className="mx-3 hidden sm:inline-block">·</span>
             <a
-              href="/docs/installation"
-              className="inline-flex items-center hover:text-red-300"
+              href="https://twitter.com/ImArikChakma"
+              className="hidden items-center hover:text-red-300 sm:inline-flex"
+              target="_blank"
             >
               Twitter
-              <img
-                src="/arrow.svg"
+              <NextImage
+                src={ArrowImage}
                 className="ml-2 inline-block h-3"
                 alt="Twitter"
               />

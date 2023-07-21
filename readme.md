@@ -1,7 +1,7 @@
 <h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> maily.to</h1>
 
 <p align="center">
-  <a href="https://github.com/kamranahmedse/driver.js/blob/master/license">
+  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
   <a href="https://maily.to">

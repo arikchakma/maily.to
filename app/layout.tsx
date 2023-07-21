@@ -1,11 +1,11 @@
-import { Toaster } from '@/components/editor/components/toaster';
-
 import './globals.css';
 
 import { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 
 import { config } from '@/lib/config';
 import { GoogleAnalytics } from '@/components/google-analytics';
+import { Toaster } from '@/components/editor/components/toaster';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
@@ -71,6 +71,7 @@ export default function RootLayout({
             <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />
           )}
           <Toaster />
+          <Analytics />
         </main>
       </body>
     </html>

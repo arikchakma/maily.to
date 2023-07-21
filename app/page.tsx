@@ -59,7 +59,12 @@ export default function LandingPage() {
                   className="flex items-center justify-center gap-2 rounded-xl border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0"
                 >
                   <GitHubIcon />
-                  View on Github
+                  <span className="hidden sm:inline-block">
+                    View on Github
+                  </span>
+                  <span className="sm:hidden">
+                    Github
+                  </span>
                 </a>
               </div>
             </div>

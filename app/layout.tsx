@@ -5,7 +5,13 @@ import { Analytics } from '@vercel/analytics/react';
 
 import { config } from '@/lib/config';
 import { GoogleAnalytics } from '@/components/google-analytics';
+import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/editor/components/toaster';
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
@@ -64,7 +70,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${inter.className}`}>
         <main>
           {children}
           {config.googleTrackingId && (

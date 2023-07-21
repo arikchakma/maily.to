@@ -18,7 +18,7 @@ export function EditorPreview() {
             hasMenuBar: true,
             wrapClassName: 'editor-wrap',
             contentClassName: 'editor-content',
-            toolbarClassName: 'editor-toolbar',
+            toolbarClassName: 'flex-wrap !items-start',
             spellCheck: false,
           }}
           onMount={(editor) => setEditor(editor)}

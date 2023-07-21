@@ -1,5 +1,6 @@
-"use client";
-import Script from "next/script";
+'use client';
+
+import Script from 'next/script';
 
 type Props = {
   GA_TRACKING_ID: string;
@@ -24,4 +25,4 @@ export function GoogleAnalytics(props: Props) {
       </Script>
     </>
   );
-};
+}

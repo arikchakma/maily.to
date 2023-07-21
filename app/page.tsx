@@ -77,7 +77,7 @@ export default function LandingPage() {
 
       <div className="border-b-8 border-b-black py-24">
         <div className="mx-auto max-w-[1050px] px-7">
-          <h2 className="md:mb-6 text-3xl md:text-4xl lg:text-6xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:mb-6 md:text-4xl lg:text-6xl">
             Designing Emails is{' '}
             <span className="text-red-500 line-through">&nbsp;Hard&nbsp;</span>{' '}
             Easy
@@ -102,7 +102,7 @@ export default function LandingPage() {
             that you can use to build your emails.
           </p>
 
-          <h2 className="md:mb-6 text-3xl md:text-4xl lg:text-6xl font-bold mb-4">
+          <h2 className="mb-4 text-3xl font-bold md:mb-6 md:text-4xl lg:text-6xl">
             Pre-Designed Components
           </h2>
           <p className="mb-9 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">

@@ -9,14 +9,14 @@ import { cn } from '@/components/editor/utils/tailwind';
 
 export const metadata = {
   title: 'Playground - Maily',
-}
+};
 
 export default function PlaygroundPage() {
   return (
     <div className="pb-10">
-      <div className="mx-auto flex max-w-[680px] flex-col px-10">
+      <div className="mx-auto flex max-w-[680px] flex-col px-5 md:px-10">
         <header className="mt-14 flex items-center gap-3 rounded-md border px-5 py-4">
-          <div className="flex h-16 w-16 items-center justify-center">
+          <div className="hidden h-16 w-16 items-center justify-center sm:flex">
             <NextImage
               src={IconImage}
               alt="Icon"

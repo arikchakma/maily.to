@@ -60,7 +60,7 @@ export const TiptapExtensions = [
         return `Heading ${node.attrs.level}`;
       }
 
-      return 'Write something ..';
+      return 'Write something or / to see commands';
     },
     includeChildren: true,
   }),

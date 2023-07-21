@@ -1,19 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { JSONContent } from '@tiptap/core';
+import { EyeIcon } from 'lucide-react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 import { MailEditor } from './editor';
-import { BaseButton } from './editor/components/base-button';
 import { tiptapToHtml } from './editor/utils/email';
 import { IFrame } from './iframe';
 
@@ -32,12 +24,13 @@ export function EmailPreviewDialog(props: EmailPreviewDialogProps) {
           setHtml(tiptapToHtml(editor.getEditor().getJSON().content || []));
         }}
       >
-        <BaseButton variant="outline" className="grow">
+        <button className="flex grow items-center justify-center gap-2 rounded-md border-4 border-black bg-white px-5 py-3 text-xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0">
+          <EyeIcon size={24} />
           Preview Email
-        </BaseButton>
+        </button>
       </DialogTrigger>
-      <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[600px] overflow-hidden p-0">
-        <IFrame innerHTML={html} className="h-full w-full" />
+      <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[630px] overflow-hidden p-0">
+        <IFrame innerHTML={html} className="h-full w-full p-6" />
       </DialogContent>
     </Dialog>
   );

@@ -4,10 +4,6 @@ import ArrowImage from '@/public/arrow.svg';
 import IconImage from '@/public/brand/icon.svg';
 import StarImage from '@/public/star.svg';
 
-import { Editor } from '@/components/editor';
-import { EditorPreview } from '@/components/editor-preview';
-import { buttonVariants } from '@/components/editor/components/base-button';
-import { cn } from '@/components/editor/utils/tailwind';
 import { PencilIcon } from '@/app/PencilIcon';
 
 import { GitHubIcon } from './GitHubIcon';
@@ -49,7 +45,10 @@ export default function LandingPage() {
                 Open-source editor for crafting emails.
               </p>
               <div className="mt-4 flex flex-col items-stretch gap-2 sm:flex-row md:mt-8 lg:mt-10">
-                <NextLink href="/playground" className="flex min-h-[72px] items-center justify-center gap-3 rounded-xl bg-black px-7 py-3 text-2xl font-medium text-white transition-all hover:bg-red-500 focus:outline-0">
+                <NextLink
+                  href="/playground"
+                  className="flex min-h-[72px] items-center justify-center gap-3 rounded-xl bg-black px-7 py-3 text-2xl font-medium text-white transition-all hover:bg-red-500 focus:outline-0"
+                >
                   <PencilIcon />
                   Open Editor
                 </NextLink>

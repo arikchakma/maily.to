@@ -6,13 +6,13 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
-  title: 'Maily - Elevate Your Email Experience',
+  title: 'Maily - Open-source editor for crafting emails',
   description:
     'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
   themeColor: '#ffffff',
   twitter: {
     creator: '@imarikchakma',
-    title: 'Maily - Elevate Your Email Experience',
+    title: 'Maily - Open-source editor for crafting emails',
     card: 'summary_large_image',
   },
   icons: {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     siteName: 'Maily',
-    title: 'Maily - Elevate Your Email Experience',
+    title: 'Maily - Open-source editor for crafting emails',
     description:
       'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
     type: 'website',

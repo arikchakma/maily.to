@@ -109,7 +109,7 @@ export default function LandingPage() {
             Here is a list of pre-designed components that you can use to build
             your emails. We are adding more components as we speak.
           </p>
-          <ul className="flex flex-wrap gap-3">
+          <ul className="flex flex-wrap gap-2 md:gap-3">
             {components.map((component) => (
               <li key={component}>
                 <span className="block rounded-xl border-4 border-black bg-transparent px-4 py-2 text-base font-medium text-black md:px-6 md:py-3 md:text-2xl">

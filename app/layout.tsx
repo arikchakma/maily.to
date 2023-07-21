@@ -3,6 +3,8 @@ import { Toaster } from '@/components/editor/components/toaster';
 import './globals.css';
 
 import { Metadata } from 'next';
+import { config } from '@/lib/config';
+import { GoogleAnalytics } from '@/components/google-analytics';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
@@ -64,6 +66,7 @@ export default function RootLayout({
       <body>
         <main>
           {children}
+          {config.googleTrackingId && <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />}
           <Toaster />
         </main>
       </body>

@@ -7,7 +7,11 @@ import { EditorPreview } from '@/components/editor-preview';
 import { buttonVariants } from '@/components/editor/components/base-button';
 import { cn } from '@/components/editor/utils/tailwind';
 
-export default function LandingPage() {
+export const metadata = {
+  title: 'Playground - Maily',
+}
+
+export default function PlaygroundPage() {
   return (
     <div className="pb-10">
       <div className="mx-auto flex max-w-[680px] flex-col px-10">

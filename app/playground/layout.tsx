@@ -4,9 +4,11 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { ArrowLeft, LogIn } from 'lucide-react';
 
 import { buttonVariants } from '@/components/ui/button';
+import { Navigation } from '@/components/auth/navigation';
 import { UserMenu } from '@/components/user-menu';
 import { cn } from '@/utils/classname';
-import { Navigation } from '@/components/auth/navigation';
+
+export const dynamic = 'force-dynamic';
 
 type PlaygroundLayoutProps = {
   children: React.ReactNode;

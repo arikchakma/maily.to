@@ -2,22 +2,25 @@ import NextImage from 'next/image';
 import NextLink from 'next/link';
 import IconImage from '@/public/brand/icon.svg';
 import { User } from '@supabase/supabase-js';
-
-import { LogoutButton } from './logout-button';
 import { GithubIcon } from 'lucide-react';
+
 import { cn } from '@/utils/classname';
+
+import { MailListCombobox } from '../mail/mail-list-combobox';
+import { SaveMailDialog } from '../mail/save-mail-dialog';
 import { buttonVariants } from '../ui/button';
+import { LogoutButton } from './logout-button';
 
 type NavigationType = {
   user: User | null;
 };
 
-export async function Navigation(props: NavigationType) {
+export function Navigation(props: NavigationType) {
   const { user } = props;
   return (
-    <header className="mt-14 rounded-md border">
+    <header className="mt-14">
       {!user ? (
-        <div className="flex w-full items-center justify-between px-5 py-4">
+        <div className="flex w-full items-center justify-between rounded-md border px-5 py-4">
           <div className="flex items-center gap-3">
             <picture className="hidden h-16 w-16 items-center justify-center sm:flex">
               <NextImage
@@ -51,27 +54,10 @@ export async function Navigation(props: NavigationType) {
         </div>
       ) : (
         <>
-          <div className="flex w-full items-center justify-between px-5 py-4">
-            <div className="flex items-center gap-3">
-              <picture className="relative hidden h-16 w-16 items-center justify-center overflow-hidden rounded-md sm:flex">
-                <NextImage
-                  src={user?.user_metadata?.avatar_url || IconImage}
-                  alt="Icon"
-                  className="absolute inset-0 h-full w-full object-cover"
-                  priority
-                  fill
-                />
-              </picture>
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-gray-800">
-                  {user?.user_metadata?.full_name || user?.email}
-                </h2>
-                <p>{user?.email}</p>
-              </div>
-            </div>
-            <LogoutButton />
+          <div className="flex items-center justify-between gap-2">
+            <MailListCombobox />
+            <SaveMailDialog />
           </div>
-          <div className="border-t px-5 py-4">Hello</div>
         </>
       )}
     </header>

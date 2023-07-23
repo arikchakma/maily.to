@@ -1,7 +1,8 @@
-import { GithubLoginButton } from '@/components/auth/github-login-button';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/utils/classname';
 import NextLink from 'next/link';
+
+import { buttonVariants } from '@/components/ui/button';
+import { GithubLoginButton } from '@/components/auth/github-login-button';
+import { cn } from '@/utils/classname';
 
 export const metadata = {
   title: 'Login - Next Right Now',
@@ -26,7 +27,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-semibold tracking-tight">
               Login to your account
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Welcome back! Let&apos;s take you to your account.
             </p>
           </div>
@@ -35,5 +36,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

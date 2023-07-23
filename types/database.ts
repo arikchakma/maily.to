@@ -11,28 +11,28 @@ export interface Database {
     Tables: {
       mails: {
         Row: {
-          content: Json | null;
+          content: Json;
           created_at: string | null;
-          id: number;
-          title: string | null;
+          id: string;
+          title: string;
           updated_at: string | null;
-          user_id: string | null;
+          user_id: string;
         };
         Insert: {
-          content?: Json | null;
+          content: Json;
           created_at?: string | null;
-          id?: number;
-          title?: string | null;
+          id?: string;
+          title: string;
           updated_at?: string | null;
-          user_id?: string | null;
+          user_id: string;
         };
         Update: {
-          content?: Json | null;
+          content?: Json;
           created_at?: string | null;
-          id?: number;
-          title?: string | null;
+          id?: string;
+          title?: string;
           updated_at?: string | null;
-          user_id?: string | null;
+          user_id?: string;
         };
         Relationships: [
           {

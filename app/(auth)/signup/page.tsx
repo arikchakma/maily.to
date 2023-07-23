@@ -1,7 +1,8 @@
-import { GithubLoginButton } from '@/components/auth/github-login-button';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/utils/classname';
 import NextLink from 'next/link';
+
+import { buttonVariants } from '@/components/ui/button';
+import { GithubLoginButton } from '@/components/auth/github-login-button';
+import { cn } from '@/utils/classname';
 
 export const metadata = {
   title: 'Sign Up - Next Right Now',
@@ -27,7 +28,7 @@ export default async function SignupPage() {
             <h1 className="text-2xl font-semibold tracking-tight">
               Create an account
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Enter your email below to create your account
             </p>
           </div>
@@ -36,5 +37,5 @@ export default async function SignupPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

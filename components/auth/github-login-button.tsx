@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GithubIcon, Loader2 } from 'lucide-react';
 
@@ -29,7 +29,6 @@ export function GithubLoginButton() {
       provider: 'github',
       options: {
         redirectTo: `${getURL()}signup`,
-        skipBrowserRedirect: true,
       },
     });
 
@@ -40,8 +39,27 @@ export function GithubLoginButton() {
 
     router.refresh();
   }
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event) => {
+        if (event === 'SIGNED_IN') {
+          router.push('/playground');
+        }
+      }
+    );
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [router]);
+
   return (
-    <BaseButton variant="outline" onClick={handleLogin} className="gap-2" disabled={isLoading}>
+    <BaseButton
+      variant="outline"
+      onClick={handleLogin}
+      className="gap-2"
+      disabled={isLoading}
+    >
       {isLoading ? (
         <Loader2 className="animate-spin" size={16} />
       ) : (

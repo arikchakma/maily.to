@@ -8,6 +8,8 @@ import { config } from '@/lib/config';
 import { Toaster } from '@/components/ui/toaster';
 import { GoogleAnalytics } from '@/components/google-analytics';
 
+import Providers from './providers';
+
 const inter = Inter({
   subsets: ['latin'],
 });
@@ -70,14 +72,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <main>
-          {children}
-          {config.googleTrackingId && (
-            <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />
-          )}
-          <Toaster />
-          <Analytics />
-        </main>
+        <Providers>
+          <main>
+            {children}
+            {config.googleTrackingId && (
+              <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />
+            )}
+            <Toaster />
+            <Analytics />
+          </main>
+        </Providers>
       </body>
     </html>
   );

@@ -1,17 +1,16 @@
 import './globals.css';
 
 import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
 import { config } from '@/lib/config';
+import { Toaster } from '@/components/ui/toaster';
 import { GoogleAnalytics } from '@/components/google-analytics';
-import { Inter } from 'next/font/google';
-import { Toaster } from '@/components/editor/components/toaster';
 
 const inter = Inter({
   subsets: ['latin'],
 });
-
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),

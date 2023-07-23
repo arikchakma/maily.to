@@ -31,13 +31,13 @@ const comingSoon = [
   'Countdown',
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
   return (
     <div>
       <div className="border-b-8 border-t-8 border-b-black border-t-black">
         <div className="mx-auto max-w-[1050px] px-7 sm:px-10">
           <div className="flex items-center justify-start gap-4 py-10 md:py-14 lg:py-20">
-            <div className="flex-grow" data-hero-text="">
+            <div className="flex-grow">
               <h1 className="mb-2 text-6xl font-black sm:text-7xl md:mb-3 md:text-8xl lg:mb-4 lg:text-9xl">
                 maily.to
               </h1>
@@ -59,12 +59,8 @@ export default function LandingPage() {
                   className="flex items-center justify-center gap-2 rounded-xl border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0"
                 >
                   <GitHubIcon />
-                  <span className="hidden sm:inline-block">
-                    View on Github
-                  </span>
-                  <span className="sm:hidden">
-                    Github
-                  </span>
+                  <span className="hidden sm:inline-block">View on Github</span>
+                  <span className="sm:hidden">Github</span>
                 </a>
               </div>
             </div>

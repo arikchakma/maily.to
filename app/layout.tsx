@@ -1,17 +1,19 @@
 import './globals.css';
 
 import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
+import NextTopLoader from 'nextjs-toploader'
 
 import { config } from '@/lib/config';
+import { Toaster } from '@/components/ui/toaster';
 import { GoogleAnalytics } from '@/components/google-analytics';
-import { Inter } from 'next/font/google';
-import { Toaster } from '@/components/editor/components/toaster';
+
+import Providers from './providers';
 
 const inter = Inter({
   subsets: ['latin'],
 });
-
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
@@ -71,14 +73,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <main>
-          {children}
-          {config.googleTrackingId && (
-            <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />
-          )}
-          <Toaster />
-          <Analytics />
-        </main>
+        <Providers>
+          <main>
+            {children}
+            {config.googleTrackingId && (
+              <GoogleAnalytics GA_TRACKING_ID={config.googleTrackingId} />
+            )}
+            <Toaster />
+            <Analytics />
+            <NextTopLoader showSpinner={false} />
+          </main>
+        </Providers>
       </body>
     </html>
   );

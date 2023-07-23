@@ -29,8 +29,8 @@ export function EmailPreviewDialog(props: EmailPreviewDialogProps) {
           Preview Email
         </button>
       </DialogTrigger>
-      <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[630px] overflow-hidden p-0">
-        <IFrame innerHTML={html} className="h-full w-full p-6" />
+      <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0">
+        <IFrame innerHTML={html} className="h-full w-full" />
       </DialogContent>
     </Dialog>
   );

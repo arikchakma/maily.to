@@ -20,6 +20,7 @@ export const IFrame = ({
       return;
     }
     iframeDocument.body.innerHTML = innerHTML;
+    iframeDocument.body.style.padding = '20px 0';
 
     const unmount = () => {
       iframeDocument.body.innerHTML = '';

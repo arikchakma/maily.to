@@ -27,26 +27,6 @@ export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
   return (
     <div className="pb-10">
       <div className="mx-auto flex max-w-[680px] flex-col px-5 md:px-10">
-        <div className="mt-4 flex items-center justify-between">
-          <NextLink
-            href="/"
-            className={cn(buttonVariants({ variant: 'ghost' }), 'gap-2')}
-          >
-            <ArrowLeft size={16} /> Go home
-          </NextLink>
-
-          {user ? (
-            <UserMenu user={user} />
-          ) : (
-            <NextLink
-              href="/login"
-              className={cn(buttonVariants({ variant: 'ghost' }), 'gap-2')}
-            >
-              Login <LogIn size={16} />
-            </NextLink>
-          )}
-        </div>
-
         <Navigation user={user} />
         {props.children}
       </div>

@@ -1,15 +1,8 @@
-import NextImage from 'next/image';
 import NextLink from 'next/link';
-import IconImage from '@/public/brand/icon.svg';
 import { User } from '@supabase/supabase-js';
-import { GithubIcon } from 'lucide-react';
-
-import { cn } from '@/utils/classname';
-
 import { MailListCombobox } from '../mail/mail-list-combobox';
 import { SaveMailDialog } from '../mail/save-mail-dialog';
-import { buttonVariants } from '../ui/button';
-import { LogoutButton } from './logout-button';
+import { Balancer } from 'react-wrap-balancer';
 
 type NavigationType = {
   user: User | null;
@@ -20,37 +13,27 @@ export function Navigation(props: NavigationType) {
   return (
     <header className="mt-14">
       {!user ? (
-        <div className="flex w-full items-center justify-between rounded-md border px-5 py-4">
-          <div className="flex items-center gap-3">
-            <picture className="hidden h-16 w-16 items-center justify-center sm:flex">
-              <NextImage
-                src={IconImage}
-                alt="Icon"
-                className="h-12 w-12"
-                priority
-              />
-            </picture>
-            <div>
-              <NextLink
-                href="/"
-                className="text-2xl font-semibold tracking-tight text-gray-800"
-              >
-                maily.to
-              </NextLink>
-              <p>Editor to help you craft emails.</p>
-            </div>
-          </div>
+        <div className="rounded-md border px-5 py-4">
+          <p className="text-lg">
+            <Balancer>
+              You can create an account to save email templates as well. It&apos;s free and easy to use.
+            </Balancer>
+          </p>
 
-          <a
-            href="https://github.com/arikchakma/maily.to"
-            target="_blank"
-            className={cn(
-              buttonVariants({ variant: 'ghost', size: 'icon' }),
-              'ml-auto text-gray-600 hover:text-gray-800'
-            )}
-          >
-            <GithubIcon className="h-6 w-6" />
-          </a>
+          <div className="flex items-stretch gap-2 mt-5">
+            <NextLink
+              href="/login"
+              className="flex items-center justify-center gap-3 rounded-xl bg-black px-4 py-1.5 font-medium text-white transition-all hover:bg-red-500 focus:outline-0"
+            >
+              Login
+            </NextLink>
+            <NextLink
+              href="/signup"
+              className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-white px-4 py-1.5 font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0"
+            >
+              Sign up
+            </NextLink>
+          </div>
         </div>
       ) : (
         <>
@@ -59,7 +42,8 @@ export function Navigation(props: NavigationType) {
             <SaveMailDialog />
           </div>
         </>
-      )}
-    </header>
+      )
+      }
+    </header >
   );
 }

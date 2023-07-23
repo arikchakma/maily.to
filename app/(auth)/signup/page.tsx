@@ -5,7 +5,7 @@ import { GithubLoginButton } from '@/components/auth/github-login-button';
 import { cn } from '@/utils/classname';
 
 export const metadata = {
-  title: 'Sign Up - Next Right Now',
+  title: 'Sign Up - Maily',
 };
 
 type Props = {

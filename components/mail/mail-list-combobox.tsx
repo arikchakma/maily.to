@@ -3,9 +3,11 @@
 import * as React from 'react';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
-import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
+import { useAtomValue } from 'jotai';
+import { Check, ChevronsUpDown, Loader2, TrashIcon } from 'lucide-react';
 
 import { Database } from '@/types/database';
+import { editorAtom } from '@/lib/editor-atom';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -22,9 +24,12 @@ import {
 import { cn } from '@/utils/classname';
 import { fetcher, QueryError } from '@/utils/fetcher';
 
+import { MailDeleteButton } from './mail-delete-button';
+
 type MailRowType = Database['public']['Tables']['mails']['Row'];
 
 export function MailListCombobox() {
+  const editor = useAtomValue(editorAtom);
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
 
@@ -38,7 +43,7 @@ export function MailListCombobox() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={status === 'loading'}>
         <Button
           variant="outline"
           role="combobox"
@@ -65,17 +70,45 @@ export function MailListCombobox() {
                 key={mail.id}
                 value={mail.id}
                 onSelect={(currentValue) => {
+                  if (currentValue === value) {
+                    editor?.getEditor()?.commands.setContent({
+                      type: 'doc',
+                      content: [{ type: 'paragraph' }],
+                    });
+                  } else {
+                    editor?.getEditor()?.commands.setContent(
+                      JSON.parse(mail.content as string) || {
+                        type: 'doc',
+                        content: [{ type: 'paragraph' }],
+                      }
+                    );
+                  }
                   setValue(currentValue === value ? '' : currentValue);
                   setOpen(false);
                 }}
+                className="justify-between"
               >
-                <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    value === mail.id ? 'opacity-100' : 'opacity-0'
-                  )}
+                <div className="flex items-center">
+                  <Check
+                    className={cn(
+                      'mr-2 h-4 w-4',
+                      value === mail.id ? 'opacity-100' : 'opacity-0'
+                    )}
+                  />
+                  {mail.title}
+                </div>
+                <MailDeleteButton
+                  mailId={mail.id}
+                  onDelete={() => {
+                    if (value === mail.id) {
+                      setValue('');
+                      editor?.getEditor()?.commands.setContent({
+                        type: 'doc',
+                        content: [{ type: 'paragraph' }],
+                      });
+                    }
+                  }}
                 />
-                {mail.title}
               </CommandItem>
             ))}
           </CommandGroup>

@@ -278,6 +278,7 @@ const CommandList = ({
         command(item);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [command, editor, items]
   );
 

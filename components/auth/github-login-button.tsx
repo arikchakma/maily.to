@@ -20,8 +20,13 @@ const getURL = () => {
   return url;
 };
 
-export function GithubLoginButton() {
-  const [isLoading, setIsLoading] = useState(false);
+type GithubLoginButtonProps = {
+  code?: string;
+};
+
+export function GithubLoginButton(props: GithubLoginButtonProps) {
+  const { code } = props;
+  const [isLoading, setIsLoading] = useState(code ? true : false);
   const router = useRouter();
   async function handleLogin() {
     setIsLoading(true);

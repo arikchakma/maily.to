@@ -1,11 +1,10 @@
-import { NextApiRequest } from 'next';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 
 import { Database } from '@/types/database';
 
-export const GET = async (req: NextApiRequest) => {
+export const GET = async (req: NextRequest) => {
   const supabase = createRouteHandlerClient<Database>({ cookies });
   const {
     data: { session },

@@ -31,6 +31,8 @@ const comingSoon = [
   'Countdown',
 ];
 
+export const dynamic = 'force-static'
+
 export default async function LandingPage() {
   return (
     <div>

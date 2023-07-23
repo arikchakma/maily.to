@@ -8,7 +8,14 @@ export const metadata = {
   title: 'Sign Up - Next Right Now',
 };
 
-export default async function SignupPage() {
+type Props = {
+  searchParams: {
+    code?: string;
+  }
+};
+
+export default async function SignupPage(props: Props) {
+  const { code } = props.searchParams;
   return (
     <div className="container relative flex h-screen flex-col items-center justify-center sm:grid lg:max-w-none lg:px-0">
       <NextLink
@@ -33,7 +40,7 @@ export default async function SignupPage() {
             </p>
           </div>
 
-          <GithubLoginButton />
+          <GithubLoginButton code={code} />
         </div>
       </div>
     </div>

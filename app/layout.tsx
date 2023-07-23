@@ -3,6 +3,7 @@ import './globals.css';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
+import NextTopLoader from 'nextjs-toploader'
 
 import { config } from '@/lib/config';
 import { Toaster } from '@/components/ui/toaster';
@@ -80,6 +81,7 @@ export default function RootLayout({
             )}
             <Toaster />
             <Analytics />
+            <NextTopLoader showSpinner={false} />
           </main>
         </Providers>
       </body>

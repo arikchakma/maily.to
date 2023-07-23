@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAtomValue } from 'jotai';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -87,8 +86,12 @@ export function SaveMailForm(props: SaveMailFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Save
+        <Button type="submit" className="w-full" disabled={saveMail.isLoading}>
+          {saveMail.isLoading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            'Save'
+          )}
         </Button>
       </form>
     </Form>

@@ -40,18 +40,6 @@ export async function UserMenu(props: UserMenuProps) {
           </div>
         </div>
         <div className="p-2">
-          <NextLink
-            href="/account/settings"
-            className={cn(
-              buttonVariants({ variant: 'ghost' }),
-              'w-full justify-start px-2'
-            )}
-          >
-            <UserIcon size={16} className="stroke-2" />
-            <span className="ml-2 text-sm font-medium tracking-tight">
-              Account settings
-            </span>
-          </NextLink>
           <LogoutButton />
         </div>
       </PopoverContent>

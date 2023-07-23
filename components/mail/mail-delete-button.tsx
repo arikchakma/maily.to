@@ -25,7 +25,6 @@ export function MailDeleteButton(props: MailDeleteButtonProps) {
     onSuccess: () => {
       queryClient.invalidateQueries(['mails']);
       toast({
-        title: 'Mail deleted',
         description: 'Mail deleted successfully',
       });
       onDelete?.();

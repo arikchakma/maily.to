@@ -14,7 +14,7 @@ export function EditorPreview() {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-3">
         <Editor
           config={{
             hasMenuBar: true,

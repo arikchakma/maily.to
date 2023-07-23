@@ -32,7 +32,7 @@ export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
             href="/"
             className={cn(buttonVariants({ variant: 'ghost' }), 'gap-2')}
           >
-            <ArrowLeft size={16} /> Go back
+            <ArrowLeft size={16} /> Go home
           </NextLink>
 
           {user ? (

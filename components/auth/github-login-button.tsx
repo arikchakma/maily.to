@@ -7,6 +7,7 @@ import { GithubIcon, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 import { BaseButton } from '../editor/components/base-button';
+import { config } from '@/lib/config';
 
 type GithubLoginButtonProps = {
   code?: string;
@@ -22,7 +23,7 @@ export function GithubLoginButton(props: GithubLoginButtonProps) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${location.href}`,
+        redirectTo: `${config.appUrl}/signup`
       },
     });
 

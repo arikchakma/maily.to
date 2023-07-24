@@ -7,9 +7,5 @@ export const metadata = {
 };
 
 export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
-  return (
-    <>
-      {props.children}
-    </>
-  );
+  return <>{props.children}</>;
 }

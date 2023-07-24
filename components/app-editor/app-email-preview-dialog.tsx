@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { Editor } from '@tiptap/core';
 import { EyeIcon } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 import { tiptapToHtml } from '../editor/utils/email';
 import { IFrame } from '../iframe';
-import { Editor } from '@tiptap/core';
 import { Button } from '../ui/button';
 
 type EmailPreviewDialogProps = {
-  editor: Editor
+  editor: Editor;
 };
 
 export function AppEmailPreviewDialog(props: EmailPreviewDialogProps) {
@@ -26,7 +26,7 @@ export function AppEmailPreviewDialog(props: EmailPreviewDialogProps) {
         }}
       >
         <Button>
-          <EyeIcon className="w-4 h-4 mr-2" />
+          <EyeIcon className="mr-2 h-4 w-4" />
           Preview Email
         </Button>
       </DialogTrigger>

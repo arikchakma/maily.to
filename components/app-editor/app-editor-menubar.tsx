@@ -16,10 +16,10 @@ import {
 } from 'lucide-react';
 
 import { tiptapToHtml } from '@/components/editor/utils/email';
+import { cn } from '@/utils/classname';
 
 import { BubbleMenuButton } from '../editor/components/bubble-menu-button';
 import { BubbleMenuItem } from '../editor/components/editor-bubble-menu';
-import { cn } from '@/utils/classname';
 import { useToast } from '../ui/use-toast';
 
 interface EditorMenuItem extends BubbleMenuItem {
@@ -160,12 +160,12 @@ export const AppEditorMenuBar = (props: EditorMenuBarProps) => {
   }
 
   return (
-    <div className="flex items-center border-b gap-0.5 overflow-y-auto">
+    <div className="flex items-center gap-0.5 overflow-y-auto border-b">
       {groups.map((group, index) => (
         <div
           key={index}
-          className={cn("flex p-1 items-center bg-white border-l gap-0.5", {
-            "border-l-0": index === 0,
+          className={cn('flex items-center gap-0.5 border-l bg-white p-1', {
+            'border-l-0': index === 0,
           })}
         >
           {items
@@ -174,8 +174,7 @@ export const AppEditorMenuBar = (props: EditorMenuBarProps) => {
               <BubbleMenuButton key={index} {...item} />
             ))}
         </div>
-      ))
-      }
-    </div >
+      ))}
+    </div>
   );
 };

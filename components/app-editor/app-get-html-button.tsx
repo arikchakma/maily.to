@@ -1,15 +1,15 @@
 'use client';
 
+import { Editor } from '@tiptap/core';
 import copy from 'copy-to-clipboard';
 import { CopyIcon } from 'lucide-react';
 
 import { tiptapToHtml } from '../editor/utils/email';
-import { Editor } from '@tiptap/core';
-import { useToast } from '../ui/use-toast';
 import { Button } from '../ui/button';
+import { useToast } from '../ui/use-toast';
 
 type Props = {
-  editor: Editor
+  editor: Editor;
 };
 export function AppGetHtmlButton(props: Props) {
   const { editor } = props;
@@ -26,7 +26,7 @@ export function AppGetHtmlButton(props: Props) {
         });
       }}
     >
-      <CopyIcon className="w-4 h-4 mr-2" />
+      <CopyIcon className="mr-2 h-4 w-4" />
       Copy Email HTML
     </Button>
   );

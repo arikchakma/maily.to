@@ -1,8 +1,7 @@
 import NextLink from 'next/link';
 import { Balancer } from 'react-wrap-balancer';
 
-type NavigationType = {
-};
+type NavigationType = {};
 
 export function Navigation(props: NavigationType) {
   return (
@@ -10,8 +9,8 @@ export function Navigation(props: NavigationType) {
       <div className="rounded-md border px-5 py-4">
         <p className="sm:text-lg">
           <Balancer>
-            You can create an account to save email templates as well.
-            It&apos;s free and easy to use.
+            You can create an account to save email templates as well. It&apos;s
+            free and easy to use.
           </Balancer>
         </p>
 

@@ -43,7 +43,10 @@ export function MailListCombobox() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild disabled={status === 'loading' || data?.data?.length === 0}>
+      <PopoverTrigger
+        asChild
+        disabled={status === 'loading' || data?.data?.length === 0}
+      >
         <Button
           variant="outline"
           role="combobox"
@@ -52,11 +55,9 @@ export function MailListCombobox() {
         >
           {value
             ? data?.data?.find((mail) => mail.id === value)?.title
-            : data?.data?.length === 0 ? (
-              'No saved mail'
-            ) : (
-              'Select mail'
-            )}
+            : data?.data?.length === 0
+            ? 'No saved mail'
+            : 'Select mail'}
           {status === 'loading' ? (
             <Loader2 className="ml-2 h-4 w-4 shrink-0 animate-spin opacity-50" />
           ) : (

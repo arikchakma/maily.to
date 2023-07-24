@@ -11,7 +11,7 @@ export const metadata = {
 type Props = {
   searchParams: {
     code?: string;
-  }
+  };
 };
 
 export default async function LoginPage(props: Props) {

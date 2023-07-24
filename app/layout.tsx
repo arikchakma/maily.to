@@ -3,7 +3,7 @@ import './globals.css';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
-import NextTopLoader from 'nextjs-toploader'
+import NextTopLoader from 'nextjs-toploader';
 
 import { config } from '@/lib/config';
 import { Toaster } from '@/components/ui/toaster';

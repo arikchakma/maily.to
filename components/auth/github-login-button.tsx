@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GithubIcon, Loader2 } from 'lucide-react';
 
+import { config } from '@/lib/config';
 import { supabase } from '@/lib/supabase';
 
 import { BaseButton } from '../editor/components/base-button';
-import { config } from '@/lib/config';
 
 type GithubLoginButtonProps = {
   code?: string;
@@ -19,11 +19,11 @@ export function GithubLoginButton(props: GithubLoginButtonProps) {
   const router = useRouter();
   async function handleLogin() {
     setIsLoading(true);
-    console.log(location)
+    console.log(location);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${config.appUrl}/signup`
+        redirectTo: `${config.appUrl}/signup`,
       },
     });
 

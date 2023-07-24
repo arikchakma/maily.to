@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export type MailsType = Database['public']['Tables']['mails']['Row']
+export type MailsRowType = Database['public']['Tables']['mails']['Row']
 
 export default async function PlaygroundPage() {
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -53,7 +53,7 @@ export default async function PlaygroundPage() {
             <h2 className="text-2xl font-semibold">No Emails Saved</h2>
             <p>Create you first email.</p>
           </div>
-          <NextLink href="/editor"
+          <NextLink href="/template"
             className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-white px-4 py-1.5 font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0 mt-4"
           >
             Open Editor

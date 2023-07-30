@@ -11,7 +11,7 @@ export const metadata = {
 type Props = {
   searchParams: {
     code?: string;
-  }
+  };
 };
 
 export default async function LoginPage(props: Props) {
@@ -27,6 +27,16 @@ export default async function LoginPage(props: Props) {
         )}
       >
         Sign up
+      </NextLink>
+      <NextLink
+        prefetch={false}
+        href="/playground"
+        className={cn(
+          buttonVariants({ variant: 'ghost' }),
+          'absolute left-4 top-4 md:left-8 md:top-8'
+        )}
+      >
+        Playground
       </NextLink>
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">

@@ -1,12 +1,8 @@
-import NextLink from 'next/link';
 import { User } from '@supabase/auth-helpers-nextjs';
-import { LogOut, UserIcon } from 'lucide-react';
-
-import { cn } from '@/utils/classname';
 
 import { LogoutButton } from './auth/logout-button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button, buttonVariants } from './ui/button';
+import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 type UserMenuProps = {

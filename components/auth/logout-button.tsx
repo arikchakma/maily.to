@@ -17,7 +17,6 @@ export function LogoutButton() {
 
     if (error) {
       setIsLoading(false);
-      console.error(error);
     }
 
     router.refresh();
@@ -26,8 +25,8 @@ export function LogoutButton() {
     <Button
       disabled={isLoading}
       onClick={handleLogout}
-      variant={'ghost'}
-      className="w-full justify-start px-2 text-red-500 hover:text-red-500"
+      variant={'destructive'}
+      className="w-full"
     >
       {isLoading ? (
         <Loader2 size={16} className="animate-spin stroke-2" />

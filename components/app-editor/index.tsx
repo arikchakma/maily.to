@@ -1,24 +1,22 @@
 'use client';
 
-import React from 'react';
+import '../editor/editor.css';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { EditorContent, useEditor } from '@tiptap/react';
+import { useAtom } from 'jotai';
+import { Loader2 } from 'lucide-react';
+
+import { appEditorAtom } from '@/lib/editor-atom';
+import { fetcher, QueryError } from '@/utils/fetcher';
+import { MailsRowType } from '@/app/(playground)/playground/page';
 
 import { EditorBubbleMenu } from '../editor/components/editor-bubble-menu';
 import { LogoBubbleMenu } from '../editor/components/logo-bubble-menu';
 import { SpacerBubbleMenu } from '../editor/components/spacer-bubble-menu';
 import { TiptapExtensions } from '../editor/extensions';
-
-import '../editor/editor.css';
-
-import { redirect, useRouter } from 'next/navigation';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAtom } from 'jotai';
-import { Loader2 } from 'lucide-react';
-
-import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
-import { fetcher, QueryError } from '@/utils/fetcher';
-import { MailsRowType } from '@/app/(playground)/playground/page';
-
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -35,11 +33,11 @@ type AppEditorProps = {
 };
 
 export function AppEditor(props: AppEditorProps) {
-  const [subject, setSubject] = useAtom(subjectAtom);
-  const [_, setEditor] = useAtom(appEditorAtom);
-
   const { templateId } = props.params ?? {};
   const { template } = props;
+
+  const [subject, setSubject] = useState(template?.title ?? '');
+  const [_, setEditor] = useAtom(appEditorAtom);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -67,7 +65,17 @@ export function AppEditor(props: AppEditorProps) {
       setEditor(props?.editor);
     },
     extensions: TiptapExtensions,
-    content: `<p></p>`,
+    content: JSON.parse(
+      (template?.content as string) ??
+        `{
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph"
+        }
+      ]
+    }`
+    ),
   });
 
   const getTemplate = useQuery({
@@ -77,9 +85,8 @@ export function AppEditor(props: AppEditorProps) {
     },
     enabled: !!templateId,
     onSuccess: (data) => {
-      console.log(data)
       setSubject(data?.title ?? '');
-      editor?.commands.setContent(JSON.parse(data?.content as string ?? ''));
+      editor?.commands.setContent(JSON.parse((data?.content as string) ?? ''));
     },
     onError: (error: QueryError) => {
       toast({
@@ -89,11 +96,10 @@ export function AppEditor(props: AppEditorProps) {
       });
     },
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     initialData: template,
-  })
+  });
 
   const saveTemplate = useMutation({
     mutationFn: () => {
@@ -109,7 +115,6 @@ export function AppEditor(props: AppEditorProps) {
       });
     },
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries(['templates']);
       router.replace(`/template/${data.id}`);
     },
@@ -157,8 +162,11 @@ export function AppEditor(props: AppEditorProps) {
     },
     onSuccess: () => {
       setSubject('');
+      editor?.commands.setContent({
+        type: 'doc',
+        content: [{ type: 'paragraph' }],
+      });
       queryClient.invalidateQueries(['templates']);
-      queryClient.invalidateQueries(['template', templateId]);
       router.push('/template');
     },
     onError: (error: QueryError) => {

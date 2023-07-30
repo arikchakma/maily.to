@@ -1,18 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import NextLink from 'next/link';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { Loader2 } from 'lucide-react';
 
-import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
 import { cn } from '@/utils/classname';
 import { fetcher, QueryError } from '@/utils/fetcher';
 import { MailsRowType } from '@/app/(playground)/playground/page';
 
-import { Button, buttonVariants } from './ui/button';
-import NextLink from 'next/link'
+import { buttonVariants } from './ui/button';
 
 type EditorSidebarProps = {
   params?: {
@@ -21,11 +18,7 @@ type EditorSidebarProps = {
 };
 
 export function EditorSidebar(props: EditorSidebarProps) {
-  const editor = useAtomValue(appEditorAtom);
-  const setSubject = useSetAtom(subjectAtom);
-
   const { templateId } = props.params || {};
-  const router = useRouter();
 
   const { data, status } = useQuery<
     PostgrestSingleResponse<MailsRowType[]>,
@@ -37,17 +30,15 @@ export function EditorSidebar(props: EditorSidebarProps) {
 
   return (
     <aside className="w-[225px] shrink-0 border-r">
-      <Button
-        className="w-full rounded-none border-none"
-        variant="outline"
-        onClick={() => {
-          setSubject('');
-          editor?.commands.setContent('');
-          router.replace(`/template`);
-        }}
+      <NextLink
+        className={cn(
+          buttonVariants({ variant: 'outline' }),
+          'w-full rounded-none border-none'
+        )}
+        href="/template"
       >
         + New Email
-      </Button>
+      </NextLink>
 
       <div className="border-t py-2">
         {status === 'loading' && (

@@ -45,7 +45,7 @@ export default async function TemplatePage(props: EditorPageProps) {
 
       <div className="grow overflow-y-auto">
         <div className="mx-auto w-full max-w-[700px] p-5">
-          <AppEditor params={props.params} />
+          <AppEditor params={props.params} template={template} />
         </div>
       </div>
     </div>

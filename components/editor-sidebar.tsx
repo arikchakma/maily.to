@@ -1,7 +1,7 @@
 'use client';
 
 import NextLink from 'next/link';
-import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import { PostgrestSingleResponse, User } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
@@ -10,6 +10,7 @@ import { fetcher, QueryError } from '@/utils/fetcher';
 import { MailsRowType } from '@/app/(playground)/playground/page';
 
 import { buttonVariants } from './ui/button';
+import { LogoutButton } from './auth/logout-button';
 
 type EditorSidebarProps = {
   params?: {
@@ -29,7 +30,7 @@ export function EditorSidebar(props: EditorSidebarProps) {
   });
 
   return (
-    <aside className="w-[225px] shrink-0 border-r">
+    <aside className="w-[225px] shrink-0 border-r flex flex-col pb-2">
       <NextLink
         className={cn(
           buttonVariants({ variant: 'outline' }),
@@ -66,6 +67,9 @@ export function EditorSidebar(props: EditorSidebarProps) {
             })}
           </ul>
         )}
+      </div>
+      <div className="mt-auto px-1">
+        <LogoutButton />
       </div>
     </aside>
   );

@@ -4,7 +4,6 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Database } from '@/types/database';
 import { AppEditor } from '@/components/app-editor';
-import { EditorSidebar } from '@/components/editor-sidebar';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +32,7 @@ export default async function TemplatePage(props: EditorPageProps) {
     .from('mails')
     .select('*')
     .eq('id', templateId)
+    .eq('user_id', user.id)
     .single();
 
   if (!template) {
@@ -40,14 +40,6 @@ export default async function TemplatePage(props: EditorPageProps) {
   }
 
   return (
-    <div className="flex h-screen w-screen items-stretch overflow-hidden">
-      <EditorSidebar params={props.params} />
-
-      <div className="grow overflow-y-auto">
-        <div className="mx-auto w-full max-w-[700px] p-5">
-          <AppEditor params={props.params} template={template} />
-        </div>
-      </div>
-    </div>
+    <AppEditor params={props.params} template={template} />
   );
 }

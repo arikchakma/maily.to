@@ -67,7 +67,7 @@ export function AppEditor(props: AppEditorProps) {
     extensions: TiptapExtensions,
     content: JSON.parse(
       (template?.content as string) ??
-        `{
+      `{
       "type": "doc",
       "content": [
         {
@@ -143,6 +143,9 @@ export function AppEditor(props: AppEditorProps) {
     onSuccess: () => {
       queryClient.invalidateQueries(['templates']);
       queryClient.invalidateQueries(['template', templateId]);
+      toast({
+        title: 'Template updated successfully.',
+      });
     },
     onError: (error: QueryError) => {
       toast({
@@ -231,6 +234,14 @@ export function AppEditor(props: AppEditorProps) {
                 onClick={() => {
                   if (templateId) {
                     updateTemplate.mutate();
+                    return;
+                  }
+                  if (!subject.trim()) {
+                    toast({
+                      variant: 'destructive',
+                      title: 'Subject is required.',
+                      description: 'Please enter a subject.',
+                    });
                     return;
                   }
                   saveTemplate.mutate();

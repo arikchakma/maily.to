@@ -33,7 +33,6 @@ export default async function PlaygroundPage() {
   }
 
   if (user && mailsCount > 0) {
-    console.log('redirecting to /template');
     return redirect('/template');
   }
 

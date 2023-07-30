@@ -99,8 +99,7 @@ export const PATCH = async (
     .update({
       title: bodyResult.data.title,
       content: JSON.stringify(bodyResult.data.content),
-    },
-    )
+    })
     .eq('id', id)
     .single();
 

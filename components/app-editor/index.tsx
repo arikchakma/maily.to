@@ -1,11 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import {
-  EditorContent,
-  Editor as TipTapEditor,
-  useEditor,
-} from '@tiptap/react';
+import React from 'react';
+import { EditorContent, useEditor } from '@tiptap/react';
 
 import { EditorBubbleMenu } from '../editor/components/editor-bubble-menu';
 import { LogoBubbleMenu } from '../editor/components/logo-bubble-menu';
@@ -14,32 +10,37 @@ import { TiptapExtensions } from '../editor/extensions';
 
 import '../editor/editor.css';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
+import { Loader2 } from 'lucide-react';
+
+import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
+import { fetcher, QueryError } from '@/utils/fetcher';
+import { MailsRowType } from '@/app/(playground)/playground/page';
 
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { useToast } from '../ui/use-toast';
 import { AppEditorMenuBar } from './app-editor-menubar';
 import { AppEmailPreviewDialog } from './app-email-preview-dialog';
 import { AppGetHtmlButton } from './app-get-html-button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QueryError, fetcher } from '@/utils/fetcher';
-import { useToast } from '../ui/use-toast';
-import { MailsRowType } from '@/app/(playground)/playground/page';
-import { useAtom } from 'jotai';
-import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
 
 type AppEditorProps = {
-  searchParams?: {
-    t: string;
-  }
+  params?: {
+    templateId: string;
+  };
+  template?: MailsRowType;
 };
 
 export function AppEditor(props: AppEditorProps) {
-  const [subject, setSubject] = useAtom(subjectAtom)
-  const [_, setEditor] = useAtom(appEditorAtom)
+  const [subject, setSubject] = useAtom(subjectAtom);
+  const [_, setEditor] = useAtom(appEditorAtom);
 
-  const { t: templateId } = props.searchParams ?? {}
+  const { templateId } = props.params ?? {};
+  const { template } = props;
+
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const router = useRouter();
@@ -63,11 +64,36 @@ export function AppEditor(props: AppEditorProps) {
       },
     },
     onCreate(props) {
-      setEditor(props?.editor)
+      setEditor(props?.editor);
     },
     extensions: TiptapExtensions,
     content: `<p></p>`,
   });
+
+  const getTemplate = useQuery({
+    queryKey: ['template', templateId],
+    queryFn: () => {
+      return fetcher<MailsRowType>(`/api/v1/get-template/${templateId}`);
+    },
+    enabled: !!templateId,
+    onSuccess: (data) => {
+      console.log(data)
+      setSubject(data?.title ?? '');
+      editor?.commands.setContent(JSON.parse(data?.content as string ?? ''));
+    },
+    onError: (error: QueryError) => {
+      toast({
+        variant: 'destructive',
+        title: 'Error fetching the template.',
+        description: error?.message ?? 'Something went wrong',
+      });
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    initialData: template,
+  })
 
   const saveTemplate = useMutation({
     mutationFn: () => {
@@ -82,9 +108,10 @@ export function AppEditor(props: AppEditorProps) {
         }),
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries(['templates']);
-      router.replace(`/template?t=${templateId}`);
+      router.replace(`/template/${data.id}`);
     },
     onError: (error: QueryError) => {
       toast({
@@ -98,7 +125,7 @@ export function AppEditor(props: AppEditorProps) {
   const updateTemplate = useMutation({
     mutationFn: () => {
       return fetcher<MailsRowType>(`/api/v1/update-template/${templateId}`, {
-        method: 'POST',
+        method: 'PATCH',
         body: JSON.stringify({
           title: subject,
           content: editor?.getJSON() ?? {
@@ -109,7 +136,30 @@ export function AppEditor(props: AppEditorProps) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['mails']);
+      queryClient.invalidateQueries(['templates']);
+      queryClient.invalidateQueries(['template', templateId]);
+    },
+    onError: (error: QueryError) => {
+      toast({
+        variant: 'destructive',
+        title: 'Error updating the template.',
+        description: error?.message ?? 'Something went wrong',
+      });
+    },
+  });
+
+  const deleteTemplate = useMutation({
+    mutationFn: () => {
+      return fetcher<MailsRowType>(`/api/v1/delete-template/${templateId}`, {
+        method: 'DELETE',
+        body: JSON.stringify({}),
+      });
+    },
+    onSuccess: () => {
+      setSubject('');
+      queryClient.invalidateQueries(['templates']);
+      queryClient.invalidateQueries(['template', templateId]);
+      router.push('/template');
     },
     onError: (error: QueryError) => {
       toast({
@@ -151,18 +201,41 @@ export function AppEditor(props: AppEditorProps) {
               <AppGetHtmlButton editor={editor} />
             </div>
 
-            <Button
-              disabled={saveTemplate.isLoading || updateTemplate.isLoading}
-              onClick={() => {
-                if (templateId) {
-                  updateTemplate.mutate();
-                  return;
-                }
-                saveTemplate.mutate();
-              }}
-            >
-              {templateId ? 'Update' : 'Save'}
-            </Button>
+            <div className="flex items-center">
+              {templateId && (
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    deleteTemplate.mutate();
+                  }}
+                  className="mr-2 min-w-[100px]"
+                >
+                  {deleteTemplate.isLoading ? (
+                    <Loader2 className="animate-spin" size={16} />
+                  ) : (
+                    'Delete'
+                  )}
+                </Button>
+              )}
+
+              <Button
+                disabled={saveTemplate.isLoading || updateTemplate.isLoading}
+                onClick={() => {
+                  if (templateId) {
+                    updateTemplate.mutate();
+                    return;
+                  }
+                  saveTemplate.mutate();
+                }}
+                className="min-w-[100px]"
+              >
+                {saveTemplate.isLoading || updateTemplate.isLoading ? (
+                  <Loader2 className="animate-spin" size={16} />
+                ) : (
+                  <>{templateId ? 'Update' : 'Save'}</>
+                )}
+              </Button>
+            </div>
           </div>
         </>
       )}

@@ -14,7 +14,8 @@ type EditorPageProps = {
   };
 };
 
-export default async function EditorPage(props: EditorPageProps) {
+export default async function TemplatePage(props: EditorPageProps) {
+  const { templateId } = props.params || {};
   const supabase = createServerComponentClient<Database>({ cookies });
   const {
     data: { user },
@@ -22,6 +23,20 @@ export default async function EditorPage(props: EditorPageProps) {
 
   if (!user) {
     redirect('/login');
+  }
+
+  if (!templateId) {
+    redirect('/template');
+  }
+
+  const { data: template } = await supabase
+    .from('mails')
+    .select('*')
+    .eq('id', templateId)
+    .single();
+
+  if (!template) {
+    redirect('/template');
   }
 
   return (

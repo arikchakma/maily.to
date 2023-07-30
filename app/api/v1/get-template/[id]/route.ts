@@ -1,11 +1,18 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import * as z from 'zod';
+import { z } from 'zod';
 
 import { Database } from '@/types/database';
 
-export const POST = async (request: NextRequest) => {
+export const GET = async (
+  req: NextRequest,
+  context: {
+    params: {
+      id: string;
+    };
+  }
+) => {
   const supabase = createRouteHandlerClient<Database>({ cookies });
   const {
     data: { session },
@@ -22,50 +29,48 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
-  const body = await request.json();
+  const params = context.params;
   const schema = z.object({
-    title: z.string().trim().min(3).max(255).nonempty(),
-    content: z.object({
-      type: z.enum(['doc']),
-      content: z.array(z.any()),
-    }),
+    id: z.string().trim().nonempty(),
   });
 
-  const result = schema.safeParse(body);
+  const result = schema.safeParse(params);
   if (!result.success) {
-    return NextResponse.json(
-      {
+    return {
+      status: 400,
+      body: {
         type: 'Invalid request',
         message: result.error.issues,
       },
-      {
-        status: 400,
-      }
-    );
+    };
   }
 
-  const { title, content } = result.data;
-  const { data, error } = await supabase
-    .from('mails')
-    .insert({
-      title,
-      content: JSON.stringify(content),
-      user_id: session?.user.id,
-    })
-    .select()
-    .single();
+  const { id } = result.data;
+  const mail = await supabase.from('mails').select('*').eq('id', id).single();
 
-  if (error) {
+  if (mail.error) {
     return NextResponse.json(
       {
         type: 'Database error',
-        message: error.message,
+        message: mail.error.message,
       },
       {
-        status: 500,
+        status: mail.status,
       }
     );
   }
 
-  return NextResponse.json(data);
+  if (mail?.data?.user_id !== session?.user.id) {
+    return NextResponse.json(
+      {
+        type: 'Unauthorized',
+        message: 'You are not authorized to delete this resource.',
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
+  return NextResponse.json(mail.data);
 };

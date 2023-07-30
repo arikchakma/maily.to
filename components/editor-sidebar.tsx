@@ -1,29 +1,30 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Loader2 } from 'lucide-react';
 
+import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
+import { cn } from '@/utils/classname';
 import { fetcher, QueryError } from '@/utils/fetcher';
 import { MailsRowType } from '@/app/(playground)/playground/page';
 
-import { Button } from './ui/button';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { appEditorAtom, subjectAtom } from '@/lib/editor-atom';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/utils/classname';
+import { Button, buttonVariants } from './ui/button';
+import NextLink from 'next/link'
 
 type EditorSidebarProps = {
-  searchParams?: {
-    t: string;
-  }
+  params?: {
+    templateId: string;
+  };
 };
 
 export function EditorSidebar(props: EditorSidebarProps) {
-  const editor = useAtomValue(appEditorAtom)
-  const setSubject = useSetAtom(subjectAtom)
+  const editor = useAtomValue(appEditorAtom);
+  const setSubject = useSetAtom(subjectAtom);
 
-  const { t: templateId } = props.searchParams || {}
+  const { templateId } = props.params || {};
   const router = useRouter();
 
   const { data, status } = useQuery<
@@ -33,13 +34,16 @@ export function EditorSidebar(props: EditorSidebarProps) {
     queryKey: ['templates'],
     queryFn: () => fetcher('/api/v1/get-list-templates'),
   });
+
   return (
     <aside className="w-[225px] shrink-0 border-r">
-      <Button className="w-full rounded-none border-none" variant="outline"
+      <Button
+        className="w-full rounded-none border-none"
+        variant="outline"
         onClick={() => {
-          setSubject('')
-          editor?.commands.setContent('')
-          router.replace(`/template`)
+          setSubject('');
+          editor?.commands.setContent('');
+          router.replace(`/template`);
         }}
       >
         + New Email
@@ -50,23 +54,24 @@ export function EditorSidebar(props: EditorSidebarProps) {
           <Loader2 className="mx-auto h-4 w-4 animate-spin" />
         )}
         {data?.data?.length === 0 ? (
-          <p className="text-sm text-center">No Saved Emails</p>
+          <p className="text-center text-sm">No Saved Emails</p>
         ) : (
-          <ul className="px-1">
+          <ul className="space-y-0.5 px-1">
             {data?.data?.map((template) => {
-              return <li key={template.id}>
-                <Button variant="ghost" className={cn("w-full justify-start",
-                  templateId === template.id ? 'bg-gray-100' : ''
-                )}
-                  onClick={() => {
-                    setSubject(template.title)
-                    editor?.commands.setContent(JSON.parse(template.content as string))
-                    router.replace(`/template?t=${template.id}`)
-                  }}
-                >
-                  {template.title}
-                </Button>
-              </li>;
+              return (
+                <li key={template.id}>
+                  <NextLink
+                    className={cn(
+                      buttonVariants({ variant: 'ghost' }),
+                      'w-full justify-start',
+                      templateId === template.id ? 'bg-gray-100' : ''
+                    )}
+                    href={`/template/${template.id}`}
+                  >
+                    {template.title}
+                  </NextLink>
+                </li>
+              );
             })}
           </ul>
         )}

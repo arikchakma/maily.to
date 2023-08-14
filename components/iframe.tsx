@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 export const IFrame = ({
   innerHTML,
@@ -10,30 +10,24 @@ export const IFrame = ({
 } & React.HTMLProps<HTMLIFrameElement>) => {
   const contentRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    if (!contentRef.current) {
-      return;
-    }
-    const iframe = contentRef.current;
-    const iframeDocument = iframe.contentDocument;
-    if (!iframeDocument) {
-      return;
-    }
-    iframeDocument.body.style.padding = '20px 0';
-
-    const unmount = () => {
-      iframeDocument.body.innerHTML = '';
-    };
-
-    return unmount;
-  }, [innerHTML]);
-
   return (
     <iframe
       {...props}
       ref={contentRef}
       src="data:text/html;charset=utf-8,"
       srcDoc={innerHTML}
+      onLoad={(e) => {
+        const iframe = e.target as HTMLIFrameElement;
+        const iframeDocument = iframe.contentDocument;
+        if (!iframeDocument) {
+          return;
+        }
+        iframeDocument.body.style.padding = '20px 0';
+        const fontLink = iframeDocument.createElement('link');
+        fontLink.rel = 'stylesheet';
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
+        iframeDocument.head.appendChild(fontLink);
+      }}
     />
   );
 };

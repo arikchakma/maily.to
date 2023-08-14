@@ -39,7 +39,5 @@ export default async function TemplatePage(props: EditorPageProps) {
     redirect('/template');
   }
 
-  return (
-    <AppEditor params={props.params} template={template} />
-  );
+  return <AppEditor params={props.params} template={template} />;
 }

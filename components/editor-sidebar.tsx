@@ -9,8 +9,8 @@ import { cn } from '@/utils/classname';
 import { fetcher, QueryError } from '@/utils/fetcher';
 import { MailsRowType } from '@/app/(playground)/playground/page';
 
-import { buttonVariants } from './ui/button';
 import { LogoutButton } from './auth/logout-button';
+import { buttonVariants } from './ui/button';
 
 type EditorSidebarProps = {
   params?: {
@@ -30,7 +30,7 @@ export function EditorSidebar(props: EditorSidebarProps) {
   });
 
   return (
-    <aside className="w-[225px] shrink-0 border-r flex flex-col pb-2">
+    <aside className="flex w-[225px] shrink-0 flex-col border-r pb-2">
       <NextLink
         className={cn(
           buttonVariants({ variant: 'outline' }),

@@ -9,7 +9,5 @@ type EditorPageProps = {
 };
 
 export default async function EditorPage(props: EditorPageProps) {
-  return (
-    <AppEditor params={props.params} />
-  );
+  return <AppEditor params={props.params} />;
 }

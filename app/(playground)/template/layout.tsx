@@ -32,10 +32,8 @@ export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
       <EditorSidebar params={props.params} />
 
       <div className="grow overflow-y-auto">
-        <div className="mx-auto w-full max-w-[700px] p-5">
-          {props.children}
-        </div>
+        <div className="mx-auto w-full max-w-[700px] p-5">{props.children}</div>
       </div>
     </div>
-  )
+  );
 }

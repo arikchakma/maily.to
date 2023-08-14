@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const IFrame = ({
   innerHTML,
@@ -19,7 +19,6 @@ export const IFrame = ({
     if (!iframeDocument) {
       return;
     }
-    iframeDocument.body.innerHTML = innerHTML;
     iframeDocument.body.style.padding = '20px 0';
 
     const unmount = () => {
@@ -29,5 +28,12 @@ export const IFrame = ({
     return unmount;
   }, [innerHTML]);
 
-  return <iframe {...props} ref={contentRef} />;
+  return (
+    <iframe
+      {...props}
+      ref={contentRef}
+      src="data:text/html;charset=utf-8,"
+      srcDoc={innerHTML}
+    />
+  );
 };

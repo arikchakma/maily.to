@@ -46,7 +46,7 @@ export default async function SignupPage(props: Props) {
               Create an account
             </h1>
             <p className="text-muted-foreground text-sm">
-              Enter your email below to create your account
+              Let&apos;s create your account
             </p>
           </div>
 

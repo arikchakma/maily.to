@@ -14,8 +14,6 @@ export const IFrame = ({
     <iframe
       {...props}
       ref={contentRef}
-      src="data:text/html;charset=utf-8,"
-      srcDoc={innerHTML}
       onLoad={(e) => {
         const iframe = e.target as HTMLIFrameElement;
         const iframeDocument = iframe.contentDocument;
@@ -27,6 +25,8 @@ export const IFrame = ({
         fontLink.rel = 'stylesheet';
         fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
         iframeDocument.head.appendChild(fontLink);
+
+        iframeDocument.body.innerHTML = innerHTML;
       }}
     />
   );

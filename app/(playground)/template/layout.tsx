@@ -27,9 +27,10 @@ export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
   if (!user) {
     redirect('/playground');
   }
+
   return (
     <div className="flex h-screen w-screen items-stretch overflow-hidden">
-      <EditorSidebar params={props.params} />
+      <EditorSidebar />
 
       <div className="grow overflow-y-auto">
         <div className="mx-auto w-full max-w-[700px] p-5">{props.children}</div>

@@ -2,6 +2,7 @@ import NextLink from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
 import { GithubLoginButton } from '@/components/auth/github-login-button';
+import { GoogleLoginButton } from '@/components/auth/google-login-button';
 import { cn } from '@/utils/classname';
 
 export const metadata = {
@@ -50,7 +51,10 @@ export default async function SignupPage(props: Props) {
             </p>
           </div>
 
-          <GithubLoginButton code={code} />
+          <div className="flex flex-col gap-2">
+            <GithubLoginButton code={code} />
+            <GoogleLoginButton code={code} />
+          </div>
         </div>
       </div>
     </div>

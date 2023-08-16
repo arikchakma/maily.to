@@ -67,7 +67,7 @@ export function AppEditor(props: AppEditorProps) {
     extensions: TiptapExtensions,
     content: JSON.parse(
       (template?.content as string) ??
-        `{
+      `{
       "type": "doc",
       "content": [
         {

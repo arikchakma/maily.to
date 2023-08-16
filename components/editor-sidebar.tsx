@@ -1,7 +1,8 @@
 'use client';
 
 import NextLink from 'next/link';
-import { PostgrestSingleResponse, User } from '@supabase/supabase-js';
+import { useParams } from 'next/navigation';
+import { PostgrestSingleResponse } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
@@ -12,14 +13,10 @@ import { MailsRowType } from '@/app/(playground)/playground/page';
 import { LogoutButton } from './auth/logout-button';
 import { buttonVariants } from './ui/button';
 
-type EditorSidebarProps = {
-  params?: {
-    templateId: string;
-  };
-};
+type EditorSidebarProps = {};
 
-export function EditorSidebar(props: EditorSidebarProps) {
-  const { templateId } = props.params || {};
+export function EditorSidebar() {
+  const { templateId } = useParams();
 
   const { data, status } = useQuery<
     PostgrestSingleResponse<MailsRowType[]>,
@@ -55,7 +52,7 @@ export function EditorSidebar(props: EditorSidebarProps) {
                   <NextLink
                     className={cn(
                       buttonVariants({ variant: 'ghost' }),
-                      'w-full justify-start',
+                      'w-full justify-start min-h-[40px] h-auto',
                       templateId === template.id ? 'bg-gray-100' : ''
                     )}
                     href={`/template/${template.id}`}

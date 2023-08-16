@@ -2,26 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { GithubIcon, Loader2 } from 'lucide-react';
 
 import { config } from '@/lib/config';
 import { supabase } from '@/lib/supabase';
 
 import { BaseButton } from '../editor/components/base-button';
-import { GithubIcon } from './github-icon';
+import { GoogleIcon } from './google-icon';
 
-type GithubLoginButtonProps = {
+type GoogleLoginButtonProps = {
   code?: string;
 };
 
-export function GithubLoginButton(props: GithubLoginButtonProps) {
+export function GoogleLoginButton(props: GoogleLoginButtonProps) {
   const { code } = props;
   const [isLoading, setIsLoading] = useState(code ? true : false);
   const router = useRouter();
   async function handleLogin() {
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
+      provider: 'google',
       options: {
         redirectTo: `${config.appUrl}/signup`,
       },
@@ -58,9 +58,9 @@ export function GithubLoginButton(props: GithubLoginButtonProps) {
       {isLoading ? (
         <Loader2 className="animate-spin" size={16} />
       ) : (
-        <GithubIcon />
+        <GoogleIcon />
       )}
-      Continue with GitHub
+      Continue with Google
     </BaseButton>
   );
 }

@@ -49,7 +49,7 @@ export const TiptapExtensions = [
   TiptapLogoExtension,
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
   TextStyle.configure(),
-  TextAlign.configure({ types: [Paragraph.name, Heading.name] }),
+  TextAlign.configure({ types: [Paragraph.name, Heading.name, Footer.name] }),
   Heading.extend({
     levels: [1, 2, 3],
   }),

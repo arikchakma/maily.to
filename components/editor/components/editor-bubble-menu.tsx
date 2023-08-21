@@ -26,60 +26,60 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
       name: 'bold',
-      isActive: () => props.editor.isActive('bold'),
-      command: () => props.editor.chain().focus().toggleBold().run(),
+      isActive: () => props?.editor?.isActive('bold')!,
+      command: () => props?.editor?.chain().focus().toggleBold().run()!,
       icon: BoldIcon,
     },
     {
       name: 'italic',
-      isActive: () => props.editor.isActive('italic'),
-      command: () => props.editor.chain().focus().toggleItalic().run(),
+      isActive: () => props?.editor?.isActive('italic')!,
+      command: () => props?.editor?.chain().focus().toggleItalic().run()!,
       icon: ItalicIcon,
     },
     {
       name: 'underline',
-      isActive: () => props.editor.isActive('underline'),
-      command: () => props.editor.chain().focus().toggleUnderline().run(),
+      isActive: () => props?.editor?.isActive('underline')!,
+      command: () => props?.editor?.chain().focus().toggleUnderline().run()!,
       icon: UnderlineIcon,
     },
     {
       name: 'strike',
-      isActive: () => props.editor.isActive('strike'),
-      command: () => props.editor.chain().focus().toggleStrike().run(),
+      isActive: () => props?.editor?.isActive('strike')!,
+      command: () => props?.editor?.chain().focus().toggleStrike().run()!,
       icon: StrikethroughIcon,
     },
     {
       name: 'left',
-      isActive: () => props.editor.isActive({ textAlign: 'left' }),
+      isActive: () => props?.editor?.isActive({ textAlign: 'left' })!,
       command: () => {
-        if (props.editor.isActive({ textAlign: 'left' })) {
-          props.editor.chain().focus().unsetTextAlign().run();
+        if (props?.editor?.isActive({ textAlign: 'left' })) {
+          props?.editor?.chain()?.focus().unsetTextAlign().run();
         } else {
-          props.editor.chain().focus().setTextAlign('left').run();
+          props?.editor?.chain().focus().setTextAlign('left').run()!;
         }
       },
       icon: AlignLeftIcon,
     },
     {
       name: 'center',
-      isActive: () => props.editor.isActive({ textAlign: 'center' }),
+      isActive: () => props?.editor?.isActive({ textAlign: 'center' })!,
       command: () => {
-        if (props.editor.isActive({ textAlign: 'center' })) {
-          props.editor.chain().focus().unsetTextAlign().run();
+        if (props?.editor?.isActive({ textAlign: 'center' })) {
+          props?.editor?.chain().focus().unsetTextAlign().run()!;
         } else {
-          props.editor.chain().focus().setTextAlign('center').run();
+          props?.editor?.chain().focus().setTextAlign('center').run()!;
         }
       },
       icon: AlignCenterIcon,
     },
     {
       name: 'right',
-      isActive: () => props.editor.isActive({ textAlign: 'right' }),
+      isActive: () => props?.editor?.isActive({ textAlign: 'right' })!,
       command: () => {
-        if (props.editor.isActive({ textAlign: 'right' })) {
-          props.editor.chain().focus().unsetTextAlign().run();
+        if (props?.editor?.isActive({ textAlign: 'right' })) {
+          props?.editor?.chain().focus().unsetTextAlign().run()!;
         } else {
-          props.editor.chain().focus().setTextAlign('right').run();
+          props?.editor?.chain().focus().setTextAlign('right').run()!;
         }
       },
       icon: AlignRightIcon,
@@ -87,7 +87,7 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     {
       name: 'link',
       command: () => {
-        const previousUrl = props.editor.getAttributes('link').href;
+        const previousUrl = props?.editor?.getAttributes('link').href!;
         const url = window.prompt('URL', previousUrl);
 
         // If the user cancels the prompt, we don't want to toggle the link
@@ -97,8 +97,8 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
 
         // If the user deletes the URL entirely, we'll unlink the selected text
         if (url === '') {
-          props.editor
-            .chain()
+          props?.editor
+            ?.chain()
             .focus()
             .extendMarkRange('link')
             .unsetLink()
@@ -108,14 +108,14 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
         }
 
         // Otherwise, we set the link to the given URL
-        props.editor
-          .chain()
+        props?.editor
+          ?.chain()
           .focus()
           .extendMarkRange('link')
           .setLink({ href: url })
-          .run();
+          .run()!;
       },
-      isActive: () => props.editor.isActive('link'),
+      isActive: () => props?.editor?.isActive('link')!,
       icon: LinkIcon,
     },
   ];

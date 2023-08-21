@@ -52,7 +52,7 @@ export function EditorSidebar() {
                   <NextLink
                     className={cn(
                       buttonVariants({ variant: 'ghost' }),
-                      'w-full justify-start min-h-[40px] h-auto',
+                      'h-auto min-h-[40px] w-full justify-start',
                       templateId === template.id ? 'bg-gray-100' : ''
                     )}
                     href={`/template/${template.id}`}

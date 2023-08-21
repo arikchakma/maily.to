@@ -9,17 +9,17 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
       name: 'left',
-      isActive: () => props.editor.isActive('logo', { alignment: 'left' }),
+      isActive: () => props?.editor?.isActive('logo', { alignment: 'left' })!,
       command: () => {
-        if (props.editor.isActive('logo', { alignment: 'left' })) {
-          props.editor
-            .chain()
+        if (props?.editor?.isActive('logo', { alignment: 'left' })!) {
+          props?.editor
+            ?.chain()
             .focus()
             .setLogoAttributes({ alignment: 'left' })
             .run();
         } else {
-          props.editor
-            .chain()
+          props?.editor
+            ?.chain()
             .focus()
             .setLogoAttributes({ alignment: 'left' })
             .run();
@@ -29,18 +29,17 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     },
     {
       name: 'center',
-      isActive: () => props.editor.isActive('logo', { alignment: 'center' }),
+      isActive: () => props?.editor?.isActive('logo', { alignment: 'center' })!,
       command: () => {
-        console.log(props.editor.isActive('logo', { alignment: 'center' }));
-        if (props.editor.isActive('logo', { alignment: 'center' })) {
-          props.editor
-            .chain()
+        if (props?.editor?.isActive('logo', { alignment: 'center' })) {
+          props?.editor
+            ?.chain()
             .focus()
             .setLogoAttributes({ alignment: 'left' })
             .run();
         } else {
-          props.editor
-            .chain()
+          props?.editor
+            ?.chain()
             .focus()
             .setLogoAttributes({ alignment: 'center' })
             .run();
@@ -50,17 +49,17 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     },
     {
       name: 'right',
-      isActive: () => props.editor.isActive('logo', { alignment: 'right' }),
+      isActive: () => props?.editor?.isActive('logo', { alignment: 'right' })!,
       command: () => {
-        if (props.editor.isActive('logo', { alignment: 'right' })) {
+        if (props?.editor?.isActive('logo', { alignment: 'right' })) {
           props.editor
             .chain()
             .focus()
             .setLogoAttributes({ alignment: 'left' })
             .run();
         } else {
-          props.editor
-            .chain()
+          props?.editor
+            ?.chain()
             .focus()
             .setLogoAttributes({ alignment: 'right' })
             .run();
@@ -70,34 +69,46 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     },
     {
       name: 'sm',
-      isActive: () => props.editor.isActive('logo', { size: 'sm' }),
+      isActive: () => props?.editor?.isActive('logo', { size: 'sm' })!,
       command: () => {
-        if (props.editor.isActive('logo', { size: 'sm' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
+        if (props?.editor?.isActive('logo', { size: 'sm' })) {
+          props?.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
+          props?.editor
+            ?.chain()
+            .focus()
+            .setLogoAttributes({ size: 'sm' })
+            .run();
         }
       },
     },
     {
       name: 'md',
-      isActive: () => props.editor.isActive('logo', { size: 'md' }),
+      isActive: () => props?.editor?.isActive('logo', { size: 'md' })!,
       command: () => {
-        if (props.editor.isActive('logo', { size: 'md' })) {
+        if (props?.editor?.isActive('logo', { size: 'md' })) {
           props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'md' }).run();
+          props?.editor
+            ?.chain()
+            .focus()
+            .setLogoAttributes({ size: 'md' })
+            .run();
         }
       },
     },
     {
       name: 'lg',
-      isActive: () => props.editor.isActive('logo', { size: 'lg' }),
+      isActive: () => props?.editor?.isActive('logo', { size: 'lg' })!,
       command: () => {
-        if (props.editor.isActive('logo', { size: 'lg' })) {
+        if (props?.editor?.isActive('logo', { size: 'lg' })) {
           props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
         } else {
-          props.editor.chain().focus().setLogoAttributes({ size: 'lg' }).run();
+          props?.editor
+            ?.chain()
+            .focus()
+            .setLogoAttributes({ size: 'lg' })
+            .run();
         }
       },
     },

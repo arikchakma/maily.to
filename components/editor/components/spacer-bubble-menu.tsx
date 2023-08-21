@@ -8,27 +8,27 @@ export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
   const items: BubbleMenuItem[] = [
     {
       name: 'sm',
-      isActive: () => props.editor.isActive('spacer', { height: 'sm' }),
+      isActive: () => props?.editor?.isActive('spacer', { height: 'sm' })!,
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: 'sm' }).run(),
+        props?.editor?.chain().focus().setSpacer({ height: 'sm' }).run(),
     },
     {
       name: 'md',
-      isActive: () => props.editor.isActive('spacer', { height: 'md' }),
+      isActive: () => props?.editor?.isActive('spacer', { height: 'md' })!,
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: 'md' }).run(),
+        props?.editor?.chain().focus().setSpacer({ height: 'md' }).run(),
     },
     {
       name: 'lg',
-      isActive: () => props.editor.isActive('spacer', { height: 'lg' }),
+      isActive: () => props?.editor?.isActive('spacer', { height: 'lg' })!,
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: 'lg' }).run(),
+        props?.editor?.chain().focus().setSpacer({ height: 'lg' }).run(),
     },
     {
       name: 'xl',
-      isActive: () => props.editor.isActive('spacer', { height: 'xl' }),
+      isActive: () => props?.editor?.isActive('spacer', { height: 'xl' })!,
       command: () =>
-        props.editor.chain().focus().setSpacer({ height: 'xl' }).run(),
+        props?.editor?.chain().focus().setSpacer({ height: 'xl' }).run(),
     },
   ];
 

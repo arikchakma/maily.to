@@ -72,7 +72,7 @@ function getMappedContent(node: TiptapNode, parent?: TiptapNode) {
       ?.map((node) => {
         return nodeMapping(node, parent);
       })
-      .join('') || '&nbsp'
+      .join('') || '&nbsp;'
   );
 }
 

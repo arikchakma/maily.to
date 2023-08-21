@@ -67,7 +67,7 @@ export function AppEditor(props: AppEditorProps) {
     extensions: TiptapExtensions,
     content: JSON.parse(
       (template?.content as string) ??
-        `{
+      `{
       "type": "doc",
       "content": [
         {
@@ -197,7 +197,7 @@ export function AppEditor(props: AppEditorProps) {
       </div>
       {editor && (
         <>
-          <div className="mt-6 overflow-hidden rounded-md border antialiased">
+          <div className="mail-editor mt-6 overflow-hidden rounded-md border antialiased">
             <AppEditorMenuBar editor={editor} />
             <div className="bg-white p-4">
               <EditorBubbleMenu editor={editor} />

@@ -40,9 +40,15 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 
 ## Contributions
 
-Feel free to submit pull requests, create issues, or spread the word.
+Feel free to submit pull requests, create issues, or spread the word. For getting a development version of it up & running, go through the following steps.
+
+1. Download the code: `git clone https://github.com/arikchakma/maily.to`
+2. Change directory: `cd maily.to`
+3. Copy the example config file: `cp .env.example .env`
+4. Add `Google` & `Github` providers in your `supabase` project. You can find more information about it [here](https://supabase.com/docs/guides/auth).
+5. `pnpm install` to install all the dependencies.
+6. `pnpm dev` to start the development server.
 
 ## License
 
 MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
-

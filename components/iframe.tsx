@@ -1,9 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
-
-export const IFrame = ({'use client';
-
 import { useEffect, useRef } from 'react';
 
 export const IFrame = ({
@@ -15,7 +11,7 @@ export const IFrame = ({
   const contentRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (!contentRef.current) {
         return;
       }
@@ -33,37 +29,11 @@ export const IFrame = ({
 
       iframeDocument.body.innerHTML = innerHTML;
     }, 200);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [innerHTML]);
 
   return <iframe {...props} ref={contentRef} />;
-};
-
-  innerHTML,
-  ...props
-}: {
-  innerHTML: string;
-} & React.HTMLProps<HTMLIFrameElement>) => {
-  const contentRef = useRef<HTMLIFrameElement>(null);
-
-  return (
-    <iframe
-      {...props}
-      ref={contentRef}
-      onLoad={(e) => {
-        const iframe = e.target as HTMLIFrameElement;
-        const iframeDocument = iframe.contentDocument;
-        if (!iframeDocument) {
-          return;
-        }
-        iframeDocument.body.style.padding = '20px 0';
-        const fontLink = iframeDocument.createElement('link');
-        fontLink.rel = 'stylesheet';
-        fontLink.href =
-          'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
-        iframeDocument.head.appendChild(fontLink);
-
-        iframeDocument.body.innerHTML = innerHTML;
-      }}
-    />
-  );
 };

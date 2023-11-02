@@ -2,7 +2,7 @@
 
 import { RefObject, useEffect, useRef } from 'react';
 
-import { isFirefox, isSafari } from '@/utils/detect-browser';
+import { isSafari } from '@/utils/detect-browser';
 
 function renderHTMLToIFrame(ref: RefObject<HTMLIFrameElement>, html: string) {
   if (!ref.current) {

@@ -29,7 +29,7 @@ export function EditorPreview() {
       </div>
 
       {editor && (
-        <div className="mt-4 flex flex-col gap-2 md:flex-row">
+        <div className="mb-8 mt-4 flex flex-col gap-2 md:flex-row">
           <GetHtmlButton editor={editor} />
           <EmailPreviewDialog editor={editor} />
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export const IFrame = ({
   innerHTML,
@@ -10,7 +10,7 @@ export const IFrame = ({
 } & React.HTMLProps<HTMLIFrameElement>) => {
   const contentRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
+  const updateIFrame = useCallback(() => {
     if (!contentRef.current) {
       return;
     }
@@ -29,5 +29,9 @@ export const IFrame = ({
     iframeDocument.body.innerHTML = innerHTML;
   }, [innerHTML]);
 
-  return <iframe {...props} ref={contentRef} />;
+  useEffect(() => {
+    updateIFrame();
+  }, [innerHTML, updateIFrame]);
+
+  return <iframe {...props} ref={contentRef} onLoad={updateIFrame} />;
 };

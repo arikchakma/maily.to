@@ -1,10 +1,11 @@
 {
-  "name": "maily",
+  "name": "maily-to",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\""
   },
@@ -16,6 +17,7 @@
     "happy-dom": "^12.10.3",
     "prettier": "^3.0.3",
     "tsconfig": "*",
+    "tsup": "^7.2.0",
     "turbo": "latest",
     "vite": "^4.5.0",
     "vitest": "^0.34.6"

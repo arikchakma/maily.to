@@ -13,35 +13,36 @@ const project = resolve(process.cwd(), 'tsconfig.json');
  */
 
 module.exports = {
-	extends: [
-		'@vercel/style-guide/eslint/browser',
-		'@vercel/style-guide/eslint/typescript',
-		'@vercel/style-guide/eslint/react',
-	].map(require.resolve),
-	parserOptions: {
-		project,
-	},
-	env: {
-		node: true,
-	},
-	globals: {
-		JSX: true,
-	},
-	settings: {
-		'import/resolver': {
-			typescript: {
-				project,
-			},
-		},
-	},
-	ignorePatterns: ['node_modules/', 'dist/', '.eslintrc.js'],
+  extends: [
+    '@vercel/style-guide/eslint/browser',
+    '@vercel/style-guide/eslint/typescript',
+    '@vercel/style-guide/eslint/react',
+  ].map(require.resolve),
+  parserOptions: {
+    project,
+  },
+  env: {
+    node: true,
+  },
+  globals: {
+    JSX: true,
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project,
+      },
+    },
+  },
+  ignorePatterns: ['node_modules/', 'dist/', '.eslintrc.js'],
 
-	rules: {
-		'@typescript-eslint/explicit-function-return-type': 'off',
-		'react/no-unescaped-entities': 'off',
-		'import/no-default-export': 'on',
-		'import/no-named-as-default-member': 'off',
-		'prefer-named-capture-group': 'off',
-		'eslint-comments/require-description': 'off',
-	},
+  rules: {
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    'react/no-unescaped-entities': 'off',
+    'import/no-default-export': 'warn',
+    'import/no-named-as-default-member': 'off',
+    'prefer-named-capture-group': 'off',
+    'eslint-comments/require-description': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
 };

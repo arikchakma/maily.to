@@ -1,0 +1,65 @@
+{
+  "name": "@maily-to/render",
+  "version": "0.0.1",
+  "private": false,
+  "description": "A transformer that converts Maily content into HTML email templates.",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "bun run --watch ./src/index.ts",
+    "clean": "rm -rf dist",
+    "build": "tsup src/index.ts --format esm,cjs --dts --minify --external react",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:watch": "vitest",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/render"
+  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "keywords": [
+    "maily.to",
+    "react",
+    "email"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.11",
+    "@react-email/render": "^0.0.9"
+  },
+  "peerDependencies": {
+    "react": "latest"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,9 +1,10 @@
-import { type JSONContent, Maily, type RenderOptions } from './maily';
+import { Maily } from './maily';
+import type { MailyConfig, JSONContent } from './maily';
 
 export async function renderAsync(
   content: JSONContent,
-  options?: RenderOptions
+  config?: MailyConfig
 ): Promise<string> {
-  const maily = new Maily(content);
-  return maily.renderAsync(options);
+  const maily = new Maily(content, config);
+  return maily.renderAsync();
 }

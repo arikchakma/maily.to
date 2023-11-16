@@ -1,6 +1,7 @@
-import { type JSONContent, Maily, type RenderOptions } from './maily';
+import { Maily } from './maily';
+import type { MailyConfig, JSONContent } from './maily';
 
-export function render(content: JSONContent, options?: RenderOptions): string {
-  const maily = new Maily(content);
-  return maily.render(options);
+export function render(content: JSONContent, config?: MailyConfig): string {
+  const maily = new Maily(content, config);
+  return maily.render();
 }

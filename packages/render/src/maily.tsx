@@ -17,6 +17,7 @@ import {
   Hr,
   Button,
   Img,
+  Preview,
 } from '@react-email/components';
 import {
   render as reactEmailRender,
@@ -99,39 +100,138 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
   lg: '64px',
 };
 
+export interface MailyConfig {
+  /**
+   * The options object allows you to customize the output of the rendered
+   * email.
+   * - `pretty` - If `true`, the output will be formatted with indentation and
+   *  line breaks.
+   * - `plainText` - If `true`, the output will be plain text instead of HTML.
+   * This is useful for testing purposes.
+   *
+   * Default: `{ pretty: false, plainText: false }`
+   *
+   * @example
+   * ```js
+   * const maily = new Maily(content, {
+   *  options: {
+   *   pretty: true,
+   *   plainText: true,
+   * },
+   * });
+   * ```
+   */
+  options?: RenderOptions;
+  /**
+   * The preview text is the snippet of text that is pulled into the inbox
+   * preview of an email client, usually right after the subject line.
+   *
+   * Default: `undefined`
+   */
+  preview?: string;
+  /**
+   * The theme object allows you to customize the colors and font sizes of the
+   * rendered email.
+   *
+   * Default:
+   * ```js
+   * {
+   *   colors: {
+   *     heading: 'rgb(17, 24, 39)',
+   *     paragraph: 'rgb(55, 65, 81)',
+   *     horizontal: 'rgb(234, 234, 234)',
+   *     footer: 'rgb(100, 116, 139)',
+   *   },
+   *   fontSize: {
+   *     paragraph: '15px',
+   *     footer: {
+   *       size: '14px',
+   *       lineHeight: '24px',
+   *     },
+   *   },
+   * }
+   * ```
+   *
+   * @example
+   * ```js
+   * const maily = new Maily(content, {
+   *   theme: {
+   *     colors: {
+   *       heading: 'rgb(17, 24, 39)',
+   *     },
+   *     fontSize: {
+   *       footer: {
+   *         size: '14px',
+   *         lineHeight: '24px',
+   *       },
+   *     },
+   *   },
+   * });
+   * ```
+   */
+  theme?: {
+    colors?: {
+      heading?: string;
+      paragraph?: string;
+      horizontal?: string;
+      footer?: string;
+    };
+    fontSize?: {
+      paragraph?: string;
+      footer?: {
+        size?: string;
+        lineHeight?: string;
+      };
+    };
+  };
+}
+
 export class Maily {
   private readonly content: JSONContent;
-  private config = {
+  private config: MailyConfig = {
+    options: {
+      pretty: false,
+      plainText: false,
+    },
     theme: {
-      extend: {
-        colors: {
-          heading: 'rgb(17, 24, 39)',
-          paragraph: 'rgb(55, 65, 81)',
-          horizontal: 'rgb(234, 234, 234)',
-          footer: 'rgb(100, 116, 139)',
-        },
-        fontSize: {
-          paragraph: '15px',
-          footer: {
-            size: '14px',
-            lineHeight: '24px',
-          },
+      colors: {
+        heading: 'rgb(17, 24, 39)',
+        paragraph: 'rgb(55, 65, 81)',
+        horizontal: 'rgb(234, 234, 234)',
+        footer: 'rgb(100, 116, 139)',
+      },
+      fontSize: {
+        paragraph: '15px',
+        footer: {
+          size: '14px',
+          lineHeight: '24px',
         },
       },
     },
   };
 
-  constructor(content: JSONContent = { type: 'doc', content: [] }) {
+  constructor(
+    content: JSONContent = { type: 'doc', content: [] },
+    config: Partial<MailyConfig> = {}
+  ) {
     this.content = content;
+    this.config = {
+      ...this.config,
+      ...config,
+    };
   }
 
-  render(options?: RenderOptions): string {
+  render(): string {
+    const options = this.config.options || {};
     const markup = this.markup();
+
     return reactEmailRender(markup, options);
   }
 
-  async renderAsync(options?: RenderOptions): Promise<string> {
+  async renderAsync(): Promise<string> {
+    const options = this.config.options || {};
     const markup = this.markup();
+
     return reactEmailRenderAsync(markup, options);
   }
 
@@ -147,6 +247,8 @@ export class Maily {
       return this.renderNode(node, nodeOptions);
     });
 
+    const { preview } = this.config || {};
+
     const markup = (
       <Html>
         <Head>
@@ -161,6 +263,7 @@ export class Maily {
             }}
           />
         </Head>
+        {preview ? <Preview>{preview}</Preview> : null}
         <Body>
           <Container
             style={{
@@ -249,8 +352,8 @@ export class Maily {
           textAlign: alignment,
           marginBottom: isParentListItem || isNextSpacer ? '0px' : '20px',
           marginTop: '0px',
-          fontSize: this.config.theme.extend.fontSize.paragraph,
-          color: this.config.theme.extend.colors.paragraph,
+          fontSize: this.config?.theme?.fontSize?.paragraph,
+          color: this.config?.theme?.colors?.paragraph,
           ...antialiased,
         }}
       >
@@ -302,7 +405,7 @@ export class Maily {
         style={{
           fontWeight: 500,
           textDecoration: 'underline',
-          color: this.config.theme.extend.colors.heading,
+          color: this.config?.theme?.colors?.heading,
         }}
         target={target}
       >
@@ -330,7 +433,7 @@ export class Maily {
         key={generateKey()}
         style={{
           textAlign: alignment,
-          color: this.config?.theme?.extend?.colors?.heading,
+          color: this.config?.theme?.colors?.heading,
           marginBottom: isNextSpacer ? '0px' : '12px',
           marginTop: isPrevSpacer ? '0px' : '0px',
           fontSize,
@@ -553,9 +656,9 @@ export class Maily {
       <Text
         key={generateKey()}
         style={{
-          fontSize: this.config.theme.extend.fontSize.footer.size,
-          lineHeight: this.config.theme.extend.fontSize.footer.lineHeight,
-          color: this.config.theme.extend.colors.footer,
+          fontSize: this.config?.theme?.fontSize?.footer?.size,
+          lineHeight: this.config?.theme?.fontSize?.footer?.lineHeight,
+          color: this.config?.theme?.colors?.footer,
           marginTop: '0px',
           marginBottom: isNextSpacer ? '0px' : '20px',
           textAlign,

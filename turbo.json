@@ -8,6 +8,12 @@
     },
     "lint": {},
     "lint:fix": {},
+    "//#format": {},
+    "//#format:check": {},
+    "test": {},
+    "test:watch": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true

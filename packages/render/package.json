@@ -26,7 +26,7 @@
   "scripts": {
     "dev": "bun run --watch ./src/index.ts",
     "clean": "rm -rf dist",
-    "build": "tsup src/index.ts --format esm,cjs --dts --minify --external react",
+    "build": "tsup",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:watch": "vitest",
@@ -61,5 +61,20 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "clean": true,
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true,
+    "minify": true,
+    "external": [
+      "react"
+    ]
   }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@maily-to/core",
+  "module": "index.ts",
+  "scripts": {
+    "dev": "bun run --watch ./src/index.ts",
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:watch": "vitest",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "eslint-config-custom": "workspace:*",
+    "postcss": "^8.4.31",
+    "tailwind-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.0.0"
+  }
+}

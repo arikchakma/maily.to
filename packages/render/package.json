@@ -61,20 +61,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
-    "clean": true,
-    "format": [
-      "cjs",
-      "esm"
-    ],
-    "dts": true,
-    "minify": true,
-    "external": [
-      "react"
-    ]
   }
 }

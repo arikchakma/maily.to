@@ -1,6 +1,23 @@
 {
   "name": "@maily-to/core",
-  "module": "index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "scripts": {
     "dev": "bun run --watch ./src/index.ts",
     "clean": "rm -rf dist",
@@ -9,6 +26,21 @@
     "lint:fix": "eslint . --fix",
     "test:watch": "vitest",
     "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/core"
+  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "keywords": [
+    "maily.to",
+    "editor",
+    "react",
+    "email"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@next/font": "^14.0.3",
@@ -38,5 +70,8 @@
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "18.2.0"
   }
 }

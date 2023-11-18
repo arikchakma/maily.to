@@ -1,4 +1,4 @@
-import React, {
+import {
   ReactNode,
   useCallback,
   useEffect,
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
-import { cn } from '@/components/editor/utils/tailwind';
+import { cn } from '@/editor/utils/classname';
 
 interface CommandItemProps {
   title: string;

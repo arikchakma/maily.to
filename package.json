@@ -1,5 +1,5 @@
 {
-  "name": "maily-to",
+  "name": "maily",
   "private": true,
   "scripts": {
     "build": "turbo run build",

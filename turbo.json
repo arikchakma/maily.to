@@ -19,6 +19,7 @@
       ]
     },
     "lint:fix": {},
+    "clean": {},
     "//#format": {},
     "//#format:check": {},
     "test": {},

@@ -170,10 +170,11 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         if (!imageUrl) {
           return;
         }
+
+        editor.chain().focus().deleteRange(range).run();
         editor
           .chain()
           .focus()
-          .deleteRange(range)
           .setImage({ src: imageUrl })
           .run();
       },

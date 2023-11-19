@@ -7,6 +7,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Heading from '@tiptap/extension-heading';
+import Image from '@tiptap/extension-image';
 
 import { HorizontalRule } from './horizontal-rule';
 import { ButtonExtension } from './button-extension';
@@ -27,6 +28,7 @@ export const extensions = [
       width: 3,
     },
   }),
+  Image,
   Underline,
   TiptapLogoExtension,
   Color.configure({ types: [TextStyle.name, ListItem.name] }),

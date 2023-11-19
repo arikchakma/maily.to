@@ -2,17 +2,13 @@
 
 import { Editor as TiptapEditor, Extension } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
-import { Inter } from '@next/font/google';
 
 import { EditorBubbleMenu } from './components/editor-bubble-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { LogoBubbleMenu } from './components/logo-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-
-const inter = Inter({
-  subsets: ['latin'],
-});
+import { cn } from './utils/classname';
 
 export type EditorProps = {
   contentHtml?: string;
@@ -26,6 +22,7 @@ export type EditorProps = {
     wrapClassName?: string;
     toolbarClassName?: string;
     contentClassName?: string;
+    bodyClassName?: string;
   };
 };
 
@@ -34,11 +31,12 @@ export function Editor(props: EditorProps) {
     config: {
       wrapClassName = '',
       contentClassName = '',
+      bodyClassName = '',
       hasMenuBar = true,
       spellCheck = false,
     } = {},
-    onUpdate,
     onCreate,
+    onUpdate,
     extensions,
     contentHtml,
     contentJson,
@@ -72,7 +70,7 @@ export function Editor(props: EditorProps) {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: `prose w-full ${contentClassName}`,
+        class: cn(`mly-prose mly-w-full`, contentClassName),
         spellCheck: spellCheck ? 'true' : 'false',
       },
       handleDOMEvents: {
@@ -102,11 +100,14 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <div
-      className={`mail-editor antialiased ${inter.className} ${wrapClassName}`}
-    >
+    <div className={cn('mail-editor mly-antialiased', wrapClassName)}>
       {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
-      <div className="mt-4 rounded border bg-white p-4">
+      <div
+        className={cn(
+          'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
+          bodyClassName
+        )}
+      >
         <EditorBubbleMenu editor={editor} />
         <LogoBubbleMenu editor={editor} />
         <SpacerBubbleMenu editor={editor} />

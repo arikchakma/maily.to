@@ -1,8 +1,10 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: ['class', '.dark-theme'],
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
+  darkMode: ['class'],
   content: [
     './app/**/*.{js,ts,jsx,tsx}', // Note the addition of the `app` directory.
+    './components/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './ui/**/*.{js,ts,jsx,tsx}',
     `src/**/*.{js,ts,jsx,tsx}`,
@@ -11,9 +13,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [
-    // Tailwind plugins
-    require('@tailwindcss/typography'),
-    require('tailwindcss-animate'),
-  ],
+  plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
 };
+
+export default config;

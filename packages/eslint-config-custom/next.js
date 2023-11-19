@@ -19,7 +19,9 @@ module.exports = {
     '@vercel/style-guide/eslint/react',
     '@vercel/style-guide/eslint/next',
     'eslint-config-turbo',
-  ].map(require.resolve),
+  ]
+    .map(require.resolve)
+    .concat(['eslint-config-prettier']),
   parserOptions: {
     project,
   },
@@ -32,11 +34,19 @@ module.exports = {
       typescript: {
         project,
       },
+      node: {
+        extensions: [".mjs", ".js", ".jsx", ".ts", ".tsx"],
+      },
     },
   },
   ignorePatterns: ['node_modules/', 'dist/'],
-  // add rules configurations here
   rules: {
+    '@next/next/no-img-element': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
     'import/no-default-export': 'off',
+    'jsx-a11y/no-autofocus': 'off',
+    'no-alert': 'off',
+    'react/no-array-index-key': 'off',
   },
 };

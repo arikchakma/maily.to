@@ -12,20 +12,18 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
-    "@types/node": "^20.9.0",
+    "@types/node": "^20.9.2",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "eslint": "^8.48.0",
+    "eslint": "^8.54.0",
     "happy-dom": "^12.10.3",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
+    "tailwindcss": "^3.3.5",
     "tsconfig": "workspace:*",
-    "tsup": "^7.2.0",
+    "tsup": "^8.0.0",
     "turbo": "latest",
-    "vite": "^4.5.0",
+    "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
-  "packageManager": "bun@1.0.6",
-  "workspaces": [
-    "packages/*"
-  ]
+  "packageManager": "pnpm@8.9.0"
 }

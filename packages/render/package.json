@@ -24,7 +24,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "bun run --watch ./src/index.ts",
+    "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "build": "tsup",
     "lint": "eslint .",

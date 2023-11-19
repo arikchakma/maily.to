@@ -142,11 +142,13 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
   }
 
   return (
-    <div className={`flex items-center gap-3 ${config?.toolbarClassName}`}>
+    <div
+      className={`mly-flex mly-items-center mly-gap-3 ${config?.toolbarClassName}`}
+    >
       {groups.map((group, index) => (
         <div
           key={index}
-          className="flex items-center gap-1 rounded-md border bg-white p-1"
+          className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-bg-white mly-p-1"
         >
           {items
             .filter((item) => item.group === group)

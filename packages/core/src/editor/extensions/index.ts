@@ -1,13 +1,12 @@
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
-import Dropcursor from '@tiptap/extension-dropcursor';
-import Heading from '@tiptap/extension-heading';
 import TiptapLink from '@tiptap/extension-link';
 import ListItem from '@tiptap/extension-list-item';
 import Paragraph from '@tiptap/extension-paragraph';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
+import Heading from '@tiptap/extension-heading';
 
 import { HorizontalRule } from './horizontal-rule';
 import { ButtonExtension } from './button-extension';
@@ -23,10 +22,10 @@ export const extensions = [
     heading: {
       levels: [1, 2, 3],
     },
-  }),
-  Dropcursor.configure({
-    color: '#555',
-    width: 3,
+    dropcursor: {
+      color: '#555',
+      width: 3,
+    },
   }),
   Underline,
   TiptapLogoExtension,

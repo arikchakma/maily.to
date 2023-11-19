@@ -74,7 +74,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Text',
       description: 'Just start typing with plain text.',
       searchTerms: ['p', 'paragraph'],
-      icon: <Text className="h-4 w-4" />,
+      icon: <Text className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
@@ -88,7 +88,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Heading 1',
       description: 'Big section heading.',
       searchTerms: ['title', 'big', 'large'],
-      icon: <Heading1 className="h-4 w-4" />,
+      icon: <Heading1 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
@@ -102,7 +102,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Heading 2',
       description: 'Medium section heading.',
       searchTerms: ['subtitle', 'medium'],
-      icon: <Heading2 className="h-4 w-4" />,
+      icon: <Heading2 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
@@ -116,7 +116,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Heading 3',
       description: 'Small section heading.',
       searchTerms: ['subtitle', 'small'],
-      icon: <Heading3 className="h-4 w-4" />,
+      icon: <Heading3 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
@@ -130,7 +130,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Bullet List',
       description: 'Create a simple bullet list.',
       searchTerms: ['unordered', 'point'],
-      icon: <List className="h-4 w-4" />,
+      icon: <List className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleBulletList().run();
       },
@@ -139,7 +139,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Numbered List',
       description: 'Create a list with numbering.',
       searchTerms: ['ordered'],
-      icon: <ListOrdered className="h-4 w-4" />,
+      icon: <ListOrdered className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
       },
@@ -148,7 +148,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Logo',
       description: 'Add your brand logo',
       searchTerms: ['image', 'logo'],
-      icon: <ImageIcon className="h-4 w-4" />,
+      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         const logoUrl = prompt('Logo URL: ') || '';
 
@@ -163,7 +163,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Image',
       description: 'Full width image',
       searchTerms: ['image'],
-      icon: <ImageIcon className="h-4 w-4" />,
+      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         const imageUrl = prompt('Image URL: ') || '';
 
@@ -183,7 +183,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       description:
         'Add a spacer to the page. Useful for adding space between sections.',
       searchTerms: ['space', 'gap', 'divider'],
-      icon: <MoveVertical className="h-4 w-4" />,
+      icon: <MoveVertical className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor
           .chain()
@@ -197,7 +197,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Button',
       description: 'Add a call to action button to the page.',
       searchTerms: ['link', 'button', 'cta'],
-      icon: <MousePointer className="h-4 w-4" />,
+      icon: <MousePointer className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).setButton().run();
       },
@@ -206,7 +206,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Hard Break',
       description: 'Add a break between lines.',
       searchTerms: ['break', 'line'],
-      icon: <DivideIcon className="h-4 w-4" />,
+      icon: <DivideIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).setHardBreak().run();
       },
@@ -215,7 +215,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Footer',
       description: 'Add a footer text to the page.',
       searchTerms: ['footer', 'text'],
-      icon: <FootprintsIcon className="h-4 w-4" />,
+      icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).setFooter().run();
       },
@@ -224,7 +224,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       title: 'Clear Line',
       description: 'Clear the current line.',
       searchTerms: ['clear', 'line'],
-      icon: <EraserIcon className="h-4 w-4" />,
+      icon: <EraserIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().selectParentNode().deleteSelection().run();
       },
@@ -323,45 +323,55 @@ const CommandList = ({
   }, [selectedIndex]);
 
   return items.length > 0 ? (
-    <div className="z-50 w-72 rounded-md border border-gray-200 bg-white shadow-md transition-all">
+    <div className="mly-z-50 mly-w-72 mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
       <div
         id="slash-command"
         ref={commandListContainer}
-        className="no-scrollbar h-auto max-h-[330px] overflow-y-auto scroll-smooth px-1 py-2"
+        className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-px-1 mly-py-2"
       >
         {items.map((item: CommandItemProps, index: number) => {
           return (
             <button
               className={cn(
-                'flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100 hover:text-gray-900',
-                index === selectedIndex ? 'bg-gray-100 text-gray-900' : ''
+                'mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
+                index === selectedIndex
+                  ? 'mly-bg-gray-100 mly-text-gray-900'
+                  : ''
               )}
               key={index}
               onClick={() => selectItem(index)}
             >
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center">
+              <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
                 {item.icon}
               </div>
               <div>
-                <p className="font-medium">{item.title}</p>
-                <p className="text-xs text-gray-400">{item.description}</p>
+                <p className="mly-font-medium">{item.title}</p>
+                <p className="mly-text-xs mly-text-gray-400">
+                  {item.description}
+                </p>
               </div>
             </button>
           );
         })}
       </div>
-      <div className="border-t border-gray-200 px-1 py-3 pl-4">
-        <div className="flex items-center">
-          <p className="text-center text-xs text-gray-400">
-            <kbd className="rounded border p-1 px-2 font-medium">↑</kbd>
-            <kbd className="ml-1 rounded border p-1 px-2 font-medium">↓</kbd> to
-            navigate
+      <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
+        <div className="mly-flex mly-items-center">
+          <p className="mly-text-center mly-text-xs mly-text-gray-400">
+            <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+              ↑
+            </kbd>
+            <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+              ↓
+            </kbd>{' '}
+            to navigate
           </p>
-          <span aria-hidden="true" className="select-none px-1">
+          <span aria-hidden="true" className="mly-select-none mly-px-1">
             ·
           </span>
-          <p className="text-center text-xs text-gray-400">
-            <kbd className="rounded border p-1 px-1.5 font-medium">Enter</kbd>{' '}
+          <p className="mly-text-center mly-text-xs mly-text-gray-400">
+            <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
+              Enter
+            </kbd>{' '}
             to select
           </p>
         </div>

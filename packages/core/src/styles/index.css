@@ -1,101 +1,101 @@
-.mail-editor .prose p:where([class~='text-sm']) {
+.mail-editor .mly-prose p:where([class~='text-sm']) {
   font-size: 16px;
 }
 
-.mail-editor .prose h1,
-.mail-editor .prose h2,
-.mail-editor .prose h3 {
+.mail-editor .mly-prose h1,
+.mail-editor .mly-prose h2,
+.mail-editor .mly-prose h3 {
   margin-top: 0;
   margin-bottom: 12px;
 }
 
-.mail-editor .prose h1 {
+.mail-editor .mly-prose h1 {
   font-size: 36px;
 }
 
-.mail-editor .prose h2 {
+.mail-editor .mly-prose h2 {
   font-size: 30px;
 }
 
-.mail-editor .prose h3 {
+.mail-editor .mly-prose h3 {
   font-size: 24px;
 }
 
-.mail-editor .prose p {
+.mail-editor .mly-prose p {
   font-size: 15px;
   margin-bottom: 20px;
 }
 
-.mail-editor .prose h1 + p,
-.mail-editor .prose h2 + p,
-.mail-editor .prose h3 + p,
-.mail-editor .prose hr + p {
+.mail-editor .mly-prose h1 + p,
+.mail-editor .mly-prose h2 + p,
+.mail-editor .mly-prose h3 + p,
+.mail-editor .mly-prose hr + p {
   margin-top: 0;
 }
 
-.mail-editor .prose ol,
-.mail-editor .prose ul {
+.mail-editor .mly-prose ol,
+.mail-editor .mly-prose ul {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.mail-editor .prose li:not(:last-child) {
+.mail-editor .mly-prose li:not(:last-child) {
   margin-bottom: 8px;
 }
 
-.mail-editor .prose li > p {
+.mail-editor .mly-prose li > p {
   margin: 0;
 }
 
-.mail-editor .prose img {
+.mail-editor .mly-prose img {
   margin-top: 0;
   margin-bottom: 32px;
 }
 
-.mail-editor .prose blockquote {
+.mail-editor .mly-prose blockquote {
   margin-block: 26px;
 }
 
-.mail-editor .prose hr {
+.mail-editor .mly-prose hr {
   margin-block: 32px;
 }
 
-.mail-editor .prose .footer {
+.mail-editor .mly-prose .footer {
   display: block;
   font-size: 13px;
   margin-bottom: 20px;
   color: rgb(100, 116, 139);
 }
 
-.mail-editor .prose .spacer + * {
+.mail-editor .mly-prose .spacer + * {
   margin-top: 0;
 }
 
-.mail-editor .prose p + .spacer {
+.mail-editor .mly-prose p + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .prose h1 + .spacer,
-.mail-editor .prose h2 + .spacer,
-.mail-editor .prose h3 + .spacer {
+.mail-editor .mly-prose h1 + .spacer,
+.mail-editor .mly-prose h2 + .spacer,
+.mail-editor .mly-prose h3 + .spacer {
   margin-top: -12px;
 }
 
-.mail-editor .prose ol + .spacer,
-.mail-editor .prose ul + .spacer {
+.mail-editor .mly-prose ol + .spacer,
+.mail-editor .mly-prose ul + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .prose img + .spacer {
+.mail-editor .mly-prose img + .spacer {
   margin-top: -32px;
 }
 
-.mail-editor .prose .node-button + .spacer,
-.mail-editor .prose footer + .spacer {
+.mail-editor .mly-prose .node-button + .spacer,
+.mail-editor .mly-prose footer + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .prose .node-button {
+.mail-editor .mly-prose .node-button {
   margin-top: 0;
   margin-bottom: 20px;
 }
@@ -137,11 +137,11 @@
 }
 
 /* Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
+.mly-no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
-.no-scrollbar {
+.mly-no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }

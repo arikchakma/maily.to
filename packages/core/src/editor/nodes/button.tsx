@@ -110,9 +110,8 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${
-        props.selected && 'ProseMirror-selectednode'
-      }`}
+      className={`react-component ${props.selected && 'ProseMirror-selectednode'
+        }`}
       draggable="true"
       data-drag-handle=""
       style={{
@@ -124,13 +123,13 @@ export default function ButtonComponent(props: NodeViewProps) {
           <div>
             <a
               className={cn(
-                'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-800',
-                'h-10 px-4 py-2',
-                'border-2 px-[32px] py-[20px] font-semibold no-underline',
+                'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 disabled:mly-pointer-events-none disabled:mly-opacity-50',
+                'mly-h-10 mly-px-4 mly-py-2',
+                'mly-border-2 mly-px-[32px] mly-py-[20px] mly-font-semibold mly-no-underline',
                 {
-                  'rounded-full': _radius === 'round',
-                  'rounded-md': _radius === 'smooth',
-                  'rounded-none': _radius === 'sharp',
+                  '!mly-rounded-full': _radius === 'round',
+                  '!mly-rounded-md': _radius === 'smooth',
+                  '!mly-rounded-none': _radius === 'sharp',
                 }
               )}
               href={url}
@@ -174,15 +173,17 @@ export default function ButtonComponent(props: NodeViewProps) {
             }}
           />
 
-          <div className="w-full space-y-2">
-            <p className="text-xs font-normal text-slate-400">Style</p>
-            <div className="flex gap-1">
+          <div className="mly-w-full mly-space-y-2">
+            <p className="mly-text-xs mly-font-normal mly-text-slate-400">
+              Style
+            </p>
+            <div className="mly-flex mly-gap-1">
               {items.style(props).map((item, index) => (
                 <BaseButton
                   key={index}
                   data-state={item.isActive ? 'true' : 'false'}
                   variant="ghost"
-                  className="grow font-normal"
+                  className="mly-grow mly-font-normal"
                   size="sm"
                   onClick={item.onClick}
                 >
@@ -192,15 +193,17 @@ export default function ButtonComponent(props: NodeViewProps) {
             </div>
           </div>
 
-          <div className="w-full space-y-2">
-            <p className="text-xs font-normal text-slate-400">Corner Radius</p>
-            <div className="flex gap-1">
+          <div className="mly-w-full mly-space-y-2">
+            <p className="mly-text-xs mly-font-normal mly-text-slate-400">
+              Corner Radius
+            </p>
+            <div className="mly-flex mly-gap-1">
               {items.cornerRadius(props).map((item, index) => (
                 <BaseButton
                   key={index}
                   data-state={item.isActive ? 'true' : 'false'}
                   variant="ghost"
-                  className="grow font-normal"
+                  className="mly-grow mly-font-normal"
                   size="sm"
                   onClick={item.onClick}
                 >
@@ -211,14 +214,16 @@ export default function ButtonComponent(props: NodeViewProps) {
           </div>
           <div className="flex gap-2">
             <div>
-              <p className="text-xs font-normal text-slate-400">Alignment</p>
-              <div className="mt-2 flex gap-1">
+              <p className="mly-text-xs mly-font-normal mly-text-slate-400">
+                Alignment
+              </p>
+              <div className="mly-mt-2 mly-flex mly-gap-1">
                 {items.alignment(props).map((item, index) => (
                   <BaseButton
                     key={index}
                     data-state={item.isActive ? 'true' : 'false'}
                     variant="ghost"
-                    className="grow"
+                    className="mly-grow"
                     size="sm"
                     onClick={item.onClick}
                   >
@@ -228,8 +233,10 @@ export default function ButtonComponent(props: NodeViewProps) {
               </div>
             </div>
             <div>
-              <p className="text-xs font-normal text-slate-400">Color</p>
-              <div className="mt-2 flex gap-1">
+              <p className="mly-text-xs mly-font-normal mly-text-slate-400">
+                Color
+              </p>
+              <div className="mly-mt-2 mly-flex mly-gap-1">
                 <BackgroundColorPickerPopup
                   variant={variant}
                   color={buttonColor}
@@ -269,7 +276,7 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
       <PopoverTrigger asChild>
         <BaseButton variant="ghost" className="" size="sm">
           <div
-            className="h-4 w-4 rounded"
+            className="mly-h-4 mly-w-4 mly-rounded"
             style={{
               backgroundColor:
                 props.variant === 'filled' ? color : 'transparent',
@@ -279,9 +286,9 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
           />
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="mly-w-full !mly-p-0">
         <ChromePicker
-          className="!shadow-md"
+          className="!mly-shadow-md"
           color={color}
           onChange={(color) => {
             onChange(color.hex);
@@ -298,17 +305,20 @@ function TextColorPickerPopup(props: ColorPickerProps) {
     <Popover>
       <PopoverTrigger asChild>
         <BaseButton variant="ghost" size="sm">
-          <div className="flex flex-col items-center justify-center gap-[1px]">
-            <span className="font-bolder font-mono text-xs text-slate-700">
+          <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
+            <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
               A
             </span>
-            <div className="h-[2px] w-3" style={{ backgroundColor: color }} />
+            <div
+              className="mly-h-[2px] mly-w-3"
+              style={{ backgroundColor: color }}
+            />
           </div>
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="mly-w-full !mly-p-0">
         <ChromePicker
-          className="!shadow-md"
+          className="!mly-shadow-md"
           color={color}
           onChange={(color) => {
             onChange(color.hex);

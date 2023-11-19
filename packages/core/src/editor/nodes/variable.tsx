@@ -43,14 +43,14 @@ export const VariableList = forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="z-50 h-auto rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all">
+    <div className="mly-z-50 mly-h-auto mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-px-1 mly-py-2 mly-shadow-md mly-transition-all">
       {props?.items?.length ? (
         props?.items?.map((item: string, index: number) => (
           <BaseButton
             variant="secondary"
             key={index}
             onClick={() => selectItem(index)}
-            className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100"
+            className="mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100"
           >
             {item}
           </BaseButton>
@@ -58,7 +58,7 @@ export const VariableList = forwardRef((props: any, ref) => {
       ) : (
         <BaseButton
           variant="secondary"
-          className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-gray-900 hover:bg-gray-100"
+          className="mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100"
         >
           No result
         </BaseButton>
@@ -145,6 +145,7 @@ export const Variable = Mention.extend({
     return `${node.attrs.label ?? node.attrs.id}`;
   },
   HTMLAttributes: {
-    class: 'py-1 px-2 bg-slate-100 border border-blue-300 rounded-md',
+    class:
+      'mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md',
   },
 });

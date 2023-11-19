@@ -38,14 +38,14 @@ export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
     ...props,
     shouldShow: ({ editor }) => editor.isActive('spacer'),
     tippyOptions: {
-      moveTransition: 'transform 0.15s ease-out',
+      moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
   };
 
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="flex gap-1 rounded-md border border-slate-200 bg-white p-1 shadow-md"
+      className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
     >
       {items.map((item, index) => (
         <BubbleMenuButton key={index} {...item} />

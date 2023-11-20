@@ -110,8 +110,9 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${props.selected && 'ProseMirror-selectednode'
-        }`}
+      className={`react-component ${
+        props.selected && 'ProseMirror-selectednode'
+      }`}
       draggable="true"
       data-drag-handle=""
       style={{

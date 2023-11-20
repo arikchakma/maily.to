@@ -1,8 +1,5 @@
 {
   "extends": "tsconfig/react-library.json",
-  "compilerOptions": {
-    "types": ["bun-types"]
-  },
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"]
 }

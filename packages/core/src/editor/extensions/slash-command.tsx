@@ -172,11 +172,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         }
 
         editor.chain().focus().deleteRange(range).run();
-        editor
-          .chain()
-          .focus()
-          .setImage({ src: imageUrl })
-          .run();
+        editor.chain().focus().setImage({ src: imageUrl }).run();
       },
     },
     {

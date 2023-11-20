@@ -22,8 +22,6 @@
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "build": "tsup",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "test:watch": "vitest",
     "test": "vitest run"
   },

@@ -44,7 +44,6 @@ const useFormField = () => {
 
   const { id } = itemContext;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Just return the object
   return {
     id,
     name: fieldContext.name,
@@ -139,7 +138,7 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const body = error ? String(error.message) : children;
 
   if (!body) {
     return null;

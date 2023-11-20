@@ -27,6 +27,7 @@ export const extensions = [
       color: '#555',
       width: 3,
     },
+    horizontalRule: false,
   }),
   Image,
   Underline,

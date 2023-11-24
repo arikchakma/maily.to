@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
@@ -44,19 +44,15 @@ export function PreviewEmail(props: PreviewEmailProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <form action={formAction}>
-          <input
-            name="json"
-            type="hidden"
-            value={JSON.stringify(json) || ''}
-          />
+        <form action={formAction} key={JSON.stringify(json)}>
+          <input name="json" type="hidden" value={JSON.stringify(json) || ''} />
           <input name="previewText" type="hidden" value={previewText} />
           <SubmitButton disabled={!editor} />
         </form>
       </DialogTrigger>
       {html ? (
         <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:shadow-none max-[680px]:border-0">
-          <EmailFrame className="h-full w-full" innerHTML={html} />
+          <EmailFrame className="h-full w-full" innerHTML={html} key={html} />
         </DialogContent>
       ) : null}
     </Dialog>

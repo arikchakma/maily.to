@@ -53,7 +53,10 @@ export function EditorPreview() {
           spellCheck: false,
         }}
         contentHtml={defaultHtml}
-        onCreate={setEditor}
+        onCreate={(e) => {
+          setEditor(e);
+          setJson(e?.getJSON() || {});
+        }}
         onUpdate={(e) => {
           setEditor(e);
           setJson(e?.getJSON() || {});

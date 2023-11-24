@@ -29,6 +29,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
+    "sonner": "^1.2.3",
     "tailwind-merge": "^2.0.0",
     "tailwindcss": "^3.3.5"
   },

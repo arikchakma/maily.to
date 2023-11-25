@@ -1,81 +1,54 @@
-# Turborepo starter
+<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> maily.to</h1>
 
-This is an official starter Turborepo.
+<p align="center">
+  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+  <a href="https://maily.to">
+    	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
+    </a>
+</p>
 
-## Using this example
+<p align="center">
+  <b>Powerful editor for creating beautiful, pre-designed, mobile-ready emails.</b></br>
+  <sub>Just bring your text, use our pre-designed components, and be done.</sub><br>
+</p>
 
-Run the following command:
+<br />
 
-```sh
-npx create-turbo@latest
-```
+## Start Using
 
-## What's inside?
+Just follow this link to [access the editor](https://maily.to/playground)
 
-This Turborepo includes the following packages/apps:
+<br />
 
-### Apps and Packages
+## Why use Maily Editor?
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+Designing emails that work across all email platforms, browsers, etc is hard. **Maily** is an opinionated editor that lets you craft emails in a hassle-free manner. We have a bunch of pre-designed components that make it easy for you to design any kind of email. Here is the list of components supported by **maily** with more being added.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- Logo
+- Buttons and Variants
+- Variables
+- Text Formatting
+- Image
+- Alignment
+- Divider
+- Spacer
+- Footer
 
-### Utilities
+<br />
 
-This Turborepo has some additional tools already setup for you:
+## Contributions
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Feel free to submit pull requests, create issues, or spread the word. For getting a development version of it up & running, go through the following steps.
 
-### Build
+1. Download the code: `git clone https://github.com/arikchakma/maily.to`
+2. Change directory: `cd maily.to`
+3. Copy the example config file: `cp .env.example .env`
+4. Add `Google` & `Github` providers in your `supabase` project. You can find more information about it [here](https://supabase.com/docs/guides/auth).
+5. `pnpm install` to install all the dependencies.
+6. `pnpm dev` to start the development server.
 
-To build all apps and packages, run the following command:
+## License
 
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)

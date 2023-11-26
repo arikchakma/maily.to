@@ -86,15 +86,16 @@ export async function sendTestEmailAction(formData: FormData) {
       preview: previewText,
     });
 
-    console.log('------------------');
-    console.log({
-      subject,
-      html,
-      from,
-      replyTo,
-      to,
-    });
-    console.log('------------------');
+    return {
+      data: {
+        html,
+        subject,
+        from,
+        replyTo,
+        to,
+      },
+      error: null,
+    };
   } catch (e: unknown) {
     return {
       data: null,

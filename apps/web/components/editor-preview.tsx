@@ -10,6 +10,7 @@ import { Label } from './ui/label';
 import { useEmailStrore } from '@/stores/use-email';
 import { useEditorStrore } from '@/stores/use-editor';
 import { SendTestEmail } from './send-test-email';
+import { CopyEmailHtml } from './copy-email-html';
 
 export function EditorPreview() {
   const { previewText, setPreviewText, setEditor, setJson } = useEditorStrore();
@@ -25,6 +26,7 @@ export function EditorPreview() {
       <div className="flex items-center gap-1.5 justify-end">
         <SendTestEmail />
         <PreviewEmail />
+        <CopyEmailHtml />
       </div>
       <div className="mb-8 mt-8">
         <Label className="flex items-center font-normal">

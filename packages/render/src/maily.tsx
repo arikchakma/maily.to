@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable no-console */
 
 import { type CSSProperties } from 'react';
 import {
@@ -311,15 +308,14 @@ export class Maily {
       return this[node.type]?.(node, options);
       // eslint-disable-next-line no-else-return
     } else {
-      console.warn(`Node type "${type}" is not supported.`);
-      return null;
+      throw new Error(`Node type "${type}" is not supported.`);
     }
   }
 
   // `renderMark` will call the method of the corresponding mark type
   private renderMark(node: JSONContent): JSX.Element {
     // It will wrap the text with the corresponding mark type
-    const text = node.text || '&nbsp;';
+    const text = node.text || <>&nbsp;</>;
     const marks = node.marks || [];
 
     return marks.reduce(
@@ -330,8 +326,7 @@ export class Maily {
           const markElement = this[type]?.(mark, acc);
           return markElement;
         }
-        console.warn(`Mark type "${type}" is not supported.`);
-        return acc;
+        throw new Error(`Mark type "${type}" is not supported.`);
       },
       <>{text}</>
     );
@@ -357,7 +352,7 @@ export class Maily {
           ...antialiased,
         }}
       >
-        {this.getMappedContent(node)}
+        {node?.content ? this.getMappedContent(node) : <>&nbsp;</>}
       </Text>
     );
   }

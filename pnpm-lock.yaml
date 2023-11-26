@@ -92,6 +92,9 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
+      envelope:
+        specifier: github:arikchakma/envelope
+        version: git/github.com+arikchakma/envelope/bae90d24bd75fe669083cccbf6cab2050b97ba3b
       lucide-react:
         specifier: ^0.293.0
         version: 0.293.0(react@18.2.0)
@@ -116,6 +119,12 @@ importers:
       tailwindcss:
         specifier: ^3.3.5
         version: 3.3.5
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+      zustand:
+        specifier: ^4.4.6
+        version: 4.4.6(@types/react@18.2.38)(react@18.2.0)
     devDependencies:
       '@tiptap/core':
         specifier: ^2.1.12
@@ -6881,6 +6890,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /use-sync-external-store@1.2.0(react@18.2.0):
+    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /utf-8-validate@5.0.10:
     resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
     engines: {node: '>=6.14.2'}
@@ -7198,3 +7215,33 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+    dev: false
+
+  /zustand@4.4.6(@types/react@18.2.38)(react@18.2.0):
+    resolution: {integrity: sha512-Rb16eW55gqL4W2XZpJh0fnrATxYEG3Apl2gfHTyDSE965x/zxslTikpNch0JgNjJA9zK6gEFW8Fl6d1rTZaqgg==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@types/react': '>=16.8'
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.38
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  git/github.com+arikchakma/envelope/bae90d24bd75fe669083cccbf6cab2050b97ba3b:
+    resolution: {commit: bae90d24bd75fe669083cccbf6cab2050b97ba3b, repo: git@github.com:arikchakma/envelope.git, type: git}
+    name: envelopeat
+    version: 0.0.1
+    dev: false

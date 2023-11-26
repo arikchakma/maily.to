@@ -1,17 +1,14 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
+import { useFormStatus } from 'react-dom';
 import { Eye, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { previewEmailAction } from '@/actions/email';
+import { useEditorStrore } from '@/stores/use-editor';
+import { useServerAction } from '@/utils/use-server-action';
 import { EmailFrame } from './email-frame';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
-
-interface PreviewEmailProps {
-  editor?: TiptapEditor;
-  json: JSONContent;
-  previewText: string;
-}
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -37,22 +34,32 @@ function SubmitButton(props: SubmitButtonProps) {
   );
 }
 
-export function PreviewEmail(props: PreviewEmailProps) {
-  const { editor, previewText, json } = props;
-  const [html, formAction] = useFormState(previewEmailAction, null);
+export function PreviewEmail() {
+  const { json, previewText } = useEditorStrore();
+
+  const [html, setHtml] = useState<string>('');
+  const [action, isPending] = useServerAction(previewEmailAction, (result) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+    const { data, error } = result!;
+    if (error) {
+      toast.error(error.message || 'Something went wrong');
+      return;
+    }
+    setHtml(data);
+  });
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <form action={formAction} key={JSON.stringify(json)}>
+        <form action={action}>
           <input name="json" type="hidden" value={JSON.stringify(json) || ''} />
           <input name="previewText" type="hidden" value={previewText} />
-          <SubmitButton disabled={!editor} />
+          <SubmitButton disabled={!json} />
         </form>
       </DialogTrigger>
-      {html ? (
-        <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:shadow-none max-[680px]:border-0">
-          <EmailFrame className="h-full w-full" innerHTML={html} key={html} />
+      {!isPending ? (
+        <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:shadow-none max-[680px]:border-0 animation-none">
+          <EmailFrame className="h-full w-full" innerHTML={html} />
         </DialogContent>
       ) : null}
     </Dialog>

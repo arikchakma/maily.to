@@ -24,6 +24,7 @@
     "@tanstack/react-query": "^5.8.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "envelope": "github:arikchakma/envelope",
     "lucide-react": "^0.293.0",
     "next": "14.0.3",
     "react": "^18.2.0",
@@ -31,7 +32,9 @@
     "react-hook-form": "^7.48.2",
     "sonner": "^1.2.3",
     "tailwind-merge": "^2.0.0",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "zod": "^3.22.4",
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@tiptap/core": "^2.1.12",

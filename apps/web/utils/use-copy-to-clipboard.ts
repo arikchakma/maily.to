@@ -3,9 +3,7 @@ import { useState, useEffect } from 'react';
 type CopiedValue = string | null;
 type CopyFn = (text: string) => Promise<boolean>; // Return success
 
-export function useCopyToClipboard(
-  timeout: number = 2000
-): [CopiedValue, CopyFn] {
+export function useCopyToClipboard(timeout = 2000): [CopiedValue, CopyFn] {
   const [copiedText, setCopiedText] = useState<CopiedValue>(null);
 
   // Clear copiedText after 'timeout' milliseconds
@@ -22,7 +20,7 @@ export function useCopyToClipboard(
   }, [copiedText, timeout]);
 
   const copy: CopyFn = async (text) => {
-    if (!navigator?.clipboard) {
+    if (!navigator.clipboard) {
       console.warn('Clipboard not supported');
       return false;
     }

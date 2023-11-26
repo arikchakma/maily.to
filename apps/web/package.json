@@ -24,7 +24,7 @@
     "@tanstack/react-query": "^5.8.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "envelope": "github:arikchakma/envelope",
+    "envelope": "file:../../../../roadmap.sh/envelopeat/sdk/dist",
     "lucide-react": "^0.293.0",
     "next": "14.0.3",
     "react": "^18.2.0",

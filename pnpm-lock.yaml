@@ -93,8 +93,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       envelope:
-        specifier: github:arikchakma/envelope
-        version: git/github.com+arikchakma/envelope/bae90d24bd75fe669083cccbf6cab2050b97ba3b
+        specifier: file:../../../../roadmap.sh/envelopeat/sdk/dist
+        version: file:../../roadmap.sh/envelopeat/sdk/dist
       lucide-react:
         specifier: ^0.293.0
         version: 0.293.0(react@18.2.0)
@@ -7240,8 +7240,7 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  git/github.com+arikchakma/envelope/bae90d24bd75fe669083cccbf6cab2050b97ba3b:
-    resolution: {commit: bae90d24bd75fe669083cccbf6cab2050b97ba3b, repo: git@github.com:arikchakma/envelope.git, type: git}
-    name: envelopeat
-    version: 0.0.1
+  file:../../roadmap.sh/envelopeat/sdk/dist:
+    resolution: {directory: ../../roadmap.sh/envelopeat/sdk/dist, type: directory}
+    name: dist
     dev: false

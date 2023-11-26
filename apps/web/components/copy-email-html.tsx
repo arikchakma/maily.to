@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import { ClipboardCopy, Copy, Loader2 } from 'lucide-react';
+import { ClipboardCopy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { previewEmailAction } from '@/actions/email';
 import { useEditorStrore } from '@/stores/use-editor';
@@ -36,7 +36,7 @@ export function CopyEmailHtml() {
   const { json, previewText } = useEditorStrore();
   const [_, copy] = useCopyToClipboard();
 
-  const [action] = useServerAction(previewEmailAction, (result) => {
+  const [action] = useServerAction(previewEmailAction, async (result) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
     const { data, error } = result!;
     if (error) {
@@ -44,7 +44,7 @@ export function CopyEmailHtml() {
       return;
     }
 
-    copy(data);
+    await copy(data);
     toast.success('Email HTML copied to clipboard');
   });
 

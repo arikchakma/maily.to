@@ -64,8 +64,9 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${props.selected && 'ProseMirror-selectednode'
-        }`}
+      className={`react-component ${
+        props.selected && 'ProseMirror-selectednode'
+      }`}
       draggable="true"
       data-drag-handle=""
       style={{
@@ -234,8 +235,7 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
           <div
             className="mly-h-4 mly-w-4 mly-rounded"
             style={{
-              backgroundColor:
-                variant === 'filled' ? color : 'transparent',
+              backgroundColor: variant === 'filled' ? color : 'transparent',
               borderStyle: 'solid',
               borderWidth: variant === 'outline' ? 2 : 0,
               borderColor: color,

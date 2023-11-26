@@ -1,23 +1,29 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 
+export const allowedSpacerSize = ['sm', 'md', 'lg', 'xl'] as const;
+export type AllowedSpacerSize = (typeof allowedSpacerSize)[number];
+
 export interface SpacerOptions {
-  height: 'sm' | 'md' | 'lg' | 'xl';
+  height: AllowedSpacerSize;
   HTMLAttributes: Record<string, any>;
 }
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     spacer: {
-      setSpacer: (options: { height: SpacerOptions['height'] }) => ReturnType;
-      setSpacerSize: (height: SpacerOptions['height']) => ReturnType;
+      setSpacer: (options: { height: AllowedSpacerSize }) => ReturnType;
+      setSpacerSize: (height: AllowedSpacerSize) => ReturnType;
       unsetSpacer: () => ReturnType;
     };
   }
 }
 
-function getHeightStyle(height: SpacerOptions['height']): string {
+const DEFAULT_HEIGHT: AllowedSpacerSize = 'sm';
+
+function getHeightStyle(height: AllowedSpacerSize): string {
   const heights = { sm: '8px', md: '16px', lg: '32px', xl: '64px' };
-  return `width: 100%; height: ${heights[height] || '8px'};`;
+
+  return `width: 100%; height: ${heights[height] || heights[DEFAULT_HEIGHT]}`;
 }
 
 export const Spacer = Node.create<SpacerOptions>({
@@ -44,7 +50,7 @@ export const Spacer = Node.create<SpacerOptions>({
     return {
       setSpacer:
         (options) =>
-        ({ chain, commands }) => {
+        ({ commands }) => {
           return commands.insertContent({
             type: this.name,
             attrs: {
@@ -56,7 +62,7 @@ export const Spacer = Node.create<SpacerOptions>({
       setSpacerSize:
         (height) =>
         ({ commands }) => {
-          if (!['sm', 'md', 'lg', 'xl'].includes(height)) {
+          if (!allowedSpacerSize.includes(height)) {
             throw new Error('Invalid spacer height');
           }
           return commands.updateAttributes('spacer', { height });

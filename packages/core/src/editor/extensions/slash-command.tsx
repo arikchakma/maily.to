@@ -333,7 +333,7 @@ const CommandList = ({
                 'mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
                 index === selectedIndex
                   ? 'mly-bg-gray-100 mly-text-gray-900'
-                  : ''
+                  : 'mly-bg-transparent'
               )}
               key={index}
               onClick={() => selectItem(index)}

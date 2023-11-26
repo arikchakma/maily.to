@@ -1,43 +1,60 @@
 import { mergeAttributes } from '@tiptap/core';
 import TiptapImage from '@tiptap/extension-image';
 
+export const allowedLogoSize = ['sm', 'md', 'lg'] as const;
+export type AllowedLogoSize = (typeof allowedLogoSize)[number];
+
+export const allowedLogoAlignment = ['left', 'center', 'right'] as const;
+export type AllowedLogoAlignment = (typeof allowedLogoAlignment)[number];
+
+interface LogoOptions {
+  src: string;
+  alt?: string;
+  title?: string;
+  size?: AllowedLogoSize;
+  alignment?: AllowedLogoAlignment;
+}
+
+interface LogoAttributes {
+  size?: AllowedLogoSize;
+  alignment?: AllowedLogoAlignment;
+}
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     logo: {
-      setLogoImage: (options: {
-        src: string;
-        alt?: string;
-        title?: string;
-      }) => ReturnType;
-
-      setLogoAttributes: (attributes: {
-        size?: 'sm' | 'md' | 'lg';
-        alignment?: 'left' | 'center' | 'right';
-      }) => ReturnType;
+      setLogoImage: (options: LogoOptions) => ReturnType;
+      setLogoAttributes: (attributes: LogoAttributes) => ReturnType;
     };
   }
 }
 
 export interface TiptapLogoAttributes {
-  size: 'sm' | 'md' | 'lg';
-  alignment: 'left' | 'center' | 'right';
+  size: AllowedLogoSize;
+  alignment: AllowedLogoAlignment;
   HTMLAttributes: Record<string, any>;
 }
 
+const DEFAULT_ALIGNMENT: AllowedLogoAlignment = 'left';
+const DEFAULT_SIZE: AllowedLogoSize = 'sm';
+
 function getSizeStyle(size: TiptapLogoAttributes['size']): string {
-  const sizes = { sm: '40px', md: '48px', lg: '64px' };
-  return `height:${sizes[size] || '40px'}`;
+  const sizes: Record<AllowedLogoSize, string> = {
+    sm: '40px',
+    md: '48px',
+    lg: '64px',
+  };
+  return `height:${sizes[size] || sizes[DEFAULT_SIZE]}`;
 }
 
-function getAlignmentStyle(
-  alignment: TiptapLogoAttributes['alignment']
-): string[] {
-  const alignments = {
+function getAlignmentStyle(alignment: AllowedLogoAlignment): string[] {
+  const alignments: Record<AllowedLogoAlignment, string[]> = {
     left: ['margin-right:auto', 'margin-left:0'],
     center: ['margin-right:auto', 'margin-left:auto'],
     right: ['margin-right:0', 'margin-left:auto'],
   };
-  return alignments[alignment] || ['margin-right:auto', 'margin-left:0'];
+
+  return alignments[alignment] || alignments[DEFAULT_ALIGNMENT];
 }
 
 export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
@@ -58,8 +75,9 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
           element.getAttribute('data-maily-component'),
       },
       size: {
-        default: 'sm',
-        parseHTML: (element) => element.getAttribute('data-size'),
+        default: DEFAULT_SIZE,
+        parseHTML: (element) =>
+          element.getAttribute('data-size') as AllowedLogoSize,
         renderHTML: (attributes) => {
           return {
             'data-size': attributes.size,
@@ -67,8 +85,9 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
         },
       },
       alignment: {
-        default: 'left',
-        parseHTML: (element) => element.getAttribute('data-alignment'),
+        default: DEFAULT_ALIGNMENT,
+        parseHTML: (element) =>
+          element.getAttribute('data-alignment') as AllowedLogoAlignment,
         renderHTML: (attributes) => {
           return {
             'data-alignment': attributes.alignment,

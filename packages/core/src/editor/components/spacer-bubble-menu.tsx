@@ -1,37 +1,19 @@
-import { FC } from 'react';
 import { BubbleMenu } from '@tiptap/react';
-import { Editor } from '@tiptap/core';
 
 import { BubbleMenuButton } from './bubble-menu-button';
 import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
-import { SpacerOptions } from '../nodes/spacer';
+import { AllowedSpacerSize, allowedSpacerSize } from '../nodes/spacer';
 
-function createSpacerCommand(
-  editor: Editor | undefined,
-  height: SpacerOptions['height']
-): () => void {
-  return () => {
-    editor?.chain().focus().setSpacer({ height }).run();
-  };
-}
-
-function createSpacerIsActive(
-  editor: Editor | undefined,
-  height: string
-): () => boolean {
-  return () => {
-    return editor?.isActive('spacer', { height })!;
-  };
-}
-
-export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
+export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor } = props;
-  const heights = ['sm', 'md', 'lg', 'xl'];
 
+  const heights: AllowedSpacerSize[] = [...allowedSpacerSize];
   const items: BubbleMenuItem[] = heights.map((height) => ({
     name: height,
-    isActive: createSpacerIsActive(editor, height),
-    command: createSpacerCommand(editor, height as SpacerOptions['height']),
+    isActive: () => editor?.isActive('spacer', { height })!,
+    command: () => {
+      editor?.chain().focus().setSpacer({ height }).run();
+    },
   }));
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
@@ -52,4 +34,4 @@ export const SpacerBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       ))}
     </BubbleMenu>
   );
-};
+}

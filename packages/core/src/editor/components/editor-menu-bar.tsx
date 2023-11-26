@@ -8,7 +8,6 @@ import {
   EraserIcon,
   ItalicIcon,
   LinkIcon,
-  MailIcon,
   SeparatorHorizontal,
   StrikethroughIcon,
   UnderlineIcon,

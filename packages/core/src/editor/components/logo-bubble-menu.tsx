@@ -1,122 +1,81 @@
-import { FC } from 'react';
-import { BubbleMenu, BubbleMenuProps, isTextSelection } from '@tiptap/react';
-import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
+import { BubbleMenu } from '@tiptap/react';
+import {
+  AlignCenterIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
+  Link,
+} from 'lucide-react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
 import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
+import {
+  allowedLogoAlignment,
+  AllowedLogoAlignment,
+  allowedLogoSize,
+  AllowedLogoSize,
+} from '../nodes/logo';
 
-export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
+export function LogoBubbleMenu(props: EditorBubbleMenuProps) {
+  const { editor } = props;
+
+  const alignments: AllowedLogoAlignment[] = [...allowedLogoAlignment];
+  const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
+
+  const alignmentItems: BubbleMenuItem[] = alignments.map(
+    (alignment, index) => ({
+      name: alignment,
+      isActive: () => editor?.isActive('logo', { alignment })!,
+      command: () => {
+        editor?.chain().focus().setLogoAttributes({ alignment }).run();
+      },
+      icon: icons[index],
+    })
+  );
+
+  const sizes: AllowedLogoSize[] = [...allowedLogoSize];
+
+  const sizeItems: BubbleMenuItem[] = sizes.map((size) => ({
+    name: size,
+    isActive: () => props?.editor?.isActive('logo', { size })!,
+    command: () => {
+      props?.editor?.chain().focus().setLogoAttributes({ size }).run();
+    },
+  }));
+
   const items: BubbleMenuItem[] = [
+    ...alignmentItems,
     {
-      name: 'left',
-      isActive: () => props?.editor?.isActive('logo', { alignment: 'left' })!,
+      name: 'url',
+      isActive: () => false,
       command: () => {
-        if (props?.editor?.isActive('logo', { alignment: 'left' })!) {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'left' })
-            .run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'left' })
-            .run();
+        const { editor } = props;
+        const currentUrl = editor?.getAttributes('logo')?.src;
+        const url = window.prompt('Update logo URL', currentUrl);
+        if (!url) {
+          return;
         }
+
+        const size = editor?.getAttributes('logo')?.size;
+        const alignment = editor?.getAttributes('logo')?.alignment;
+
+        // Remove the current logo
+        // and insert a new one
+        const selection = editor?.state.selection;
+        editor?.commands.setLogoImage({
+          src: url,
+          size: size,
+          alignment: alignment,
+        });
+        editor?.commands.setNodeSelection(selection?.from || 0);
       },
-      icon: AlignLeftIcon,
+      icon: Link,
     },
-    {
-      name: 'center',
-      isActive: () => props?.editor?.isActive('logo', { alignment: 'center' })!,
-      command: () => {
-        if (props?.editor?.isActive('logo', { alignment: 'center' })) {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'left' })
-            .run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'center' })
-            .run();
-        }
-      },
-      icon: AlignCenterIcon,
-    },
-    {
-      name: 'right',
-      isActive: () => props?.editor?.isActive('logo', { alignment: 'right' })!,
-      command: () => {
-        if (props?.editor?.isActive('logo', { alignment: 'right' })) {
-          props.editor
-            .chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'left' })
-            .run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ alignment: 'right' })
-            .run();
-        }
-      },
-      icon: AlignRightIcon,
-    },
-    {
-      name: 'sm',
-      isActive: () => props?.editor?.isActive('logo', { size: 'sm' })!,
-      command: () => {
-        if (props?.editor?.isActive('logo', { size: 'sm' })) {
-          props?.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ size: 'sm' })
-            .run();
-        }
-      },
-    },
-    {
-      name: 'md',
-      isActive: () => props?.editor?.isActive('logo', { size: 'md' })!,
-      command: () => {
-        if (props?.editor?.isActive('logo', { size: 'md' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ size: 'md' })
-            .run();
-        }
-      },
-    },
-    {
-      name: 'lg',
-      isActive: () => props?.editor?.isActive('logo', { size: 'lg' })!,
-      command: () => {
-        if (props?.editor?.isActive('logo', { size: 'lg' })) {
-          props.editor.chain().focus().setLogoAttributes({ size: 'sm' }).run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .setLogoAttributes({ size: 'lg' })
-            .run();
-        }
-      },
-    },
+    ...sizeItems,
   ];
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    shouldShow: ({ editor, view, state, oldState, from, to }) => {
+    shouldShow: ({ editor }) => {
       if (!editor.isActive('logo')) {
         return false;
       }
@@ -138,4 +97,4 @@ export const LogoBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       ))}
     </BubbleMenu>
   );
-};
+}

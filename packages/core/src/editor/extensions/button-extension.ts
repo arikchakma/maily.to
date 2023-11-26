@@ -2,13 +2,21 @@ import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import ButtonComponent from '../nodes/button';
+import { AllowedLogoAlignment } from '../nodes/logo';
+
+export const allowedButtonVariant = ['filled', 'outline'] as const;
+export type AllowedButtonVariant = (typeof allowedButtonVariant)[number];
+
+export const allowedButtonBorderRadius = ['sharp', 'smooth', 'round'] as const;
+export type AllowedButtonBorderRadius =
+  (typeof allowedButtonBorderRadius)[number];
 
 export interface ButtonOptions {
   text: string;
   url: string;
-  alignment: 'left' | 'center' | 'right';
-  variant: 'filled' | 'outline';
-  borderRadius: 'sharp' | 'smooth' | 'round';
+  alignment: AllowedLogoAlignment;
+  variant: AllowedButtonVariant;
+  borderRadius: AllowedButtonBorderRadius;
   buttonColor: string;
   textColor: string;
   HTMLAttributes: Record<string, any>;

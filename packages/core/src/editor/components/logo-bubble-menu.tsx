@@ -10,7 +10,6 @@ import { BubbleMenuButton } from './bubble-menu-button';
 import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
 import {
   allowedLogoAlignment,
-  AllowedLogoAlignment,
   allowedLogoSize,
   AllowedLogoSize,
 } from '../nodes/logo';
@@ -18,10 +17,9 @@ import {
 export function LogoBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor } = props;
 
-  const alignments: AllowedLogoAlignment[] = [...allowedLogoAlignment];
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
 
-  const alignmentItems: BubbleMenuItem[] = alignments.map(
+  const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
     (alignment, index) => ({
       name: alignment,
       isActive: () => editor?.isActive('logo', { alignment })!,
@@ -32,9 +30,7 @@ export function LogoBubbleMenu(props: EditorBubbleMenuProps) {
     })
   );
 
-  const sizes: AllowedLogoSize[] = [...allowedLogoSize];
-
-  const sizeItems: BubbleMenuItem[] = sizes.map((size) => ({
+  const sizeItems: BubbleMenuItem[] = allowedLogoSize.map((size) => ({
     name: size,
     isActive: () => props?.editor?.isActive('logo', { size })!,
     command: () => {

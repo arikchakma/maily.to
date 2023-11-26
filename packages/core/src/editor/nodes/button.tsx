@@ -5,95 +5,49 @@ import { ChromePicker } from 'react-color';
 import { BaseButton } from '../components/base-button';
 import { Input } from '../components/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
+import {
+  allowedButtonBorderRadius,
+  AllowedButtonVariant,
+  allowedButtonVariant,
+} from '../extensions/button-extension';
 import { cn } from '../utils/classname';
+
+const alignments = {
+  left: AlignLeftIcon,
+  center: AlignCenterIcon,
+  right: AlignRightIcon,
+};
 
 const items = {
   style(props: NodeViewProps) {
-    return [
-      {
-        name: 'Filled',
-        isActive: props.node.attrs.variant === 'filled',
-        onClick: () => {
-          props.updateAttributes({
-            variant: 'filled',
-          });
-        },
+    return allowedButtonVariant.map((variant) => ({
+      name: variant,
+      isActive: props.node.attrs.variant === variant,
+      onClick: () => {
+        props.updateAttributes({
+          variant: variant,
+        });
       },
-      {
-        name: 'Outline',
-        isActive: props.node.attrs.variant === 'outline',
-        onClick: () => {
-          props.updateAttributes({
-            variant: 'outline',
-          });
-        },
-      },
-    ];
+    }));
   },
   cornerRadius(props: NodeViewProps) {
-    return [
-      {
-        name: 'Sharp',
-        isActive: props.node.attrs.borderRadius === 'sharp',
-        onClick: () => {
-          props.updateAttributes({
-            borderRadius: 'sharp',
-          });
-        },
+    return allowedButtonBorderRadius.map((radius) => ({
+      name: radius,
+      isActive: props.node.attrs.borderRadius === radius,
+      onClick: () => {
+        props.updateAttributes({
+          borderRadius: radius,
+        });
       },
-      {
-        name: 'Smooth',
-        isActive: props.node.attrs.borderRadius === 'smooth',
-        onClick: () => {
-          props.updateAttributes({
-            borderRadius: 'smooth',
-          });
-        },
-      },
-      {
-        name: 'Round',
-        isActive: props.node.attrs.borderRadius === 'round',
-        onClick: () => {
-          props.updateAttributes({
-            borderRadius: 'round',
-          });
-        },
-      },
-    ];
+    }));
   },
   alignment(props: NodeViewProps) {
-    return [
-      {
-        name: 'Left',
-        icon: AlignLeftIcon,
-        isActive: props.node.attrs.alignment === 'left',
-        onClick: () => {
-          props.updateAttributes({
-            alignment: 'left',
-          });
-        },
-      },
-      {
-        name: 'Center',
-        icon: AlignCenterIcon,
-        isActive: props.node.attrs.alignment === 'center',
-        onClick: () => {
-          props.updateAttributes({
-            alignment: 'center',
-          });
-        },
-      },
-      {
-        name: 'Right',
-        icon: AlignRightIcon,
-        isActive: props.node.attrs.alignment === 'right',
-        onClick: () => {
-          props.updateAttributes({
-            alignment: 'right',
-          });
-        },
-      },
-    ];
+    return Object.entries(alignments).map(([alignment, Icon]) => ({
+      name: alignment,
+      icon: Icon,
+      isActive: props.node.attrs.alignment === alignment,
+      onClick: () => props.updateAttributes({ alignment }),
+    }));
   },
 };
 
@@ -110,9 +64,8 @@ export default function ButtonComponent(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      className={`react-component ${
-        props.selected && 'ProseMirror-selectednode'
-      }`}
+      className={`react-component ${props.selected && 'ProseMirror-selectednode'
+        }`}
       draggable="true"
       data-drag-handle=""
       style={{
@@ -124,9 +77,9 @@ export default function ButtonComponent(props: NodeViewProps) {
           <div>
             <a
               className={cn(
-                'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 disabled:mly-pointer-events-none disabled:mly-opacity-50',
+                'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors disabled:mly-pointer-events-none disabled:mly-opacity-50',
                 'mly-h-10 mly-px-4 mly-py-2',
-                'mly-border-2 mly-px-[32px] mly-py-[20px] mly-font-semibold mly-no-underline',
+                'mly-px-[32px] mly-py-[20px] mly-font-semibold mly-no-underline',
                 {
                   '!mly-rounded-full': _radius === 'round',
                   '!mly-rounded-md': _radius === 'smooth',
@@ -141,6 +94,8 @@ export default function ButtonComponent(props: NodeViewProps) {
                 backgroundColor:
                   variant === 'filled' ? buttonColor : 'transparent',
                 color: textColor,
+                borderWidth: 2,
+                borderStyle: 'solid',
                 borderColor: buttonColor,
               }}
             >
@@ -184,7 +139,7 @@ export default function ButtonComponent(props: NodeViewProps) {
                   key={index}
                   data-state={item.isActive ? 'true' : 'false'}
                   variant="ghost"
-                  className="mly-grow mly-font-normal"
+                  className="mly-grow mly-font-normal mly-capitalize"
                   size="sm"
                   onClick={item.onClick}
                 >
@@ -204,7 +159,7 @@ export default function ButtonComponent(props: NodeViewProps) {
                   key={index}
                   data-state={item.isActive ? 'true' : 'false'}
                   variant="ghost"
-                  className="mly-grow mly-font-normal"
+                  className="mly-grow mly-font-normal mly-capitalize"
                   size="sm"
                   onClick={item.onClick}
                 >
@@ -265,13 +220,13 @@ export default function ButtonComponent(props: NodeViewProps) {
 }
 
 type ColorPickerProps = {
-  variant?: 'filled' | 'outline';
+  variant?: AllowedButtonVariant;
   color: string;
   onChange: (color: string) => void;
 };
 
 function BackgroundColorPickerPopup(props: ColorPickerProps) {
-  const { color, onChange } = props;
+  const { color, onChange, variant } = props;
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -280,8 +235,9 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
             className="mly-h-4 mly-w-4 mly-rounded"
             style={{
               backgroundColor:
-                props.variant === 'filled' ? color : 'transparent',
-              border: props.variant === 'outline' ? '2px solid' : 'none',
+                variant === 'filled' ? color : 'transparent',
+              borderStyle: 'solid',
+              borderWidth: variant === 'outline' ? 2 : 0,
               borderColor: color,
             }}
           />

@@ -2,13 +2,12 @@ import { BubbleMenu } from '@tiptap/react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
 import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
-import { AllowedSpacerSize, allowedSpacerSize } from '../nodes/spacer';
+import { allowedSpacerSize } from '../nodes/spacer';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor } = props;
 
-  const heights: AllowedSpacerSize[] = [...allowedSpacerSize];
-  const items: BubbleMenuItem[] = heights.map((height) => ({
+  const items: BubbleMenuItem[] = allowedSpacerSize.map((height) => ({
     name: height,
     isActive: () => editor?.isActive('spacer', { height })!,
     command: () => {

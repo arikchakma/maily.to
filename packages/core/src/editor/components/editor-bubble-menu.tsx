@@ -10,7 +10,7 @@ import {
   StrikethroughIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { allowedLogoAlignment, AllowedLogoAlignment } from '../nodes/logo';
+import { allowedLogoAlignment } from '../nodes/logo';
 import { BubbleMenuButton } from './bubble-menu-button';
 
 export interface BubbleMenuItem {
@@ -25,10 +25,8 @@ export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'>;
 export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor } = props;
 
-  const alignments: AllowedLogoAlignment[] = [...allowedLogoAlignment];
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
-
-  const alignmentItems: BubbleMenuItem[] = alignments.map(
+  const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
     (alignment, index) => ({
       name: alignment,
       isActive: () => editor?.isActive('logo', { alignment })!,

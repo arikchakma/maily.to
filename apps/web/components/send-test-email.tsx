@@ -3,10 +3,10 @@
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 import { Asterisk, Loader2 } from 'lucide-react';
+import { shallow } from 'zustand/shallow';
 import { sendTestEmailAction } from '@/actions/email';
-import { useEditorStrore } from '@/stores/use-editor';
-import { useEmailStrore } from '@/stores/use-email';
 import { useServerAction } from '@/utils/use-server-action';
+import { useEditorContext } from '@/stores/editor-store';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -33,8 +33,8 @@ function SubmitButton(props: SubmitButtonProps) {
 }
 
 export function SendTestEmail() {
-  const { json, previewText } = useEditorStrore();
-  const { subject, from, replyTo, to } = useEmailStrore();
+  const { json, previewText, subject, from, replyTo, to, apiKey } =
+    useEditorContext((s) => s, shallow);
 
   const [action] = useServerAction(sendTestEmailAction, (result) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
@@ -55,7 +55,7 @@ export function SendTestEmail() {
       <input name="to" type="hidden" value={to} />
       <input name="json" type="hidden" value={JSON.stringify(json) || ''} />
       <input name="previewText" type="hidden" value={previewText} />
-      <SubmitButton disabled={!json} />
+      <SubmitButton disabled={!apiKey} />
     </form>
   );
 }

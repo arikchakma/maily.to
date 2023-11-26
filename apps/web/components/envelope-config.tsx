@@ -4,8 +4,10 @@ import { useFormStatus } from 'react-dom';
 import { Cog, Loader2, PlugZap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { shallow } from 'zustand/shallow';
 import { useServerAction } from '@/utils/use-server-action';
 import { envelopeConfigAction } from '@/actions/config';
+import { useEditorContext } from '@/stores/editor-store';
 import {
   Dialog,
   DialogContent,
@@ -41,13 +43,15 @@ function SubmitButton(props: SubmitButtonProps) {
   );
 }
 
-interface EnvelopeConfigProps {
-  apiKey?: string;
-  endpoint?: string;
-}
-
-export function EnvelopeConfig(props: EnvelopeConfigProps) {
-  const { apiKey, endpoint } = props;
+export function EnvelopeConfig() {
+  const { apiKey, endpoint, setApiKey, setEndpoint } = useEditorContext((s) => {
+    return {
+      apiKey: s.apiKey,
+      endpoint: s.endpoint,
+      setApiKey: s.setApiKey,
+      setEndpoint: s.setEndpoint,
+    };
+  }, shallow);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,13 +59,15 @@ export function EnvelopeConfig(props: EnvelopeConfigProps) {
     envelopeConfigAction,
     (result) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-      const { error } = result!;
+      const { error, data } = result!;
       if (error) {
         toast.error(error.message || 'Something went wrong');
         return;
       }
 
       toast.success('Envelope configuration saved');
+      setApiKey(data.apiKey);
+      setEndpoint(data.endpoint);
       setIsOpen(false);
     }
   );
@@ -94,6 +100,8 @@ export function EnvelopeConfig(props: EnvelopeConfigProps) {
               defaultValue={apiKey || ''}
               name="apiKey"
               placeholder="Envelope API Key"
+              required
+              spellCheck={false}
               type="text"
             />
           </Label>
@@ -104,6 +112,7 @@ export function EnvelopeConfig(props: EnvelopeConfigProps) {
               defaultValue={endpoint || ''}
               name="endpoint"
               placeholder="Envelope API Endpoint"
+              spellCheck={false}
               type="text"
             />
           </Label>

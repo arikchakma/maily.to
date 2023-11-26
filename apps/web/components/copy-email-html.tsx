@@ -3,10 +3,11 @@
 import { useFormStatus } from 'react-dom';
 import { ClipboardCopy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { shallow } from 'zustand/shallow';
 import { previewEmailAction } from '@/actions/email';
-import { useEditorStrore } from '@/stores/use-editor';
 import { useServerAction } from '@/utils/use-server-action';
 import { useCopyToClipboard } from '@/utils/use-copy-to-clipboard';
+import { useEditorContext } from '@/stores/editor-store';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -33,7 +34,12 @@ function SubmitButton(props: SubmitButtonProps) {
 }
 
 export function CopyEmailHtml() {
-  const { json, previewText } = useEditorStrore();
+  const { json, previewText } = useEditorContext((s) => {
+    return {
+      json: s.json,
+      previewText: s.previewText,
+    };
+  }, shallow);
   const [_, copy] = useCopyToClipboard();
 
   const [action] = useServerAction(previewEmailAction, async (result) => {

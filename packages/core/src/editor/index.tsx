@@ -93,6 +93,7 @@ export function Editor(props: EditorProps) {
     },
     extensions: [...defaultExtensions, ...(extensions || [])],
     content: formattedContent,
+    autofocus: 'end',
   });
 
   if (!editor) {

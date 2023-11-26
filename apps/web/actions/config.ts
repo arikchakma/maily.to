@@ -34,7 +34,8 @@ export async function envelopeConfigAction(formData: FormData) {
 
     return {
       data: {
-        status: 'ok',
+        apiKey,
+        endpoint,
       },
       error: null,
     };

@@ -4,9 +4,10 @@ import { useFormStatus } from 'react-dom';
 import { Eye, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { shallow } from 'zustand/shallow';
 import { previewEmailAction } from '@/actions/email';
-import { useEditorStrore } from '@/stores/use-editor';
 import { useServerAction } from '@/utils/use-server-action';
+import { useEditorContext } from '@/stores/editor-store';
 import { EmailFrame } from './email-frame';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
@@ -35,7 +36,12 @@ function SubmitButton(props: SubmitButtonProps) {
 }
 
 export function PreviewEmail() {
-  const { json, previewText } = useEditorStrore();
+  const { json, previewText } = useEditorContext((s) => {
+    return {
+      json: s.json,
+      previewText: s.previewText,
+    };
+  }, shallow);
 
   const [html, setHtml] = useState<string>('');
   const [action, isPending] = useServerAction(previewEmailAction, (result) => {

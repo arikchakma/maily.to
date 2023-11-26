@@ -3,16 +3,26 @@
 import { useState } from 'react';
 import { Editor } from '@maily-to/core';
 import { X } from 'lucide-react';
-import { useEmailStrore } from '@/stores/use-email';
-import { useEditorStrore } from '@/stores/use-editor';
+import { useEditorContext } from '@/stores/editor-store';
 import { Input } from './ui/input';
 import { PreviewTextInfo } from './preview-text-info';
 import { Label } from './ui/label';
 
 export function EditorPreview() {
-  const { previewText, setPreviewText, setEditor, setJson } = useEditorStrore();
-  const { subject, setSubject, from, setFrom, replyTo, setReplyTo, to, setTo } =
-    useEmailStrore();
+  const {
+    previewText,
+    setPreviewText,
+    setEditor,
+    setJson,
+    subject,
+    setSubject,
+    from,
+    setFrom,
+    replyTo,
+    setReplyTo,
+    to,
+    setTo,
+  } = useEditorContext((s) => s);
 
   const [showReplyTo, setShowReplyTo] = useState(false);
 
@@ -99,7 +109,7 @@ export function EditorPreview() {
         />
       </Label>
 
-      <div className="relative mt-6">
+      <div className="relative my-6">
         <Input
           className="border-x-0 border-gray-300 focus-visible:border-gray-400 rounded-none text-base h-auto px-0 focus-visible:ring-offset-0 focus-visible:ring-0 pr-5 py-2.5"
           onChange={(e) => {

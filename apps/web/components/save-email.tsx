@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { saveEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
 import { useEditorContext } from '@/stores/editor-store';
+import { catchActionError } from '@/actions/error';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -36,16 +37,19 @@ function SubmitButton(props: SubmitButtonProps) {
 export function SaveEmail() {
   const { json, previewText, subject } = useEditorContext((s) => s, shallow);
 
-  const [action] = useServerAction(saveEmailAction, (result) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-    const { error, data } = result!;
-    if (error) {
-      toast.error(error.message || 'Something went wrong');
-      return;
-    }
+  const [action] = useServerAction(
+    catchActionError(saveEmailAction),
+    (result) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+      const { error, data } = result!;
+      if (error) {
+        toast.error(error.message || 'Something went wrong');
+        return;
+      }
 
-    return redirect(`/template/${data.id}`);
-  });
+      return redirect(`/template/${data.id}`);
+    }
+  );
 
   return (
     <form action={action}>

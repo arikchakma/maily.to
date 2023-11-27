@@ -8,6 +8,7 @@ import { previewEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
 import { useCopyToClipboard } from '@/utils/use-copy-to-clipboard';
 import { useEditorContext } from '@/stores/editor-store';
+import { catchActionError } from '@/actions/error';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -42,17 +43,20 @@ export function CopyEmailHtml() {
   }, shallow);
   const [_, copy] = useCopyToClipboard();
 
-  const [action] = useServerAction(previewEmailAction, async (result) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-    const { data, error } = result!;
-    if (error) {
-      toast.error(error.message || 'Something went wrong');
-      return;
-    }
+  const [action] = useServerAction(
+    catchActionError(previewEmailAction),
+    async (result) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+      const { data, error } = result!;
+      if (error) {
+        toast.error(error.message || 'Something went wrong');
+        return;
+      }
 
-    await copy(data);
-    toast.success('Email HTML copied to clipboard');
-  });
+      await copy(data);
+      toast.success('Email HTML copied to clipboard');
+    }
+  );
 
   return (
     <form action={action}>

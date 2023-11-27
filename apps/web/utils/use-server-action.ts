@@ -14,11 +14,12 @@ export const useServerAction = <P, R>(
 
     if (onFinished) onFinished(result);
     resolver.current?.(result);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run on finished
   }, [result, finished]);
 
   const runAction = async (args: P): Promise<R | undefined> => {
     startTransition(() => {
-      action(args).then((data) => {
+      void action(args).then((data) => {
         setResult(data);
         setFinished(true);
       });

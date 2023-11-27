@@ -8,6 +8,7 @@ import { shallow } from 'zustand/shallow';
 import { previewEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
 import { useEditorContext } from '@/stores/editor-store';
+import { catchActionError } from '@/actions/error';
 import { EmailFrame } from './email-frame';
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
@@ -44,15 +45,18 @@ export function PreviewEmail() {
   }, shallow);
 
   const [html, setHtml] = useState<string>('');
-  const [action, isPending] = useServerAction(previewEmailAction, (result) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-    const { data, error } = result!;
-    if (error) {
-      toast.error(error.message || 'Something went wrong');
-      return;
+  const [action, isPending] = useServerAction(
+    catchActionError(previewEmailAction),
+    (result) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+      const { data, error } = result!;
+      if (error) {
+        toast.error(error.message || 'Something went wrong');
+        return;
+      }
+      setHtml(data);
     }
-    setHtml(data);
-  });
+  );
 
   return (
     <Dialog>

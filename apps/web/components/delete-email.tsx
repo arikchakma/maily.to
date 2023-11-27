@@ -6,6 +6,7 @@ import { Loader2, Trash } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { deleteEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
+import { catchActionError } from '@/actions/error';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -38,16 +39,19 @@ interface SaveEmailProps {
 export function DeleteEmail(props: SaveEmailProps) {
   const { templateId } = props;
 
-  const [action] = useServerAction(deleteEmailAction, (result) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-    const { error } = result!;
-    if (error) {
-      toast.error(error.message || 'Something went wrong');
-      return;
-    }
+  const [action] = useServerAction(
+    catchActionError(deleteEmailAction),
+    (result) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+      const { error } = result!;
+      if (error) {
+        toast.error(error.message || 'Something went wrong');
+        return;
+      }
 
-    return redirect('/template');
-  });
+      return redirect('/template');
+    }
+  );
 
   return (
     <form action={action}>

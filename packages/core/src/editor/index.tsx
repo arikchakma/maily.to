@@ -46,10 +46,13 @@ export function Editor(props: EditorProps) {
 
   let formattedContent: any = null;
   if (contentJson) {
-    formattedContent = contentJson?.type === 'doc' ? contentJson : {
-      type: 'doc',
-      content: contentJson,
-    };
+    formattedContent =
+      contentJson?.type === 'doc'
+        ? contentJson
+        : {
+            type: 'doc',
+            content: contentJson,
+          };
   } else if (contentHtml) {
     formattedContent = contentHtml;
   } else {

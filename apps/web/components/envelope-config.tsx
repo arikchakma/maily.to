@@ -8,6 +8,7 @@ import { shallow } from 'zustand/shallow';
 import { useServerAction } from '@/utils/use-server-action';
 import { envelopeConfigAction } from '@/actions/config';
 import { useEditorContext } from '@/stores/editor-store';
+import { catchActionError } from '@/actions/error';
 import {
   Dialog,
   DialogContent,
@@ -56,7 +57,7 @@ export function EnvelopeConfig() {
   const [isOpen, setIsOpen] = useState(false);
 
   const [action, isPending] = useServerAction(
-    envelopeConfigAction,
+    catchActionError(envelopeConfigAction),
     (result) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
       const { error, data } = result!;

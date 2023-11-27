@@ -7,6 +7,7 @@ import { shallow } from 'zustand/shallow';
 import { updateEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
 import { useEditorContext } from '@/stores/editor-store';
+import { catchActionError } from '@/actions/error';
 
 interface SubmitButtonProps {
   disabled?: boolean;
@@ -41,16 +42,19 @@ export function UpdateEmail(props: SaveEmailProps) {
 
   const { json, previewText, subject } = useEditorContext((s) => s, shallow);
 
-  const [action] = useServerAction(updateEmailAction, (result) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
-    const { error } = result!;
-    if (error) {
-      toast.error(error.message || 'Something went wrong');
-      return;
-    }
+  const [action] = useServerAction(
+    catchActionError(updateEmailAction),
+    (result) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
+      const { error } = result!;
+      if (error) {
+        toast.error(error.message || 'Something went wrong');
+        return;
+      }
 
-    toast.success('Email has been updated');
-  });
+      toast.success('Email has been updated');
+    }
+  );
 
   return (
     <form action={action}>

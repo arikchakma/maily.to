@@ -588,6 +588,7 @@ export class Maily {
 
     let margin: CSSProperties = {
       marginRight: 'auto',
+      marginBottom: '32px',
     };
     if (alignment === 'center') {
       margin = {

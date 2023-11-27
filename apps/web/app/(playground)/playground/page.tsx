@@ -1,14 +1,14 @@
 import NextLink from 'next/link';
 import { Balancer } from 'react-wrap-balancer';
 import { LogIn } from 'lucide-react';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { SendTestEmail } from '@/components/send-test-email';
 import { PreviewEmail } from '@/components/preview-email';
 import { CopyEmailHtml } from '@/components/copy-email-html';
 import { EditorPreview } from '@/components/editor-preview';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/database';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import type { Database } from '@/types/database';
 import { ApiConfiguration } from '@/components/api-config';
 
 export default async function Playground() {

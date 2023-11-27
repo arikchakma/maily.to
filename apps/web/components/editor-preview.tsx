@@ -61,13 +61,13 @@ export function EditorPreview(props: EditorPreviewProps) {
           <span className="w-20 shrink-0 font-normal text-gray-600">From</span>
           <Input
             className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
+            disabled={!apiKey}
             onChange={(e) => {
               setFrom(e.target.value);
             }}
             placeholder="Arik Chakma <hello@maily.to>"
             type="text"
             value={from}
-            disabled={!apiKey}
           />
         </Label>
 
@@ -92,13 +92,13 @@ export function EditorPreview(props: EditorPreviewProps) {
           <div className="align-content-stretch flex grow items-center">
             <Input
               className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
+              disabled={!apiKey}
               onChange={(e) => {
                 setReplyTo(e.target.value);
               }}
               placeholder="noreply@maily.to"
               type="text"
               value={replyTo}
-              disabled={!apiKey}
             />
             <button
               className="flex h-10 shrink-0 items-center bg-transparent px-1 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -117,11 +117,11 @@ export function EditorPreview(props: EditorPreviewProps) {
         <span className="w-20 shrink-0 font-normal text-gray-600">To</span>
         <Input
           className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
+          disabled={!apiKey}
           onChange={(e) => {
             setTo(e.target.value);
           }}
           placeholder="Email Recipient(s)"
-          disabled={!apiKey}
           type="text"
           value={to}
         />

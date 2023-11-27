@@ -65,7 +65,7 @@ export default async function TemplatePage(props: TemplatePageProps) {
       apiKey={apiKey}
       endpoint={endpoint}
       provider={provider}
-      // eslint-disable-next-line camelcase -- This is a prop
+      // eslint-disable-next-line camelcase, react/jsx-sort-props -- This is a prop
       previewText={preview_text || ''}
       subject={title || ''}
     >

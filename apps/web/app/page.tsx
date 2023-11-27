@@ -30,7 +30,7 @@ const comingSoon = [
 
 export const dynamic = 'force-static';
 
-export default async function LandingPage() {
+export default function LandingPage() {
   return (
     <div>
       <div className="border-b-8 border-t-8 border-b-black border-t-black">
@@ -45,30 +45,33 @@ export default async function LandingPage() {
               </p>
               <div className="mt-4 flex flex-col items-stretch gap-2 sm:flex-row md:mt-8 lg:mt-10">
                 <NextLink
-                  href="/playground"
                   className="flex min-h-[72px] items-center justify-center gap-3 rounded-xl bg-black px-7 py-3 text-2xl font-medium text-white transition-all hover:bg-red-500 focus:outline-0"
+                  href="/playground"
                 >
+                  {/* eslint-disable-next-line react/jsx-pascal-case -- This is a icon */}
                   <Icons.pencil />
                   Open Editor
                 </NextLink>
 
                 <a
-                  href="https://github.com/arikchakma/maily.to"
-                  target="_blank"
                   className="flex items-center justify-center gap-2 rounded-xl border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-red-500 hover:bg-red-500 hover:text-white focus:outline-0"
+                  href="https://github.com/arikchakma/maily.to"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
+                  {/* eslint-disable-next-line react/jsx-pascal-case -- This is a icon */}
                   <Icons.github />
                   <span className="hidden sm:inline-block">View on Github</span>
                   <span className="sm:hidden">Github</span>
                 </a>
               </div>
             </div>
-            <div className="hidden hidden flex-shrink-0 lg:flex">
+            <div className="hidden flex-shrink-0 lg:flex">
               <NextImage
-                src={IconImage}
                 alt="Icon"
                 className="h-[240px] w-[240px] lg:h-[270px] lg:w-[270px]"
                 priority
+                src={IconImage}
               />
             </div>
           </div>
@@ -146,9 +149,10 @@ export default async function LandingPage() {
           <p className="mb-7 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             Please do{' '}
             <a
-              href="https://github.com/arikchakma/maily.to"
-              target="_blank"
               className="underline underline-offset-8 hover:text-red-500"
+              href="https://github.com/arikchakma/maily.to"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               leave a star on GitHub
             </a>{' '}
@@ -158,16 +162,17 @@ export default async function LandingPage() {
 
           <div className="flex flex-col gap-3 md:flex-row">
             <a
-              href="https://github.com/arikchakma/maily.to"
-              data-github-link=""
-              target="_blank"
               className="inline-flex min-h-[56px] items-center justify-center rounded-lg border-black bg-red-300 px-5 py-2 text-lg font-medium transition-colors hover:bg-red-400 md:text-xl lg:rounded-xl lg:py-4 lg:text-2xl"
+              data-github-link=""
+              href="https://github.com/arikchakma/maily.to"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               <span className="mr-3 inline-flex items-center">
                 <NextImage
-                  src={StarImage}
                   alt="Star Icon"
                   className="mr-1 h-5 w-5 md:mr-2 md:h-7 md:w-7"
+                  src={StarImage}
                 />{' '}
                 <span className="line-through">&nbsp;100k&nbsp;</span>
               </span>
@@ -175,9 +180,10 @@ export default async function LandingPage() {
             </a>
 
             <NextLink
-              href="/playground"
               className="flex items-center justify-center gap-2 rounded-lg border-4 border-black bg-white px-5 py-2 text-lg font-medium text-black transition-colors hover:bg-black hover:text-white md:text-xl lg:rounded-xl lg:py-3 lg:text-2xl"
+              href="/playground"
             >
+              {/* eslint-disable-next-line react/jsx-pascal-case -- This is a icon */}
               <Icons.pencil />
               Open Editor
             </NextLink>
@@ -191,28 +197,30 @@ export default async function LandingPage() {
             MIT Licensed © 2023
             <span className="mx-3 hidden sm:inline-block">·</span>
             <a
-              href="https://github.com/arikchakma/maily.to"
               className="hidden items-center hover:text-red-300 sm:inline-flex"
+              href="https://github.com/arikchakma/maily.to"
+              rel="noopener noreferrer"
               target="_blank"
             >
               GitHub
               <NextImage
-                src={ArrowImage}
-                className="ml-2 inline-block h-3"
                 alt="GitHub"
+                className="ml-2 inline-block h-3"
+                src={ArrowImage}
               />
             </a>
             <span className="mx-3 hidden sm:inline-block">·</span>
             <a
-              href="https://twitter.com/ImArikChakma"
               className="hidden items-center hover:text-red-300 sm:inline-flex"
+              href="https://twitter.com/ImArikChakma"
+              rel="noopener noreferrer"
               target="_blank"
             >
               Twitter
               <NextImage
-                src={ArrowImage}
-                className="ml-2 inline-block h-3"
                 alt="Twitter"
+                className="ml-2 inline-block h-3"
+                src={ArrowImage}
               />
             </a>
           </p>

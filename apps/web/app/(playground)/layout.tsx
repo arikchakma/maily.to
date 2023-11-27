@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { EditorProvider } from '@/stores/editor-store';
 import { MAILY_API_KEY, MAILY_ENDPOINT } from '@/utils/constants';
 
+export const dynamic = 'force-dynamic';
+
 interface PlaygroundLayoutProps {
   children: ReactNode;
 }

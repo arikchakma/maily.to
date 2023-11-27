@@ -32,9 +32,9 @@ export async function previewEmailAction(formData: FormData) {
       error: {
         message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
-        errors: result.error.issues.map(issue => issue.message)
-      }
-    }
+        errors: result.error.issues.map((issue) => issue.message),
+      },
+    };
   }
 
   const { json, previewText } = result.data;
@@ -105,12 +105,10 @@ export async function sendTestEmailAction(formData: FormData) {
       data: null,
       error: {
         errors: result.error.issues.map((issue) => issue.message),
-        message: result.error.issues
-          .map((issue) => issue.message)
-          .join(', '),
+        message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
       },
-    }
+    };
   }
 
   const { subject, json, previewText, from, replyTo, to } = result.data;
@@ -141,8 +139,8 @@ export async function sendTestEmailAction(formData: FormData) {
         error: {
           message: error.message,
           code: error.name,
-        }
-      }
+        },
+      };
     }
   } else if (provider === 'envelope') {
     const envelope = new Envelope(apiKey, {
@@ -163,8 +161,8 @@ export async function sendTestEmailAction(formData: FormData) {
         error: {
           message: error.message,
           code: error.status,
-        }
-      }
+        },
+      };
     }
   } else {
     throw new UnreachableCaseError(provider);
@@ -197,9 +195,9 @@ export async function saveEmailAction(formData: FormData) {
       error: {
         message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
-        errors: result.error.issues.map(issue => issue.message)
-      }
-    }
+        errors: result.error.issues.map((issue) => issue.message),
+      },
+    };
   }
 
   const { subject, json, previewText } = result.data;
@@ -269,9 +267,9 @@ export async function updateEmailAction(formData: FormData) {
       error: {
         message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
-        errors: result.error.issues.map(issue => issue.message)
-      }
-    }
+        errors: result.error.issues.map((issue) => issue.message),
+      },
+    };
   }
 
   const { templateId, subject, json, previewText } = result.data;
@@ -356,9 +354,9 @@ export async function deleteEmailAction(formData: FormData) {
       error: {
         message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
-        errors: result.error.issues.map(issue => issue.message)
-      }
-    }
+        errors: result.error.issues.map((issue) => issue.message),
+      },
+    };
   }
 
   const { templateId } = result.data;

@@ -27,9 +27,7 @@ export async function envelopeConfigAction(formData: FormData) {
       data: null,
       error: {
         errors: result.error.issues.map((issue) => issue.message),
-        message: result.error.issues
-          .map((issue) => issue.message)
-          .join(', '),
+        message: result.error.issues.map((issue) => issue.message).join(', '),
         code: 'validation_error',
       },
     };

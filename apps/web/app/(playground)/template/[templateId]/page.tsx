@@ -14,6 +14,8 @@ import { PreviewEmail } from '@/components/preview-email';
 import { CopyEmailHtml } from '@/components/copy-email-html';
 import { UpdateEmail } from '@/components/update-email';
 import { DeleteEmail } from '@/components/delete-email';
+import { ApiConfiguration } from '@/components/api-config';
+import { SendTestEmail } from '@/components/send-test-email';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,11 +72,13 @@ export default async function TemplatePage(props: TemplatePageProps) {
       subject={title || ''}
     >
       <div className="flex items-center justify-between gap-1.5">
-        <div className="mt-6 flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
+          <ApiConfiguration />
           <PreviewEmail />
           <CopyEmailHtml />
+          <SendTestEmail />
         </div>
-        <div className="mt-6 flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
           <DeleteEmail templateId={templateId} />
           <UpdateEmail templateId={templateId} />
         </div>

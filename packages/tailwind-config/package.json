@@ -1,0 +1,15 @@
+{
+  "name": "tailwind-config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    "tailwindcss": "^3.3.5",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}

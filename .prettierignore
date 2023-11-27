@@ -1,7 +1,5 @@
-coverage
-.next
-dist
-CHANGELOG.md
-.contentlayer
-node_modules
-build
+coverage/
+coverage-merged/
+dist/
+node_modules/
+types/

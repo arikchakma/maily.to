@@ -1,0 +1,81 @@
+{
+  "name": "@maily-to/core",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "test:watch": "vitest",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/core"
+  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "keywords": [
+    "maily.to",
+    "editor",
+    "react",
+    "email"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@tiptap/core": "^2.1.6",
+    "@tiptap/extension-color": "^2.1.6",
+    "@tiptap/extension-heading": "^2.1.12",
+    "@tiptap/extension-horizontal-rule": "^2.1.12",
+    "@tiptap/extension-image": "^2.1.6",
+    "@tiptap/extension-link": "^2.1.6",
+    "@tiptap/extension-list-item": "^2.1.12",
+    "@tiptap/extension-mention": "^2.1.6",
+    "@tiptap/extension-paragraph": "^2.1.12",
+    "@tiptap/extension-placeholder": "^2.1.6",
+    "@tiptap/extension-text-align": "^2.1.6",
+    "@tiptap/extension-text-style": "^2.1.6",
+    "@tiptap/extension-underline": "^2.1.6",
+    "@tiptap/pm": "^2.1.6",
+    "@tiptap/react": "^2.1.6",
+    "@tiptap/starter-kit": "^2.1.12",
+    "@tiptap/suggestion": "^2.1.6",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.292.0",
+    "react-color": "^2.19.3",
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss": "^3.3.5",
+    "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
+    "@types/react-color": "^3.0.10",
+    "bun-types": "latest",
+    "postcss": "^8.4.31",
+    "tailwind-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "18.2.0"
+  }
+}

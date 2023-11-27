@@ -1,0 +1,147 @@
+.mail-editor .mly-prose p:where([class~='text-sm']) {
+  font-size: 16px;
+}
+
+.mail-editor .mly-prose h1,
+.mail-editor .mly-prose h2,
+.mail-editor .mly-prose h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.mail-editor .mly-prose h1 {
+  font-size: 36px;
+}
+
+.mail-editor .mly-prose h2 {
+  font-size: 30px;
+}
+
+.mail-editor .mly-prose h3 {
+  font-size: 24px;
+}
+
+.mail-editor .mly-prose p {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.mail-editor .mly-prose h1 + p,
+.mail-editor .mly-prose h2 + p,
+.mail-editor .mly-prose h3 + p,
+.mail-editor .mly-prose hr + p {
+  margin-top: 0;
+}
+
+.mail-editor .mly-prose ol,
+.mail-editor .mly-prose ul {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.mail-editor .mly-prose li:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.mail-editor .mly-prose li > p {
+  margin: 0;
+}
+
+.mail-editor .mly-prose img {
+  margin-top: 0;
+  margin-bottom: 32px;
+}
+
+.mail-editor .mly-prose blockquote {
+  margin-block: 26px;
+}
+
+.mail-editor .mly-prose hr {
+  margin-block: 32px;
+}
+
+.mail-editor .mly-prose .footer {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 20px;
+  color: rgb(100, 116, 139);
+}
+
+.mail-editor .mly-prose .spacer + * {
+  margin-top: 0;
+}
+
+.mail-editor .mly-prose p + .spacer {
+  margin-top: -20px;
+}
+
+.mail-editor .mly-prose h1 + .spacer,
+.mail-editor .mly-prose h2 + .spacer,
+.mail-editor .mly-prose h3 + .spacer {
+  margin-top: -12px;
+}
+
+.mail-editor .mly-prose ol + .spacer,
+.mail-editor .mly-prose ul + .spacer {
+  margin-top: -20px;
+}
+
+.mail-editor .mly-prose img + .spacer {
+  margin-top: -32px;
+}
+
+.mail-editor .mly-prose .node-button + .spacer,
+.mail-editor .mly-prose footer + .spacer {
+  margin-top: -20px;
+}
+
+.mail-editor .mly-prose .node-button {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.ProseMirror {
+  position: relative;
+}
+
+.ProseMirror {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+.ProseMirror .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror-selectednode {
+  outline: 3px solid #555;
+}
+
+/* Chrome, Safari and Opera */
+.mly-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.mly-no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

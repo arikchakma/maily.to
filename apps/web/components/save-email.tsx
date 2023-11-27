@@ -47,7 +47,10 @@ export function SaveEmail() {
         return;
       }
 
-      return redirect(`/template/${data.id}`);
+      // There is a issue with the redirect, and revalidatePath
+      // https://github.com/vercel/next.js/issues/58772
+      // return redirect(`/template/${data.id}`);
+      return window.location.href = `/template/${data.id}`;
     }
   );
 

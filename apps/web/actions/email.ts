@@ -160,7 +160,7 @@ export async function sendTestEmailAction(formData: FormData) {
         message: 'Not implemented yet',
         code: 'not_implemented',
       },
-    }
+    };
   } else {
     throw new UnreachableCaseError(provider);
   }

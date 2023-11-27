@@ -575,7 +575,7 @@ export class Maily {
     return <br key={generateKey()} />;
   }
 
-  private logo(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private logo(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const {
       src,
@@ -588,7 +588,6 @@ export class Maily {
 
     let margin: CSSProperties = {
       marginRight: 'auto',
-      marginBottom: '32px',
     };
     if (alignment === 'center') {
       margin = {
@@ -601,6 +600,9 @@ export class Maily {
       };
     }
 
+    const { next } = options || {};
+    const isNextSpacer = next?.type === 'spacer';
+
     return (
       <Img
         alt={alt || title || 'Logo'}
@@ -610,6 +612,7 @@ export class Maily {
           width: logoSizes[size as AllowedLogoSizes] || size,
           height: logoSizes[size as AllowedLogoSizes] || size,
           ...margin,
+          marginBottom: isNextSpacer ? '0px' : '32px',
         }}
         title={title || alt || 'Logo'}
       />

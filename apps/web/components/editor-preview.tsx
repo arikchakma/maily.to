@@ -1,15 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import type { EditorProps } from '@maily-to/core';
 import { Editor } from '@maily-to/core';
-import { X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import type { JSONContent } from '@tiptap/core';
 import { useEditorContext } from '@/stores/editor-store';
+import { cn } from '@/utils/classname';
 import { Input } from './ui/input';
 import { PreviewTextInfo } from './preview-text-info';
 import { Label } from './ui/label';
 
-export function EditorPreview() {
+interface EditorPreviewProps {
+  className?: string;
+  content?: JSONContent;
+  config?: Partial<EditorProps['config']>;
+}
+
+export function EditorPreview(props: EditorPreviewProps) {
+  const { className, content: defaultContent, config: defaultConfig } = props;
   const {
+    editor,
     previewText,
     setPreviewText,
     setEditor,
@@ -29,9 +40,11 @@ export function EditorPreview() {
   const defaultHtml = `<img src="https://maily.to/brand/icon.svg" data-maily-component="logo" data-size="md" data-alignment="left" style="position:relative;margin-top:0;height:48px;margin-right:auto;margin-left:0"><div data-maily-component="spacer" data-height="xl" style="width: 100%; height: 64px;" class="spacer" contenteditable="false"></div><h2><strong>Discover Maily</strong></h2><p>Are you ready to transform your email communication? Introducing Maily, the powerful email editor that enables you to craft captivating emails effortlessly.</p><p>Elevate your email communication with Maily! Click below to try it out:</p><a data-maily-component="button" mailycomponent="button" text="Try Maily Now →" url="" alignment="left" variant="filled" borderradius="round" buttoncolor="#141313" textcolor="#ffffff"></a><div data-maily-component="spacer" data-height="xl" style="width: 100%; height: 64px;" class="spacer" contenteditable="false"></div><p>Join our vibrant community of users and developers on GitHub, where Maily is an <a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com/arikchakma/maily.to"><em>open-source</em></a> project. Together, we'll shape the future of email editing.</p><p>Regards,<br>Arikko</p>`;
 
   return (
-    <div className="mt-8">
+    <div className={cn('mt-8', className)}>
       <Label className="flex items-center font-normal">
-        <span className="w-20 font-normal text-gray-600 shrink-0">Subject</span>
+        <span className="w-20 font-normal text-gray-600 shrink-0 after:content-['*'] after:text-red-400 after:ml-0.5">
+          Subject
+        </span>
         <Input
           className="border-none rounded-none font-normal h-auto py-2.5 focus-visible:ring-offset-0 focus-visible:ring-0"
           onChange={(e) => {
@@ -123,25 +136,35 @@ export function EditorPreview() {
           <PreviewTextInfo />
         </span>
       </div>
-      <Editor
-        config={{
-          hasMenuBar: false,
-          wrapClassName: 'editor-wrap',
-          bodyClassName: '!mt-0 !border-0 !p-0',
-          contentClassName: 'editor-content',
-          toolbarClassName: 'flex-wrap !items-start',
-          spellCheck: false,
-        }}
-        contentHtml={defaultHtml}
-        onCreate={(e) => {
-          setEditor(e);
-          setJson(e?.getJSON() || {});
-        }}
-        onUpdate={(e) => {
-          setEditor(e);
-          setJson(e?.getJSON() || {});
-        }}
-      />
+      <div>
+        {!editor ? (
+          <div className="flex items-center justify-center">
+            <Loader2 className="text-gray-400 animate-spin" />
+          </div>
+        ) : null}
+        <Editor
+          config={{
+            hasMenuBar: false,
+            wrapClassName: 'editor-wrap',
+            bodyClassName: '!mt-0 !border-0 !p-0',
+            contentClassName: 'editor-content',
+            toolbarClassName: 'flex-wrap !items-start',
+            spellCheck: false,
+            autofocus: false,
+            ...defaultConfig,
+          }}
+          contentHtml={defaultHtml}
+          contentJson={defaultContent}
+          onCreate={(e) => {
+            setEditor(e);
+            setJson(e?.getJSON() || {});
+          }}
+          onUpdate={(e) => {
+            setEditor(e);
+            setJson(e?.getJSON() || {});
+          }}
+        />
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Editor as TiptapEditor, Extension } from '@tiptap/core';
+import { Editor as TiptapEditor, Extension, FocusPosition } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { EditorBubbleMenu } from './components/editor-bubble-menu';
@@ -12,7 +12,7 @@ import { cn } from './utils/classname';
 
 export type EditorProps = {
   contentHtml?: string;
-  contentJson?: JSONContent[];
+  contentJson?: JSONContent;
   onUpdate?: (editor?: TiptapEditor) => void;
   onCreate?: (editor?: TiptapEditor) => void;
   extensions?: Extension[];
@@ -23,6 +23,7 @@ export type EditorProps = {
     toolbarClassName?: string;
     contentClassName?: string;
     bodyClassName?: string;
+    autofocus?: FocusPosition;
   };
 };
 
@@ -34,6 +35,7 @@ export function Editor(props: EditorProps) {
       bodyClassName = '',
       hasMenuBar = true,
       spellCheck = false,
+      autofocus = 'end',
     } = {},
     onCreate,
     onUpdate,
@@ -44,7 +46,7 @@ export function Editor(props: EditorProps) {
 
   let formattedContent: any = null;
   if (contentJson) {
-    formattedContent = {
+    formattedContent = contentJson?.type === 'doc' ? contentJson : {
       type: 'doc',
       content: contentJson,
     };
@@ -93,7 +95,7 @@ export function Editor(props: EditorProps) {
     },
     extensions: [...defaultExtensions, ...(extensions || [])],
     content: formattedContent,
-    autofocus: 'end',
+    autofocus,
   });
 
   if (!editor) {

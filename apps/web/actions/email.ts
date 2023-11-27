@@ -3,7 +3,6 @@
 import { z } from 'zod';
 import { renderAsync } from '@maily-to/render';
 import { cookies } from 'next/headers';
-import { Envelope } from 'envelope';
 import { Resend } from 'resend';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { revalidatePath } from 'next/cache';
@@ -143,26 +142,24 @@ export async function sendTestEmailAction(formData: FormData) {
       };
     }
   } else if (provider === 'envelope') {
-    const envelope = new Envelope(apiKey, {
-      endpoint,
-    });
+    // const envelope = new Envelope(apiKey, {
+    //   endpoint,
+    // });
 
-    const { error } = await envelope.emails.send({
-      to,
-      from,
-      replyTo,
-      subject,
-      html,
-    });
+    // const { error } = await envelope.emails.send({
+    //   to,
+    //   from,
+    //   replyTo,
+    //   subject,
+    //   html,
+    // });
 
-    if (error) {
-      return {
-        data: null,
-        error: {
-          message: error.message,
-          code: error.status,
-        },
-      };
+    return {
+      data: null,
+      error: {
+        message: 'Not implemented yet',
+        code: 'not_implemented',
+      },
     }
   } else {
     throw new UnreachableCaseError(provider);

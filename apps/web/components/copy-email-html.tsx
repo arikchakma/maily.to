@@ -20,13 +20,13 @@ function SubmitButton(props: SubmitButtonProps) {
 
   return (
     <button
-      className="rounded-md bg-black px-2 py-1 min-h-[28px] max-sm:w-7 justify-center text-sm text-white flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex min-h-[28px] items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
         <Loader2
-          className="inline-block sm:mr-1 shrink-0 animate-spin"
+          className="inline-block shrink-0 animate-spin sm:mr-1"
           size={16}
         />
       ) : (

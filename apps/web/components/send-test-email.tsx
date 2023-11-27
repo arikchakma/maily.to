@@ -19,14 +19,14 @@ function SubmitButton(props: SubmitButtonProps) {
 
   return (
     <button
-      className="rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
-        <Loader2 className="inline-block mr-1 animate-spin" size={16} />
+        <Loader2 className="mr-1 inline-block animate-spin" size={16} />
       ) : (
-        <Asterisk className="inline-block mr-1" size={16} />
+        <Asterisk className="mr-1 inline-block" size={16} />
       )}
       Send Email
     </button>

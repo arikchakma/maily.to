@@ -90,7 +90,7 @@ export function EmailFrame(props: EmailFrameProps) {
 
       {showOpenInNewTab ? (
         <Button
-          className="absolute right-0 bottom-0 h-8 gap-1.5 rounded-none rounded-tl-md border-t border-l text-sm font-normal hover:bg-gray-50"
+          className="absolute bottom-0 right-0 h-8 gap-1.5 rounded-none rounded-tl-md border-l border-t text-sm font-normal hover:bg-gray-50"
           onClick={handleOpen}
           type="button"
           variant="secondary"

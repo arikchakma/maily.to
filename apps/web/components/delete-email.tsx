@@ -18,14 +18,14 @@ function SubmitButton(props: SubmitButtonProps) {
 
   return (
     <button
-      className="rounded-md bg-red-100 px-2 py-1 text-sm text-red-800 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center rounded-md bg-red-100 px-2 py-1 text-sm text-red-800 disabled:cursor-not-allowed disabled:opacity-50"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
-        <Loader2 className="inline-block mr-1 animate-spin" size={16} />
+        <Loader2 className="mr-1 inline-block animate-spin" size={16} />
       ) : (
-        <Trash className="inline-block mr-1" size={16} />
+        <Trash className="mr-1 inline-block" size={16} />
       )}
       Delete
     </button>

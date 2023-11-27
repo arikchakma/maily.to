@@ -22,17 +22,17 @@ function SubmitButton(props: SubmitButtonProps) {
 
   return (
     <button
-      className="rounded-md bg-black px-2 py-1 min-h-[28px] max-sm:w-7 justify-center text-sm text-white flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex min-h-[28px] items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
         <Loader2
-          className="inline-block sm:mr-1 animate-spin shrink-0"
+          className="inline-block shrink-0 animate-spin sm:mr-1"
           size={16}
         />
       ) : (
-        <Eye className="inline-block sm:mr-1 shrink-0" size={16} />
+        <Eye className="inline-block shrink-0 sm:mr-1" size={16} />
       )}
       <span className="hidden sm:inline-block">Preview Email</span>
     </button>
@@ -71,7 +71,7 @@ export function PreviewEmail() {
         </form>
       </DialogTrigger>
       {!isPending ? (
-        <DialogContent className="min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:shadow-none max-[680px]:border-0 animation-none">
+        <DialogContent className="animation-none min-h-[75vh] w-full min-w-0 max-w-[680px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
           <EmailFrame className="h-full w-full" innerHTML={html} />
         </DialogContent>
       ) : null}

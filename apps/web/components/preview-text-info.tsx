@@ -11,7 +11,7 @@ export function PreviewTextInfo() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger className="bg-transparent">
-          <Info className="w-3.5 h-3.5 text-gray-500" />
+          <Info className="h-3.5 w-3.5 text-gray-500" />
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
           <p className="text-sm text-gray-600">

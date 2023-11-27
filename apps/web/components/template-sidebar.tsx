@@ -39,13 +39,13 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
                 <li key={template.id}>
                   <NextLink
                     className={cn(
-                      'text-sm px-2 py-1.5 rounded-md hover:bg-gray-100',
-                      'h-auto w-full flex items-center min-w-0 font-medium',
+                      'rounded-md px-2 py-1.5 text-sm hover:bg-gray-100',
+                      'flex h-auto w-full min-w-0 items-center font-medium',
                       templateId === template.id ? 'bg-gray-100' : ''
                     )}
                     href={`/template/${template.id}`}
                   >
-                    <span className="truncate block">{template.title}</span>
+                    <span className="block truncate">{template.title}</span>
                   </NextLink>
                 </li>
               );

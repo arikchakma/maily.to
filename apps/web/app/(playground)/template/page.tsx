@@ -21,7 +21,7 @@ export default function TemplatePage() {
   return (
     <EditorProvider apiKey={apiKey} endpoint={endpoint} provider={provider}>
       <div className="flex items-center justify-between gap-1.5">
-        <div className="flex items-center gap-1.5 mt-6">
+        <div className="mt-6 flex items-center gap-1.5">
           <PreviewEmail />
           <CopyEmailHtml />
         </div>

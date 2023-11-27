@@ -480,7 +480,6 @@ export class Maily {
     return (
       <Container key={generateKey()}>
         <ul
-          className="list-disc mt-0 pl-[26px] mb-5"
           style={{
             marginTop: '0px',
             marginBottom: '20px',

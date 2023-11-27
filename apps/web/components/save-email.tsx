@@ -4,7 +4,6 @@ import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 import { Loader2, Save } from 'lucide-react';
 import { shallow } from 'zustand/shallow';
-import { redirect } from 'next/navigation';
 import { saveEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
 import { useEditorContext } from '@/stores/editor-store';

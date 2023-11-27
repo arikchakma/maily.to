@@ -7,7 +7,6 @@ import {
   MAILY_ENDPOINT,
   MAILY_PROVIDER,
 } from '@/utils/constants';
-import { ActionError } from './error';
 
 const envelopeConfigSchema = z.object({
   provider: z.union([z.literal('resend'), z.literal('envelope')]),
@@ -24,11 +23,16 @@ export async function envelopeConfigAction(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        errors: result.error.issues.map((issue) => issue.message),
+        message: result.error.issues
+          .map((issue) => issue.message)
+          .join(', '),
+        code: 'validation_error',
+      },
+    };
   }
 
   const { apiKey, endpoint, provider } = result.data;

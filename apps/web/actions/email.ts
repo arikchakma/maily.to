@@ -13,7 +13,7 @@ import {
   MAILY_PROVIDER,
 } from '@/utils/constants';
 import type { Database } from '@/types/database';
-import { ActionError, UnreachableCaseError } from './error';
+import { UnreachableCaseError } from './error';
 
 const previewEmailSchema = z.object({
   json: z.string().min(1, 'Please provide a JSON'),
@@ -27,11 +27,14 @@ export async function previewEmailAction(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        message: result.error.issues.map((issue) => issue.message).join(', '),
+        code: 'validation_error',
+        errors: result.error.issues.map(issue => issue.message)
+      }
+    }
   }
 
   const { json, previewText } = result.data;
@@ -88,7 +91,7 @@ export async function sendTestEmailAction(formData: FormData) {
     return {
       data: null,
       error: {
-        errors: configResult.error.issues,
+        errors: configResult.error.issues.map((issue) => issue.message),
         message: configResult.error.issues
           .map((issue) => issue.message)
           .join(', '),
@@ -98,11 +101,16 @@ export async function sendTestEmailAction(formData: FormData) {
   }
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        errors: result.error.issues.map((issue) => issue.message),
+        message: result.error.issues
+          .map((issue) => issue.message)
+          .join(', '),
+        code: 'validation_error',
+      },
+    }
   }
 
   const { subject, json, previewText, from, replyTo, to } = result.data;
@@ -128,7 +136,13 @@ export async function sendTestEmailAction(formData: FormData) {
     });
 
     if (error) {
-      throw new ActionError(error.message, error.name);
+      return {
+        data: null,
+        error: {
+          message: error.message,
+          code: error.name,
+        }
+      }
     }
   } else if (provider === 'envelope') {
     const envelope = new Envelope(apiKey, {
@@ -144,7 +158,13 @@ export async function sendTestEmailAction(formData: FormData) {
     });
 
     if (error) {
-      throw new ActionError(error.message, 'envelope_error');
+      return {
+        data: null,
+        error: {
+          message: error.message,
+          code: error.status,
+        }
+      }
     }
   } else {
     throw new UnreachableCaseError(provider);
@@ -172,11 +192,14 @@ export async function saveEmailAction(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        message: result.error.issues.map((issue) => issue.message).join(', '),
+        code: 'validation_error',
+        errors: result.error.issues.map(issue => issue.message)
+      }
+    }
   }
 
   const { subject, json, previewText } = result.data;
@@ -241,11 +264,14 @@ export async function updateEmailAction(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        message: result.error.issues.map((issue) => issue.message).join(', '),
+        code: 'validation_error',
+        errors: result.error.issues.map(issue => issue.message)
+      }
+    }
   }
 
   const { templateId, subject, json, previewText } = result.data;
@@ -307,7 +333,7 @@ export async function updateEmailAction(formData: FormData) {
     };
   }
 
-  revalidatePath(`/template/${templateId}`, 'page');
+  revalidatePath(`/template/${templateId}`);
 
   return {
     data,
@@ -325,11 +351,14 @@ export async function deleteEmailAction(formData: FormData) {
   });
 
   if (!result.success) {
-    throw new ActionError(
-      result.error.issues.map((issue) => issue.message).join(', '),
-      'validation_error',
-      result.error.issues.map((issue) => issue.message)
-    );
+    return {
+      data: null,
+      error: {
+        message: result.error.issues.map((issue) => issue.message).join(', '),
+        code: 'validation_error',
+        errors: result.error.issues.map(issue => issue.message)
+      }
+    }
   }
 
   const { templateId } = result.data;

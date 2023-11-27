@@ -30,7 +30,13 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return NextResponse.redirect(data.url || requestUrl.origin, {
+  if (!data.url) {
+    return NextResponse.redirect(requestUrl.origin, {
+      status: 301,
+    });
+  }
+
+  return NextResponse.redirect(data.url, {
     status: 301,
   });
 }

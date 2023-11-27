@@ -250,7 +250,7 @@ export class Maily {
       <Html>
         <Head>
           <Font
-            fallbackFontFamily="Verdana"
+            fallbackFontFamily="sans-serif"
             fontFamily="Inter"
             fontStyle="normal"
             fontWeight={400}

@@ -44,7 +44,7 @@ function SubmitButton(props: SubmitButtonProps) {
   );
 }
 
-export function EnvelopeConfig() {
+export function ApiConfiguration() {
   const { apiKey, endpoint, setApiKey, setEndpoint } = useEditorContext((s) => {
     return {
       apiKey: s.apiKey,
@@ -77,7 +77,7 @@ export function EnvelopeConfig() {
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
         <button
-          className="w-7 h-7 flex items-center justify-center bg-black text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-7 h-7 flex items-center justify-center bg-gray-100 text-black border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 duration-200"
           type="button"
         >
           <Cog className="inline-block" size={16} />
@@ -85,13 +85,25 @@ export function EnvelopeConfig() {
       </DialogTrigger>
       <DialogContent className="w-full min-w-0 max-w-sm overflow-hidden p-4 animation-none">
         <DialogHeader>
-          <DialogTitle>Envelope Configuration</DialogTitle>
+          <DialogTitle>Configuration</DialogTitle>
           <DialogDescription>
-            Configure your Envelope API Key and Endpoint. These settings are
-            saved in your browser.
+            Configure your Provider API Key and Endpoint(if any). These settings
+            are saved in your browser.
           </DialogDescription>
         </DialogHeader>
-        <form action={action} className="flex flex-col gap-2">
+        <form action={action} className="flex flex-col gap-2.5 mt-2">
+          <Label className="font-normal">
+            <span className="w-20 after:content-['*'] after:text-red-400 after:ml-0.5">
+              Provider
+            </span>
+            <select
+              className="font-normal mt-2 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-800"
+              name="provider"
+              required
+            >
+              <option value="resend">Resend</option>
+            </select>
+          </Label>
           <Label className="font-normal">
             <span className="w-20 after:content-['*'] after:text-red-400 after:ml-0.5">
               API Key
@@ -100,7 +112,7 @@ export function EnvelopeConfig() {
               className="font-normal mt-2"
               defaultValue={apiKey || ''}
               name="apiKey"
-              placeholder="Envelope API Key"
+              placeholder="API Key"
               required
               spellCheck={false}
               type="text"
@@ -112,7 +124,7 @@ export function EnvelopeConfig() {
               className="font-normal mt-2"
               defaultValue={endpoint || ''}
               name="endpoint"
-              placeholder="Envelope API Endpoint"
+              placeholder="API Endpoint"
               spellCheck={false}
               type="text"
             />

@@ -4,11 +4,16 @@ import { z } from 'zod';
 import { renderAsync } from '@maily-to/render';
 import { cookies } from 'next/headers';
 import { Envelope } from 'envelope';
+import { Resend } from 'resend';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { revalidatePath } from 'next/cache';
-import { ENVELOPE_API_KEY, ENVELOPE_ENDPOINT } from '@/utils/constants';
+import {
+  MAILY_API_KEY,
+  MAILY_ENDPOINT,
+  MAILY_PROVIDER,
+} from '@/utils/constants';
 import type { Database } from '@/types/database';
-import { ActionError } from './error';
+import { ActionError, UnreachableCaseError } from './error';
 
 const previewEmailSchema = z.object({
   json: z.string().min(1, 'Please provide a JSON'),
@@ -52,7 +57,13 @@ const sendTestEmailSchema = z.object({
 });
 
 const envelopeConfigSchema = z.object({
-  apiKey: z.string().min(1, 'Please provide an API key'),
+  provider: z.union([z.literal('resend'), z.literal('envelope')]),
+  apiKey: z
+    .string()
+    .min(
+      1,
+      'Please provide a valid API key, or configure one in the settings.'
+    ),
   endpoint: z.string(),
 });
 
@@ -67,23 +78,10 @@ export async function sendTestEmailAction(formData: FormData) {
   });
 
   const cookieStore = cookies();
-  const apiKey = cookieStore.get(ENVELOPE_API_KEY)?.value;
-  const endpoint = cookieStore.get(ENVELOPE_ENDPOINT)?.value;
-
-  if (!apiKey) {
-    return {
-      data: null,
-      error: {
-        message:
-          'Please provide a valid API key, or configure one in the settings.',
-        code: 'api_key_error',
-      },
-    };
-  }
-
   const configResult = envelopeConfigSchema.safeParse({
-    apiKey,
-    endpoint,
+    provider: cookieStore.get(MAILY_PROVIDER)?.value,
+    apiKey: cookieStore.get(MAILY_API_KEY)?.value,
+    endpoint: cookieStore.get(MAILY_ENDPOINT)?.value,
   });
 
   if (!configResult.success) {
@@ -114,17 +112,43 @@ export async function sendTestEmailAction(formData: FormData) {
     preview: previewText,
   });
 
-  const envelope = new Envelope(apiKey, {
-    endpoint,
-  });
+  const { provider, apiKey, endpoint } = configResult.data;
+  if (provider === 'resend') {
+    const resend = new Resend(apiKey);
 
-  await envelope.emails.send({
-    to,
-    from,
-    replyTo,
-    subject,
-    html,
-  });
+    const enrichedTo = Array.isArray(to)
+      ? to
+      : to.split(',').map((email) => email.trim());
+    const { error } = await resend.emails.send({
+      to: enrichedTo,
+      from,
+      reply_to: replyTo,
+      subject,
+      html,
+    });
+
+    if (error) {
+      throw new ActionError(error.message, error.name);
+    }
+  } else if (provider === 'envelope') {
+    const envelope = new Envelope(apiKey, {
+      endpoint,
+    });
+
+    const { error } = await envelope.emails.send({
+      to,
+      from,
+      replyTo,
+      subject,
+      html,
+    });
+
+    if (error) {
+      throw new ActionError(error.message, 'envelope_error');
+    }
+  } else {
+    throw new UnreachableCaseError(provider);
+  }
 
   return {
     data: {

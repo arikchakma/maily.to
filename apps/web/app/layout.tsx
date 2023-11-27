@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
+import { TopLoader } from '@/components/top-loader';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -69,6 +70,7 @@ export default function RootLayout(props: RootLayoutProps) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <TopLoader />
         {children}
         <Toaster richColors />
       </body>

@@ -33,6 +33,7 @@ export function EditorPreview(props: EditorPreviewProps) {
     setReplyTo,
     to,
     setTo,
+    apiKey,
   } = useEditorContext((s) => s);
 
   const [showReplyTo, setShowReplyTo] = useState(false);
@@ -66,12 +67,14 @@ export function EditorPreview(props: EditorPreviewProps) {
             placeholder="Arik Chakma <hello@maily.to>"
             type="text"
             value={from}
+            disabled={!apiKey}
           />
         </Label>
 
         {showReplyTo ? null : (
           <button
-            className="text-sm h-full inline-block bg-transparent px-1 text-gray-500 shrink-0 hover:text-gray-700"
+            className="text-sm h-full inline-block bg-transparent px-1 text-gray-500 shrink-0 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:text-gray-400"
+            disabled={!apiKey}
             onClick={() => {
               setShowReplyTo(true);
             }}
@@ -95,9 +98,10 @@ export function EditorPreview(props: EditorPreviewProps) {
               placeholder="noreply@maily.to"
               type="text"
               value={replyTo}
+              disabled={!apiKey}
             />
             <button
-              className="flex items-center h-10 bg-transparent px-1 text-gray-500 shrink-0 hover:text-gray-700"
+              className="flex items-center h-10 bg-transparent px-1 text-gray-500 shrink-0 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                 setReplyTo('');
                 setShowReplyTo(false);
@@ -117,6 +121,7 @@ export function EditorPreview(props: EditorPreviewProps) {
             setTo(e.target.value);
           }}
           placeholder="Email Recipient(s)"
+          disabled={!apiKey}
           type="text"
           value={to}
         />

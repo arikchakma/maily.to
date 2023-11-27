@@ -1,2 +1,3 @@
-export const ENVELOPE_API_KEY = '_envelope_api_key';
-export const ENVELOPE_ENDPOINT = '_envelope_endpoint';
+export const MAILY_API_KEY = '_maily_api_key_';
+export const MAILY_ENDPOINT = '_maily_endpoint_';
+export const MAILY_PROVIDER = '_maily_provider_';

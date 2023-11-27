@@ -2,7 +2,11 @@ import { cookies } from 'next/headers';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { redirect } from 'next/navigation';
 import type { JSONContent } from '@tiptap/core';
-import { ENVELOPE_API_KEY, ENVELOPE_ENDPOINT } from '@/utils/constants';
+import {
+  MAILY_API_KEY,
+  MAILY_ENDPOINT,
+  MAILY_PROVIDER,
+} from '@/utils/constants';
 import { EditorPreview } from '@/components/editor-preview';
 import type { Database } from '@/types/database';
 import { EditorProvider } from '@/stores/editor-store';
@@ -23,8 +27,9 @@ export default async function TemplatePage(props: TemplatePageProps) {
   const { templateId } = props.params || {};
 
   const cookieStore = cookies();
-  const apiKey = cookieStore.get(ENVELOPE_API_KEY)?.value;
-  const endpoint = cookieStore.get(ENVELOPE_ENDPOINT)?.value;
+  const apiKey = cookieStore.get(MAILY_API_KEY)?.value;
+  const endpoint = cookieStore.get(MAILY_ENDPOINT)?.value;
+  const provider = cookieStore.get(MAILY_PROVIDER)?.value;
 
   const supabase = createServerComponentClient<Database>({ cookies });
   const {
@@ -59,6 +64,7 @@ export default async function TemplatePage(props: TemplatePageProps) {
     <EditorProvider
       apiKey={apiKey}
       endpoint={endpoint}
+      provider={provider}
       // eslint-disable-next-line camelcase -- This is a prop
       previewText={preview_text || ''}
       subject={title || ''}

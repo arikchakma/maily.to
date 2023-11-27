@@ -15,6 +15,7 @@ interface EditorProps {
   to: string;
   replyTo?: string;
 
+  provider?: string;
   apiKey?: string;
   endpoint?: string;
 }
@@ -29,6 +30,7 @@ interface EditorState extends EditorProps {
   setTo: (to: string) => void;
   setReplyTo: (replyTo: string) => void;
 
+  setProvider: (provider: string) => void;
   setApiKey: (apiKey: string) => void;
   setEndpoint: (endpoint: string) => void;
 }
@@ -73,6 +75,8 @@ const createEditorStore = (initProps?: Partial<EditorProps>) => {
     setFrom: (from) => set(() => ({ from })),
     setTo: (to) => set(() => ({ to })),
     setReplyTo: (replyTo) => set(() => ({ replyTo })),
+
+    setProvider: (provider) => set(() => ({ provider })),
     setApiKey: (apiKey) => set(() => ({ apiKey })),
     setEndpoint: (endpoint) => set(() => ({ endpoint })),
   }));

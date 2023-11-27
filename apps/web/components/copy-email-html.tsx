@@ -20,16 +20,19 @@ function SubmitButton(props: SubmitButtonProps) {
 
   return (
     <button
-      className="rounded-md bg-black px-2 py-1 text-sm text-white flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+      className="rounded-md bg-black px-2 py-1 min-h-[28px] max-sm:w-7 justify-center text-sm text-white flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
-        <Loader2 className="inline-block mr-1 animate-spin" size={16} />
+        <Loader2
+          className="inline-block sm:mr-1 shrink-0 animate-spin"
+          size={16}
+        />
       ) : (
-        <ClipboardCopy className="inline-block mr-1" size={16} />
+        <ClipboardCopy className="inline-block shrink-0 sm:mr-1" size={16} />
       )}
-      Copy HTML
+      <span className="hidden sm:inline-block">Copy HTML</span>
     </button>
   );
 }

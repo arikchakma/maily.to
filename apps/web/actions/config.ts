@@ -2,10 +2,15 @@
 
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { ENVELOPE_API_KEY, ENVELOPE_ENDPOINT } from '@/utils/constants';
+import {
+  MAILY_API_KEY,
+  MAILY_ENDPOINT,
+  MAILY_PROVIDER,
+} from '@/utils/constants';
 import { ActionError } from './error';
 
 const envelopeConfigSchema = z.object({
+  provider: z.union([z.literal('resend'), z.literal('envelope')]),
   apiKey: z.string().min(1, 'Please provide an API key'),
   endpoint: z.string(),
 });
@@ -13,6 +18,7 @@ const envelopeConfigSchema = z.object({
 // eslint-disable-next-line @typescript-eslint/require-await -- required for serverless functions
 export async function envelopeConfigAction(formData: FormData) {
   const result = envelopeConfigSchema.safeParse({
+    provider: formData.get('provider'),
     apiKey: formData.get('apiKey'),
     endpoint: formData.get('endpoint'),
   });
@@ -25,10 +31,11 @@ export async function envelopeConfigAction(formData: FormData) {
     );
   }
 
-  const { apiKey, endpoint } = result.data;
+  const { apiKey, endpoint, provider } = result.data;
   const cookieStore = cookies();
-  cookieStore.set(ENVELOPE_API_KEY, apiKey);
-  cookieStore.set(ENVELOPE_ENDPOINT, endpoint);
+  cookieStore.set(MAILY_API_KEY, apiKey);
+  cookieStore.set(MAILY_ENDPOINT, endpoint);
+  cookieStore.set(MAILY_PROVIDER, provider);
 
   return {
     data: {

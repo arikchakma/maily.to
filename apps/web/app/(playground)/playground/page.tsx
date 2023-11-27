@@ -4,10 +4,23 @@ import { LogIn } from 'lucide-react';
 import { SendTestEmail } from '@/components/send-test-email';
 import { PreviewEmail } from '@/components/preview-email';
 import { CopyEmailHtml } from '@/components/copy-email-html';
-import { EnvelopeConfig } from '@/components/envelope-config';
 import { EditorPreview } from '@/components/editor-preview';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/types/database';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { ApiConfiguration } from '@/components/api-config';
 
-export default function Home() {
+export default async function Playground() {
+  const supabase = createServerComponentClient<Database>({ cookies });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    return redirect('/template');
+  }
+
   return (
     <main className="max-w-[calc(36rem+40px)] px-5 mx-auto w-full">
       <header className="mt-14 border-b pb-6">
@@ -28,11 +41,11 @@ export default function Home() {
           </NextLink>
         </div>
       </header>
-      <div className="flex items-center gap-1.5 justify-end mt-6">
-        <SendTestEmail />
+      <div className="flex items-center gap-1.5 mt-6">
+        <ApiConfiguration />
         <PreviewEmail />
         <CopyEmailHtml />
-        <EnvelopeConfig />
+        <SendTestEmail />
       </div>
       <EditorPreview />
     </main>

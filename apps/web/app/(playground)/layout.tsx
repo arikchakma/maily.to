@@ -10,7 +10,7 @@ interface PlaygroundLayoutProps {
 }
 
 export const metadata = {
-  title: 'Playground - Maily',
+  title: 'Playground | Maily',
 };
 
 export default function PlaygroundLayout(props: PlaygroundLayoutProps) {

@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@maily-to/core": "workspace:^",
-    "@maily-to/render": "workspace:^",
+    "@maily-to/core": "workspace:*",
+    "@maily-to/render": "workspace:*",
     "@next/eslint-plugin-next": "^14.0.3",
     "@next/third-parties": "^14.0.3",
     "@radix-ui/react-avatar": "^1.0.4",

@@ -115,7 +115,7 @@ export function ApiConfiguration() {
               placeholder="API Key"
               required
               spellCheck={false}
-              type="text"
+              type="password"
             />
           </Label>
           <Label className="font-normal">

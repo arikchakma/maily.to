@@ -17,16 +17,19 @@ function SubmitButton(props: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
     <button
-      className="flex items-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
+      className="flex min-h-[28px] items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
       disabled={disabled || pending}
       type="submit"
     >
       {pending ? (
-        <Loader2 className="mr-1 inline-block animate-spin" size={16} />
+        <Loader2
+          className="inline-block shrink-0 animate-spin sm:mr-1"
+          size={16}
+        />
       ) : (
-        <FileCog className="mr-1 inline-block" size={16} />
+        <FileCog className="inline-block shrink-0 sm:mr-1" size={16} />
       )}
-      Update
+      <span className="hidden sm:inline-block">Update</span>
     </button>
   );
 }

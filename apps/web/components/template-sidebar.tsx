@@ -18,7 +18,7 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
   const { templateId } = useParams();
 
   return (
-    <aside className="flex w-[225px] shrink-0 flex-col border-r pb-2">
+    <aside className="flex w-[225px] shrink-0 flex-col border-r pb-2 max-lg:w-[180px]">
       <NextLink
         className={cn(
           buttonVariants({ variant: 'outline' }),

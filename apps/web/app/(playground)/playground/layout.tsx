@@ -27,12 +27,6 @@ export const metadata: Metadata = {
     title: 'Playground | Maily',
     description:
       'Try out Maily, the Open-source editor for crafting emails.',
-    images: {
-      url: '/og-image.jpg',
-      width: 1200,
-      height: 630,
-      alt: 'Maily Preview',
-    },
   },
 };
 

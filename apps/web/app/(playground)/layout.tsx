@@ -9,10 +9,6 @@ interface PlaygroundLayoutProps {
   children: ReactNode;
 }
 
-export const metadata = {
-  title: 'Playground | Maily',
-};
-
 export default function PlaygroundLayout(props: PlaygroundLayoutProps) {
   const { children } = props;
 

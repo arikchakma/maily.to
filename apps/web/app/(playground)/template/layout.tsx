@@ -10,10 +10,6 @@ interface PlaygroundLayoutProps {
   children: React.ReactNode;
 }
 
-export const metadata = {
-  title: 'Templates - Playground',
-};
-
 export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
   const { children } = props;
 

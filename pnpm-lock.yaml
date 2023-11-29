@@ -48,10 +48,10 @@ importers:
   apps/web:
     dependencies:
       '@maily-to/core':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/core
       '@maily-to/render':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/render
       '@next/eslint-plugin-next':
         specifier: ^14.0.3
@@ -308,9 +308,6 @@ importers:
         specifier: latest
         version: 18.2.0
     devDependencies:
-      bun-types:
-        specifier: latest
-        version: 1.0.14
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom

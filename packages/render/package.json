@@ -47,7 +47,6 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "bun-types": "latest",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "^5.0.0"

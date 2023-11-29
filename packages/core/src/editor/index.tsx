@@ -50,9 +50,9 @@ export function Editor(props: EditorProps) {
       contentJson?.type === 'doc'
         ? contentJson
         : {
-            type: 'doc',
-            content: contentJson,
-          };
+          type: 'doc',
+          content: contentJson,
+        };
   } else if (contentHtml) {
     formattedContent = contentHtml;
   } else {
@@ -62,10 +62,6 @@ export function Editor(props: EditorProps) {
         {
           type: 'paragraph',
           content: [
-            {
-              type: 'text',
-              text: '',
-            },
           ],
         },
       ],

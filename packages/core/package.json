@@ -1,5 +1,8 @@
 {
   "name": "@maily-to/core",
+  "version": "0.0.2",
+  "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
+  "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -32,6 +35,8 @@
   },
   "author": "Arik Chakma <arikchangma@gmail.com>",
   "keywords": [
+    "tiptap",
+    "wysiwyg",
     "maily.to",
     "editor",
     "react",
@@ -77,5 +82,8 @@
   },
   "peerDependencies": {
     "react": "18.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

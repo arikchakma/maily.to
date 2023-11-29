@@ -23,19 +23,10 @@ Install `maily` from your command line.
 #### With bun
 
 ```sh
-bun add @arikchakma/maily
-```
-
-#### With yarn
-
-```sh
-yarn add @arikchakma/maily
-```
-
-#### With npm
-
-```sh
-npm install @arikchakma/maily
+pnpm add @maily-to/render
+bun add @maily-to/render
+yarn add @maily-to/render
+npm install @maily-to/render
 ```
 
 <br>
@@ -45,7 +36,7 @@ npm install @arikchakma/maily
 Convert React components into a HTML string.
 
 ```jsx
-import { render } from '@arikchakma/maily';
+import { render } from '@maily-to/render';
 
 const html = render({
   type: 'doc',

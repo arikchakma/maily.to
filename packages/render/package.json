@@ -47,16 +47,18 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.23.3",
+    "@types/react": "^18.2.39",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.2"
   },
   "dependencies": {
     "@react-email/components": "^0.0.11",
     "@react-email/render": "^0.0.9"
   },
   "peerDependencies": {
-    "react": "latest"
+    "react": "18.2.0"
   },
   "publishConfig": {
     "access": "public"

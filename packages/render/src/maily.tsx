@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
-import { type CSSProperties } from 'react';
+import { Fragment, type CSSProperties } from 'react';
 import {
   Text,
   Html,
@@ -241,10 +238,15 @@ export class Maily {
         parent: node,
       };
 
-      return this.renderNode(node, nodeOptions);
+      const component = this.renderNode(node, nodeOptions);
+      if (!component) {
+        return null;
+      }
+
+      return <Fragment key={generateKey()}>{component}</Fragment>;
     });
 
-    const { preview } = this.config || {};
+    const { preview } = this.config;
 
     const markup = (
       <Html>
@@ -287,29 +289,31 @@ export class Maily {
     node: JSONContent,
     options?: NodeOptions
   ): JSX.Element[] {
-    return (
-      (node.content
-        ?.map((childNode) => {
-          return this.renderNode(childNode, options);
-        })
-        ?.filter((n) => n !== null) as JSX.Element[]) || []
-    );
+    return node.content
+      ?.map((childNode) => {
+        const component = this.renderNode(childNode, options);
+        if (!component) {
+          return null;
+        }
+
+        return <Fragment key={generateKey()}>{component}</Fragment>;
+      })
+      ?.filter((n) => n !== null) as JSX.Element[];
   }
 
   // `renderNode` will call the method of the corresponding node type
   private renderNode(
     node: JSONContent,
-    options?: NodeOptions
+    options: NodeOptions = {}
   ): JSX.Element | null {
     const type = node.type || '';
 
     if (type in this) {
       // @ts-expect-error - `this` is not assignable to type 'never'
-      return this[node.type]?.(node, options);
-      // eslint-disable-next-line no-else-return
-    } else {
-      throw new Error(`Node type "${type}" is not supported.`);
+      return this[type]?.(node, options) as JSX.Element;
     }
+
+    throw new Error(`Node type "${type}" is not supported.`);
   }
 
   // `renderMark` will call the method of the corresponding mark type
@@ -323,9 +327,9 @@ export class Maily {
         const type = mark.type;
         if (type in this) {
           // @ts-expect-error - `this` is not assignable to type 'never'
-          const markElement = this[type]?.(mark, acc);
-          return markElement;
+          return this[type]?.(mark, acc) as JSX.Element;
         }
+
         throw new Error(`Mark type "${type}" is not supported.`);
       },
       <>{text}</>
@@ -342,51 +346,46 @@ export class Maily {
 
     return (
       <Text
-        key={generateKey()}
         style={{
           textAlign: alignment,
           marginBottom: isParentListItem || isNextSpacer ? '0px' : '20px',
           marginTop: '0px',
-          fontSize: this.config?.theme?.fontSize?.paragraph,
-          color: this.config?.theme?.colors?.paragraph,
+          fontSize: this.config.theme?.fontSize?.paragraph,
+          color: this.config.theme?.colors?.paragraph,
           ...antialiased,
         }}
       >
-        {node?.content ? this.getMappedContent(node) : <>&nbsp;</>}
+        {node.content ? this.getMappedContent(node) : <>&nbsp;</>}
       </Text>
     );
   }
 
-  private text(node: JSONContent) {
+  private text(node: JSONContent, _?: NodeOptions): JSX.Element {
     const text = node.text || '&nbsp';
     if (node.marks) {
       return this.renderMark(node);
     }
 
-    return text;
+    return <>{text}</>;
   }
 
-  private bold(_: MarkType, text: string): JSX.Element {
-    return <strong key={generateKey()}>{text}</strong>;
+  private bold(_: MarkType, text: JSX.Element): JSX.Element {
+    return <strong>{text}</strong>;
   }
 
-  private italic(_: MarkType, text: string): JSX.Element {
-    return <em key={generateKey()}>{text}</em>;
+  private italic(_: MarkType, text: JSX.Element): JSX.Element {
+    return <em>{text}</em>;
   }
 
-  private underline(_: MarkType, text: string): JSX.Element {
-    return <u key={generateKey()}>{text}</u>;
+  private underline(_: MarkType, text: JSX.Element): JSX.Element {
+    return <u>{text}</u>;
   }
 
-  private strike(_: MarkType, text: string): JSX.Element {
-    return (
-      <s key={generateKey()} style={{ textDecoration: 'line-through' }}>
-        {text}
-      </s>
-    );
+  private strike(_: MarkType, text: JSX.Element): JSX.Element {
+    return <s style={{ textDecoration: 'line-through' }}>{text}</s>;
   }
 
-  private link(mark: MarkType, text: string): JSX.Element {
+  private link(mark: MarkType, text: JSX.Element): JSX.Element {
     const { attrs } = mark;
     const href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
@@ -395,12 +394,11 @@ export class Maily {
     return (
       <Link
         href={href}
-        key={generateKey()}
         rel={rel}
         style={{
           fontWeight: 500,
           textDecoration: 'underline',
-          color: this.config?.theme?.colors?.heading,
+          color: this.config.theme?.colors?.heading,
         }}
         target={target}
       >
@@ -419,16 +417,15 @@ export class Maily {
     const isPrevSpacer = prev?.type === 'spacer';
 
     const { fontSize, lineHeight, fontWeight } =
-      headings[level as AllowedHeadings] || {};
+      headings[level as AllowedHeadings];
 
     return (
       <Heading
         // @ts-expect-error - `this` is not assignable to type 'never'
         as={level}
-        key={generateKey()}
         style={{
           textAlign: alignment,
-          color: this.config?.theme?.colors?.heading,
+          color: this.config.theme?.colors?.heading,
           marginBottom: isNextSpacer ? '0px' : '12px',
           marginTop: isPrevSpacer ? '0px' : '0px',
           fontSize,
@@ -441,7 +438,7 @@ export class Maily {
     );
   }
 
-  private variable(node: JSONContent): JSX.Element {
+  private variable(node: JSONContent, _?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const variable = attrs?.id || '';
 
@@ -461,7 +458,7 @@ export class Maily {
 
   private orderedList(node: JSONContent, _?: NodeOptions): JSX.Element {
     return (
-      <Container key={generateKey()}>
+      <Container>
         <ol
           style={{
             marginTop: '0px',
@@ -478,7 +475,7 @@ export class Maily {
 
   private bulletList(node: JSONContent, _?: NodeOptions): JSX.Element {
     return (
-      <Container key={generateKey()}>
+      <Container>
         <ul
           style={{
             marginTop: '0px',
@@ -496,7 +493,6 @@ export class Maily {
   private listItem(node: JSONContent, options?: NodeOptions): JSX.Element {
     return (
       <li
-        key={generateKey()}
         style={{
           marginBottom: '8px',
           paddingLeft: '6px',
@@ -530,7 +526,6 @@ export class Maily {
 
     return (
       <Container
-        key={generateKey()}
         style={{
           textAlign: alignment,
         }}
@@ -563,7 +558,6 @@ export class Maily {
 
     return (
       <Container
-        key={generateKey()}
         style={{
           height: spacers[height as AllowedSpacers] || height,
         }}
@@ -572,7 +566,7 @@ export class Maily {
   }
 
   private hardBreak(_: JSONContent, __?: NodeOptions): JSX.Element {
-    return <br key={generateKey()} />;
+    return <br />;
   }
 
   private logo(node: JSONContent, options?: NodeOptions): JSX.Element {
@@ -606,7 +600,6 @@ export class Maily {
     return (
       <Img
         alt={alt || title || 'Logo'}
-        key={generateKey()}
         src={src}
         style={{
           width: logoSizes[size as AllowedLogoSizes] || size,
@@ -629,7 +622,6 @@ export class Maily {
     return (
       <Img
         alt={alt || title || 'Image'}
-        key={generateKey()}
         src={src}
         style={{
           height: 'auto',
@@ -652,11 +644,10 @@ export class Maily {
 
     return (
       <Text
-        key={generateKey()}
         style={{
-          fontSize: this.config?.theme?.fontSize?.footer?.size,
-          lineHeight: this.config?.theme?.fontSize?.footer?.lineHeight,
-          color: this.config?.theme?.colors?.footer,
+          fontSize: this.config.theme?.fontSize?.footer?.size,
+          lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
+          color: this.config.theme?.colors?.footer,
           marginTop: '0px',
           marginBottom: isNextSpacer ? '0px' : '20px',
           textAlign,

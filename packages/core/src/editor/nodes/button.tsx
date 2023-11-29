@@ -143,6 +143,7 @@ export default function ButtonComponent(props: NodeViewProps) {
                   className="mly-grow mly-font-normal mly-capitalize"
                   size="sm"
                   onClick={item.onClick}
+                  type="button"
                 >
                   {item.name}
                 </BaseButton>
@@ -163,6 +164,7 @@ export default function ButtonComponent(props: NodeViewProps) {
                   className="mly-grow mly-font-normal mly-capitalize"
                   size="sm"
                   onClick={item.onClick}
+                  type="button"
                 >
                   {item.name}
                 </BaseButton>
@@ -183,6 +185,7 @@ export default function ButtonComponent(props: NodeViewProps) {
                     className="mly-grow"
                     size="sm"
                     onClick={item.onClick}
+                    type="button"
                   >
                     <item.icon size={16} />
                   </BaseButton>
@@ -231,7 +234,7 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <BaseButton variant="ghost" className="" size="sm">
+        <BaseButton variant="ghost" className="" size="sm" type="button">
           <div
             className="mly-h-4 mly-w-4 mly-rounded"
             style={{
@@ -261,7 +264,7 @@ function TextColorPickerPopup(props: ColorPickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <BaseButton variant="ghost" size="sm">
+        <BaseButton variant="ghost" size="sm" type="button">
           <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
             <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
               A

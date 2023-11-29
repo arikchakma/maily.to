@@ -259,7 +259,6 @@ const CommandList = ({
   items,
   command,
   editor,
-  range,
 }: {
   items: CommandItemProps[];
   command: (item: CommandItemProps) => void;
@@ -337,6 +336,7 @@ const CommandList = ({
               )}
               key={index}
               onClick={() => selectItem(index)}
+              type="button"
             >
               <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
                 {item.icon}

@@ -29,9 +29,13 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
   const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
     (alignment, index) => ({
       name: alignment,
-      isActive: () => editor?.isActive('logo', { alignment })!,
+      isActive: () => editor?.isActive({ textAlign: alignment })!,
       command: () => {
-        editor?.chain().focus().setLogoAttributes({ alignment }).run();
+        if (props?.editor?.isActive({ textAlign: alignment })) {
+          props?.editor?.chain()?.focus().unsetTextAlign().run();
+        } else {
+          props?.editor?.chain().focus().setTextAlign(alignment).run()!;
+        }
       },
       icon: icons[index],
     })

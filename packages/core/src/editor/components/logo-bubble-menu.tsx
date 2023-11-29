@@ -8,11 +8,7 @@ import {
 
 import { BubbleMenuButton } from './bubble-menu-button';
 import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
-import {
-  allowedLogoAlignment,
-  allowedLogoSize,
-  AllowedLogoSize,
-} from '../nodes/logo';
+import { allowedLogoAlignment, allowedLogoSize } from '../nodes/logo';
 
 export function LogoBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor } = props;

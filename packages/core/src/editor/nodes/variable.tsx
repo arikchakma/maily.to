@@ -3,8 +3,7 @@ import Mention from '@tiptap/extension-mention';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-
-import { BaseButton } from '@/editor/components/base-button';
+import { cn } from '../utils/classname';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -43,25 +42,24 @@ export const VariableList = forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="mly-z-50 mly-h-auto mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-px-1 mly-py-2 mly-shadow-md mly-transition-all">
+    <div className="mly-z-50 mly-h-auto mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-p-1 mly-shadow-md mly-transition-all mly-min-w-[128px]">
       {props?.items?.length ? (
         props?.items?.map((item: string, index: number) => (
-          <BaseButton
-            variant="secondary"
+          <button
             key={index}
             onClick={() => selectItem(index)}
-            className="mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100"
+            className={cn(
+              'mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100',
+              index === selectedIndex ? 'mly-bg-gray-200' : 'mly-bg-white'
+            )}
           >
             {item}
-          </BaseButton>
+          </button>
         ))
       ) : (
-        <BaseButton
-          variant="secondary"
-          className="mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100"
-        >
+        <button className="mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 mly-bg-white">
           No result
-        </BaseButton>
+        </button>
       )}
     </div>
   );
@@ -69,66 +67,73 @@ export const VariableList = forwardRef((props: any, ref) => {
 
 VariableList.displayName = 'VariableList';
 
-export const suggestion: Omit<SuggestionOptions, 'editor'> = {
-  items: ({ query }) => {
-    return [query.toLowerCase()];
-  },
+export function suggestion(
+  variables: string[] = []
+): Omit<SuggestionOptions, 'editor'> {
+  return {
+    items: ({ query }) => {
+      return variables
+        .concat(query.length > 0 ? [query] : [])
+        .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
+        .slice(0, 5);
+    },
 
-  render: () => {
-    let component: ReactRenderer<any>;
-    let popup: InstanceType<any> | null = null;
+    render: () => {
+      let component: ReactRenderer<any>;
+      let popup: InstanceType<any> | null = null;
 
-    return {
-      onStart: (props) => {
-        component = new ReactRenderer(VariableList, {
-          props,
-          editor: props.editor,
-        });
+      return {
+        onStart: (props) => {
+          component = new ReactRenderer(VariableList, {
+            props,
+            editor: props.editor,
+          });
 
-        if (!props.clientRect) {
-          return;
-        }
+          if (!props.clientRect) {
+            return;
+          }
 
-        popup = tippy('body', {
-          getReferenceClientRect: props.clientRect as GetReferenceClientRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: 'manual',
-          placement: 'bottom-start',
-        });
-      },
+          popup = tippy('body', {
+            getReferenceClientRect: props.clientRect as GetReferenceClientRect,
+            appendTo: () => document.body,
+            content: component.element,
+            showOnCreate: true,
+            interactive: true,
+            trigger: 'manual',
+            placement: 'bottom-start',
+          });
+        },
 
-      onUpdate(props) {
-        component.updateProps(props);
+        onUpdate(props) {
+          component.updateProps(props);
 
-        if (!props.clientRect) {
-          return;
-        }
+          if (!props.clientRect) {
+            return;
+          }
 
-        popup?.[0]?.setProps({
-          getReferenceClientRect: props.clientRect as GetReferenceClientRect,
-        });
-      },
+          popup?.[0]?.setProps({
+            getReferenceClientRect: props.clientRect as GetReferenceClientRect,
+          });
+        },
 
-      onKeyDown(props) {
-        if (props.event.key === 'Escape') {
-          popup?.[0].hide();
+        onKeyDown(props) {
+          if (props.event.key === 'Escape') {
+            popup?.[0].hide();
 
-          return true;
-        }
+            return true;
+          }
 
-        return component.ref?.onKeyDown(props);
-      },
+          return component.ref?.onKeyDown(props);
+        },
 
-      onExit() {
-        popup?.[0].destroy();
-        component.destroy();
-      },
-    };
-  },
-};
+        onExit() {
+          popup?.[0].destroy();
+          component.destroy();
+        },
+      };
+    },
+  };
+}
 
 export const Variable = Mention.extend({
   name: 'variable',
@@ -140,7 +145,6 @@ export const Variable = Mention.extend({
     ];
   },
 }).configure({
-  suggestion,
   renderLabel({ node }) {
     return `${node.attrs.label ?? node.attrs.id}`;
   },

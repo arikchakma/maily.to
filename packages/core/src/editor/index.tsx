@@ -16,6 +16,7 @@ export type EditorProps = {
   onUpdate?: (editor?: TiptapEditor) => void;
   onCreate?: (editor?: TiptapEditor) => void;
   extensions?: Extension[];
+  variables?: string[];
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -42,6 +43,7 @@ export function Editor(props: EditorProps) {
     extensions,
     contentHtml,
     contentJson,
+    variables,
   } = props;
 
   let formattedContent: any = null;
@@ -91,7 +93,12 @@ export function Editor(props: EditorProps) {
     onUpdate: ({ editor }) => {
       onUpdate?.(editor);
     },
-    extensions: [...defaultExtensions, ...(extensions || [])],
+    extensions: [
+      ...defaultExtensions({
+        variables,
+      }),
+      ...(extensions || []),
+    ],
     content: formattedContent,
     autofocus,
   });

@@ -43,6 +43,26 @@ export interface RenderOptions {
   plainText?: boolean;
 }
 
+export interface ThemeOptions {
+  colors?: {
+    heading?: string;
+    paragraph?: string;
+    horizontal?: string;
+    footer?: string;
+  };
+  fontSize?: {
+    paragraph?: string;
+    footer?: {
+      size?: string;
+      lineHeight?: string;
+    };
+  };
+}
+
+export interface ExtensionsOptions {
+  variable?: (options?: { value: string }) => string;
+}
+
 export interface MarkType {
   [key: string]: any;
   type: string;
@@ -163,21 +183,8 @@ export interface MailyConfig {
    * });
    * ```
    */
-  theme?: {
-    colors?: {
-      heading?: string;
-      paragraph?: string;
-      horizontal?: string;
-      footer?: string;
-    };
-    fontSize?: {
-      paragraph?: string;
-      footer?: {
-        size?: string;
-        lineHeight?: string;
-      };
-    };
-  };
+  theme?: ThemeOptions;
+  extensions?: ExtensionsOptions;
 }
 
 export class Maily {
@@ -442,7 +449,15 @@ export class Maily {
     const { attrs } = node;
     const variable = attrs?.id || '';
 
-    return <>{`{{${variable}}}`}</>;
+    let formattedVariable = `{{${variable}}}`;
+    // If a variable formatter is provided, use it to format the variable
+    if (typeof this.config.extensions?.variable === 'function') {
+      formattedVariable = this.config.extensions.variable({
+        value: variable,
+      });
+    }
+
+    return <>{formattedVariable}</>;
   }
 
   private horizontalRule(_: JSONContent, __?: NodeOptions): JSX.Element {

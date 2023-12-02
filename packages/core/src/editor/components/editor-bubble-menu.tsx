@@ -17,6 +17,7 @@ export interface BubbleMenuItem {
   name: string;
   isActive: () => boolean;
   command: () => void;
+  shouldShow?: () => boolean;
   icon?: LucideIcon;
 }
 

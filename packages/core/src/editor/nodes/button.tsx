@@ -108,6 +108,7 @@ export function ButtonComponent(props: NodeViewProps) {
           align="end"
           className="space-y-2"
           sideOffset={10}
+          onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <Input

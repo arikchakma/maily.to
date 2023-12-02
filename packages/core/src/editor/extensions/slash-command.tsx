@@ -417,6 +417,10 @@ const suggestion: Omit<SuggestionOptions, 'editor'> = {
         return component?.ref?.onKeyDown(props);
       },
       onExit: () => {
+        if (!popup || !popup?.[0] || !component) {
+          return;
+        }
+
         popup?.[0].destroy();
         component?.destroy();
       },

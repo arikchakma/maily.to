@@ -18,6 +18,10 @@ export const VariablePluginKey = new PluginKey('variable');
 
 export const Variable = Node.create<VariableOptions>({
   name: 'variable',
+  group: 'inline',
+  inline: true,
+  selectable: true,
+  atom: true,
 
   addOptions() {
     return {
@@ -65,14 +69,6 @@ export const Variable = Node.create<VariableOptions>({
       },
     };
   },
-
-  group: 'inline',
-
-  inline: true,
-
-  selectable: true,
-
-  atom: true,
 
   addAttributes() {
     return {

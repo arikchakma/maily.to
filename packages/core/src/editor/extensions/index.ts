@@ -14,7 +14,7 @@ import { ButtonExtension } from './button-extension';
 import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
-import { suggestion } from '../nodes/variable';
+import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import Underline from '@tiptap/extension-underline';
 import { Variable } from './variable-extension';
@@ -57,7 +57,7 @@ export function extensions(props: ExtensionsProps) {
     Spacer,
     Footer,
     Variable.configure({
-      suggestion: suggestion(variables),
+      suggestion: getVariableSuggestions(variables),
     }),
     SlashCommand,
     TiptapLink.configure({

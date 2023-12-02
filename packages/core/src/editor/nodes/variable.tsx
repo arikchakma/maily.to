@@ -1,4 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
@@ -68,7 +74,7 @@ export const VariableList = forwardRef((props: any, ref) => {
 
 VariableList.displayName = 'VariableList';
 
-export function suggestion(
+export function getVariableSuggestions(
   variables: string[] = []
 ): Omit<SuggestionOptions, 'editor'> {
   return {
@@ -128,6 +134,10 @@ export function suggestion(
         },
 
         onExit() {
+          if (!popup || !popup?.[0] || !component) {
+            return;
+          }
+
           popup?.[0].destroy();
           component.destroy();
         },
@@ -137,32 +147,72 @@ export function suggestion(
 }
 
 export function VariableComponent(props: NodeViewProps) {
-  const { id, label, fallback } = props.node.attrs;
-  const variableName = `${label ?? id}`;
-  console.log('-----------');
-  console.log(props);
-  console.log('-----------');
+  const { node, selected, updateAttributes, editor, getPos } = props;
+  const { id, fallback } = node.attrs;
 
-  const isSelected = props.selected;
+  const [isOpen, setIsOpen] = useState(selected);
+  const variableRef = useRef<HTMLDivElement>(null);
+
+  const editorPosition = editor?.view.state.selection.$from.pos;
+  const variableStartPosition = getPos();
+  const variableEndPosition = variableStartPosition + node.nodeSize;
+
+  // Hack: This is hack to open popover in inline-nodes
+  // otherwise it will be closed when we update the attributes
+  // because the node-view will be re-rendered
+  useEffect(() => {
+    if (!variableRef.current || !selected) {
+      return;
+    }
+
+    setIsOpen(true);
+    // Select the text inside the variable
+    const range = document.createRange();
+    range.selectNode(variableRef.current);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }, [selected]);
+
+  // Hack: This is hack to close popover in inline-nodes
+  // otherwise it stays open when we move the cursor outside the variable
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (
+      editorPosition < variableStartPosition ||
+      editorPosition > variableEndPosition
+    ) {
+      setIsOpen(false);
+      return;
+    }
+  }, [isOpen, editorPosition, variableStartPosition, variableEndPosition]);
 
   return (
     <NodeViewWrapper
       className={cn(
         'react-component',
-        isSelected && 'ProseMirror-selectednode',
-        'mly-inline-block mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md mly-leading-none'
+        selected && 'ProseMirror-selectednode',
+        'mly-leading-none mly-inline-block'
       )}
       draggable="false"
     >
-      <Popover open={isSelected}>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <span tabIndex={-1} className="mly-leading-none">
-            {variableName}
-          </span>
+          <div
+            ref={variableRef}
+            tabIndex={-1}
+            className="mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md mly-leading-none"
+          >
+            {id}
+          </div>
         </PopoverTrigger>
         <PopoverContent
           align="start"
           className="mly-space-y-2"
+          onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
@@ -171,9 +221,9 @@ export function VariableComponent(props: NodeViewProps) {
             </span>
             <Input
               placeholder="Add Variable Name"
-              value={variableName}
+              value={id}
               onChange={(e) => {
-                props.updateAttributes({
+                updateAttributes({
                   id: e.target.value,
                 });
               }}
@@ -185,9 +235,9 @@ export function VariableComponent(props: NodeViewProps) {
             </span>
             <Input
               placeholder="Fallback Value"
-              value={fallback}
+              value={fallback || ''}
               onChange={(e) => {
-                props.updateAttributes({
+                updateAttributes({
                   fallback: e.target.value,
                 });
               }}

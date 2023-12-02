@@ -1,9 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import Mention from '@tiptap/extension-mention';
-import { ReactRenderer } from '@tiptap/react';
+import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { cn } from '../utils/classname';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
+import { Input } from '../components/input';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -135,21 +136,65 @@ export function suggestion(
   };
 }
 
-export const Variable = Mention.extend({
-  name: 'variable',
-  parseHTML() {
-    return [
-      {
-        tag: 'span[data-type="variable"]',
-      },
-    ];
-  },
-}).configure({
-  renderLabel({ node }) {
-    return `${node.attrs.label ?? node.attrs.id}`;
-  },
-  HTMLAttributes: {
-    class:
-      'mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md',
-  },
-});
+export function VariableComponent(props: NodeViewProps) {
+  const { id, label, fallback } = props.node.attrs;
+  const variableName = `${label ?? id}`;
+  console.log('-----------');
+  console.log(props);
+  console.log('-----------');
+
+  const isSelected = props.selected;
+
+  return (
+    <NodeViewWrapper
+      className={cn(
+        'react-component',
+        isSelected && 'ProseMirror-selectednode',
+        'mly-inline-block mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md mly-leading-none'
+      )}
+      draggable="false"
+    >
+      <Popover open={isSelected}>
+        <PopoverTrigger asChild>
+          <span tabIndex={-1} className="mly-leading-none">
+            {variableName}
+          </span>
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="mly-space-y-2"
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
+          <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
+            <span className="mly-leading-none mly-text-xs mly-font-normal mly-text-slate-400">
+              Variable Name
+            </span>
+            <Input
+              placeholder="Add Variable Name"
+              value={variableName}
+              onChange={(e) => {
+                props.updateAttributes({
+                  id: e.target.value,
+                });
+              }}
+            />
+          </label>
+          <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
+            <span className="mly-leading-none mly-text-xs mly-font-normal mly-text-slate-400">
+              Fallback Value
+            </span>
+            <Input
+              placeholder="Fallback Value"
+              value={fallback}
+              onChange={(e) => {
+                props.updateAttributes({
+                  fallback: e.target.value,
+                });
+              }}
+            />
+          </label>
+        </PopoverContent>
+      </Popover>
+    </NodeViewWrapper>
+  );
+}

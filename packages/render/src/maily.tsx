@@ -59,10 +59,6 @@ export interface ThemeOptions {
   };
 }
 
-export interface ExtensionsOptions {
-  variable?: (options?: { value: string }) => string;
-}
-
 export interface MarkType {
   [key: string]: any;
   type: string;
@@ -184,7 +180,12 @@ export interface MailyConfig {
    * ```
    */
   theme?: ThemeOptions;
-  extensions?: ExtensionsOptions;
+
+  variableFormatter?: (options?: {
+    name: string;
+    defaultValue: string;
+  }) => string;
+  variableValues?: Record<string, string>;
 }
 
 export class Maily {
@@ -451,10 +452,17 @@ export class Maily {
 
     let formattedVariable = `{{${variable}}}`;
     // If a variable formatter is provided, use it to format the variable
-    if (typeof this.config.extensions?.variable === 'function') {
-      formattedVariable = this.config.extensions.variable({
-        value: variable,
+    if (typeof this.config.variableFormatter === 'function') {
+      formattedVariable = this.config.variableFormatter({
+        name: variable,
+        defaultValue: formattedVariable,
       });
+    }
+
+    // If a variable value is provided, use it to replace the variable
+    if (typeof this.config.variableValues === 'object') {
+      formattedVariable =
+        this.config.variableValues[variable] || formattedVariable;
     }
 
     return <>{formattedVariable}</>;

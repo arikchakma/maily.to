@@ -216,7 +216,7 @@ export function VariableComponent(props: NodeViewProps) {
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
-            <span className="mly-leading-none mly-text-xs mly-font-normal mly-text-slate-400">
+            <span className="mly-leading-none mly-text-xs mly-font-normal">
               Variable Name
             </span>
             <Input
@@ -230,7 +230,7 @@ export function VariableComponent(props: NodeViewProps) {
             />
           </label>
           <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
-            <span className="mly-leading-none mly-text-xs mly-font-normal mly-text-slate-400">
+            <span className="mly-leading-none mly-text-xs mly-font-normal">
               Fallback Value
             </span>
             <Input

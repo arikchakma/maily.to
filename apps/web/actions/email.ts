@@ -49,14 +49,22 @@ export async function previewEmailAction(formData: FormData) {
   };
 }
 
-const sendTestEmailSchema = z.object({
-  subject: z.string().min(1, 'Please provide a subject'),
-  json: z.string().min(1, 'Please provide a JSON'),
-  previewText: z.string(),
-  from: z.string().min(1, 'Please provide a valid email'),
-  replyTo: z.string(),
-  to: z.string().email('Please provide a valid email'),
-});
+const sendTestEmailSchema = z
+  .object({
+    subject: z.string().min(1, 'Please provide a subject'),
+    json: z.string().min(1, 'Please provide a JSON'),
+    previewText: z.string(),
+    from: z.string().min(1, 'Please provide a valid email'),
+    replyTo: z.string(),
+    to: z.string().min(1, 'Please provide a valid email'),
+  })
+  .refine((data) => {
+    const to = Array.isArray(data.to) ? data.to : data.to.split(',');
+    return to.every((email) => {
+      const result = z.string().email().safeParse(email.trim());
+      return result.success;
+    });
+  });
 
 const envelopeConfigSchema = z.object({
   provider: z.union([z.literal('resend'), z.literal('envelope')]),
@@ -117,7 +125,7 @@ export async function sendTestEmailAction(formData: FormData) {
     preview: previewText,
   });
 
-  const { provider, apiKey, endpoint } = configResult.data;
+  const { provider, apiKey } = configResult.data;
   if (provider === 'resend') {
     const resend = new Resend(apiKey);
 
@@ -141,6 +149,7 @@ export async function sendTestEmailAction(formData: FormData) {
         },
       };
     }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Will be implemented later
   } else if (provider === 'envelope') {
     // const envelope = new Envelope(apiKey, {
     //   endpoint,

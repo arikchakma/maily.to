@@ -2,7 +2,7 @@
 
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { deleteEmailAction } from '@/actions/email';
 import { useServerAction } from '@/utils/use-server-action';
@@ -69,6 +69,7 @@ export function DeleteEmail(props: SaveEmailProps) {
           className="flex min-h-[28px] items-center justify-center rounded-md bg-red-100 px-2 py-1 text-sm text-red-800 disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
           type="button"
         >
+          <Trash className="inline-block shrink-0 sm:mr-1" size={16} />
           Delete
         </button>
       </DialogTrigger>

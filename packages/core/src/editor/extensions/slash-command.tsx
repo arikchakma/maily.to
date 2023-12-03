@@ -21,6 +21,7 @@ import {
   ListOrdered,
   MousePointer,
   MoveVertical,
+  Target,
   Text,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
@@ -173,6 +174,22 @@ const getSuggestionItems = ({ query }: { query: string }) => {
 
         editor.chain().focus().deleteRange(range).run();
         editor.chain().focus().setImage({ src: imageUrl }).run();
+      },
+    },
+    {
+      title: 'Social',
+      description: 'Add a social image',
+      searchTerms: ['image', 'social'],
+      icon: <Target className="mly-h-4 mly-w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        const imageUrl = prompt('Social Image URL: ') || '';
+
+        if (!imageUrl) {
+          return;
+        }
+
+        editor.chain().focus().deleteRange(range).run();
+        editor.chain().focus().setSocialImage({ src: imageUrl }).run();
       },
     },
     {

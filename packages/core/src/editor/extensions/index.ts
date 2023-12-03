@@ -18,6 +18,7 @@ import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import Underline from '@tiptap/extension-underline';
 import { Variable } from './variable-extension';
+import { SocialNode } from '../nodes/social';
 
 type ExtensionsProps = {
   variables?: string[];
@@ -56,6 +57,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     Spacer,
     Footer,
+    SocialNode,
     Variable.configure({
       suggestion: getVariableSuggestions(variables),
     }),

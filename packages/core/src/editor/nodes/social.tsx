@@ -36,9 +36,9 @@ function getSizeStyle(size: TiptapSocialAttributes['size']): {
   height: string;
 } {
   const sizes: Record<AllowedSocialSize, string> = {
-    sm: '40px',
-    md: '48px',
-    lg: '64px',
+    sm: '16px',
+    md: '20px',
+    lg: '24px',
   };
   return {
     width: sizes[size],

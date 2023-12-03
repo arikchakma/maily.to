@@ -3,7 +3,7 @@ import {
   AlignCenterIcon,
   AlignLeftIcon,
   AlignRightIcon,
-  Link,
+  Unlink,
 } from 'lucide-react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
@@ -29,10 +29,20 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
   const sizeItems: BubbleMenuItem[] = allowedLogoSize.map((size) => ({
     name: size,
-    isActive: () => props?.editor?.isActive('logo', { size })!,
-    shouldShow: () => editor?.isActive('logo')!,
+    isActive: () => {
+      return (
+        editor?.isActive('logo', { size })! ||
+        editor?.isActive('social', { size })!
+      );
+    },
+    shouldShow: () => editor?.isActive('logo')! || editor?.isActive('social')!,
     command: () => {
-      props?.editor?.chain().focus().setLogoAttributes({ size }).run();
+      const activeNode = editor?.isActive('logo') ? 'logo' : 'social';
+      return editor
+        ?.chain()
+        .focus()
+        .updateAttributes(activeNode, { size })
+        .run();
     },
   }));
 
@@ -53,8 +63,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         const size = editor?.getAttributes('logo')?.size;
         const alignment = editor?.getAttributes('logo')?.alignment;
 
-        // Remove the current logo
-        // and insert a new one
         const selection = editor?.state.selection;
         editor?.commands.setLogoImage({
           src: url,
@@ -63,7 +71,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         });
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
-      icon: Link,
+      icon: Unlink,
     },
     {
       name: 'image-url',
@@ -77,24 +85,48 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           return;
         }
 
-        // Remove the current logo
-        // and insert a new one
         const selection = editor?.state.selection;
         editor?.commands.setImage({
           src: url,
         });
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
-      icon: Link,
+      icon: Unlink,
     },
+    {
+      name: 'social-url',
+      isActive: () => false,
+      shouldShow: () => editor?.isActive('social')!,
+      command: () => {
+        const { editor } = props;
+        const currentNode = editor?.getAttributes('social');
+        const { src: currUrl, size: currSize } = currentNode || {};
 
+        const iconUrl = window.prompt('Update Social Icon URL', currUrl);
+        if (!iconUrl) {
+          return;
+        }
+
+        const selection = editor?.state.selection;
+        editor?.commands.setSocialImage({
+          src: iconUrl,
+          size: currSize,
+        })
+        editor?.commands.setNodeSelection(selection?.from || 0);
+      },
+      icon: Unlink,
+    },
     ...sizeItems,
   ];
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     shouldShow: ({ editor }) => {
-      return editor.isActive('logo') || editor.isActive('image');
+      return (
+        editor.isActive('logo') ||
+        editor.isActive('image') ||
+        editor.isActive('social')
+      );
     },
     tippyOptions: {
       moveTransition: 'mly-transform 0.15s mly-ease-out',

@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import NextLink from 'next/link';
 import { Balancer } from 'react-wrap-balancer';
 import { LogIn } from 'lucide-react';

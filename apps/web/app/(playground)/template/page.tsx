@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { CopyEmailHtml } from '@/components/copy-email-html';
 import { EditorPreview } from '@/components/editor-preview';

@@ -150,7 +150,7 @@ export function VariableComponent(props: NodeViewProps) {
   const { node, selected, updateAttributes, editor, getPos } = props;
   const { id, fallback } = node.attrs;
 
-  const [isOpen, setIsOpen] = useState(selected);
+  const [isOpen, setIsOpen] = useState(false);
   const variableRef = useRef<HTMLDivElement>(null);
 
   const editorPosition = editor?.view.state.selection.$from.pos;

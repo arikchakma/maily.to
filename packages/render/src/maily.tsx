@@ -17,20 +17,8 @@ import {
   render as reactEmailRender,
   renderAsync as reactEmailRenderAsync,
 } from '@react-email/render';
+import type { JSONContent } from '@tiptap/core';
 import { generateKey } from './utils';
-
-export interface JSONContent {
-  type?: string;
-  attrs?: Record<string, any>;
-  content?: JSONContent[];
-  marks?: {
-    type: string;
-    attrs?: Record<string, any>;
-    [key: string]: any;
-  }[];
-  text?: string;
-  [key: string]: any;
-}
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -41,6 +29,22 @@ interface NodeOptions {
 export interface RenderOptions {
   pretty?: boolean;
   plainText?: boolean;
+}
+
+export interface ThemeOptions {
+  colors?: {
+    heading?: string;
+    paragraph?: string;
+    horizontal?: string;
+    footer?: string;
+  };
+  fontSize?: {
+    paragraph?: string;
+    footer?: {
+      size?: string;
+      lineHeight?: string;
+    };
+  };
 }
 
 export interface MarkType {
@@ -163,21 +167,36 @@ export interface MailyConfig {
    * });
    * ```
    */
-  theme?: {
-    colors?: {
-      heading?: string;
-      paragraph?: string;
-      horizontal?: string;
-      footer?: string;
-    };
-    fontSize?: {
-      paragraph?: string;
-      footer?: {
-        size?: string;
-        lineHeight?: string;
-      };
-    };
-  };
+  theme?: ThemeOptions;
+
+  /**
+   * The variable formatter function allows you to customize the format of
+   * variables in the rendered email.
+   * - `variable` - The variable name.
+   * - `fallback` - The fallback value.
+   *
+   * Default: `{{variable,fallback=${fallback}}}`
+   *
+   * @example
+   * ```js
+   * const maily = new Maily(content, {
+   *  variableFormatter: ({ variable, fallback }) => {
+   *   return `{{${variable},fallback=${fallback}}}`;
+   *  },
+   * });
+   * ```
+   */
+  variableFormatter?: (options: {
+    variable: string;
+    fallback: string;
+  }) => string;
+  /**
+   * The variable values object allows you to replace the variable with a
+   * specific value otherwise it'll use the formatted variable.
+   *
+   * Default: `undefined`
+   */
+  variableValues?: Record<string, string>;
 }
 
 export class Maily {
@@ -201,6 +220,13 @@ export class Maily {
           lineHeight: '24px',
         },
       },
+    },
+
+    // The default variable formatter will format the variable as
+    // `{{variable,fallback=${fallback}}}`
+    variableFormatter: (options) => {
+      const { variable, fallback } = options;
+      return `{{${variable},fallback=${fallback}}}`;
     },
   };
 
@@ -439,10 +465,20 @@ export class Maily {
   }
 
   private variable(node: JSONContent, _?: NodeOptions): JSX.Element {
-    const { attrs } = node;
-    const variable = attrs?.id || '';
+    const { id: variable, fallback } = node.attrs || {};
 
-    return <>{`{{${variable}}}`}</>;
+    let formattedVariable = this.config.variableFormatter?.({
+      variable,
+      fallback,
+    });
+
+    // If a variable value is provided, use it to replace the variable
+    if (typeof this.config.variableValues === 'object') {
+      formattedVariable =
+        this.config.variableValues[variable] || formattedVariable;
+    }
+
+    return <>{formattedVariable}</>;
   }
 
   private horizontalRule(_: JSONContent, __?: NodeOptions): JSX.Element {

@@ -1,7 +1,7 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
-import ButtonComponent from '../nodes/button';
+import { ButtonComponent } from '../nodes/button';
 import { AllowedLogoAlignment } from '../nodes/logo';
 
 export const allowedButtonVariant = ['filled', 'outline'] as const;

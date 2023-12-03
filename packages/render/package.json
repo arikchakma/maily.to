@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.23.3",
+    "@tiptap/core": "^2.1.13",
     "@types/react": "^18.2.39",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",

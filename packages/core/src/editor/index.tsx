@@ -5,7 +5,7 @@ import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { EditorBubbleMenu } from './components/editor-bubble-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { LogoBubbleMenu } from './components/logo-bubble-menu';
+import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { cn } from './utils/classname';
@@ -16,6 +16,7 @@ export type EditorProps = {
   onUpdate?: (editor?: TiptapEditor) => void;
   onCreate?: (editor?: TiptapEditor) => void;
   extensions?: Extension[];
+  variables?: string[];
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -42,6 +43,7 @@ export function Editor(props: EditorProps) {
     extensions,
     contentHtml,
     contentJson,
+    variables,
   } = props;
 
   let formattedContent: any = null;
@@ -91,7 +93,12 @@ export function Editor(props: EditorProps) {
     onUpdate: ({ editor }) => {
       onUpdate?.(editor);
     },
-    extensions: [...defaultExtensions, ...(extensions || [])],
+    extensions: [
+      ...defaultExtensions({
+        variables,
+      }),
+      ...(extensions || []),
+    ],
     content: formattedContent,
     autofocus,
   });
@@ -110,7 +117,7 @@ export function Editor(props: EditorProps) {
         )}
       >
         <EditorBubbleMenu editor={editor} />
-        <LogoBubbleMenu editor={editor} />
+        <ImageBubbleMenu editor={editor} />
         <SpacerBubbleMenu editor={editor} />
         <EditorContent editor={editor} />
       </div>

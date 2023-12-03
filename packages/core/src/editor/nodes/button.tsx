@@ -51,7 +51,7 @@ const items = {
   },
 };
 
-export default function ButtonComponent(props: NodeViewProps) {
+export function ButtonComponent(props: NodeViewProps) {
   const {
     url,
     text,

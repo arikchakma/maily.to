@@ -24,9 +24,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
-    "build": "tsup",
-    "test:watch": "vitest",
-    "test": "vitest run"
+    "build": "tsup"
   },
   "repository": {
     "type": "git",

@@ -311,6 +311,9 @@ importers:
       '@babel/preset-react':
         specifier: ^7.23.3
         version: 7.23.3(@babel/core@7.23.3)
+      '@tiptap/core':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/pm@2.1.12)
       '@types/react':
         specifier: ^18.2.39
         version: 18.2.39
@@ -2191,6 +2194,14 @@ packages:
       '@tiptap/pm': ^2.0.0
     dependencies:
       '@tiptap/pm': 2.1.12
+
+  /@tiptap/core@2.1.13(@tiptap/pm@2.1.12):
+    resolution: {integrity: sha512-cMC8bgTN63dj1Mv82iDeeLl6sa9kY0Pug8LSalxVEptRmyFVsVxGgu2/6Y3T+9aCYScxfS06EkA8SdzFMAwYTQ==}
+    peerDependencies:
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/pm': 2.1.12
+    dev: true
 
   /@tiptap/extension-blockquote@2.1.12(@tiptap/core@2.1.12):
     resolution: {integrity: sha512-Qb3YRlCfugx9pw7VgLTb+jY37OY4aBJeZnqHzx4QThSm13edNYjasokbX0nTwL1Up4NPTcY19JUeHt6fVaVVGg==}

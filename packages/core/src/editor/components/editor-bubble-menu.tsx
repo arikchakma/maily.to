@@ -17,6 +17,7 @@ export interface BubbleMenuItem {
   name: string;
   isActive: () => boolean;
   command: () => void;
+  shouldShow?: () => boolean;
   icon?: LucideIcon;
 }
 
@@ -117,6 +118,7 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
         editor.isActive('image') ||
         editor.isActive('logo') ||
         editor.isActive('spacer') ||
+        editor.isActive('variable') ||
         editor.isActive({
           mailyComponent: 'button',
         })

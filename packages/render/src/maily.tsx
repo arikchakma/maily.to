@@ -564,6 +564,7 @@ export class Maily {
       <Container
         style={{
           textAlign: alignment,
+          maxWidth: '100%',
         }}
       >
         <Button

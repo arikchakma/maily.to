@@ -23,4 +23,59 @@ describe('render', () => {
     });
     expect(result).toMatchInlineSnapshot(`"Hello World!"`);
   });
+
+  it('should replace variables with values', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'variable',
+              attrs: {
+                id: 'name',
+                fallback: 'Buddy',
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const result = render(content, {
+      variableValues: {
+        name: 'John Doe',
+      },
+      options: {
+        plainText: true,
+      },
+    });
+    expect(result).toMatchInlineSnapshot(`"John Doe"`);
+  });
+
+  it('should replace variables with default formatted value', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'variable',
+              attrs: {
+                id: 'name',
+                fallback: 'Buddy',
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const result = render(content, {
+      options: {
+        plainText: true,
+      },
+    });
+    expect(result).toMatchInlineSnapshot(`"{{name,fallback=Buddy}}"`);
+  });
 });

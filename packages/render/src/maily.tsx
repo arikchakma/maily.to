@@ -192,7 +192,7 @@ export interface MailyConfig {
   }) => string;
   /**
    * The variable values object allows you to replace the variable with a
-   * specific value.
+   * specific value otherwise it'll use the formatted variable.
    *
    * Default: `undefined`
    */

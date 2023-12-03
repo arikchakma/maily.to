@@ -15,15 +15,15 @@ const components = [
   'Divider',
   'Spacer',
   'Footer',
+  'List',
+  'Quote',
 ];
 
 const comingSoon = [
-  'Quote',
-  'Code',
   'Social',
+  'Code',
   'Video',
   'Table',
-  'List',
   'Columns',
   'Countdown',
 ];

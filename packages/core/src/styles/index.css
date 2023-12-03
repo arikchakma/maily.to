@@ -52,10 +52,6 @@
   margin-bottom: 32px;
 }
 
-.mail-editor .mly-prose blockquote {
-  margin-block: 26px;
-}
-
 .mail-editor .mly-prose hr {
   margin-block: 32px;
 }
@@ -73,6 +69,10 @@
 
 .mail-editor .mly-prose p + .spacer {
   margin-top: -20px;
+}
+
+.mail-editor .mly-prose blockquote + .spacer {
+  margin-top: -16px;
 }
 
 .mail-editor .mly-prose h1 + .spacer,

@@ -37,6 +37,7 @@ export interface ThemeOptions {
     paragraph?: string;
     horizontal?: string;
     footer?: string;
+    blockquoteBorder?: string;
   };
   fontSize?: {
     paragraph?: string;
@@ -212,6 +213,7 @@ export class Maily {
         paragraph: 'rgb(55, 65, 81)',
         horizontal: 'rgb(234, 234, 234)',
         footer: 'rgb(100, 116, 139)',
+        blockquoteBorder: 'rgb(209, 213, 219)',
       },
       fontSize: {
         paragraph: '15px',
@@ -693,6 +695,29 @@ export class Maily {
       >
         {this.getMappedContent(node)}
       </Text>
+    );
+  }
+
+  blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { next, prev } = options || {};
+    const isNextSpacer = next?.type === 'spacer';
+    const isPrevSpacer = prev?.type === 'spacer';
+
+    return (
+      <blockquote
+        style={{
+          borderLeftWidth: '4px',
+          borderLeftStyle: 'solid',
+          borderLeftColor: this.config.theme?.colors?.blockquoteBorder,
+          paddingLeft: '16px',
+          marginLeft: '0px',
+          marginRight: '0px',
+          marginTop: isPrevSpacer ? '0px' : '20px',
+          marginBottom: isNextSpacer ? '0px' : '20px',
+        }}
+      >
+        {this.getMappedContent(node)}
+      </blockquote>
     );
   }
 }

@@ -8,6 +8,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Heading from '@tiptap/extension-heading';
 import Image from '@tiptap/extension-image';
+import Underline from '@tiptap/extension-underline';
 
 import { HorizontalRule } from './horizontal-rule';
 import { ButtonExtension } from './button-extension';
@@ -16,7 +17,6 @@ import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
 import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
-import Underline from '@tiptap/extension-underline';
 import { Variable } from './variable-extension';
 import { SocialNode } from '../nodes/social';
 
@@ -37,6 +37,12 @@ export function extensions(props: ExtensionsProps) {
         width: 3,
       },
       horizontalRule: false,
+      blockquote: {
+        HTMLAttributes: {
+          class:
+            'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4',
+        },
+      },
     }),
     Image,
     Underline,

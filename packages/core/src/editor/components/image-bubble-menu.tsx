@@ -4,6 +4,7 @@ import {
   AlignLeftIcon,
   AlignRightIcon,
   Unlink,
+  Link,
 } from 'lucide-react';
 
 import { BubbleMenuButton } from './bubble-menu-button';

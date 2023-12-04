@@ -23,6 +23,7 @@ import {
   MoveVertical,
   Target,
   Text,
+  TextQuote,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -146,21 +147,6 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Logo',
-      description: 'Add your brand logo',
-      searchTerms: ['image', 'logo'],
-      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        const logoUrl = prompt('Logo URL: ') || '';
-
-        if (!logoUrl) {
-          return;
-        }
-        editor.chain().focus().deleteRange(range).run();
-        editor.chain().focus().setLogoImage({ src: logoUrl }).run();
-      },
-    },
-    {
       title: 'Image',
       description: 'Full width image',
       searchTerms: ['image'],
@@ -190,6 +176,21 @@ const getSuggestionItems = ({ query }: { query: string }) => {
 
         editor.chain().focus().deleteRange(range).run();
         editor.chain().focus().setSocialImage({ src: imageUrl }).run();
+      },
+    },
+    {
+      title: 'Logo',
+      description: 'Add your brand logo',
+      searchTerms: ['image', 'logo'],
+      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        const logoUrl = prompt('Logo URL: ') || '';
+
+        if (!logoUrl) {
+          return;
+        }
+        editor.chain().focus().deleteRange(range).run();
+        editor.chain().focus().setLogoImage({ src: logoUrl }).run();
       },
     },
     {
@@ -223,6 +224,15 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       icon: <DivideIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).setHardBreak().run();
+      },
+    },
+    {
+      title: 'Blockquote',
+      description: 'Add blockquote.',
+      searchTerms: ['quote', 'blockquote'],
+      icon: <TextQuote className="mly-h-4 mly-w-4" />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).toggleBlockquote().run();
       },
     },
     {

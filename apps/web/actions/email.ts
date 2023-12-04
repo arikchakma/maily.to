@@ -420,8 +420,6 @@ export async function deleteEmailAction(formData: FormData) {
     };
   }
 
-  revalidatePath(`/template`, 'page');
-
   return {
     data,
     error: null,

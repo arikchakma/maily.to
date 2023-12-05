@@ -518,7 +518,11 @@ export class Maily {
 
   private bulletList(node: JSONContent, _?: NodeOptions): JSX.Element {
     return (
-      <Container>
+      <Container
+        style={{
+          maxWidth: '100%',
+        }}
+      >
         <ul
           style={{
             marginTop: '0px',
@@ -535,15 +539,21 @@ export class Maily {
 
   private listItem(node: JSONContent, options?: NodeOptions): JSX.Element {
     return (
-      <li
+      <Container
         style={{
-          marginBottom: '8px',
-          paddingLeft: '6px',
-          ...antialiased,
+          maxWidth: '100%',
         }}
       >
-        {this.getMappedContent(node, { ...options, parent: node })}
-      </li>
+        <li
+          style={{
+            marginBottom: '8px',
+            paddingLeft: '6px',
+            ...antialiased,
+          }}
+        >
+          {this.getMappedContent(node, { ...options, parent: node })}
+        </li>
+      </Container>
     );
   }
 

@@ -289,6 +289,11 @@ export class Maily {
               format: 'woff2',
             }}
           />
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}`,
+            }}
+          />
         </Head>
         {preview ? <Preview>{preview}</Preview> : null}
         <Body>

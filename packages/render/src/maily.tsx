@@ -198,10 +198,23 @@ export interface MailyConfig {
    * Default: `undefined`
    */
   variableValues?: Record<string, string>;
+
+  /**
+   * The render links function allows you to replace the link with a specific
+   * value otherwise it'll use the original link. This is useful for masking
+   * links.
+   * - `links` - The list of links.
+   *
+   * Default: `undefined`
+   */
+  renderLinks?: (options: {
+    links: string[];
+  }) => Promise<Record<string, string>>;
 }
 
 export class Maily {
   private readonly content: JSONContent;
+  private linkValues: Record<string, string> = {};
   private config: MailyConfig = {
     options: {
       pretty: false,
@@ -241,6 +254,44 @@ export class Maily {
       ...this.config,
       ...config,
     };
+    void this.prepareLinkValues();
+  }
+
+  private async prepareLinkValues() {
+    const links = this.getAllLinks();
+    this.linkValues = (await this.config.renderLinks?.({ links })) || {};
+  }
+
+  getAllLinks() {
+    const links = this.content.content
+      ?.filter((node) => node.type === 'link')
+      .map((node) => {
+        const { attrs } = node;
+        const { href: originalHref } = attrs || {};
+        if (
+          !originalHref ||
+          !this.isValidUrl(originalHref) ||
+          originalHref.startsWith('#') ||
+          originalHref.startsWith('mailto:') ||
+          originalHref.startsWith('tel:') ||
+          typeof originalHref !== 'string'
+        ) {
+          return null;
+        }
+
+        return originalHref;
+      }) as string[];
+
+    return links;
+  }
+
+  private isValidUrl(href: string) {
+    try {
+      const _ = new URL(href);
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 
   render(): string {
@@ -287,6 +338,11 @@ export class Maily {
             webFont={{
               url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
               format: 'woff2',
+            }}
+          />
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}`,
             }}
           />
         </Head>
@@ -415,9 +471,19 @@ export class Maily {
 
   private link(mark: MarkType, text: JSX.Element): JSX.Element {
     const { attrs } = mark;
-    const href = attrs?.href || '#';
+    let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
+
+    // If the href value is provided, use it to replace the link
+    // Otherwise, use the original link
+    if (
+      typeof this.linkValues === 'object' ||
+      typeof this.config.variableValues === 'object'
+    ) {
+      href =
+        this.linkValues[href] || this.config.variableValues?.[href] || href;
+    }
 
     return (
       <Link
@@ -513,7 +579,11 @@ export class Maily {
 
   private bulletList(node: JSONContent, _?: NodeOptions): JSX.Element {
     return (
-      <Container>
+      <Container
+        style={{
+          maxWidth: '100%',
+        }}
+      >
         <ul
           style={{
             marginTop: '0px',
@@ -530,15 +600,21 @@ export class Maily {
 
   private listItem(node: JSONContent, options?: NodeOptions): JSX.Element {
     return (
-      <li
+      <Container
         style={{
-          marginBottom: '8px',
-          paddingLeft: '6px',
-          ...antialiased,
+          maxWidth: '100%',
         }}
       >
-        {this.getMappedContent(node, { ...options, parent: node })}
-      </li>
+        <li
+          style={{
+            marginBottom: '8px',
+            paddingLeft: '6px',
+            ...antialiased,
+          }}
+        >
+          {this.getMappedContent(node, { ...options, parent: node })}
+        </li>
+      </Container>
     );
   }
 
@@ -698,7 +774,7 @@ export class Maily {
     );
   }
 
-  blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
+  private blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { next, prev } = options || {};
     const isNextSpacer = next?.type === 'spacer';
     const isPrevSpacer = prev?.type === 'spacer';

@@ -26,28 +26,6 @@ interface NodeOptions {
   next?: JSONContent;
 }
 
-export interface RenderOptions {
-  pretty?: boolean;
-  plainText?: boolean;
-}
-
-export interface ThemeOptions {
-  colors?: {
-    heading?: string;
-    paragraph?: string;
-    horizontal?: string;
-    footer?: string;
-    blockquoteBorder?: string;
-  };
-  fontSize?: {
-    paragraph?: string;
-    footer?: {
-      size?: string;
-      lineHeight?: string;
-    };
-  };
-}
-
 export interface MarkType {
   [key: string]: any;
   type: string;
@@ -99,28 +77,24 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
   lg: '64px',
 };
 
+export interface ThemeOptions {
+  colors?: {
+    heading?: string;
+    paragraph?: string;
+    horizontal?: string;
+    footer?: string;
+    blockquoteBorder?: string;
+  };
+  fontSize?: {
+    paragraph?: string;
+    footer?: {
+      size?: string;
+      lineHeight?: string;
+    };
+  };
+}
+
 export interface MailyConfig {
-  /**
-   * The options object allows you to customize the output of the rendered
-   * email.
-   * - `pretty` - If `true`, the output will be formatted with indentation and
-   *  line breaks.
-   * - `plainText` - If `true`, the output will be plain text instead of HTML.
-   * This is useful for testing purposes.
-   *
-   * Default: `{ pretty: false, plainText: false }`
-   *
-   * @example
-   * ```js
-   * const maily = new Maily(content, {
-   *  options: {
-   *   pretty: true,
-   *   plainText: true,
-   * },
-   * });
-   * ```
-   */
-  options?: RenderOptions;
   /**
    * The preview text is the snippet of text that is pulled into the inbox
    * preview of an email client, usually right after the subject line.
@@ -169,57 +143,33 @@ export interface MailyConfig {
    * ```
    */
   theme?: ThemeOptions;
-
-  /**
-   * The variable formatter function allows you to customize the format of
-   * variables in the rendered email.
-   * - `variable` - The variable name.
-   * - `fallback` - The fallback value.
-   *
-   * Default: `{{variable,fallback=${fallback}}}`
-   *
-   * @example
-   * ```js
-   * const maily = new Maily(content, {
-   *  variableFormatter: ({ variable, fallback }) => {
-   *   return `{{${variable},fallback=${fallback}}}`;
-   *  },
-   * });
-   * ```
-   */
-  variableFormatter?: (options: {
-    variable: string;
-    fallback: string;
-  }) => string;
-  /**
-   * The variable values object allows you to replace the variable with a
-   * specific value otherwise it'll use the formatted variable.
-   *
-   * Default: `undefined`
-   */
-  variableValues?: Record<string, string>;
-
-  /**
-   * The render links function allows you to replace the link with a specific
-   * value otherwise it'll use the original link. This is useful for masking
-   * links.
-   * - `links` - The list of links.
-   *
-   * Default: `undefined`
-   */
-  renderLinks?: (options: {
-    links: string[];
-  }) => Promise<Record<string, string>>;
 }
+
+export interface RenderOptions {
+  /**
+   * The options object allows you to customize the output of the rendered
+   * email.
+   * - `pretty` - If `true`, the output will be formatted with indentation and
+   *  line breaks.
+   * - `plainText` - If `true`, the output will be plain text instead of HTML.
+   * This is useful for testing purposes.
+   *
+   * Default: `pretty` - `false`, `plainText` - `false`
+   */
+  pretty?: boolean;
+  plainText?: boolean;
+}
+
+export type VariableFormatter = (options: {
+  variable: string;
+  fallback?: string;
+}) => string;
+export type VariableValues = Map<string, string>;
+export type LinkValues = Map<string, string>;
 
 export class Maily {
   private readonly content: JSONContent;
-  private linkValues: Record<string, string> = {};
   private config: MailyConfig = {
-    options: {
-      pretty: false,
-      plainText: false,
-    },
     theme: {
       colors: {
         heading: 'rgb(17, 24, 39)',
@@ -236,14 +186,13 @@ export class Maily {
         },
       },
     },
-
-    // The default variable formatter will format the variable as
-    // `{{variable,fallback=${fallback}}}`
-    variableFormatter: (options) => {
-      const { variable, fallback } = options;
-      return `{{${variable},fallback=${fallback}}}`;
-    },
   };
+
+  private variableFormatter: VariableFormatter = ({ variable, fallback }) => {
+    return `{{${variable},fallback=${fallback}}}`;
+  };
+  private variableValues: VariableValues = new Map<string, string>();
+  private linkValues: LinkValues = new Map<string, string>();
 
   constructor(
     content: JSONContent = { type: 'doc', content: [] },
@@ -254,33 +203,73 @@ export class Maily {
       ...this.config,
       ...config,
     };
-    void this.prepareLinkValues();
   }
 
-  private async prepareLinkValues() {
-    const links = this.getAllLinks();
-    this.linkValues = (await this.config.renderLinks?.({ links })) || {};
+  setVariableFormatter(formatter: VariableFormatter) {
+    this.variableFormatter = formatter;
+  }
+
+  setVariableValue(variable: string, value: string) {
+    this.variableValues.set(variable, value);
+  }
+
+  setVariableValues(values: Record<string, string>) {
+    Object.entries(values).forEach(([variable, value]) => {
+      this.setVariableValue(variable, value);
+    });
+  }
+
+  setLinkValue(link: string, value: string) {
+    this.linkValues.set(link, value);
+  }
+
+  setLinkValues(values: Record<string, string>) {
+    Object.entries(values).forEach(([link, value]) => {
+      this.setLinkValue(link, value);
+    });
   }
 
   getAllLinks() {
-    const links = this.content.content
-      ?.filter((node) => node.type === 'link')
-      .map((node) => {
-        const { attrs } = node;
-        const { href: originalHref } = attrs || {};
-        if (
-          !originalHref ||
-          !this.isValidUrl(originalHref) ||
-          originalHref.startsWith('#') ||
-          originalHref.startsWith('mailto:') ||
-          originalHref.startsWith('tel:') ||
-          typeof originalHref !== 'string'
-        ) {
-          return null;
-        }
+    const nodes = this.content.content || [];
+    const links: string[] = [];
 
-        return originalHref;
-      }) as string[];
+    const isValidLink = (href: string) => {
+      return (
+        href &&
+        this.isValidUrl(href) &&
+        !href.startsWith('#') &&
+        !href.startsWith('mailto:') &&
+        !href.startsWith('tel:') &&
+        typeof href === 'string'
+      );
+    };
+
+    const extractLinksFromNode = (node: JSONContent) => {
+      if (node.type === 'button') {
+        const originalLink = node.attrs?.url;
+        if (isValidLink(originalLink) && originalLink) {
+          links.push(originalLink);
+        }
+      } else if (node.content) {
+        node.content.forEach((childNode) => {
+          if (childNode.marks) {
+            childNode.marks.forEach((mark) => {
+              const originalLink = mark.attrs?.href;
+              if (mark.type === 'link' && isValidLink(originalLink)) {
+                links.push(originalLink);
+              }
+            });
+          }
+          if (childNode.content) {
+            extractLinksFromNode(childNode);
+          }
+        });
+      }
+    };
+
+    nodes.forEach((childNode) => {
+      extractLinksFromNode(childNode);
+    });
 
     return links;
   }
@@ -294,20 +283,20 @@ export class Maily {
     }
   }
 
-  render(): string {
-    const options = this.config.options || {};
+  renderSync(options?: RenderOptions): string {
     const markup = this.markup();
-
     return reactEmailRender(markup, options);
   }
 
-  async renderAsync(): Promise<string> {
-    const options = this.config.options || {};
+  async renderAsync(options?: RenderOptions): Promise<string> {
     const markup = this.markup();
-
     return reactEmailRenderAsync(markup, options);
   }
 
+  /**
+   * `markup` will render the JSON content into React Email markup.
+   * and return the raw React Tree.
+   */
   markup() {
     const nodes = this.content.content || [];
     const jsxNodes = nodes.map((node, index) => {
@@ -479,10 +468,9 @@ export class Maily {
     // Otherwise, use the original link
     if (
       typeof this.linkValues === 'object' ||
-      typeof this.config.variableValues === 'object'
+      typeof this.variableValues === 'object'
     ) {
-      href =
-        this.linkValues[href] || this.config.variableValues?.[href] || href;
+      href = this.linkValues.get(href) || this.variableValues.get(href) || href;
     }
 
     return (
@@ -535,16 +523,13 @@ export class Maily {
   private variable(node: JSONContent, _?: NodeOptions): JSX.Element {
     const { id: variable, fallback } = node.attrs || {};
 
-    let formattedVariable = this.config.variableFormatter?.({
+    let formattedVariable = this.variableFormatter({
       variable,
       fallback,
     });
 
     // If a variable value is provided, use it to replace the variable
-    if (typeof this.config.variableValues === 'object') {
-      formattedVariable =
-        this.config.variableValues[variable] || formattedVariable;
-    }
+    formattedVariable = this.variableValues.get(variable) || formattedVariable;
 
     return <>{formattedVariable}</>;
   }

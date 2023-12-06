@@ -1,6 +1,6 @@
-import { render } from './index';
+import { Maily, renderSync } from './index';
 
-describe('render', () => {
+describe('renderSync', () => {
   it('should return plain text version of the email', () => {
     const content = {
       type: 'doc',
@@ -16,10 +16,8 @@ describe('render', () => {
         },
       ],
     };
-    const result = render(content, {
-      options: {
-        plainText: true,
-      },
+    const result = renderSync(content, {
+      plainText: true,
     });
     expect(result).toMatchInlineSnapshot(`"Hello World!"`);
   });
@@ -42,14 +40,13 @@ describe('render', () => {
         },
       ],
     };
-    const result = render(content, {
-      variableValues: {
-        name: 'John Doe',
-      },
-      options: {
-        plainText: true,
-      },
+
+    const maily = new Maily(content);
+    maily.setVariableValue('name', 'John Doe');
+    const result = maily.renderSync({
+      plainText: true,
     });
+
     expect(result).toMatchInlineSnapshot(`"John Doe"`);
   });
 
@@ -71,10 +68,8 @@ describe('render', () => {
         },
       ],
     };
-    const result = render(content, {
-      options: {
-        plainText: true,
-      },
+    const result = renderSync(content, {
+      plainText: true,
     });
     expect(result).toMatchInlineSnapshot(`"{{name,fallback=Buddy}}"`);
   });
@@ -97,15 +92,57 @@ describe('render', () => {
         },
       ],
     };
-    const result = render(content, {
-      options: {
-        plainText: true,
-      },
-      variableFormatter(options) {
-        const { fallback, variable } = options;
-        return `[${variable},fallback=${fallback}]`;
-      },
+
+    const maily = new Maily(content);
+    maily.setVariableFormatter((options) => {
+      const { fallback, variable } = options;
+      return `[${variable},fallback=${fallback}]`;
     });
+    const result = maily.renderSync({
+      plainText: true,
+    });
+
     expect(result).toMatchInlineSnapshot(`"[name,fallback=Buddy]"`);
+  });
+
+  it('should replace links with renderLinks return values', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          attrs: {
+            textAlign: 'left',
+          },
+          content: [
+            {
+              type: 'text',
+              marks: [
+                {
+                  type: 'link',
+                  attrs: {
+                    href: 'https://maily.to',
+                    target: '_blank',
+                    rel: 'noopener noreferrer nofollow',
+                    class: null,
+                  },
+                },
+              ],
+              text: 'maily.to',
+            },
+          ],
+        },
+      ],
+    };
+
+    const maily = new Maily(content);
+    maily.setLinkValue('https://maily.to', 'https://maily.to/playground');
+    const result = maily.renderSync({
+      plainText: true,
+    });
+
+    expect(result).toMatchInlineSnapshot(
+      `"maily.to [https://maily.to/playground]"`
+    );
   });
 });

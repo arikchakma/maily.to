@@ -163,19 +163,19 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Social',
+      title: 'Social Link',
       description: 'Add a social image',
       searchTerms: ['image', 'social'],
       icon: <Target className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
-        const imageUrl = prompt('Social Image URL: ') || '';
+        const imageUrl = prompt('Social Link Image URL: ') || '';
 
         if (!imageUrl) {
           return;
         }
 
         editor.chain().focus().deleteRange(range).run();
-        editor.chain().focus().setSocialImage({ src: imageUrl }).run();
+        editor.chain().focus().setSocialLinkImage({ src: imageUrl }).run();
       },
     },
     {

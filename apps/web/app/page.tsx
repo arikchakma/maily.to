@@ -20,7 +20,7 @@ const components = [
 ];
 
 const comingSoon = [
-  'Social',
+  'Social Link',
   'Code',
   'Video',
   'Table',

@@ -1,41 +1,41 @@
 import { mergeAttributes } from '@tiptap/core';
 import TiptapImage from '@tiptap/extension-image';
 
-export const allowedSocialSize = ['sm', 'md', 'lg'] as const;
-export type AllowedSocialSize = (typeof allowedSocialSize)[number];
+export const allowedSocialLinkSize = ['sm', 'md', 'lg'] as const;
+export type AllowedSocialLinkSize = (typeof allowedSocialLinkSize)[number];
 
-interface SocialOptions {
+interface SocialLinkOptions {
   src: string;
   alt?: string;
   title?: string;
-  size?: AllowedSocialSize;
+  size?: AllowedSocialLinkSize;
 }
 
-interface SocialAttributes {
-  size?: AllowedSocialSize;
+interface SocialLinkAttributes {
+  size?: AllowedSocialLinkSize;
 }
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     social: {
-      setSocialImage: (options: SocialOptions) => ReturnType;
-      setSocialAttributes: (attributes: SocialAttributes) => ReturnType;
+      setSocialLinkImage: (options: SocialLinkOptions) => ReturnType;
+      setSocialLinkAttributes: (attributes: SocialLinkAttributes) => ReturnType;
     };
   }
 }
 
-export interface TiptapSocialAttributes {
-  size: AllowedSocialSize;
+export interface TiptapSocialLinkAttributes {
+  size: AllowedSocialLinkSize;
   HTMLAttributes: Record<string, any>;
 }
 
-const DEFAULT_SIZE: AllowedSocialSize = 'sm';
+const DEFAULT_SIZE: AllowedSocialLinkSize = 'sm';
 
-function getSizeStyle(size: TiptapSocialAttributes['size']): {
+function getSizeStyle(size: TiptapSocialLinkAttributes['size']): {
   width: string;
   height: string;
 } {
-  const sizes: Record<AllowedSocialSize, string> = {
+  const sizes: Record<AllowedSocialLinkSize, string> = {
     sm: '16px',
     md: '20px',
     lg: '24px',
@@ -46,7 +46,7 @@ function getSizeStyle(size: TiptapSocialAttributes['size']): {
   };
 }
 
-export const SocialNode = TiptapImage.extend<TiptapSocialAttributes>({
+export const SocialLinkNode = TiptapImage.extend<TiptapSocialLinkAttributes>({
   name: 'social',
   priority: 2000,
 
@@ -74,7 +74,7 @@ export const SocialNode = TiptapImage.extend<TiptapSocialAttributes>({
       size: {
         default: DEFAULT_SIZE,
         parseHTML: (element) =>
-          element.getAttribute('data-size') as AllowedSocialSize,
+          element.getAttribute('data-size') as AllowedSocialLinkSize,
         renderHTML: (attributes) => {
           return {
             'data-size': attributes.size,
@@ -86,7 +86,7 @@ export const SocialNode = TiptapImage.extend<TiptapSocialAttributes>({
 
   addCommands() {
     return {
-      setSocialImage:
+      setSocialLinkImage:
         (options) =>
         ({ commands }) => {
           return commands.insertContent([
@@ -101,7 +101,7 @@ export const SocialNode = TiptapImage.extend<TiptapSocialAttributes>({
           ]);
         },
 
-      setSocialAttributes:
+      setSocialLinkAttributes:
         (attributes) =>
         ({ commands }) => {
           return commands.updateAttributes('social', attributes);
@@ -109,7 +109,7 @@ export const SocialNode = TiptapImage.extend<TiptapSocialAttributes>({
     };
   },
   renderHTML({ HTMLAttributes, node }) {
-    const { size } = node.attrs as TiptapSocialAttributes;
+    const { size } = node.attrs as TiptapSocialLinkAttributes;
 
     const { width, height } = getSizeStyle(size);
     HTMLAttributes.style = `width: ${width}; height: ${height}; display: inline-block; margin: 0;`;

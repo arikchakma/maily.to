@@ -103,16 +103,16 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         const currentNode = editor?.getAttributes('social');
         const { src: currUrl, size: currSize } = currentNode || {};
 
-        const iconUrl = window.prompt('Update Social Icon URL', currUrl);
+        const iconUrl = window.prompt('Update SocialLink Icon URL', currUrl);
         if (!iconUrl) {
           return;
         }
 
         const selection = editor?.state.selection;
-        editor?.commands.setSocialImage({
+        editor?.commands.setSocialLinkImage({
           src: iconUrl,
           size: currSize,
-        })
+        });
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
       icon: Unlink,

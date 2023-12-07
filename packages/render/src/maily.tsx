@@ -189,8 +189,12 @@ export class Maily {
   };
 
   private variableFormatter: VariableFormatter = ({ variable, fallback }) => {
-    return `{{${variable},fallback=${fallback}}}`;
+    return fallback
+      ? `{{${variable},fallback=${fallback}}}`
+      : `{{${variable}}}`;
   };
+
+  private shouldReplaceVariableValues = false;
   private variableValues: VariableValues = new Map<string, string>();
   private linkValues: LinkValues = new Map<string, string>();
 
@@ -209,11 +213,41 @@ export class Maily {
     this.variableFormatter = formatter;
   }
 
+  /**
+   * `setVariableValue` will set the variable value.
+   * It will also set `shouldReplaceVariableValues` to `true`.
+   *
+   * @param variable - The variable name
+   * @param value - The variable value
+   */
   setVariableValue(variable: string, value: string) {
+    if (!this.shouldReplaceVariableValues) {
+      this.shouldReplaceVariableValues = true;
+    }
+
     this.variableValues.set(variable, value);
   }
 
+  /**
+   * `setVariableValues` will set the variable values.
+   * It will also set `shouldReplaceVariableValues` to `true`.
+   *
+   * @param values - The variable values
+   *
+   * @example
+   * ```js
+   * const maily = new Maily(content);
+   * maily.setVariableValues({
+   *  name: 'John Doe',
+   *  email: 'john@doe.com',
+   * });
+   * ```
+   */
   setVariableValues(values: Record<string, string>) {
+    if (!this.shouldReplaceVariableValues) {
+      this.shouldReplaceVariableValues = true;
+    }
+
     Object.entries(values).forEach(([variable, value]) => {
       this.setVariableValue(variable, value);
     });
@@ -227,6 +261,16 @@ export class Maily {
     Object.entries(values).forEach(([link, value]) => {
       this.setLinkValue(link, value);
     });
+  }
+
+  /**
+   * `setShouldReplaceVariableValues` will determine whether to replace the
+   * variable values or not. Otherwise, it will just return the formatted variable.
+   *
+   * Default: `false`
+   */
+  setShouldReplaceVariableValues(shouldReplace: boolean) {
+    this.shouldReplaceVariableValues = shouldReplace;
   }
 
   getAllLinks() {
@@ -528,8 +572,12 @@ export class Maily {
       fallback,
     });
 
-    // If a variable value is provided, use it to replace the variable
-    formattedVariable = this.variableValues.get(variable) || formattedVariable;
+    // If `shouldReplaceVariableValues` is true, replace the variable values
+    // Otherwise, just return the formatted variable
+    if (this.shouldReplaceVariableValues) {
+      formattedVariable =
+        this.variableValues.get(variable) || fallback || formattedVariable;
+    }
 
     return <>{formattedVariable}</>;
   }
@@ -623,6 +671,9 @@ export class Maily {
       radius = '6px';
     }
 
+    const href =
+      this.linkValues.get(url) || this.variableValues.get(url) || url;
+
     return (
       <Container
         style={{
@@ -631,7 +682,7 @@ export class Maily {
         }}
       >
         <Button
-          href={url}
+          href={href}
           style={{
             color: String(textColor),
             backgroundColor:

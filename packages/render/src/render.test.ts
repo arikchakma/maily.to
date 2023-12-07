@@ -1,27 +1,6 @@
 import { Maily, renderSync } from './index';
 
 describe('renderSync', () => {
-  it('should return plain text version of the email', () => {
-    const content = {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: 'Hello World!',
-            },
-          ],
-        },
-      ],
-    };
-    const result = renderSync(content, {
-      plainText: true,
-    });
-    expect(result).toMatchInlineSnapshot(`"Hello World!"`);
-  });
-
   it('should replace variables with values', () => {
     const content = {
       type: 'doc',
@@ -105,7 +84,7 @@ describe('renderSync', () => {
     expect(result).toMatchInlineSnapshot(`"[name,fallback=Buddy]"`);
   });
 
-  it('should replace links with renderLinks return values', () => {
+  it('should replace links with setLinkValue value', () => {
     const content = {
       type: 'doc',
       content: [
@@ -143,6 +122,40 @@ describe('renderSync', () => {
 
     expect(result).toMatchInlineSnapshot(
       `"maily.to [https://maily.to/playground]"`
+    );
+  });
+
+  it("should replace unsubscribe_url in button's href", () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'button',
+          attrs: {
+            mailyComponent: 'button',
+            text: 'Unsubscribe',
+            url: 'unsubscribe_url',
+            alignment: 'left',
+            variant: 'filled',
+            borderRadius: 'smooth',
+            buttonColor: 'rgb(0, 0, 0)',
+            textColor: 'rgb(255, 255, 255)',
+          },
+        },
+      ],
+    };
+
+    const maily = new Maily(content);
+    maily.setVariableValue(
+      'unsubscribe_url',
+      'https://maily.to/unsubscribe_url'
+    );
+    const result = maily.renderSync({
+      plainText: true,
+    });
+
+    expect(result).toMatchInlineSnapshot(
+      `"Unsubscribe [https://maily.to/unsubscribe_url]"`
     );
   });
 });

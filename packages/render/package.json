@@ -49,10 +49,10 @@
   "devDependencies": {
     "@babel/preset-react": "^7.23.3",
     "@tiptap/core": "^2.1.13",
-    "@types/react": "^18.2.39",
+    "@types/react": "^18.2.42",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@react-email/components": "^0.0.11",

@@ -26,28 +26,6 @@ interface NodeOptions {
   next?: JSONContent;
 }
 
-export interface RenderOptions {
-  pretty?: boolean;
-  plainText?: boolean;
-}
-
-export interface ThemeOptions {
-  colors?: {
-    heading?: string;
-    paragraph?: string;
-    horizontal?: string;
-    footer?: string;
-    blockquoteBorder?: string;
-  };
-  fontSize?: {
-    paragraph?: string;
-    footer?: {
-      size?: string;
-      lineHeight?: string;
-    };
-  };
-}
-
 export interface MarkType {
   [key: string]: any;
   type: string;
@@ -99,28 +77,24 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
   lg: '64px',
 };
 
+export interface ThemeOptions {
+  colors?: {
+    heading?: string;
+    paragraph?: string;
+    horizontal?: string;
+    footer?: string;
+    blockquoteBorder?: string;
+  };
+  fontSize?: {
+    paragraph?: string;
+    footer?: {
+      size?: string;
+      lineHeight?: string;
+    };
+  };
+}
+
 export interface MailyConfig {
-  /**
-   * The options object allows you to customize the output of the rendered
-   * email.
-   * - `pretty` - If `true`, the output will be formatted with indentation and
-   *  line breaks.
-   * - `plainText` - If `true`, the output will be plain text instead of HTML.
-   * This is useful for testing purposes.
-   *
-   * Default: `{ pretty: false, plainText: false }`
-   *
-   * @example
-   * ```js
-   * const maily = new Maily(content, {
-   *  options: {
-   *   pretty: true,
-   *   plainText: true,
-   * },
-   * });
-   * ```
-   */
-  options?: RenderOptions;
   /**
    * The preview text is the snippet of text that is pulled into the inbox
    * preview of an email client, usually right after the subject line.
@@ -169,44 +143,33 @@ export interface MailyConfig {
    * ```
    */
   theme?: ThemeOptions;
-
-  /**
-   * The variable formatter function allows you to customize the format of
-   * variables in the rendered email.
-   * - `variable` - The variable name.
-   * - `fallback` - The fallback value.
-   *
-   * Default: `{{variable,fallback=${fallback}}}`
-   *
-   * @example
-   * ```js
-   * const maily = new Maily(content, {
-   *  variableFormatter: ({ variable, fallback }) => {
-   *   return `{{${variable},fallback=${fallback}}}`;
-   *  },
-   * });
-   * ```
-   */
-  variableFormatter?: (options: {
-    variable: string;
-    fallback: string;
-  }) => string;
-  /**
-   * The variable values object allows you to replace the variable with a
-   * specific value otherwise it'll use the formatted variable.
-   *
-   * Default: `undefined`
-   */
-  variableValues?: Record<string, string>;
 }
+
+export interface RenderOptions {
+  /**
+   * The options object allows you to customize the output of the rendered
+   * email.
+   * - `pretty` - If `true`, the output will be formatted with indentation and
+   *  line breaks.
+   * - `plainText` - If `true`, the output will be plain text instead of HTML.
+   * This is useful for testing purposes.
+   *
+   * Default: `pretty` - `false`, `plainText` - `false`
+   */
+  pretty?: boolean;
+  plainText?: boolean;
+}
+
+export type VariableFormatter = (options: {
+  variable: string;
+  fallback?: string;
+}) => string;
+export type VariableValues = Map<string, string>;
+export type LinkValues = Map<string, string>;
 
 export class Maily {
   private readonly content: JSONContent;
   private config: MailyConfig = {
-    options: {
-      pretty: false,
-      plainText: false,
-    },
     theme: {
       colors: {
         heading: 'rgb(17, 24, 39)',
@@ -223,14 +186,17 @@ export class Maily {
         },
       },
     },
-
-    // The default variable formatter will format the variable as
-    // `{{variable,fallback=${fallback}}}`
-    variableFormatter: (options) => {
-      const { variable, fallback } = options;
-      return `{{${variable},fallback=${fallback}}}`;
-    },
   };
+
+  private variableFormatter: VariableFormatter = ({ variable, fallback }) => {
+    return fallback
+      ? `{{${variable},fallback=${fallback}}}`
+      : `{{${variable}}}`;
+  };
+
+  private shouldReplaceVariableValues = false;
+  private variableValues: VariableValues = new Map<string, string>();
+  private linkValues: LinkValues = new Map<string, string>();
 
   constructor(
     content: JSONContent = { type: 'doc', content: [] },
@@ -243,20 +209,138 @@ export class Maily {
     };
   }
 
-  render(): string {
-    const options = this.config.options || {};
-    const markup = this.markup();
+  setVariableFormatter(formatter: VariableFormatter) {
+    this.variableFormatter = formatter;
+  }
 
+  /**
+   * `setVariableValue` will set the variable value.
+   * It will also set `shouldReplaceVariableValues` to `true`.
+   *
+   * @param variable - The variable name
+   * @param value - The variable value
+   */
+  setVariableValue(variable: string, value: string) {
+    if (!this.shouldReplaceVariableValues) {
+      this.shouldReplaceVariableValues = true;
+    }
+
+    this.variableValues.set(variable, value);
+  }
+
+  /**
+   * `setVariableValues` will set the variable values.
+   * It will also set `shouldReplaceVariableValues` to `true`.
+   *
+   * @param values - The variable values
+   *
+   * @example
+   * ```js
+   * const maily = new Maily(content);
+   * maily.setVariableValues({
+   *  name: 'John Doe',
+   *  email: 'john@doe.com',
+   * });
+   * ```
+   */
+  setVariableValues(values: Record<string, string>) {
+    if (!this.shouldReplaceVariableValues) {
+      this.shouldReplaceVariableValues = true;
+    }
+
+    Object.entries(values).forEach(([variable, value]) => {
+      this.setVariableValue(variable, value);
+    });
+  }
+
+  setLinkValue(link: string, value: string) {
+    this.linkValues.set(link, value);
+  }
+
+  setLinkValues(values: Record<string, string>) {
+    Object.entries(values).forEach(([link, value]) => {
+      this.setLinkValue(link, value);
+    });
+  }
+
+  /**
+   * `setShouldReplaceVariableValues` will determine whether to replace the
+   * variable values or not. Otherwise, it will just return the formatted variable.
+   *
+   * Default: `false`
+   */
+  setShouldReplaceVariableValues(shouldReplace: boolean) {
+    this.shouldReplaceVariableValues = shouldReplace;
+  }
+
+  getAllLinks() {
+    const nodes = this.content.content || [];
+    const links: string[] = [];
+
+    const isValidLink = (href: string) => {
+      return (
+        href &&
+        this.isValidUrl(href) &&
+        !href.startsWith('#') &&
+        !href.startsWith('mailto:') &&
+        !href.startsWith('tel:') &&
+        typeof href === 'string'
+      );
+    };
+
+    const extractLinksFromNode = (node: JSONContent) => {
+      if (node.type === 'button') {
+        const originalLink = node.attrs?.url;
+        if (isValidLink(originalLink) && originalLink) {
+          links.push(originalLink);
+        }
+      } else if (node.content) {
+        node.content.forEach((childNode) => {
+          if (childNode.marks) {
+            childNode.marks.forEach((mark) => {
+              const originalLink = mark.attrs?.href;
+              if (mark.type === 'link' && isValidLink(originalLink)) {
+                links.push(originalLink);
+              }
+            });
+          }
+          if (childNode.content) {
+            extractLinksFromNode(childNode);
+          }
+        });
+      }
+    };
+
+    nodes.forEach((childNode) => {
+      extractLinksFromNode(childNode);
+    });
+
+    return links;
+  }
+
+  private isValidUrl(href: string) {
+    try {
+      const _ = new URL(href);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  renderSync(options?: RenderOptions): string {
+    const markup = this.markup();
     return reactEmailRender(markup, options);
   }
 
-  async renderAsync(): Promise<string> {
-    const options = this.config.options || {};
+  async renderAsync(options?: RenderOptions): Promise<string> {
     const markup = this.markup();
-
     return reactEmailRenderAsync(markup, options);
   }
 
+  /**
+   * `markup` will render the JSON content into React Email markup.
+   * and return the raw React Tree.
+   */
   markup() {
     const nodes = this.content.content || [];
     const jsxNodes = nodes.map((node, index) => {
@@ -420,9 +504,18 @@ export class Maily {
 
   private link(mark: MarkType, text: JSX.Element): JSX.Element {
     const { attrs } = mark;
-    const href = attrs?.href || '#';
+    let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
+
+    // If the href value is provided, use it to replace the link
+    // Otherwise, use the original link
+    if (
+      typeof this.linkValues === 'object' ||
+      typeof this.variableValues === 'object'
+    ) {
+      href = this.linkValues.get(href) || this.variableValues.get(href) || href;
+    }
 
     return (
       <Link
@@ -474,15 +567,16 @@ export class Maily {
   private variable(node: JSONContent, _?: NodeOptions): JSX.Element {
     const { id: variable, fallback } = node.attrs || {};
 
-    let formattedVariable = this.config.variableFormatter?.({
+    let formattedVariable = this.variableFormatter({
       variable,
       fallback,
     });
 
-    // If a variable value is provided, use it to replace the variable
-    if (typeof this.config.variableValues === 'object') {
+    // If `shouldReplaceVariableValues` is true, replace the variable values
+    // Otherwise, just return the formatted variable
+    if (this.shouldReplaceVariableValues) {
       formattedVariable =
-        this.config.variableValues[variable] || formattedVariable;
+        this.variableValues.get(variable) || fallback || formattedVariable;
     }
 
     return <>{formattedVariable}</>;
@@ -577,6 +671,9 @@ export class Maily {
       radius = '6px';
     }
 
+    const href =
+      this.linkValues.get(url) || this.variableValues.get(url) || url;
+
     return (
       <Container
         style={{
@@ -585,7 +682,7 @@ export class Maily {
         }}
       >
         <Button
-          href={url}
+          href={href}
           style={{
             color: String(textColor),
             backgroundColor:
@@ -713,7 +810,7 @@ export class Maily {
     );
   }
 
-  blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
+  private blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { next, prev } = options || {};
     const isNextSpacer = next?.type === 'spacer';
     const isPrevSpacer = prev?.type === 'spacer';

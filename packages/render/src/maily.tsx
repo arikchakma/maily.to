@@ -145,6 +145,28 @@ export interface MailyConfig {
   theme?: ThemeOptions;
 }
 
+const DEFAULT_RENDER_OPTIONS: RenderOptions = {
+  pretty: false,
+  plainText: false,
+};
+
+const DEFAULT_THEME: ThemeOptions = {
+  colors: {
+    heading: 'rgb(17, 24, 39)',
+    paragraph: 'rgb(55, 65, 81)',
+    horizontal: 'rgb(234, 234, 234)',
+    footer: 'rgb(100, 116, 139)',
+    blockquoteBorder: 'rgb(209, 213, 219)',
+  },
+  fontSize: {
+    paragraph: '15px',
+    footer: {
+      size: '14px',
+      lineHeight: '24px',
+    },
+  },
+};
+
 export interface RenderOptions {
   /**
    * The options object allows you to customize the output of the rendered
@@ -170,22 +192,7 @@ export type LinkValues = Map<string, string>;
 export class Maily {
   private readonly content: JSONContent;
   private config: MailyConfig = {
-    theme: {
-      colors: {
-        heading: 'rgb(17, 24, 39)',
-        paragraph: 'rgb(55, 65, 81)',
-        horizontal: 'rgb(234, 234, 234)',
-        footer: 'rgb(100, 116, 139)',
-        blockquoteBorder: 'rgb(209, 213, 219)',
-      },
-      fontSize: {
-        paragraph: '15px',
-        footer: {
-          size: '14px',
-          lineHeight: '24px',
-        },
-      },
-    },
+    theme: DEFAULT_THEME,
   };
 
   private variableFormatter: VariableFormatter = ({ variable, fallback }) => {
@@ -199,15 +206,16 @@ export class Maily {
   private linkValues: LinkValues = new Map<string, string>();
   private openTrackingPixel: string | undefined;
 
-  constructor(
-    content: JSONContent = { type: 'doc', content: [] },
-    config: Partial<MailyConfig> = {}
-  ) {
+  constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
-    this.config = {
-      ...this.config,
-      ...config,
-    };
+  }
+
+  setPreviewText(preview?: string) {
+    this.config.preview = preview;
+  }
+
+  setTheme(theme?: ThemeOptions) {
+    this.config.theme = theme || DEFAULT_THEME;
   }
 
   setVariableFormatter(formatter: VariableFormatter) {
@@ -337,12 +345,14 @@ export class Maily {
     }
   }
 
-  renderSync(options?: RenderOptions): string {
+  renderSync(options: RenderOptions = DEFAULT_RENDER_OPTIONS): string {
     const markup = this.markup();
     return reactEmailRender(markup, options);
   }
 
-  async renderAsync(options?: RenderOptions): Promise<string> {
+  async renderAsync(
+    options: RenderOptions = DEFAULT_RENDER_OPTIONS
+  ): Promise<string> {
     const markup = this.markup();
     return reactEmailRenderAsync(markup, options);
   }

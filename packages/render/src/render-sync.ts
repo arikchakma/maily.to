@@ -7,9 +7,10 @@ export function renderSync(
   config?: MailyConfig & RenderOptions
 ): string {
   const { theme, preview, ...rest } = config || {};
-  const maily = new Maily(content, {
-    theme,
-    preview,
-  });
+
+  const maily = new Maily(content);
+  maily.setPreviewText(preview);
+  maily.setTheme(theme);
+  
   return maily.renderSync(rest);
 }

@@ -18,6 +18,7 @@ import {
   renderAsync as reactEmailRenderAsync,
 } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
+import merge from 'lodash/merge';
 import { generateKey } from './utils';
 
 interface NodeOptions {
@@ -215,7 +216,7 @@ export class Maily {
   }
 
   setTheme(theme?: ThemeOptions) {
-    this.config.theme = theme || DEFAULT_THEME;
+    this.config.theme = merge(this.config.theme, theme);
   }
 
   setVariableFormatter(formatter: VariableFormatter) {

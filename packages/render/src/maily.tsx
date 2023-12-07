@@ -197,6 +197,7 @@ export class Maily {
   private shouldReplaceVariableValues = false;
   private variableValues: VariableValues = new Map<string, string>();
   private linkValues: LinkValues = new Map<string, string>();
+  private openTrackingPixel: string | undefined;
 
   constructor(
     content: JSONContent = { type: 'doc', content: [] },
@@ -261,6 +262,15 @@ export class Maily {
     Object.entries(values).forEach(([link, value]) => {
       this.setLinkValue(link, value);
     });
+  }
+
+  /**
+   * `setOpenTrackingPixel` will set the open tracking pixel.
+   *
+   * @param pixel - The open tracking pixel
+   */
+  setOpenTrackingPixel(pixel?: string) {
+    this.openTrackingPixel = pixel;
   }
 
   /**
@@ -379,8 +389,8 @@ export class Maily {
             }}
           />
         </Head>
-        {preview ? <Preview>{preview}</Preview> : null}
         <Body>
+          {preview ? <Preview>{preview}</Preview> : null}
           <Container
             style={{
               maxWidth: '600px',
@@ -393,6 +403,17 @@ export class Maily {
           >
             {jsxNodes}
           </Container>
+          {this.openTrackingPixel ? (
+            <Img
+              alt=""
+              src={this.openTrackingPixel}
+              style={{
+                display: 'none',
+                width: '1px',
+                height: '1px',
+              }}
+            />
+          ) : null}
         </Body>
       </Html>
     );

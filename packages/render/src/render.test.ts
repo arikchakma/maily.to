@@ -84,6 +84,34 @@ describe('renderSync', () => {
     expect(result).toMatchInlineSnapshot(`"[name,fallback=Buddy]"`);
   });
 
+  it('should replace variables with fallback value', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'variable',
+              attrs: {
+                id: 'name',
+                fallback: 'Buddy',
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const maily = new Maily(content);
+    maily.setShouldReplaceVariableValues(true);
+    const result = maily.renderSync({
+      plainText: true,
+    });
+
+    expect(result).toMatchInlineSnapshot(`"Buddy"`);
+  });
+
   it('should replace links with setLinkValue value', () => {
     const content = {
       type: 'doc',

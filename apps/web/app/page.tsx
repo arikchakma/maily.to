@@ -212,7 +212,7 @@ export default function LandingPage() {
             <span className="mx-3 hidden sm:inline-block">·</span>
             <a
               className="hidden items-center hover:text-red-300 sm:inline-flex"
-              href="https://twitter.com/ImArikChakma"
+              href="https://twitter.com/imarikchakma"
               rel="noopener noreferrer"
               target="_blank"
             >

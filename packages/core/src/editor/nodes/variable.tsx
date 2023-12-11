@@ -205,12 +205,9 @@ export function VariableComponent(props: NodeViewProps) {
           <div
             ref={variableRef}
             tabIndex={-1}
-            className="mly-px-1.5 mly-flex mly-items-center mly-py-1 mly-border mly-border-gray-200 mly-rounded-md mly-leading-none mly-gap-0.5 mly-font-medium mly-text-black mly-bg-gray-50"
+            className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none"
           >
-            <Braces className="mly-text-rose-600 mly-w-3 mly-h-3 mly-shrink-0 mly-stroke-[3]" />
-            <span className="mly-leading-none mly-inline -mly-mt-0.5">
-              {id}
-            </span>
+            {id}
           </div>
         </PopoverTrigger>
         <PopoverContent

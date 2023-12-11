@@ -8,6 +8,7 @@ import {
 import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
+import { Braces } from 'lucide-react';
 import { cn } from '../utils/classname';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { Input } from '../components/input';
@@ -204,9 +205,12 @@ export function VariableComponent(props: NodeViewProps) {
           <div
             ref={variableRef}
             tabIndex={-1}
-            className="mly-py-1 mly-px-2 mly-bg-slate-100 mly-border mly-border-blue-300 mly-rounded-md mly-leading-none"
+            className="mly-px-1.5 mly-flex mly-items-center mly-py-1 mly-border mly-border-gray-200 mly-rounded-md mly-leading-none mly-gap-0.5 mly-font-medium mly-text-black mly-bg-gray-50"
           >
-            {id}
+            <Braces className="mly-text-rose-600 mly-w-3 mly-h-3 mly-shrink-0 mly-stroke-[3]" />
+            <span className="mly-leading-none mly-inline -mly-mt-0.5">
+              {id}
+            </span>
           </div>
         </PopoverTrigger>
         <PopoverContent

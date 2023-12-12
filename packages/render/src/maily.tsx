@@ -683,7 +683,7 @@ export class Maily {
     );
   }
 
-  private button(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const {
       text,
@@ -703,6 +703,9 @@ export class Maily {
       radius = '6px';
     }
 
+    const { next } = options || {};
+    const isNextSpacer = next?.type === 'spacer';
+
     const href =
       this.linkValues.get(url) || this.variableValues.get(url) || url;
 
@@ -711,6 +714,7 @@ export class Maily {
         style={{
           textAlign: alignment,
           maxWidth: '100%',
+          marginBottom: isNextSpacer ? '0px' : '20px',
         }}
       >
         <Button

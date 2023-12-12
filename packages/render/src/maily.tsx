@@ -401,7 +401,9 @@ export class Maily {
           />
         </Head>
         <Body>
-          {preview ? <Preview>{preview}</Preview> : null}
+          {preview ? (
+            <Preview id="__react-email-preview">{preview}</Preview>
+          ) : null}
           <Container
             style={{
               maxWidth: '600px',

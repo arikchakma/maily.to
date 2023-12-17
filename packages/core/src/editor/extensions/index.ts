@@ -18,6 +18,7 @@ import { Spacer } from '../nodes/spacer';
 import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
+import { ResizableImageExtension } from './image-resize'
 
 type ExtensionsProps = {
   variables?: string[];
@@ -74,5 +75,6 @@ export function extensions(props: ExtensionsProps) {
       openOnClick: false,
     }),
     ButtonExtension,
+    ResizableImageExtension
   ];
 }

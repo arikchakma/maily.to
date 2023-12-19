@@ -18,6 +18,7 @@ import { Spacer } from '../nodes/spacer';
 import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
+import { SocialLinkNode } from '../nodes/social-link';
 
 type ExtensionsProps = {
   variables?: string[];
@@ -62,6 +63,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     Spacer,
     Footer,
+    SocialLinkNode,
     Variable.configure({
       suggestion: getVariableSuggestions(variables),
     }),

@@ -116,6 +116,7 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
         isEmptyTextBlock ||
         !editor.isEditable ||
         editor.isActive('image') ||
+        editor.isActive('social') ||
         editor.isActive('logo') ||
         editor.isActive('spacer') ||
         editor.isActive('variable') ||

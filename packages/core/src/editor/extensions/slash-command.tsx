@@ -175,7 +175,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         }
 
         editor.chain().focus().deleteRange(range).run();
-        editor.chain().focus().setSocialLinkImage({ src: imageUrl }).run();
+        editor.chain().focus().setSocialLinkImage({ src: imageUrl, size: "lg" }).run();
       },
     },
     {

@@ -5,6 +5,7 @@ import {
   AlignRightIcon,
   Unlink,
   Link,
+  ArrowUpRight,
 } from 'lucide-react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
@@ -103,7 +104,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         const currentNode = editor?.getAttributes('social');
         const { src: currUrl, size: currSize } = currentNode || {};
 
-        const iconUrl = window.prompt('Update SocialLink Icon URL', currUrl);
+        const iconUrl = window.prompt('Update Icon URL', currUrl);
         if (!iconUrl) {
           return;
         }
@@ -116,6 +117,23 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
       icon: Unlink,
+    },
+    {
+      name: 'social-link',
+      isActive: () => false,
+      shouldShow: () => editor?.isActive('social')!,
+      command: () => {
+        const { editor } = props;
+        const currentNode = editor?.getAttributes('anchor');
+        const { href: currUrl } = currentNode || {};
+        const socialLink = window.prompt('Update Social Link', currUrl);
+        if (!socialLink) {
+          return;
+        }
+
+        editor?.chain().focus().setLink({ href: socialLink }).run();
+      },
+      icon: ArrowUpRight,
     },
     ...sizeItems,
   ];

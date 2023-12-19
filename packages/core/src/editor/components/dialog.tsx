@@ -53,6 +53,31 @@ const DialogContent = React.forwardRef<
 ));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
+const ScrollableDialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay className="grid place-items-center overflow-y-auto">
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          'relative m-4 grid w-full max-w-lg gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg md:w-full',
+          className
+        )}
+        {...props}
+      >
+        {children}
+        <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DialogOverlay>
+  </DialogPortal>
+));
+ScrollableDialogContent.displayName = DialogPrimitive.Content.displayName;
+
 function DialogHeader({
   className,
   ...props
@@ -116,6 +141,7 @@ export {
   Dialog,
   DialogTrigger,
   DialogContent,
+  ScrollableDialogContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,

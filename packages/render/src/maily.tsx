@@ -769,38 +769,31 @@ export class Maily {
       title,
       size,
       // @TODO: Update the attribute to `textAlign`
-      alignment,
+      alignment = 'left',
     } = attrs || {};
-
-    let margin: CSSProperties = {
-      marginRight: 'auto',
-    };
-    if (alignment === 'center') {
-      margin = {
-        marginRight: 'auto',
-        marginLeft: 'auto',
-      };
-    } else if (alignment === 'right') {
-      margin = {
-        marginLeft: 'auto',
-      };
-    }
 
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
     return (
-      <Img
-        alt={alt || title || 'Logo'}
-        src={src}
+      <Row
         style={{
-          width: logoSizes[size as AllowedLogoSizes] || size,
-          height: logoSizes[size as AllowedLogoSizes] || size,
-          ...margin,
+          marginTop: '0px',
           marginBottom: isNextSpacer ? '0px' : '32px',
         }}
-        title={title || alt || 'Logo'}
-      />
+      >
+        <Column align={alignment}>
+          <Img
+            alt={alt || title || 'Logo'}
+            src={src}
+            style={{
+              width: logoSizes[size as AllowedLogoSizes] || size,
+              height: logoSizes[size as AllowedLogoSizes] || size,
+            }}
+            title={title || alt || 'Logo'}
+          />
+        </Column>
+      </Row>
     );
   }
 

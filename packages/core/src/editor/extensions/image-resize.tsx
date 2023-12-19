@@ -160,6 +160,8 @@ export const ResizableImageExtension = TipTapImage.extend({
       alignment: {
         default: 'center',
         renderHTML: ({ alignment }) => ({ 'data-alignment': alignment }),
+        parseHTML: (element) =>
+          element.getAttribute('data-alignment') || 'center',
       },
     };
   },

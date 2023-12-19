@@ -12,6 +12,9 @@ import {
   Button,
   Img,
   Preview,
+  Section,
+  Row,
+  Column,
 } from '@react-email/components';
 import {
   render as reactEmailRender,
@@ -803,24 +806,37 @@ export class Maily {
 
   private image(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { src, alt, title } = attrs || {};
+    const {
+      src,
+      alt,
+      title,
+      width = 'auto',
+      height = 'auto',
+      alignment = 'center',
+    } = attrs || {};
 
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
     return (
-      <Img
-        alt={alt || title || 'Image'}
-        src={src}
+      <Row
         style={{
-          height: 'auto',
-          width: 'auto',
-          maxWidth: '100%',
-          marginBottom: isNextSpacer ? '0px' : '32px',
           marginTop: '0px',
+          marginBottom: isNextSpacer ? '0px' : '32px',
         }}
-        title={title || alt || 'Image'}
-      />
+      >
+        <Column align={alignment}>
+          <Img
+            alt={alt || title || 'Image'}
+            src={src}
+            style={{
+              height,
+              width,
+            }}
+            title={title || alt || 'Image'}
+          />
+        </Column>
+      </Row>
     );
   }
 

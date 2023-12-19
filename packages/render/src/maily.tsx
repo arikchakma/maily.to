@@ -12,6 +12,9 @@ import {
   Button,
   Img,
   Preview,
+  Section,
+  Row,
+  Column,
 } from '@react-email/components';
 import {
   render as reactEmailRender,
@@ -766,61 +769,67 @@ export class Maily {
       title,
       size,
       // @TODO: Update the attribute to `textAlign`
-      alignment,
+      alignment = 'left',
     } = attrs || {};
-
-    let margin: CSSProperties = {
-      marginRight: 'auto',
-    };
-    if (alignment === 'center') {
-      margin = {
-        marginRight: 'auto',
-        marginLeft: 'auto',
-      };
-    } else if (alignment === 'right') {
-      margin = {
-        marginLeft: 'auto',
-      };
-    }
 
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
     return (
-      <Img
-        alt={alt || title || 'Logo'}
-        src={src}
+      <Row
         style={{
-          width: logoSizes[size as AllowedLogoSizes] || size,
-          height: logoSizes[size as AllowedLogoSizes] || size,
-          ...margin,
+          marginTop: '0px',
           marginBottom: isNextSpacer ? '0px' : '32px',
         }}
-        title={title || alt || 'Logo'}
-      />
+      >
+        <Column align={alignment}>
+          <Img
+            alt={alt || title || 'Logo'}
+            src={src}
+            style={{
+              width: logoSizes[size as AllowedLogoSizes] || size,
+              height: logoSizes[size as AllowedLogoSizes] || size,
+            }}
+            title={title || alt || 'Logo'}
+          />
+        </Column>
+      </Row>
     );
   }
 
   private image(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { src, alt, title } = attrs || {};
+    const {
+      src,
+      alt,
+      title,
+      width = 'auto',
+      height = 'auto',
+      alignment = 'center',
+    } = attrs || {};
 
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
     return (
-      <Img
-        alt={alt || title || 'Image'}
-        src={src}
+      <Row
         style={{
-          height: 'auto',
-          width: 'auto',
-          maxWidth: '100%',
-          marginBottom: isNextSpacer ? '0px' : '32px',
           marginTop: '0px',
+          marginBottom: isNextSpacer ? '0px' : '32px',
         }}
-        title={title || alt || 'Image'}
-      />
+      >
+        <Column align={alignment}>
+          <Img
+            alt={alt || title || 'Image'}
+            src={src}
+            style={{
+              height,
+              width,
+            }}
+            title={title || alt || 'Image'}
+          />
+        </Column>
+      </Row>
     );
   }
 

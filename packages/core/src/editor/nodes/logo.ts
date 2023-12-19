@@ -38,13 +38,16 @@ export interface TiptapLogoAttributes {
 const DEFAULT_ALIGNMENT: AllowedLogoAlignment = 'left';
 const DEFAULT_SIZE: AllowedLogoSize = 'sm';
 
-function getSizeStyle(size: TiptapLogoAttributes['size']): string {
+function getSizeStyle(size: TiptapLogoAttributes['size']): string[] {
   const sizes: Record<AllowedLogoSize, string> = {
     sm: '40px',
     md: '48px',
     lg: '64px',
   };
-  return `height:${sizes[size] || sizes[DEFAULT_SIZE]}`;
+  return [
+    `height:${sizes[size] || sizes[DEFAULT_SIZE]}`,
+    `width:${sizes[size] || sizes[DEFAULT_SIZE]}`,
+  ];
 }
 
 function getAlignmentStyle(alignment: AllowedLogoAlignment): string[] {
@@ -118,7 +121,7 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
     const style = [
       'position:relative',
       'margin-top:0',
-      getSizeStyle(size),
+      ...getSizeStyle(size),
       ...getAlignmentStyle(alignment),
     ];
 

@@ -7,7 +7,6 @@ import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Heading from '@tiptap/extension-heading';
-import Image from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 
 import { HorizontalRule } from './horizontal-rule';
@@ -18,6 +17,7 @@ import { Spacer } from '../nodes/spacer';
 import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
+import { ResizableImageExtension } from './image-resize';
 
 type ExtensionsProps = {
   variables?: string[];
@@ -43,7 +43,6 @@ export function extensions(props: ExtensionsProps) {
         },
       },
     }),
-    Image,
     Underline,
     TiptapLogoExtension,
     Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -74,5 +73,6 @@ export function extensions(props: ExtensionsProps) {
       openOnClick: false,
     }),
     ButtonExtension,
+    ResizableImageExtension,
   ];
 }

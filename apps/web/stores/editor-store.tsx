@@ -1,12 +1,13 @@
 'use client';
 
-import { createContext, PropsWithChildren, useContext, useRef } from 'react';
-import { Editor, JSONContent } from '@tiptap/core';
+import type { PropsWithChildren } from 'react';
+import { createContext, useContext, useRef } from 'react';
+import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 import { createStore } from 'zustand';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 interface EditorProps {
-  editor?: Editor;
+  editor?: TiptapEditor;
   json: JSONContent;
   previewText: string;
 
@@ -21,7 +22,7 @@ interface EditorProps {
 }
 
 interface EditorState extends EditorProps {
-  setEditor: (editor: Editor | undefined) => void;
+  setEditor: (editor: TiptapEditor | undefined) => void;
   setJson: (json: JSONContent) => void;
   setPreviewText: (previewText: string) => void;
 
@@ -68,17 +69,37 @@ const createEditorStore = (initProps?: Partial<EditorProps>) => {
   return createStore<EditorState>()((set) => ({
     ...DEFAULT_PROPS,
     ...initProps,
-    setEditor: (editor) => set(() => ({ editor })),
-    setJson: (json) => set(() => ({ json })),
-    setPreviewText: (previewText) => set(() => ({ previewText })),
-    setSubject: (subject) => set(() => ({ subject })),
-    setFrom: (from) => set(() => ({ from })),
-    setTo: (to) => set(() => ({ to })),
-    setReplyTo: (replyTo) => set(() => ({ replyTo })),
+    setEditor: (editor) => {
+      set(() => ({ editor }));
+    },
+    setJson: (json) => {
+      set(() => ({ json }));
+    },
+    setPreviewText: (previewText) => {
+      set(() => ({ previewText }));
+    },
+    setSubject: (subject) => {
+      set(() => ({ subject }));
+    },
+    setFrom: (from) => {
+      set(() => ({ from }));
+    },
+    setTo: (to) => {
+      set(() => ({ to }));
+    },
+    setReplyTo: (replyTo) => {
+      set(() => ({ replyTo }));
+    },
 
-    setProvider: (provider) => set(() => ({ provider })),
-    setApiKey: (apiKey) => set(() => ({ apiKey })),
-    setEndpoint: (endpoint) => set(() => ({ endpoint })),
+    setProvider: (provider) => {
+      set(() => ({ provider }));
+    },
+    setApiKey: (apiKey) => {
+      set(() => ({ apiKey }));
+    },
+    setEndpoint: (endpoint) => {
+      set(() => ({ endpoint }));
+    },
   }));
 };
 

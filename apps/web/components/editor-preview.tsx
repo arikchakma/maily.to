@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { EditorProps } from '@maily-to/core';
 import { Editor } from '@maily-to/core';
 import { Loader2, X } from 'lucide-react';
-import type { JSONContent } from '@tiptap/core';
+import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 import { useEditorContext } from '@/stores/editor-store';
 import { cn } from '@/utils/classname';
 import { Input } from './ui/input';
@@ -161,11 +161,11 @@ export function EditorPreview(props: EditorPreviewProps) {
           contentHtml={defaultHtml}
           contentJson={defaultContent}
           onCreate={(e) => {
-            setEditor(e);
+            setEditor(e as unknown as TiptapEditor);
             setJson(e?.getJSON() || {});
           }}
           onUpdate={(e) => {
-            setEditor(e);
+            setEditor(e as unknown as TiptapEditor);
             setJson(e?.getJSON() || {});
           }}
         />

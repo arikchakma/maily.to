@@ -11,6 +11,6 @@ export function renderSync(
   const maily = new Maily(content);
   maily.setPreviewText(preview);
   maily.setTheme(theme);
-  
+
   return maily.renderSync(rest);
 }

@@ -19,14 +19,7 @@ const components = [
   'Quote',
 ];
 
-const comingSoon = [
-  'Social',
-  'Code',
-  'Video',
-  'Table',
-  'Columns',
-  'Countdown',
-];
+const comingSoon = ['Social', 'Code', 'Video', 'Table', 'Columns', 'Countdown'];
 
 export const dynamic = 'force-static';
 

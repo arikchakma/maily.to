@@ -11,15 +11,7 @@ const config: Config = {
     '../../packages/core/src/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: 'auto',
-          }
-        }
-      }
-    },
+    extend: {},
   },
   corePlugins: {
     // Disable preflight to avoid Tailwind overriding the styles of the editor.

@@ -11,6 +11,6 @@ export async function renderAsync(
   const maily = new Maily(content);
   maily.setPreviewText(preview);
   maily.setTheme(theme);
-  
+
   return maily.renderAsync(rest);
 }

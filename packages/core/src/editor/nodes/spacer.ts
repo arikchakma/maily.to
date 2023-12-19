@@ -87,7 +87,7 @@ export const Spacer = Node.create<SpacerOptions>({
         this.options.HTMLAttributes,
         HTMLAttributes,
         {
-          class: 'spacer',
+          class: 'spacer relative z-50',
           contenteditable: false,
         }
       ),

@@ -4,6 +4,7 @@ import {
   AlignLeftIcon,
   AlignRightIcon,
   Link,
+  Unlink,
 } from 'lucide-react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
@@ -18,10 +19,21 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
     (alignment, index) => ({
       name: alignment,
-      isActive: () => editor?.isActive('logo', { alignment })!,
-      shouldShow: () => editor?.isActive('logo')!,
+      isActive: () =>
+        editor?.isActive('logo', { alignment })! ||
+        editor?.isActive('image', { alignment })!,
+      shouldShow: () => editor?.isActive('logo')! || editor?.isActive('image')!,
       command: () => {
-        editor?.chain().focus().setLogoAttributes({ alignment }).run();
+        const isCurrentNodeLogo = editor?.isActive('logo')!;
+        if (isCurrentNodeLogo) {
+          props?.editor?.chain().focus().setLogoAttributes({ alignment }).run();
+        } else {
+          props?.editor
+            ?.chain()
+            .focus()
+            .updateAttributes('image', { alignment })
+            .run();
+        }
       },
       icon: icons[index],
     })
@@ -85,7 +97,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         });
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
-      icon: Link,
+      icon: Unlink,
     },
 
     ...sizeItems,

@@ -86,7 +86,7 @@ export function DeleteEmail(props: SaveEmailProps) {
           <div className="flex items-center justify-end gap-2">
             <DialogClose asChild>
               <button
-                className="flex min-h-[28px] items-center justify-center rounded-md px-2 py-1 text-sm bg-gra-100 disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
+                className="bg-gra-100 flex min-h-[28px] items-center justify-center rounded-md px-2 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
                 type="button"
               >
                 Cancel

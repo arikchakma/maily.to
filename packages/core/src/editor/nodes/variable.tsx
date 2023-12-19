@@ -148,48 +148,10 @@ export function getVariableSuggestions(
 }
 
 export function VariableComponent(props: NodeViewProps) {
-  const { node, selected, updateAttributes, editor, getPos } = props;
+  const { node, selected, updateAttributes } = props;
   const { id, fallback } = node.attrs;
 
   const [isOpen, setIsOpen] = useState(false);
-  const variableRef = useRef<HTMLDivElement>(null);
-
-  const editorPosition = editor?.view.state.selection.$from.pos;
-  const variableStartPosition = getPos();
-  const variableEndPosition = variableStartPosition + node.nodeSize;
-
-  // Hack: This is hack to open popover in inline-nodes
-  // otherwise it will be closed when we update the attributes
-  // because the node-view will be re-rendered
-  useEffect(() => {
-    if (!variableRef.current || !selected) {
-      return;
-    }
-
-    setIsOpen(true);
-    // Select the text inside the variable
-    const range = document.createRange();
-    range.selectNode(variableRef.current);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  }, [selected]);
-
-  // Hack: This is hack to close popover in inline-nodes
-  // otherwise it stays open when we move the cursor outside the variable
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    if (
-      editorPosition < variableStartPosition ||
-      editorPosition > variableEndPosition
-    ) {
-      setIsOpen(false);
-      return;
-    }
-  }, [isOpen, editorPosition, variableStartPosition, variableEndPosition]);
 
   return (
     <NodeViewWrapper
@@ -203,7 +165,6 @@ export function VariableComponent(props: NodeViewProps) {
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div
-            ref={variableRef}
             tabIndex={-1}
             className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none"
           >

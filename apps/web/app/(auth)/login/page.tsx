@@ -3,6 +3,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { GithubLoginButton } from '@/components/auth/github-login-button';
 import { cn } from '@/utils/classname';
 import { GoogleLoginButton } from '@/components/auth/google-login-button';
+import { EmailLoginForm } from '@/components/auth/email-login-form';
 
 export const metadata = {
   title: 'Login - Maily',
@@ -22,14 +23,22 @@ export default function LoginPage() {
         Playground
       </NextLink>
       <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[360px]">
-          <div className="flex flex-col space-y-2 text-center">
+        <div className="mx-auto flex w-full flex-col justify-center sm:w-[360px]">
+          <div className="mb-10 flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
               Login / Register
             </h1>
             <p className="text-muted-foreground text-sm">
               You can continue with your GitHub / Google account.
             </p>
+          </div>
+
+          <EmailLoginForm />
+
+          <div className="flex w-full items-center gap-2 py-6 text-sm text-gray-600">
+            <div className="h-px w-full bg-gray-200" />
+            OR
+            <div className="h-px w-full bg-gray-200" />
           </div>
 
           <div className="flex flex-col gap-2">

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
   if (!result.success) {
     return NextResponse.redirect(requestUrl.origin, {
-      status: 301,
+      status: 302,
     });
   }
 

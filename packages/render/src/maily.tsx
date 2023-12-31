@@ -88,6 +88,8 @@ export interface ThemeOptions {
     horizontal?: string;
     footer?: string;
     blockquoteBorder?: string;
+    codeBackground?: string;
+    codeText?: string;
   };
   fontSize?: {
     paragraph?: string;
@@ -161,6 +163,8 @@ const DEFAULT_THEME: ThemeOptions = {
     horizontal: 'rgb(234, 234, 234)',
     footer: 'rgb(100, 116, 139)',
     blockquoteBorder: 'rgb(209, 213, 219)',
+    codeBackground: 'rgb(239, 239, 239)',
+    codeText: 'rgb(17, 24, 39)',
   },
   fontSize: {
     paragraph: '15px',
@@ -170,6 +174,9 @@ const DEFAULT_THEME: ThemeOptions = {
     },
   },
 };
+
+const CODE_FONT_FAMILY =
+  'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
 
 export interface RenderOptions {
   /**
@@ -877,6 +884,23 @@ export class Maily {
       >
         {this.getMappedContent(node)}
       </blockquote>
+    );
+  }
+  private code(_: MarkType, text: JSX.Element): JSX.Element {
+    return (
+      <code
+        style={{
+          backgroundColor: this.config.theme?.colors?.codeBackground,
+          color: this.config.theme?.colors?.codeText,
+          padding: '2px 4px',
+          borderRadius: '6px',
+          fontFamily: CODE_FONT_FAMILY,
+          fontWeight: 400,
+          letterSpacing: 0,
+        }}
+      >
+        {text}
+      </code>
     );
   }
 }

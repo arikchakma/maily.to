@@ -111,6 +111,11 @@
   margin-top: -32px;
 }
 
+/* Remove code ::before and ::after */
+.mail-editor .mly-prose code::before,
+.mail-editor .mly-prose code::after {
+  content: none;
+}
 
 .ProseMirror {
   position: relative;

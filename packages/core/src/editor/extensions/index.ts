@@ -35,6 +35,12 @@ export function extensions(props: ExtensionsProps) {
         color: '#555',
         width: 3,
       },
+      code: {
+        HTMLAttributes: {
+          class:
+            'mly-px-1 mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
+        },
+      },
       horizontalRule: false,
       blockquote: {
         HTMLAttributes: {

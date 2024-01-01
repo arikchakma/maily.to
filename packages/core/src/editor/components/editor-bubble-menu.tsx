@@ -4,6 +4,7 @@ import {
   AlignLeftIcon,
   AlignRightIcon,
   BoldIcon,
+  CodeIcon,
   ItalicIcon,
   LinkIcon,
   LucideIcon,
@@ -68,6 +69,12 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
       icon: StrikethroughIcon,
     },
     ...alignmentItems,
+    {
+      name: 'code',
+      isActive: () => editor?.isActive('code')!,
+      command: () => editor?.chain().focus().toggleCode().run()!,
+      icon: CodeIcon,
+    },
     {
       name: 'link',
       command: () => {

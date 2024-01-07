@@ -47,7 +47,11 @@ const BaseButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const classes = cn(
-      `${baseClass} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`
+      'mly-editor',
+      baseClass,
+      variantClasses[variant],
+      sizeClasses[size],
+      className
     );
 
     return <Comp className={classes} ref={ref} {...props} />;

@@ -13,10 +13,6 @@ const config: Config = {
   theme: {
     extend: {},
   },
-  corePlugins: {
-    // Disable preflight to avoid Tailwind overriding the styles of the editor.
-    preflight: false,
-  },
   plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
 };
 

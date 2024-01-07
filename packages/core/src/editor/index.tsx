@@ -108,7 +108,7 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <div className={cn('mail-editor mly-antialiased mly', wrapClassName)}>
+    <div className={cn('mly-editor mly-antialiased', wrapClassName)}>
       {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
       <div
         className={cn(

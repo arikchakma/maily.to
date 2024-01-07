@@ -1,7 +1,7 @@
 <div align="center"><img height="150" src="https://maily.to/brand/icon.svg" /></div>
 <br>
 
-<div align="center"><strong>@arikchakma/maily</strong></div>
+<div align="center"><strong>@maily-to/render</strong></div>
 <div align="center">Transform <a href="https://maily.to">Maily</a> content into HTML email templates.</div>
 <br />
 

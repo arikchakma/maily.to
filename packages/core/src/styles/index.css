@@ -1,119 +1,119 @@
-.mail-editor .mly-prose p:where([class~='text-sm']) {
+.mly-editor .mly-prose p:where([class~='text-sm']) {
   font-size: 16px;
 }
 
-.mail-editor .mly-prose h1,
-.mail-editor .mly-prose h2,
-.mail-editor .mly-prose h3 {
+.mly-editor .mly-prose h1,
+.mly-editor .mly-prose h2,
+.mly-editor .mly-prose h3 {
   margin-top: 0;
   margin-bottom: 12px;
 }
 
-.mail-editor .mly-prose h1 {
+.mly-editor .mly-prose h1 {
   font-size: 36px;
 }
 
-.mail-editor .mly-prose h2 {
+.mly-editor .mly-prose h2 {
   font-size: 30px;
 }
 
-.mail-editor .mly-prose h3 {
+.mly-editor .mly-prose h3 {
   font-size: 24px;
 }
 
-.mail-editor .mly-prose p {
+.mly-editor .mly-prose p {
   font-size: 15px;
   margin-bottom: 20px;
 }
 
-.mail-editor .mly-prose h1 + p,
-.mail-editor .mly-prose h2 + p,
-.mail-editor .mly-prose h3 + p,
-.mail-editor .mly-prose hr + p {
+.mly-editor .mly-prose h1 + p,
+.mly-editor .mly-prose h2 + p,
+.mly-editor .mly-prose h3 + p,
+.mly-editor .mly-prose hr + p {
   margin-top: 0;
 }
 
-.mail-editor .mly-prose ol,
-.mail-editor .mly-prose ul {
+.mly-editor .mly-prose ol,
+.mly-editor .mly-prose ul {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.mail-editor .mly-prose li:not(:last-child) {
+.mly-editor .mly-prose li:not(:last-child) {
   margin-bottom: 8px;
 }
 
-.mail-editor .mly-prose li > p {
+.mly-editor .mly-prose li > p {
   margin: 0;
 }
 
-.mail-editor .mly-prose img {
+.mly-editor .mly-prose img {
   margin-top: 0;
   margin-bottom: 32px;
 }
 
-.mail-editor .mly-prose hr {
+.mly-editor .mly-prose hr {
   margin-block: 32px;
 }
 
-.mail-editor .mly-prose .footer {
+.mly-editor .mly-prose .footer {
   display: block;
   font-size: 13px;
   margin-bottom: 20px;
   color: rgb(100, 116, 139);
 }
 
-.mail-editor .mly-prose .spacer + * {
+.mly-editor .mly-prose .spacer + * {
   margin-top: 0;
 }
 
-.mail-editor .mly-prose p + .spacer {
+.mly-editor .mly-prose p + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .mly-prose blockquote + .spacer {
+.mly-editor .mly-prose blockquote + .spacer {
   margin-top: -16px;
 }
 
-.mail-editor .mly-prose h1 + .spacer,
-.mail-editor .mly-prose h2 + .spacer,
-.mail-editor .mly-prose h3 + .spacer {
+.mly-editor .mly-prose h1 + .spacer,
+.mly-editor .mly-prose h2 + .spacer,
+.mly-editor .mly-prose h3 + .spacer {
   margin-top: -12px;
 }
 
-.mail-editor .mly-prose ol + .spacer,
-.mail-editor .mly-prose ul + .spacer {
+.mly-editor .mly-prose ol + .spacer,
+.mly-editor .mly-prose ul + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .mly-prose img + .spacer {
+.mly-editor .mly-prose img + .spacer {
   margin-top: -32px;
 }
 
-.mail-editor .mly-prose .node-button + .spacer,
-.mail-editor .mly-prose footer + .spacer {
+.mly-editor .mly-prose .node-button + .spacer,
+.mly-editor .mly-prose footer + .spacer {
   margin-top: -20px;
 }
 
-.mail-editor .mly-prose .node-button {
+.mly-editor .mly-prose .node-button {
   margin-top: 0;
   margin-bottom: 20px;
 }
 
-.mail-editor .mly-prose .node-image {
+.mly-editor .mly-prose .node-image {
   line-height: 0;
   margin-top: 0;
   margin-bottom: 32px;
   outline: none;
 }
 
-.mail-editor .mly-prose .node-image + .spacer {
+.mly-editor .mly-prose .node-image + .spacer {
   margin-top: -32px;
 }
 
 /* Remove code ::before and ::after */
-.mail-editor .mly-prose code::before,
-.mail-editor .mly-prose code::after {
+.mly-editor .mly-prose code::before,
+.mly-editor .mly-prose code::after {
   content: none;
 }
 

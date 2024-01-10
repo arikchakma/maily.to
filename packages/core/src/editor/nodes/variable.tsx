@@ -8,7 +8,7 @@ import {
 import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-import { Braces } from 'lucide-react';
+import { AlertTriangle, Braces } from 'lucide-react';
 import { cn } from '../utils/classname';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { Input } from '../components/input';
@@ -163,13 +163,16 @@ export function VariableComponent(props: NodeViewProps) {
       draggable="false"
     >
       <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <div
+        <PopoverTrigger>
+          <span
             tabIndex={-1}
-            className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none"
+            className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none mly-inline-flex mly-items-center mly-gap-1"
           >
             {id}
-          </div>
+            {!fallback && (
+              <AlertTriangle className="mly-w-3 mly-shrink-0 mly-h-3 mly-stroke-[2.5]" />
+            )}
+          </span>
         </PopoverTrigger>
         <PopoverContent
           align="start"
@@ -204,6 +207,10 @@ export function VariableComponent(props: NodeViewProps) {
                 });
               }}
             />
+
+            <p className="mly-text-xs mly-text-gray-500">
+              If the variable doesn't exist, this fallback value will be used.
+            </p>
           </label>
         </PopoverContent>
       </Popover>

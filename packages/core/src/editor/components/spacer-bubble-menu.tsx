@@ -19,6 +19,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     shouldShow: ({ editor }) => editor.isActive('spacer'),
     tippyOptions: {
+      maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
   };

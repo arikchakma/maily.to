@@ -136,6 +136,7 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
       return true;
     },
     tippyOptions: {
+      maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
   };

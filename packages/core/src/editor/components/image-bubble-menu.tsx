@@ -109,6 +109,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       return editor.isActive('logo') || editor.isActive('image');
     },
     tippyOptions: {
+      maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
   };

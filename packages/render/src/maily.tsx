@@ -12,7 +12,6 @@ import {
   Button,
   Img,
   Preview,
-  Section,
   Row,
   Column,
 } from '@react-email/components';

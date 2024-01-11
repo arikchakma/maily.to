@@ -251,6 +251,13 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         <HexAlphaColorPicker
           color={color}
           onChange={(newColor) => {
+            // HACK: This is a workaround for a bug in tiptap
+            // https://github.com/ueberdosis/tiptap/issues/3580
+            //
+            //     ERROR: flushSync was called from inside a lifecycle
+            //
+            // To fix this, we need to make sure that the onChange
+            // callback is run after the current execution context.
             queueMicrotask(() => {
               onChange(newColor);
             });

@@ -1,6 +1,6 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
-import { ChromePicker } from 'react-color';
+import { HexColorPicker } from 'react-colorful';
 
 import { BaseButton } from '../components/base-button';
 import { Input } from '../components/input';
@@ -246,12 +246,11 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
           />
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="mly-w-full !mly-p-0">
-        <ChromePicker
-          className="!mly-shadow-md"
+      <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
+        <HexColorPicker
           color={color}
           onChange={(color) => {
-            onChange(color.hex);
+            onChange(color);
           }}
         />
       </PopoverContent>
@@ -276,12 +275,11 @@ function TextColorPickerPopup(props: ColorPickerProps) {
           </div>
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="mly-w-full !mly-p-0">
-        <ChromePicker
-          className="!mly-shadow-md"
+      <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
+        <HexColorPicker
           color={color}
           onChange={(color) => {
-            onChange(color.hex);
+            onChange(color);
           }}
         />
       </PopoverContent>

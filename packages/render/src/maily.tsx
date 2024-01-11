@@ -303,7 +303,7 @@ export class Maily {
 
   getAllLinks() {
     const nodes = this.content.content || [];
-    const links: string[] = [];
+    const links = new Set<string>();
 
     const isValidLink = (href: string) => {
       return (
@@ -320,7 +320,7 @@ export class Maily {
       if (node.type === 'button') {
         const originalLink = node.attrs?.url;
         if (isValidLink(originalLink) && originalLink) {
-          links.push(originalLink);
+          links.add(originalLink);
         }
       } else if (node.content) {
         node.content.forEach((childNode) => {
@@ -328,7 +328,7 @@ export class Maily {
             childNode.marks.forEach((mark) => {
               const originalLink = mark.attrs?.href;
               if (mark.type === 'link' && isValidLink(originalLink)) {
-                links.push(originalLink);
+                links.add(originalLink);
               }
             });
           }

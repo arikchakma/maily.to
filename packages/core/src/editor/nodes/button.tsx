@@ -1,6 +1,6 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
-import { HexColorPicker } from 'react-colorful';
+import { HexAlphaColorPicker } from 'react-colorful';
 
 import { BaseButton } from '../components/base-button';
 import { Input } from '../components/input';
@@ -231,6 +231,7 @@ type ColorPickerProps = {
 
 function BackgroundColorPickerPopup(props: ColorPickerProps) {
   const { color, onChange, variant } = props;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -247,10 +248,19 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         </BaseButton>
       </PopoverTrigger>
       <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
-        <HexColorPicker
+        <HexAlphaColorPicker
           color={color}
-          onChange={(color) => {
-            onChange(color);
+          onChange={(newColor) => {
+            // HACK: This is a workaround for a bug in tiptap
+            // https://github.com/ueberdosis/tiptap/issues/3580
+            //
+            //     ERROR: flushSync was called from inside a lifecycle
+            //
+            // To fix this, we need to make sure that the onChange
+            // callback is run after the current execution context.
+            queueMicrotask(() => {
+              onChange(newColor);
+            });
           }}
         />
       </PopoverContent>
@@ -276,10 +286,12 @@ function TextColorPickerPopup(props: ColorPickerProps) {
         </BaseButton>
       </PopoverTrigger>
       <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
-        <HexColorPicker
+        <HexAlphaColorPicker
           color={color}
           onChange={(color) => {
-            onChange(color);
+            queueMicrotask(() => {
+              onChange(color);
+            });
           }}
         />
       </PopoverContent>

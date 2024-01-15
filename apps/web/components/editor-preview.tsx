@@ -160,7 +160,7 @@ export function EditorPreview(props: EditorPreviewProps) {
           }}
           contentHtml={defaultHtml}
           contentJson={defaultContent}
-          lang="es"
+          lang="en"
           onCreate={(e) => {
             setEditor(e as unknown as TiptapEditor);
             setJson(e?.getJSON() || {});

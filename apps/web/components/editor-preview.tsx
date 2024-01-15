@@ -5,11 +5,11 @@ import type { EditorProps } from '@maily-to/core';
 import { Editor } from '@maily-to/core';
 import { Loader2, X } from 'lucide-react';
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
-import { useEditorContext } from '@/stores/editor-store';
-import { cn } from '@/utils/classname';
 import { Input } from './ui/input';
 import { PreviewTextInfo } from './preview-text-info';
 import { Label } from './ui/label';
+import { cn } from '@/utils/classname';
+import { useEditorContext } from '@/stores/editor-store';
 
 interface EditorPreviewProps {
   className?: string;
@@ -160,6 +160,7 @@ export function EditorPreview(props: EditorPreviewProps) {
           }}
           contentHtml={defaultHtml}
           contentJson={defaultContent}
+          lang="es"
           onCreate={(e) => {
             setEditor(e as unknown as TiptapEditor);
             setJson(e?.getJSON() || {});

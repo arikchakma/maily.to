@@ -3,11 +3,21 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import { ButtonComponent } from '../nodes/button';
 import { AllowedLogoAlignment } from '../nodes/logo';
+import intl from 'react-intl-universal';
 
 export const allowedButtonVariant = ['filled', 'outline'] as const;
+export const arrowedButtonVariantLabel = {
+  filled: () => intl.get('button.variantFilled'),
+  outline: () => intl.get('button.variantOutline'),
+}
 export type AllowedButtonVariant = (typeof allowedButtonVariant)[number];
 
 export const allowedButtonBorderRadius = ['sharp', 'smooth', 'round'] as const;
+export const arrowedButtonBorderRadiusLabel = {
+  sharp: () => intl.get('button.cornerRadiusSharp'),
+  smooth: () => intl.get('button.cornerRadiusSmooth'),
+  round: () => intl.get('button.cornerRadiusRound'),
+}
 export type AllowedButtonBorderRadius =
   (typeof allowedButtonBorderRadius)[number];
 

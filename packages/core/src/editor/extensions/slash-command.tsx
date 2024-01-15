@@ -27,6 +27,7 @@ import {
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
 import { cn } from '@/editor/utils/classname';
+import intl from 'react-intl-universal';
 
 interface CommandItemProps {
   title: string;
@@ -72,8 +73,8 @@ const Command = Extension.create({
 const getSuggestionItems = ({ query }: { query: string }) => {
   return [
     {
-      title: 'Text',
-      description: 'Just start typing with plain text.',
+      title: intl.get('slashCommandTextTitle'),
+      description: intl.get('slashCommandTextDescription'),
       searchTerms: ['p', 'paragraph'],
       icon: <Text className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -86,8 +87,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Heading 1',
-      description: 'Big section heading.',
+      title: intl.get('slashCommandHeading1Title'),
+      description: intl.get('slashCommandHeading1Description'),
       searchTerms: ['title', 'big', 'large'],
       icon: <Heading1 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -100,8 +101,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Heading 2',
-      description: 'Medium section heading.',
+      title: intl.get('slashCommandHeading2Title'),
+      description: intl.get('slashCommandHeading2Description'),
       searchTerms: ['subtitle', 'medium'],
       icon: <Heading2 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -114,8 +115,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Heading 3',
-      description: 'Small section heading.',
+      title: intl.get('slashCommandHeading3Title'),
+      description: intl.get('slashCommandHeading3Description'),
       searchTerms: ['subtitle', 'small'],
       icon: <Heading3 className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -128,8 +129,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Bullet List',
-      description: 'Create a simple bullet list.',
+      title: intl.get('slashCommandBulletListTitle'),
+      description: intl.get('slashCommandBulletListDescription'),
       searchTerms: ['unordered', 'point'],
       icon: <List className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -137,8 +138,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Numbered List',
-      description: 'Create a list with numbering.',
+      title: intl.get('slashCommandNumberedListTitle'),
+      description: intl.get('slashCommandNumberedListDescription'),
       searchTerms: ['ordered'],
       icon: <ListOrdered className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -146,8 +147,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Image',
-      description: 'Full width image',
+      title: intl.get('slashCommandImageTitle'),
+      description: intl.get('slashCommandImageDescription'),
       searchTerms: ['image'],
       icon: <ImageIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -162,8 +163,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Logo',
-      description: 'Add your brand logo',
+      title: intl.get('slashCommandLogoTitle'),
+      description: intl.get('slashCommandLogoDescription'),
       searchTerms: ['image', 'logo'],
       icon: <ImageIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -177,9 +178,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Spacer',
-      description:
-        'Add a spacer to the page. Useful for adding space between sections.',
+      title: intl.get('slashCommandSpacerTitle'),
+      description: intl.get('slashCommandSpacerDescription'),
       searchTerms: ['space', 'gap', 'divider'],
       icon: <MoveVertical className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -192,8 +192,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Button',
-      description: 'Add a call to action button to the page.',
+      title: intl.get('slashCommandButtonTitle'),
+      description: intl.get('slashCommandButtonDescription'),
       searchTerms: ['link', 'button', 'cta'],
       icon: <MousePointer className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -201,8 +201,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Hard Break',
-      description: 'Add a break between lines.',
+      title: intl.get('slashCommandHardBreakTitle'),
+      description: intl.get('slashCommandHardBreakDescription'),
       searchTerms: ['break', 'line'],
       icon: <DivideIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -210,8 +210,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Blockquote',
-      description: 'Add blockquote.',
+      title: intl.get('slashCommandBlockquoteTitle'),
+      description: intl.get('slashCommandBlockquoteDescription'),
       searchTerms: ['quote', 'blockquote'],
       icon: <TextQuote className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -219,8 +219,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Footer',
-      description: 'Add a footer text to the page.',
+      title: intl.get('slashCommandFooterTitle'),
+      description: intl.get('slashCommandFooterDescription'),
       searchTerms: ['footer', 'text'],
       icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -228,8 +228,8 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
     {
-      title: 'Clear Line',
-      description: 'Clear the current line.',
+      title: intl.get('slashCommandClearLineTitle'),
+      description: intl.get('slashCommandClearLineDescription'),
       searchTerms: ['clear', 'line'],
       icon: <EraserIcon className="mly-h-4 mly-w-4" />,
       command: ({ editor, range }: CommandProps) => {
@@ -364,22 +364,7 @@ const CommandList = ({
       <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
         <div className="mly-flex mly-items-center">
           <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↑
-            </kbd>
-            <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↓
-            </kbd>{' '}
-            to navigate
-          </p>
-          <span aria-hidden="true" className="mly-select-none mly-px-1">
-            ·
-          </span>
-          <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
-              Enter
-            </kbd>{' '}
-            to select
+            {intl.getHTML('slashCommandShortcut')}
           </p>
         </div>
       </div>

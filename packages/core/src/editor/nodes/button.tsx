@@ -9,8 +9,11 @@ import {
   allowedButtonBorderRadius,
   AllowedButtonVariant,
   allowedButtonVariant,
+  arrowedButtonBorderRadiusLabel,
+  arrowedButtonVariantLabel,
 } from '../extensions/button-extension';
 import { cn } from '../utils/classname';
+import intl from 'react-intl-universal';
 
 const alignments = {
   left: AlignLeftIcon,
@@ -112,7 +115,7 @@ export function ButtonComponent(props: NodeViewProps) {
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <Input
-            placeholder="Add text here"
+            placeholder={intl.get('button.textInputPlaceholder')}
             value={text}
             onChange={(e) => {
               props.updateAttributes({
@@ -121,7 +124,7 @@ export function ButtonComponent(props: NodeViewProps) {
             }}
           />
           <Input
-            placeholder="Add link here"
+            placeholder={intl.get('button.linkInputPlaceholder')}
             value={url}
             onChange={(e) => {
               props.updateAttributes({
@@ -132,7 +135,7 @@ export function ButtonComponent(props: NodeViewProps) {
 
           <div className="mly-w-full mly-space-y-2">
             <p className="mly-text-xs mly-font-normal mly-text-slate-400">
-              Style
+              {intl.get('button.styleSectionTitle')}
             </p>
             <div className="mly-flex mly-gap-1">
               {items.style(props).map((item, index) => (
@@ -145,7 +148,7 @@ export function ButtonComponent(props: NodeViewProps) {
                   onClick={item.onClick}
                   type="button"
                 >
-                  {item.name}
+                  {arrowedButtonVariantLabel[item.name]()}
                 </BaseButton>
               ))}
             </div>
@@ -153,7 +156,7 @@ export function ButtonComponent(props: NodeViewProps) {
 
           <div className="mly-w-full mly-space-y-2">
             <p className="mly-text-xs mly-font-normal mly-text-slate-400">
-              Corner Radius
+              {intl.get('button.cornerRadiusSectionTitle')}
             </p>
             <div className="mly-flex mly-gap-1">
               {items.cornerRadius(props).map((item, index) => (
@@ -166,7 +169,7 @@ export function ButtonComponent(props: NodeViewProps) {
                   onClick={item.onClick}
                   type="button"
                 >
-                  {item.name}
+                  {arrowedButtonBorderRadiusLabel[item.name]()}
                 </BaseButton>
               ))}
             </div>
@@ -174,7 +177,7 @@ export function ButtonComponent(props: NodeViewProps) {
           <div className="flex gap-2">
             <div>
               <p className="mly-text-xs mly-font-normal mly-text-slate-400">
-                Alignment
+                {intl.get('button.alignmentSectionTitle')}
               </p>
               <div className="mly-mt-2 mly-flex mly-gap-1">
                 {items.alignment(props).map((item, index) => (
@@ -194,7 +197,7 @@ export function ButtonComponent(props: NodeViewProps) {
             </div>
             <div>
               <p className="mly-text-xs mly-font-normal mly-text-slate-400">
-                Color
+                {intl.get('button.colorSectionTitle')}
               </p>
               <div className="mly-mt-2 mly-flex mly-gap-1">
                 <BackgroundColorPickerPopup

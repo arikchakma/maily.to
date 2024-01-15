@@ -9,6 +9,26 @@ import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { cn } from './utils/classname';
+import intl from 'react-intl-universal';
+import es from "../locales/es";
+import en from "../locales/en";
+import { useEffect, useState } from 'react';
+
+const LOCALES_LIST = [
+  {
+    label: "English",
+    value: "en",
+  },
+  {
+    label: "Spanish",
+    value: "es"
+  },
+];
+
+const LOCALE_DATA = {
+  "en": en,
+  "es": es
+}
 
 export type EditorProps = {
   contentHtml?: string;
@@ -26,9 +46,12 @@ export type EditorProps = {
     bodyClassName?: string;
     autofocus?: FocusPosition;
   };
+  lang: string;
 };
 
 export function Editor(props: EditorProps) {
+  const [initDone, setInitDone] = useState(false);
+
   const {
     config: {
       wrapClassName = '',
@@ -103,7 +126,42 @@ export function Editor(props: EditorProps) {
     autofocus,
   });
 
-  if (!editor) {
+  const initializeIntl = () => {
+    // 1. Get the currentLocale from url, cookie, or browser setting
+    let currentLocale = props.lang;
+
+    // 2. Fallback to "en" if the currentLocale isn't supported in LOCALES_LIST
+    if (!LOCALES_LIST.some(item => item.value === currentLocale)) {
+      currentLocale = "en"
+    }
+
+    // 3. Set currentLocale and load locale data 
+    setCurrentLocale(currentLocale);
+
+    // 4. After loading locale data, start to render
+    setInitDone(true);
+  }
+
+
+
+  const setCurrentLocale = (currentLocale: string) => {
+    intl.init({
+      // debug: true,
+      currentLocale,
+      locales: LOCALE_DATA,
+    });
+  };
+
+  useEffect(() => {
+    initializeIntl();
+  }, []);
+
+  useEffect(() => {
+    if(!initDone) return;
+    setCurrentLocale(props.lang)
+  },[props.lang])
+
+  if (!editor || !initDone) {
     return null;
   }
 

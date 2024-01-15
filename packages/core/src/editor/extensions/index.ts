@@ -18,6 +18,7 @@ import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
+import intl from 'react-intl-universal';
 
 type ExtensionsProps = {
   variables?: string[];
@@ -58,10 +59,9 @@ export function extensions(props: ExtensionsProps) {
     Placeholder.configure({
       placeholder: ({ node }) => {
         if (node.type.name === 'heading') {
-          return `Heading ${node.attrs.level}`;
+          return intl.get('placeholder.heading', { level: node.attrs.level });
         }
-
-        return 'Write something or / to see commands';
+        return intl.get('placeholder.writeSomethingOrSlashCommand');
       },
       includeChildren: true,
     }),

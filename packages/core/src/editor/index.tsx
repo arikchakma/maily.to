@@ -8,6 +8,7 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
+import { MailyProvider, Variables } from './provider';
 import { cn } from './utils/classname';
 
 export type EditorProps = {
@@ -16,7 +17,7 @@ export type EditorProps = {
   onUpdate?: (editor?: TiptapEditor) => void;
   onCreate?: (editor?: TiptapEditor) => void;
   extensions?: Extension[];
-  variables?: string[];
+  variables?: Variables;
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -108,19 +109,21 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <div className={cn('mly-editor mly-antialiased', wrapClassName)}>
-      {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
-      <div
-        className={cn(
-          'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
-          bodyClassName
-        )}
-      >
-        <EditorBubbleMenu editor={editor} />
-        <ImageBubbleMenu editor={editor} />
-        <SpacerBubbleMenu editor={editor} />
-        <EditorContent editor={editor} />
+    <MailyProvider variables={variables}>
+      <div className={cn('mly-editor mly-antialiased', wrapClassName)}>
+        {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
+        <div
+          className={cn(
+            'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
+            bodyClassName
+          )}
+        >
+          <EditorBubbleMenu editor={editor} />
+          <ImageBubbleMenu editor={editor} />
+          <SpacerBubbleMenu editor={editor} />
+          <EditorContent editor={editor} />
+        </div>
       </div>
-    </div>
+    </MailyProvider>
   );
 }

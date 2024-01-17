@@ -12,6 +12,7 @@ import { AlertTriangle, Braces } from 'lucide-react';
 import { cn } from '../utils/classname';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { Input } from '../components/input';
+import { useMailyContext, Variables } from '../provider';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -76,11 +77,13 @@ export const VariableList = forwardRef((props: any, ref) => {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: string[] = []
+  variables: Variables = []
 ): Omit<SuggestionOptions, 'editor'> {
+  const defaultVariables = variables.map((variable) => variable.name);
+
   return {
     items: ({ query }) => {
-      return variables
+      return defaultVariables
         .concat(query.length > 0 ? [query] : [])
         .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
         .slice(0, 5);
@@ -151,6 +154,10 @@ export function VariableComponent(props: NodeViewProps) {
   const { node, selected, updateAttributes } = props;
   const { id, fallback } = node.attrs;
 
+  const { variables = [] } = useMailyContext();
+  const isRequired =
+    variables.find((variable) => variable.name === id)?.required ?? true;
+
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -169,7 +176,7 @@ export function VariableComponent(props: NodeViewProps) {
             className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none mly-inline-flex mly-items-center mly-gap-1"
           >
             {id}
-            {!fallback && (
+            {isRequired && !fallback && (
               <AlertTriangle className="mly-w-3 mly-shrink-0 mly-h-3 mly-stroke-[2.5]" />
             )}
           </span>

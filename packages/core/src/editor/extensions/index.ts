@@ -18,9 +18,10 @@ import { getVariableSuggestions } from '../nodes/variable';
 import { SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
+import { Variables } from '../provider';
 
 type ExtensionsProps = {
-  variables?: string[];
+  variables?: Variables;
 };
 
 export function extensions(props: ExtensionsProps) {

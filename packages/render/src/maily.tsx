@@ -831,6 +831,7 @@ export class Maily {
             style={{
               height,
               width,
+              maxWidth: '100%',
             }}
             title={title || alt || 'Image'}
           />

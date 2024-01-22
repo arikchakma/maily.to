@@ -20,6 +20,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       }
+    },
+    "./jsx-email": {
+      "import": {
+        "types": "./dist/jsx-email/index.d.ts",
+        "default": "./dist/jsx-email/index.mjs"
+      },
+      "require": {
+        "types": "./dist/jsx-email/index.d.ts",
+        "default": "./dist/jsx-email/index.js"
+      }
     }
   },
   "license": "MIT",
@@ -58,6 +68,7 @@
   "dependencies": {
     "@react-email/components": "^0.0.11",
     "@react-email/render": "^0.0.9",
+    "jsx-email": "^1.9.0",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {

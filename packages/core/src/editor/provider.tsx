@@ -1,5 +1,6 @@
 'use client';
 
+import { Editor, Range } from '@tiptap/core';
 import { createContext, PropsWithChildren, useContext } from 'react';
 
 export type Variables = Array<{
@@ -8,12 +9,27 @@ export type Variables = Array<{
   required?: boolean;
 }>;
 
-type MailyContextType = {
+export interface CommandProps {
+  editor: Editor;
+  range: Range;
+}
+
+export type SlashCommandItem = {
+  title: string;
+  description: string;
+  searchTerms: string[];
+  icon: JSX.Element;
+  command: (options: CommandProps) => void;
+};
+
+export type MailyContextType = {
   variables?: Variables;
+  slashCommands?: SlashCommandItem[];
 };
 
 export const MailyContext = createContext<MailyContextType>({
   variables: [],
+  slashCommands: [],
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;

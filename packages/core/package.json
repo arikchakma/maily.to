@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/core",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
   "main": "./dist/index.js",

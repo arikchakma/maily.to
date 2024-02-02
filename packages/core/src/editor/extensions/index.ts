@@ -15,17 +15,15 @@ import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
 import { getVariableSuggestions } from '../nodes/variable';
-import { SlashCommand } from './slash-command';
+import { getSlashCommandSuggestions, SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
-import { Variables } from '../provider';
+import { MailyContextType } from '../provider';
 
-type ExtensionsProps = {
-  variables?: Variables;
-};
+type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const { variables } = props;
+  const { variables, slashCommands } = props;
 
   return [
     StarterKit.configure({
@@ -71,7 +69,9 @@ export function extensions(props: ExtensionsProps) {
     Variable.configure({
       suggestion: getVariableSuggestions(variables),
     }),
-    SlashCommand,
+    SlashCommand.configure({
+      suggestion: getSlashCommandSuggestions(slashCommands),
+    }),
     TiptapLink.configure({
       HTMLAttributes: {
         target: '_blank',

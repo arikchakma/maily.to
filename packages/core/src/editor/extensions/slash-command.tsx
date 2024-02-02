@@ -27,6 +27,7 @@ import {
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
 import { cn } from '@/editor/utils/classname';
+import { SlashCommandItem } from '../provider';
 
 interface CommandItemProps {
   title: string;
@@ -39,7 +40,7 @@ interface CommandProps {
   range: Range;
 }
 
-const Command = Extension.create({
+export const SlashCommand = Extension.create({
   name: 'slash-command',
   addOptions() {
     return {
@@ -69,187 +70,173 @@ const Command = Extension.create({
   },
 });
 
-const getSuggestionItems = ({ query }: { query: string }) => {
-  return [
-    {
-      title: 'Text',
-      description: 'Just start typing with plain text.',
-      searchTerms: ['p', 'paragraph'],
-      icon: <Text className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .toggleNode('paragraph', 'paragraph')
-          .run();
-      },
+const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
+  {
+    title: 'Text',
+    description: 'Just start typing with plain text.',
+    searchTerms: ['p', 'paragraph'],
+    icon: <Text className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .toggleNode('paragraph', 'paragraph')
+        .run();
     },
-    {
-      title: 'Heading 1',
-      description: 'Big section heading.',
-      searchTerms: ['title', 'big', 'large'],
-      icon: <Heading1 className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode('heading', { level: 1 })
-          .run();
-      },
+  },
+  {
+    title: 'Heading 1',
+    description: 'Big section heading.',
+    searchTerms: ['title', 'big', 'large'],
+    icon: <Heading1 className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode('heading', { level: 1 })
+        .run();
     },
-    {
-      title: 'Heading 2',
-      description: 'Medium section heading.',
-      searchTerms: ['subtitle', 'medium'],
-      icon: <Heading2 className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode('heading', { level: 2 })
-          .run();
-      },
+  },
+  {
+    title: 'Heading 2',
+    description: 'Medium section heading.',
+    searchTerms: ['subtitle', 'medium'],
+    icon: <Heading2 className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode('heading', { level: 2 })
+        .run();
     },
-    {
-      title: 'Heading 3',
-      description: 'Small section heading.',
-      searchTerms: ['subtitle', 'small'],
-      icon: <Heading3 className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode('heading', { level: 3 })
-          .run();
-      },
+  },
+  {
+    title: 'Heading 3',
+    description: 'Small section heading.',
+    searchTerms: ['subtitle', 'small'],
+    icon: <Heading3 className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setNode('heading', { level: 3 })
+        .run();
     },
-    {
-      title: 'Bullet List',
-      description: 'Create a simple bullet list.',
-      searchTerms: ['unordered', 'point'],
-      icon: <List className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).toggleBulletList().run();
-      },
+  },
+  {
+    title: 'Bullet List',
+    description: 'Create a simple bullet list.',
+    searchTerms: ['unordered', 'point'],
+    icon: <List className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).toggleBulletList().run();
     },
-    {
-      title: 'Numbered List',
-      description: 'Create a list with numbering.',
-      searchTerms: ['ordered'],
-      icon: <ListOrdered className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-      },
+  },
+  {
+    title: 'Numbered List',
+    description: 'Create a list with numbering.',
+    searchTerms: ['ordered'],
+    icon: <ListOrdered className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
     },
-    {
-      title: 'Image',
-      description: 'Full width image',
-      searchTerms: ['image'],
-      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        const imageUrl = prompt('Image URL: ') || '';
+  },
+  {
+    title: 'Image',
+    description: 'Full width image',
+    searchTerms: ['image'],
+    icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      const imageUrl = prompt('Image URL: ') || '';
 
-        if (!imageUrl) {
-          return;
-        }
+      if (!imageUrl) {
+        return;
+      }
 
-        editor.chain().focus().deleteRange(range).run();
-        editor.chain().focus().setImage({ src: imageUrl }).run();
-      },
+      editor.chain().focus().deleteRange(range).run();
+      editor.chain().focus().setImage({ src: imageUrl }).run();
     },
-    {
-      title: 'Logo',
-      description: 'Add your brand logo',
-      searchTerms: ['image', 'logo'],
-      icon: <ImageIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        const logoUrl = prompt('Logo URL: ') || '';
+  },
+  {
+    title: 'Logo',
+    description: 'Add your brand logo',
+    searchTerms: ['image', 'logo'],
+    icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      const logoUrl = prompt('Logo URL: ') || '';
 
-        if (!logoUrl) {
-          return;
-        }
-        editor.chain().focus().deleteRange(range).run();
-        editor.chain().focus().setLogoImage({ src: logoUrl }).run();
-      },
+      if (!logoUrl) {
+        return;
+      }
+      editor.chain().focus().deleteRange(range).run();
+      editor.chain().focus().setLogoImage({ src: logoUrl }).run();
     },
-    {
-      title: 'Spacer',
-      description:
-        'Add a spacer to the page. Useful for adding space between sections.',
-      searchTerms: ['space', 'gap', 'divider'],
-      icon: <MoveVertical className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setSpacer({ height: 'sm' })
-          .run();
-      },
+  },
+  {
+    title: 'Spacer',
+    description:
+      'Add a spacer to the page. Useful for adding space between sections.',
+    searchTerms: ['space', 'gap', 'divider'],
+    icon: <MoveVertical className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setSpacer({ height: 'sm' })
+        .run();
     },
-    {
-      title: 'Button',
-      description: 'Add a call to action button to the page.',
-      searchTerms: ['link', 'button', 'cta'],
-      icon: <MousePointer className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).setButton().run();
-      },
+  },
+  {
+    title: 'Button',
+    description: 'Add a call to action button to the page.',
+    searchTerms: ['link', 'button', 'cta'],
+    icon: <MousePointer className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setButton().run();
     },
-    {
-      title: 'Hard Break',
-      description: 'Add a break between lines.',
-      searchTerms: ['break', 'line'],
-      icon: <DivideIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).setHardBreak().run();
-      },
+  },
+  {
+    title: 'Hard Break',
+    description: 'Add a break between lines.',
+    searchTerms: ['break', 'line'],
+    icon: <DivideIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setHardBreak().run();
     },
-    {
-      title: 'Blockquote',
-      description: 'Add blockquote.',
-      searchTerms: ['quote', 'blockquote'],
-      icon: <TextQuote className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).toggleBlockquote().run();
-      },
+  },
+  {
+    title: 'Blockquote',
+    description: 'Add blockquote.',
+    searchTerms: ['quote', 'blockquote'],
+    icon: <TextQuote className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).toggleBlockquote().run();
     },
-    {
-      title: 'Footer',
-      description: 'Add a footer text to the page.',
-      searchTerms: ['footer', 'text'],
-      icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().deleteRange(range).setFooter().run();
-      },
+  },
+  {
+    title: 'Footer',
+    description: 'Add a footer text to the page.',
+    searchTerms: ['footer', 'text'],
+    icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setFooter().run();
     },
-    {
-      title: 'Clear Line',
-      description: 'Clear the current line.',
-      searchTerms: ['clear', 'line'],
-      icon: <EraserIcon className="mly-h-4 mly-w-4" />,
-      command: ({ editor, range }: CommandProps) => {
-        editor.chain().focus().selectParentNode().deleteSelection().run();
-      },
+  },
+  {
+    title: 'Clear Line',
+    description: 'Clear the current line.',
+    searchTerms: ['clear', 'line'],
+    icon: <EraserIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().selectParentNode().deleteSelection().run();
     },
-    // TODO: add support for quote and code blocks
-  ].filter((item) => {
-    if (typeof query === 'string' && query.length > 0) {
-      const search = query.toLowerCase();
-      return (
-        item.title.toLowerCase().includes(search) ||
-        item.description.toLowerCase().includes(search) ||
-        (item.searchTerms &&
-          item.searchTerms.some((term: string) => term.includes(search)))
-      );
-    }
-    return true;
-  });
-};
+  },
+];
 
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
   const containerHeight = container.offsetHeight;
@@ -387,55 +374,70 @@ const CommandList = ({
   ) : null;
 };
 
-const suggestion: Omit<SuggestionOptions, 'editor'> = {
-  items: getSuggestionItems,
-  render: () => {
-    let component: ReactRenderer<any> | null = null;
-    let popup: InstanceType<any> | null = null;
+export function getSlashCommandSuggestions(
+  commands: SlashCommandItem[] = []
+): Omit<SuggestionOptions, 'editor'> {
+  return {
+    items: ({ query }) => {
+      return [...DEFAULT_SLASH_COMMANDS, ...commands].filter((item) => {
+        if (typeof query === 'string' && query.length > 0) {
+          const search = query.toLowerCase();
+          return (
+            item.title.toLowerCase().includes(search) ||
+            item.description.toLowerCase().includes(search) ||
+            (item.searchTerms &&
+              item.searchTerms.some((term: string) => term.includes(search)))
+          );
+        }
+        return true;
+      });
+    },
+    render: () => {
+      let component: ReactRenderer<any>;
+      let popup: InstanceType<any> | null = null;
 
-    return {
-      onStart: (props) => {
-        component = new ReactRenderer(CommandList, {
-          props,
-          editor: props.editor,
-        });
-
-        popup = tippy('body', {
-          getReferenceClientRect: props.clientRect as GetReferenceClientRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: 'manual',
-        });
-      },
-      onUpdate: (props) => {
-        component?.updateProps(props);
-
-        popup &&
-          popup[0].setProps({
-            getReferenceClientRect: props.clientRect,
+      return {
+        onStart: (props) => {
+          component = new ReactRenderer(CommandList, {
+            props,
+            editor: props.editor,
           });
-      },
-      onKeyDown: (props) => {
-        if (props.event.key === 'Escape') {
-          popup?.[0].hide();
 
-          return true;
-        }
+          popup = tippy('body', {
+            getReferenceClientRect: props.clientRect as GetReferenceClientRect,
+            appendTo: () => document.body,
+            content: component.element,
+            showOnCreate: true,
+            interactive: true,
+            trigger: 'manual',
+          });
+        },
+        onUpdate: (props) => {
+          component?.updateProps(props);
 
-        return component?.ref?.onKeyDown(props);
-      },
-      onExit: () => {
-        if (!popup || !popup?.[0] || !component) {
-          return;
-        }
+          popup &&
+            popup[0].setProps({
+              getReferenceClientRect: props.clientRect,
+            });
+        },
+        onKeyDown: (props) => {
+          if (props.event.key === 'Escape') {
+            popup?.[0].hide();
 
-        popup?.[0].destroy();
-        component?.destroy();
-      },
-    };
-  },
-};
+            return true;
+          }
 
-export const SlashCommand = Command.configure({ suggestion });
+          return component?.ref?.onKeyDown(props);
+        },
+        onExit: () => {
+          if (!popup || !popup?.[0] || !component) {
+            return;
+          }
+
+          popup?.[0].destroy();
+          component?.destroy();
+        },
+      };
+    },
+  };
+}

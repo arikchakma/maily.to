@@ -8,7 +8,7 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { MailyProvider, Variables } from './provider';
+import { MailyContextType, MailyProvider, Variables } from './provider';
 import { cn } from './utils/classname';
 
 export type EditorProps = {
@@ -17,7 +17,6 @@ export type EditorProps = {
   onUpdate?: (editor?: TiptapEditor) => void;
   onCreate?: (editor?: TiptapEditor) => void;
   extensions?: Extension[];
-  variables?: Variables;
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -27,7 +26,7 @@ export type EditorProps = {
     bodyClassName?: string;
     autofocus?: FocusPosition;
   };
-};
+} & Partial<MailyContextType>;
 
 export function Editor(props: EditorProps) {
   const {
@@ -45,6 +44,7 @@ export function Editor(props: EditorProps) {
     contentHtml,
     contentJson,
     variables,
+    slashCommands,
   } = props;
 
   let formattedContent: any = null;
@@ -97,6 +97,7 @@ export function Editor(props: EditorProps) {
     extensions: [
       ...defaultExtensions({
         variables,
+        slashCommands,
       }),
       ...(extensions || []),
     ],

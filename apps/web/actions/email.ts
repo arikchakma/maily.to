@@ -425,3 +425,85 @@ export async function deleteEmailAction(formData: FormData) {
     error: null,
   };
 }
+
+export async function duplicateEmailAction(formData: FormData) {
+  const result = deleteEmailSchema.safeParse({
+    templateId: formData.get('templateId'),
+  });
+
+  if (!result.success) {
+    return {
+      data: null,
+      error: {
+        message: result.error.issues.map((issue) => issue.message).join(', '),
+        code: 'validation_error',
+        errors: result.error.issues.map((issue) => issue.message),
+      },
+    };
+  }
+
+  const { templateId } = result.data;
+
+  const supabase = createServerActionClient<Database>({ cookies });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      data: null,
+      error: {
+        message: 'Please login to save emails',
+        code: 'not_logged_in',
+      },
+    };
+  }
+
+  const { error: templateError, data: templateData } = await supabase
+    .from('mails')
+    .select()
+    .match({
+      id: templateId,
+      user_id: user.id,
+    })
+    .single();
+
+  if (templateError) {
+    return {
+      data: null,
+      error: {
+        message: templateError.message,
+        code: 'database_error',
+      },
+    };
+  }
+
+  const { title, content, preview_text: previewText } = templateData;
+  const { data, error } = await supabase
+    .from('mails')
+    .insert({
+      title: `[DUPLICATE] ${title}`,
+      content,
+      preview_text: previewText,
+      user_id: user.id,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    return {
+      data: null,
+      error: {
+        message: error.message,
+        code: 'database_error',
+      },
+    };
+  }
+
+  revalidatePath('/template', 'layout');
+
+  return {
+    data,
+    error: null,
+  };
+}

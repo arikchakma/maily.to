@@ -1,11 +1,14 @@
 'use client';
 
 import NextLink from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { cn } from '@/utils/classname';
 import type { Database } from '@/types/database';
 import { LogoutButton } from './auth/logout-button';
 import { buttonVariants } from './ui/button';
+import { FilePlus2 } from 'lucide-react';
+import { duplicateEmailAction } from '@/actions/email';
+import { toast } from 'sonner';
 
 export type MailsRowType = Database['public']['Tables']['mails']['Row'];
 
@@ -16,6 +19,23 @@ interface TemplateSidebarProps {
 export function TemplateSidebar(props: TemplateSidebarProps) {
   const { mails } = props;
   const { templateId } = useParams();
+  const router = useRouter();
+
+  const handleEmailDuplicate = (oldTemplateId: string) => {
+    const formData = new FormData();
+    formData.set('templateId', oldTemplateId);
+
+    toast.promise(duplicateEmailAction(formData), {
+      loading: 'Duplicating Email',
+      success(data) {
+        router.push(`/template/${data.data?.id}`);
+        return 'Email Duplicated';
+      },
+      error(error: Error) {
+        return error.message;
+      },
+    });
+  };
 
   return (
     <aside className="flex w-[225px] shrink-0 flex-col border-r pb-2 max-lg:w-[180px]">
@@ -36,10 +56,13 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
           <ul className="space-y-0.5 px-1">
             {mails.map((template) => {
               return (
-                <li key={template.id}>
+                <li
+                  key={template.id}
+                  className="group relative flex items-center"
+                >
                   <NextLink
                     className={cn(
-                      'rounded-md px-2 py-1.5 text-sm hover:bg-gray-100',
+                      'rounded-md px-2 py-1.5 pr-7 text-sm hover:bg-gray-100',
                       'flex h-auto w-full min-w-0 items-center font-medium',
                       templateId === template.id ? 'bg-gray-100' : ''
                     )}
@@ -47,6 +70,15 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
                   >
                     <span className="block truncate">{template.title}</span>
                   </NextLink>
+                  <button
+                    className="absolute right-0 mr-1.5 hidden group-hover:block"
+                    onClick={() => {
+                      handleEmailDuplicate(template.id);
+                    }}
+                    type="button"
+                  >
+                    <FilePlus2 className="h-4 w-4 shrink-0" />
+                  </button>
                 </li>
               );
             })}

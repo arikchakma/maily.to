@@ -2,13 +2,13 @@
 
 import NextLink from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { FilePlus2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/utils/classname';
 import type { Database } from '@/types/database';
+import { duplicateEmailAction } from '@/actions/email';
 import { LogoutButton } from './auth/logout-button';
 import { buttonVariants } from './ui/button';
-import { FilePlus2 } from 'lucide-react';
-import { duplicateEmailAction } from '@/actions/email';
-import { toast } from 'sonner';
 
 export type MailsRowType = Database['public']['Tables']['mails']['Row'];
 
@@ -22,14 +22,16 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
   const router = useRouter();
 
   const handleEmailDuplicate = (oldTemplateId: string) => {
+    const template = mails.find((mail) => mail.id === oldTemplateId);
+
     const formData = new FormData();
     formData.set('templateId', oldTemplateId);
 
     toast.promise(duplicateEmailAction(formData), {
-      loading: 'Duplicating Email',
+      loading: `Duplicating ${template?.title}...`,
       success(data) {
         router.push(`/template/${data.data?.id}`);
-        return 'Email Duplicated';
+        return 'Template Duplicated';
       },
       error(error: Error) {
         return error.message;
@@ -57,8 +59,8 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
             {mails.map((template) => {
               return (
                 <li
-                  key={template.id}
                   className="group relative flex items-center"
+                  key={template.id}
                 >
                   <NextLink
                     className={cn(

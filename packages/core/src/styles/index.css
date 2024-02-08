@@ -162,3 +162,24 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.mly-editor .react-colorful__alpha {
+  border-radius: 0;
+}
+
+.mly-editor .react-colorful__saturation,
+.mly-editor .react-colorful__hue,
+.mly-editor .react-colorful__alpha
+{
+  border-radius: 8px;
+}
+
+.mly-editor .react-colorful__hue,
+.mly-editor .react-colorful__alpha {
+  height: 16px;
+}
+
+.mly-editor .react-colorful__pointer {
+  width: 16px;
+  height: 16px;
+}

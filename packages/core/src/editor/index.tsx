@@ -8,7 +8,7 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { MailyContextType, MailyProvider, Variables } from './provider';
+import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
 
 export type EditorProps = {

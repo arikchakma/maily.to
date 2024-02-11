@@ -1,5 +1,6 @@
 'use client';
 
+// @ts-ignore
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 import { Loader2, Save } from 'lucide-react';

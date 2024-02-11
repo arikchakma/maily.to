@@ -1,8 +1,10 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
-import { HexAlphaColorPicker } from 'react-colorful';
+import { useEffect, useState } from 'react';
+import { HexAlphaColorPicker, HexColorInput } from 'react-colorful';
 
 import { BaseButton } from '../components/base-button';
+import { ColorPicker } from '../components/color-picker';
 import { Input } from '../components/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import {
@@ -61,6 +63,7 @@ export function ButtonComponent(props: NodeViewProps) {
     buttonColor,
     textColor,
   } = props.node.attrs;
+  const { getPos, editor } = props;
 
   return (
     <NodeViewWrapper
@@ -76,7 +79,7 @@ export function ButtonComponent(props: NodeViewProps) {
       <Popover open={props.selected}>
         <PopoverTrigger asChild>
           <div>
-            <a
+            <button
               className={cn(
                 'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors disabled:mly-pointer-events-none disabled:mly-opacity-50',
                 'mly-h-10 mly-px-4 mly-py-2',
@@ -87,9 +90,6 @@ export function ButtonComponent(props: NodeViewProps) {
                   '!mly-rounded-none': _radius === 'sharp',
                 }
               )}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
               tabIndex={-1}
               style={{
                 backgroundColor:
@@ -99,9 +99,14 @@ export function ButtonComponent(props: NodeViewProps) {
                 borderStyle: 'solid',
                 borderColor: buttonColor,
               }}
+              onClick={(e) => {
+                e.preventDefault();
+                const pos = getPos();
+                editor.commands.setNodeSelection(pos);
+              }}
             >
               {text}
-            </a>
+            </button>
           </div>
         </PopoverTrigger>
         <PopoverContent
@@ -247,8 +252,8 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
           />
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
-        <HexAlphaColorPicker
+      <PopoverContent className="mly-w-full mly-rounded-none mly-border-0 !mly-bg-transparent !mly-p-0 mly-shadow-none mly-drop-shadow-md">
+        <ColorPicker
           color={color}
           onChange={(newColor) => {
             // HACK: This is a workaround for a bug in tiptap
@@ -285,8 +290,8 @@ function TextColorPickerPopup(props: ColorPickerProps) {
           </div>
         </BaseButton>
       </PopoverTrigger>
-      <PopoverContent className="mly-w-full !mly-p-0 mly-rounded-none mly-bg-transparent mly-border-0">
-        <HexAlphaColorPicker
+      <PopoverContent className="mly-w-full mly-rounded-none mly-border-0 !mly-bg-transparent !mly-p-0 mly-shadow-none mly-drop-shadow-md">
+        <ColorPicker
           color={color}
           onChange={(color) => {
             queueMicrotask(() => {

@@ -51,7 +51,7 @@ export const VariableList = forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="mly-z-50 mly-h-auto mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-p-1 mly-shadow-md mly-transition-all mly-min-w-[128px]">
+    <div className="mly-z-50 mly-h-auto mly-min-w-[128px] mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-p-1 mly-shadow-md mly-transition-all">
       {props?.items?.length ? (
         props?.items?.map((item: string, index: number) => (
           <button
@@ -66,7 +66,7 @@ export const VariableList = forwardRef((props: any, ref) => {
           </button>
         ))
       ) : (
-        <button className="mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 mly-bg-white">
+        <button className="mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-bg-white mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100">
           No result
         </button>
       )}
@@ -165,7 +165,7 @@ export function VariableComponent(props: NodeViewProps) {
       className={cn(
         'react-component',
         selected && 'ProseMirror-selectednode',
-        'mly-leading-none mly-inline-block'
+        'mly-inline-block mly-leading-none'
       )}
       draggable="false"
     >
@@ -173,11 +173,11 @@ export function VariableComponent(props: NodeViewProps) {
         <PopoverTrigger>
           <span
             tabIndex={-1}
-            className="mly-py-1 mly-px-2 mly-bg-rose-50 mly-border mly-border-rose-200 mly-text-rose-800 mly-rounded-md mly-leading-none mly-inline-flex mly-items-center mly-gap-1"
+            className="mly-inline-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-border-rose-200 mly-bg-rose-50 mly-px-2 mly-py-1 mly-leading-none mly-text-rose-800"
           >
             {id}
             {isRequired && !fallback && (
-              <AlertTriangle className="mly-w-3 mly-shrink-0 mly-h-3 mly-stroke-[2.5]" />
+              <AlertTriangle className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
             )}
           </span>
         </PopoverTrigger>
@@ -187,8 +187,8 @@ export function VariableComponent(props: NodeViewProps) {
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
-            <span className="mly-leading-none mly-text-xs mly-font-normal">
+          <label className="mly-block mly-w-full mly-space-y-1.5 mly-leading-none">
+            <span className="mly-text-xs mly-font-normal mly-leading-none">
               Variable Name
             </span>
             <Input
@@ -201,8 +201,8 @@ export function VariableComponent(props: NodeViewProps) {
               }}
             />
           </label>
-          <label className="mly-block mly-w-full mly-leading-none mly-space-y-1.5">
-            <span className="mly-leading-none mly-text-xs mly-font-normal">
+          <label className="mly-block mly-w-full mly-space-y-1.5 mly-leading-none">
+            <span className="mly-text-xs mly-font-normal mly-leading-none">
               Fallback Value
             </span>
             <Input

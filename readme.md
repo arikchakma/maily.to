@@ -35,6 +35,7 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Divider
 - Spacer
 - Footer
+- Inline Code
 
 <br />
 

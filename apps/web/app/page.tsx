@@ -187,7 +187,7 @@ export default function LandingPage() {
       <div className="bg-black py-8 text-white">
         <div className="mx-auto max-w-[1050px] px-7 sm:px-10">
           <p className="text-center text-lg text-white">
-            MIT Licensed © 2023
+            MIT Licensed © 2024
             <span className="mx-3 hidden sm:inline-block">·</span>
             <a
               className="hidden items-center hover:text-red-300 sm:inline-flex"

@@ -1,12 +1,28 @@
 import NextLink from 'next/link';
+import type { Metadata } from 'next';
 import { buttonVariants } from '@/components/ui/button';
 import { GithubLoginButton } from '@/components/auth/github-login-button';
 import { cn } from '@/utils/classname';
 import { GoogleLoginButton } from '@/components/auth/google-login-button';
 import { EmailLoginForm } from '@/components/auth/email-login-form';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Login - Maily',
+  description: 'Login to your Maily account.',
+  openGraph: {
+    siteName: 'Maily',
+    title: 'Login - Maily',
+    description: 'Login to your Maily account.',
+    type: 'website',
+    url: 'https://maily.to',
+    locale: 'en-US',
+    images: {
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Maily Preview',
+    },
+  },
 };
 
 export default function LoginPage() {

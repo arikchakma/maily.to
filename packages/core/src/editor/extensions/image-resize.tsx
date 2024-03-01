@@ -8,7 +8,6 @@ import TipTapImage from '@tiptap/extension-image';
 import { useEvent } from '../utils/use-event';
 
 const MIN_WIDTH = 60;
-const BORDER_COLOR = '#0096fd';
 
 function ResizableImageTemplate(props: NodeViewProps) {
   const { node, updateAttributes, selected } = props;

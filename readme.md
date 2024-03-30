@@ -20,8 +20,6 @@
 
 Just follow this link to [access the editor](https://maily.to/playground)
 
-<br />
-
 ## Why use Maily Editor?
 
 Designing emails that work across all email platforms, browsers, etc is hard. **Maily** is an opinionated editor that lets you craft emails in a hassle-free manner. We have a bunch of pre-designed components that make it easy for you to design any kind of email. Here is the list of components supported by **maily** with more being added.
@@ -36,8 +34,6 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Spacer
 - Footer
 - Inline Code
-
-<br />
 
 ## Contributions
 

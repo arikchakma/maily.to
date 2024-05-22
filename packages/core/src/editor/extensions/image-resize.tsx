@@ -92,6 +92,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
   }
 
   let { alignment = 'center', width, height } = node.attrs || {};
+  const { externalLink, ...attrs } = node.attrs || {};
 
   return (
     <NodeViewWrapper
@@ -115,7 +116,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
       }}
     >
       <img
-        {...node.attrs}
+        {...attrs}
         ref={imgRef}
         style={{
           ...resizingStyle,
@@ -162,6 +163,21 @@ export const ResizableImageExtension = TipTapImage.extend({
         renderHTML: ({ alignment }) => ({ 'data-alignment': alignment }),
         parseHTML: (element) =>
           element.getAttribute('data-alignment') || 'center',
+      },
+      externalLink: {
+        default: null,
+        renderHTML: ({ externalLink }) => {
+          if (!externalLink) {
+            return {};
+          }
+          return {
+            'data-external-link': externalLink,
+          };
+        },
+        parseHTML: (element) => {
+          const externalLink = element.getAttribute('data-external-link');
+          return externalLink ? { externalLink } : null;
+        },
       },
     };
   },

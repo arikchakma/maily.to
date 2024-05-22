@@ -408,6 +408,18 @@ export class Maily {
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}`,
             }}
           />
+
+          <meta content="width=device-width" name="viewport" />
+          <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
+          <meta name="x-apple-disable-message-reformatting" />
+          <meta
+            // http://www.html-5.com/metatags/format-detection-meta-tag.html
+            // It will prevent iOS from automatically detecting possible phone numbers in a block of text
+            content="telephone=no,address=no,email=no,date=no,url=no"
+            name="format-detection"
+          />
+          <meta content="light" name="color-scheme" />
+          <meta content="light" name="supported-color-schemes" />
         </Head>
         <Body>
           {preview ? (
@@ -458,7 +470,7 @@ export class Maily {
 
         return <Fragment key={generateKey()}>{component}</Fragment>;
       })
-      ?.filter((n) => n !== null) as JSX.Element[];
+      .filter((n) => n !== null) as JSX.Element[];
   }
 
   // `renderNode` will call the method of the corresponding node type
@@ -812,10 +824,27 @@ export class Maily {
       width = 'auto',
       height = 'auto',
       alignment = 'center',
+      externalLink = '',
     } = attrs || {};
 
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
+
+    const mainImage = (
+      <Img
+        alt={alt || title || 'Image'}
+        src={src}
+        style={{
+          height,
+          width,
+          maxWidth: '100%',
+          outline: 'none',
+          border: 'none',
+          textDecoration: 'none',
+        }}
+        title={title || alt || 'Image'}
+      />
+    );
 
     return (
       <Row
@@ -825,16 +854,22 @@ export class Maily {
         }}
       >
         <Column align={alignment}>
-          <Img
-            alt={alt || title || 'Image'}
-            src={src}
-            style={{
-              height,
-              width,
-              maxWidth: '100%',
-            }}
-            title={title || alt || 'Image'}
-          />
+          {externalLink ? (
+            <a
+              href={externalLink}
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                maxWidth: '100%',
+                textDecoration: 'none',
+              }}
+              target="_blank"
+            >
+              {mainImage}
+            </a>
+          ) : (
+            mainImage
+          )}
         </Column>
       </Row>
     );

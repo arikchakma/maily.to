@@ -3,6 +3,7 @@ import {
   AlignCenterIcon,
   AlignLeftIcon,
   AlignRightIcon,
+  ArrowUpRight,
   Link,
   Unlink,
 } from 'lucide-react';
@@ -98,6 +99,24 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
       icon: Unlink,
+    },
+    {
+      name: 'image-external-url',
+      isActive: () => false,
+      shouldShow: () => editor?.isActive('image')!,
+      command: () => {
+        const { editor } = props;
+        // const currentUrl = editor?.getAttributes('image')?.ex
+        const externalLink = editor?.getAttributes('image')?.externalLink;
+
+        const url = window.prompt(
+          'Update Image External URL',
+          externalLink || ''
+        );
+
+        editor?.commands.updateAttributes('image', { externalLink: url || '' });
+      },
+      icon: ArrowUpRight,
     },
 
     ...sizeItems,

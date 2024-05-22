@@ -25,6 +25,5 @@
     "turbo": "latest",
     "vite": "^5.0.12",
     "vitest": "^1.2.2"
-  },
-  "packageManager": "pnpm@8.9.0"
+  }
 }

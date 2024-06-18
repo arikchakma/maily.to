@@ -56,7 +56,7 @@ export function AdvertisementComponent(props: NodeViewProps) {
               editor.commands.setNodeSelection(pos);
             }}
           >
-            <div className="mly-no-prose mly-flex mly-flex-col mly-gap-2">
+            <div className="mly-no-prose mly-flex mly-flex-col mly-gap-2 mly-border mly-border-gray-300 mly-p-2">
               <div className="mly-flex mly-items-stretch">
                 {image && (
                   <div className="mly-relative mly-aspect-[4/5] mly-w-[160px] mly-shrink-0">
@@ -91,12 +91,14 @@ export function AdvertisementComponent(props: NodeViewProps) {
                   <p className="!mly-my-0 !mly-text-base mly-text-gray-500">
                     {description}
                   </p>
-                  <a
-                    href={link}
-                    className="mly-mt-5 mly-text-sm mly-font-semibold"
-                  >
-                    {linkTitle}
-                  </a>
+                  {linkTitle ? (
+                    <a
+                      href={link}
+                      className="mly-mt-5 mly-text-sm mly-font-semibold"
+                    >
+                      {linkTitle}
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </div>

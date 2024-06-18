@@ -14,14 +14,11 @@ import {
   Preview,
   Row,
   Column,
-} from '@react-email/components';
-import {
-  render as reactEmailRender,
-  renderAsync as reactEmailRenderAsync,
-} from '@react-email/render';
+  render as jsxEmailRender,
+} from 'jsx-email';
 import type { JSONContent } from '@tiptap/core';
 import merge from 'lodash/merge';
-import { generateKey } from './utils';
+import { generateKey } from '../utils';
 import {
   antialiased,
   CODE_FONT_FAMILY,
@@ -30,7 +27,7 @@ import {
   headings,
   logoSizes,
   spacers,
-} from './constants';
+} from '../constants';
 import type {
   AllowedHeadings,
   AllowedLogoSizes,
@@ -43,9 +40,9 @@ import type {
   ThemeOptions,
   VariableFormatter,
   VariableValues,
-} from './types';
+} from '../types';
 
-export class Maily {
+export class JSXMaily {
   private readonly content: JSONContent;
   private config: MailyConfig = {
     theme: DEFAULT_THEME,
@@ -201,16 +198,10 @@ export class Maily {
     }
   }
 
-  renderSync(options: RenderOptions = DEFAULT_RENDER_OPTIONS): string {
+  renderAsync(options: RenderOptions = DEFAULT_RENDER_OPTIONS) {
     const markup = this.markup();
-    return reactEmailRender(markup, options);
-  }
-
-  async renderAsync(
-    options: RenderOptions = DEFAULT_RENDER_OPTIONS
-  ): Promise<string> {
-    const markup = this.markup();
-    return reactEmailRenderAsync(markup, options);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return jsxEmailRender(markup, options);
   }
 
   /**

@@ -12,14 +12,24 @@
   ],
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "browser": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./jsx": {
+      "browser": "./dist/jsx/index.mjs",
+      "import": "./dist/jsx/index.mjs",
+      "require": "./dist/jsx/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ],
+      "jsx": [
+        "dist/jsx/index.d.ts"
+      ]
     }
   },
   "license": "MIT",
@@ -47,17 +57,18 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.23.3",
-    "@tiptap/core": "^2.1.13",
-    "@types/lodash": "^4.14.202",
-    "@types/react": "^18.2.42",
+    "@babel/preset-react": "^7.24.7",
+    "@tiptap/core": "^2.4.0",
+    "@types/lodash": "^4.17.5",
+    "@types/react": "^18.3.3",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.11",
-    "@react-email/render": "^0.0.9",
+    "@react-email/components": "^0.0.19",
+    "@react-email/render": "^0.0.15",
+    "jsx-email": "^1.12.1",
     "lodash": "^4.17.21"
   },
   "peerDependencies": {

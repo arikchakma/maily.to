@@ -1,6 +1,6 @@
 import type { JSONContent } from '@tiptap/core';
 import { Maily } from './maily';
-import type { MailyConfig, RenderOptions } from './maily';
+import type { MailyConfig, RenderOptions } from './types';
 
 export async function renderAsync(
   content: JSONContent,

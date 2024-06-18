@@ -1,14 +1,24 @@
+/* eslint-disable import/no-default-export */
+import type { Options } from 'tsup';
 import { defineConfig } from 'tsup';
 
-// eslint-disable-next-line import/no-default-export
-export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  banner: {
-    js: '// @ts-nocheck\n',
-  },
-  dts: true,
+const packageOptions: Options = {
   clean: true,
   minify: true,
+  dts: true,
+  format: ['cjs', 'esm'],
   external: ['react'],
-});
+};
+
+export default defineConfig([
+  {
+    ...packageOptions,
+    entry: ['src/index.ts'],
+    outDir: 'dist',
+  },
+  {
+    ...packageOptions,
+    entry: ['src/jsx/index.ts'],
+    outDir: 'dist/jsx',
+  },
+]);

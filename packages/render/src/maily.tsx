@@ -89,6 +89,11 @@ export interface ThemeOptions {
     blockquoteBorder?: string;
     codeBackground?: string;
     codeText?: string;
+    advertisementTitle?: string;
+    advertisementDescription?: string;
+    advertisementBadgeText?: string;
+    advertisementBadgeBackground?: string;
+    advertisementSubTitle: string;
   };
   fontSize?: {
     paragraph?: string;
@@ -164,6 +169,11 @@ const DEFAULT_THEME: ThemeOptions = {
     blockquoteBorder: 'rgb(209, 213, 219)',
     codeBackground: 'rgb(239, 239, 239)',
     codeText: 'rgb(17, 24, 39)',
+    advertisementTitle: 'rgb(17, 24, 39)',
+    advertisementDescription: 'rgb(107, 114, 128)',
+    advertisementBadgeText: 'rgb(17, 24, 39)',
+    advertisementBadgeBackground: 'rgb(254, 240, 138)',
+    advertisementSubTitle: 'rgb(107, 114, 128)',
   },
   fontSize: {
     paragraph: '15px',
@@ -936,6 +946,162 @@ export class Maily {
       >
         {text}
       </code>
+    );
+  }
+  private advertisement(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { next } = options || {};
+    const isNextSpacer = next?.type === 'spacer';
+
+    const width = 160;
+    const aspectRatio = 4 / 5;
+    const height = width / aspectRatio;
+
+    const { title, description, link, linkTitle, image, badgeText, subTitle } =
+      attrs || {};
+    const href =
+      this.linkValues.get(link) || this.variableValues.get(link) || link || '#';
+
+    return (
+      <a
+        href={href}
+        rel="noopener noreferrer"
+        style={{
+          textDecoration: 'none',
+          color: 'inherit',
+          display: 'block',
+        }}
+        target="_blank"
+      >
+        <Row
+          style={{
+            marginTop: '0px',
+            marginBottom: isNextSpacer ? '0px' : '20px',
+          }}
+        >
+          {image ? (
+            <Column
+              style={{
+                width: `${width}px`,
+                height: `${height}px`,
+              }}
+            >
+              <Img
+                alt={title || 'Advertisement'}
+                src={image}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+                title={title || 'Advertisement'}
+              />
+            </Column>
+          ) : null}
+
+          <Column
+            style={{
+              ...(image
+                ? {
+                    padding: '10px',
+                  }
+                : {}),
+              verticalAlign: 'top',
+            }}
+          >
+            <Row
+              align={undefined}
+              style={{
+                marginBottom: '4px',
+                marginTop: '0px',
+              }}
+              width="auto"
+            >
+              <Column>
+                <Text
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: 600,
+                    color: this.config.theme?.colors?.advertisementTitle,
+                    margin: '0px',
+                    ...antialiased,
+                  }}
+                >
+                  {title}
+                </Text>
+              </Column>
+              {badgeText || subTitle ? (
+                <Column
+                  style={{
+                    paddingLeft: '6px',
+                    verticalAlign: 'middle',
+                  }}
+                >
+                  {badgeText ? (
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color:
+                          this.config.theme?.colors?.advertisementBadgeText,
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        backgroundColor:
+                          this.config.theme?.colors
+                            ?.advertisementBadgeBackground,
+                        fontSize: '12px',
+                        lineHeight: '12px',
+                      }}
+                    >
+                      {badgeText}
+                    </span>
+                  ) : null}{' '}
+                  {subTitle && !badgeText ? (
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color: this.config.theme?.colors?.advertisementSubTitle,
+                        fontSize: '12px',
+                        lineHeight: '12px',
+                      }}
+                    >
+                      {subTitle}
+                    </span>
+                  ) : null}
+                </Column>
+              ) : null}
+            </Row>
+            <Text
+              style={{
+                fontSize: '16px',
+                color: this.config.theme?.colors?.advertisementDescription,
+                marginTop: '0px',
+                marginBottom: '0px',
+                ...antialiased,
+              }}
+            >
+              {description}
+            </Text>
+
+            {linkTitle ? (
+              <a
+                href={href}
+                rel="noopener noreferrer"
+                style={{
+                  color: this.config.theme?.colors?.advertisementTitle,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  display: 'inline-block',
+                  margin: '0px',
+                  textDecoration: 'underline',
+                  marginTop: '20px',
+                }}
+              >
+                {linkTitle}
+              </a>
+            ) : null}
+          </Column>
+        </Row>
+      </a>
     );
   }
 }

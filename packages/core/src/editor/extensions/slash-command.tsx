@@ -19,6 +19,7 @@ import {
   ImageIcon,
   List,
   ListOrdered,
+  Megaphone,
   MousePointer,
   MoveVertical,
   Text,
@@ -198,6 +199,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     icon: <MousePointer className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setButton().run();
+    },
+  },
+  {
+    title: 'Advertisement',
+    description: 'Add an advertisement to the page.',
+    searchTerms: ['link', 'button', 'image'],
+    icon: <Megaphone className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setAdvertisement().run();
     },
   },
   {

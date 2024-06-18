@@ -1,37 +1,17 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
-
-import { AllowedLogoAlignment } from '../nodes/logo';
-import { AdvertisementComponent } from '../nodes/advertisement';
-
-export const allowedButtonVariant = ['filled', 'outline'] as const;
-export type AllowedButtonVariant = (typeof allowedButtonVariant)[number];
-
-export const allowedButtonBorderRadius = ['sharp', 'smooth', 'round'] as const;
-export type AllowedButtonBorderRadius =
-  (typeof allowedButtonBorderRadius)[number];
-
-export interface ButtonOptions {
-  text: string;
-  url: string;
-  alignment: AllowedLogoAlignment;
-  variant: AllowedButtonVariant;
-  borderRadius: AllowedButtonBorderRadius;
-  buttonColor: string;
-  textColor: string;
-  HTMLAttributes: Record<string, any>;
-}
+import { LinkCardComponent } from '../nodes/link-card';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    advertisement: {
-      setAdvertisement: () => ReturnType;
+    'linkCard': {
+      setLinkCard: () => ReturnType;
     };
   }
 }
 
-export const AdvertisementExtension = Node.create({
-  name: 'advertisement',
+export const LinkCardExtension = Node.create({
+  name: 'linkCard',
   group: 'block',
   atom: true,
   draggable: true,
@@ -39,10 +19,7 @@ export const AdvertisementExtension = Node.create({
   addAttributes() {
     return {
       mailyComponent: {
-        default: 'advertisement',
-      },
-      layout: {
-        default: 'left-image',
+        default: 'linkCard',
       },
       title: {
         default: '',
@@ -90,7 +67,7 @@ export const AdvertisementExtension = Node.create({
 
   addCommands() {
     return {
-      setAdvertisement:
+      setLinkCard:
         () =>
         ({ commands }) => {
           return commands.insertContent({
@@ -104,6 +81,6 @@ export const AdvertisementExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(AdvertisementComponent);
+    return ReactNodeViewRenderer(LinkCardComponent);
   },
 });

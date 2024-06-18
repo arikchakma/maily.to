@@ -208,7 +208,7 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     searchTerms: ['link', 'button', 'image'],
     icon: <ArrowUpRightSquare className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setAdvertisement().run();
+      editor.chain().focus().deleteRange(range).setLinkCard().run();
     },
   },
   {

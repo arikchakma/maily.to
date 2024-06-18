@@ -5,27 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { Textarea } from '../components/textarea';
 import { cn } from '../utils/classname';
 
-export const allowedAdvertisementLayout = [
-  'left-image',
-  // TODO: Implement it later
-  // 'right-image',
-] as const;
-
-const items = {
-  layout(props: NodeViewProps) {
-    return allowedAdvertisementLayout.map((layout) => ({
-      name: layout,
-      isActive: props.node.attrs.layout === layout,
-      onClick: () => {
-        props.updateAttributes({
-          layout,
-        });
-      },
-    }));
-  },
-};
-
-export function AdvertisementComponent(props: NodeViewProps) {
+export function LinkCardComponent(props: NodeViewProps) {
   const {
     layout,
     title,
@@ -61,7 +41,7 @@ export function AdvertisementComponent(props: NodeViewProps) {
                 <div className="mly-relative mly-aspect-[16/9] mly-w-full mly-shrink-0 mly-mb-1.5">
                   <img
                     src={image}
-                    alt="advertisement"
+                    alt="link-card"
                     className="mly-no-prose mly-absolute mly-inset-0 !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg mly-object-cover"
                   />
                 </div>

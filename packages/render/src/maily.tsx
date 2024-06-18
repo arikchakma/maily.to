@@ -89,11 +89,11 @@ export interface ThemeOptions {
     blockquoteBorder?: string;
     codeBackground?: string;
     codeText?: string;
-    advertisementTitle?: string;
-    advertisementDescription?: string;
-    advertisementBadgeText?: string;
-    advertisementBadgeBackground?: string;
-    advertisementSubTitle: string;
+    linkCardTitle?: string;
+    linkCardDescription?: string;
+    linkCardBadgeText?: string;
+    linkCardBadgeBackground?: string;
+    linkCardSubTitle: string;
   };
   fontSize?: {
     paragraph?: string;
@@ -169,11 +169,11 @@ const DEFAULT_THEME: ThemeOptions = {
     blockquoteBorder: 'rgb(209, 213, 219)',
     codeBackground: 'rgb(239, 239, 239)',
     codeText: 'rgb(17, 24, 39)',
-    advertisementTitle: 'rgb(17, 24, 39)',
-    advertisementDescription: 'rgb(107, 114, 128)',
-    advertisementBadgeText: 'rgb(17, 24, 39)',
-    advertisementBadgeBackground: 'rgb(254, 240, 138)',
-    advertisementSubTitle: 'rgb(107, 114, 128)',
+    linkCardTitle: 'rgb(17, 24, 39)',
+    linkCardDescription: 'rgb(107, 114, 128)',
+    linkCardBadgeText: 'rgb(17, 24, 39)',
+    linkCardBadgeBackground: 'rgb(254, 240, 138)',
+    linkCardSubTitle: 'rgb(107, 114, 128)',
   },
   fontSize: {
     paragraph: '15px',
@@ -948,7 +948,7 @@ export class Maily {
       </code>
     );
   }
-  private advertisement(node: JSONContent, options?: NodeOptions): JSX.Element {
+  private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
@@ -989,7 +989,7 @@ export class Maily {
               }}
             >
               <Img
-                alt={title || 'Advertisement'}
+                alt={title || 'Link Card'}
                 src={image}
                 style={{
                   borderRadius: '10px 10px 0 0',
@@ -997,7 +997,7 @@ export class Maily {
                   height: '100%',
                   objectFit: 'cover',
                 }}
-                title={title || 'Advertisement'}
+                title={title || 'Link Card'}
               />
             </Column>
           </Row>
@@ -1028,7 +1028,7 @@ export class Maily {
                   style={{
                     fontSize: '18px',
                     fontWeight: 600,
-                    color: this.config.theme?.colors?.advertisementTitle,
+                    color: this.config.theme?.colors?.linkCardTitle,
                     margin: '0px',
                     ...antialiased,
                   }}
@@ -1048,12 +1048,12 @@ export class Maily {
                       style={{
                         fontWeight: 600,
                         color:
-                          this.config.theme?.colors?.advertisementBadgeText,
+                          this.config.theme?.colors?.linkCardBadgeText,
                         padding: '4px 8px',
                         borderRadius: '8px',
                         backgroundColor:
                           this.config.theme?.colors
-                            ?.advertisementBadgeBackground,
+                            ?.linkCardBadgeBackground,
                         fontSize: '12px',
                         lineHeight: '12px',
                       }}
@@ -1065,7 +1065,7 @@ export class Maily {
                     <span
                       style={{
                         fontWeight: 'normal',
-                        color: this.config.theme?.colors?.advertisementSubTitle,
+                        color: this.config.theme?.colors?.linkCardSubTitle,
                         fontSize: '12px',
                         lineHeight: '12px',
                       }}
@@ -1079,7 +1079,7 @@ export class Maily {
             <Text
               style={{
                 fontSize: '16px',
-                color: this.config.theme?.colors?.advertisementDescription,
+                color: this.config.theme?.colors?.linkCardDescription,
                 marginTop: '0px',
                 marginBottom: '0px',
                 ...antialiased,
@@ -1091,7 +1091,7 @@ export class Maily {
                   href={href}
                   rel="noopener noreferrer"
                   style={{
-                    color: this.config.theme?.colors?.advertisementTitle,
+                    color: this.config.theme?.colors?.linkCardTitle,
                     fontSize: '14px',
                     fontWeight: 600,
                     textDecoration: 'underline',

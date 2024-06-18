@@ -19,7 +19,7 @@ import { getSlashCommandSuggestions, SlashCommand } from './slash-command';
 import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
 import { MailyContextType } from '../provider';
-import { AdvertisementExtension } from './advertisement';
+import { LinkCardExtension } from './link-card';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -82,6 +82,6 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     ResizableImageExtension,
-    AdvertisementExtension,
+    LinkCardExtension,
   ];
 }

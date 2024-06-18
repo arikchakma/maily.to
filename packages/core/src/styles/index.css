@@ -91,13 +91,13 @@
 }
 
 .mly-editor .mly-prose .node-button + .spacer,
-.mly-editor .mly-prose .node-advertisement + .spacer,
+.mly-editor .mly-prose .node-linkCard + .spacer,
 .mly-editor .mly-prose footer + .spacer {
   margin-top: -20px;
 }
 
 .mly-editor .mly-prose .node-button,
-.mly-editor .mly-prose .node-advertisement {
+.mly-editor .mly-prose .node-linkCard {
   margin-top: 0;
   margin-bottom: 20px;
 }

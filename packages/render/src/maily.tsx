@@ -953,8 +953,8 @@ export class Maily {
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
-    const width = 160;
-    const aspectRatio = 4 / 5;
+    const width = 600;
+    const aspectRatio = 16 / 9;
     const height = width / aspectRatio;
 
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
@@ -967,19 +967,21 @@ export class Maily {
         href={href}
         rel="noopener noreferrer"
         style={{
+          border: '1px solid #eaeaea',
+          borderRadius: '10px',
           textDecoration: 'none',
           color: 'inherit',
           display: 'block',
+          marginBottom: isNextSpacer ? '0px' : '20px',
         }}
         target="_blank"
       >
-        <Row
-          style={{
-            marginTop: '0px',
-            marginBottom: isNextSpacer ? '0px' : '20px',
-          }}
-        >
-          {image ? (
+        {image ? (
+          <Row
+            style={{
+              marginBottom: '6px',
+            }}
+          >
             <Column
               style={{
                 width: `${width}px`,
@@ -990,6 +992,7 @@ export class Maily {
                 alt={title || 'Advertisement'}
                 src={image}
                 style={{
+                  borderRadius: '10px 10px 0 0',
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
@@ -997,22 +1000,25 @@ export class Maily {
                 title={title || 'Advertisement'}
               />
             </Column>
-          ) : null}
+          </Row>
+        ) : null}
 
+        <Row
+          style={{
+            padding: '15px',
+            marginTop: 0,
+            marginBottom: 0,
+          }}
+        >
           <Column
             style={{
-              ...(image
-                ? {
-                    padding: '10px',
-                  }
-                : {}),
               verticalAlign: 'top',
             }}
           >
             <Row
               align={undefined}
               style={{
-                marginBottom: '4px',
+                marginBottom: '8px',
                 marginTop: '0px',
               }}
               width="auto"
@@ -1079,26 +1085,22 @@ export class Maily {
                 ...antialiased,
               }}
             >
-              {description}
+              {description}{' '}
+              {linkTitle ? (
+                <a
+                  href={href}
+                  rel="noopener noreferrer"
+                  style={{
+                    color: this.config.theme?.colors?.advertisementTitle,
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {linkTitle}
+                </a>
+              ) : null}
             </Text>
-
-            {linkTitle ? (
-              <a
-                href={href}
-                rel="noopener noreferrer"
-                style={{
-                  color: this.config.theme?.colors?.advertisementTitle,
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  display: 'inline-block',
-                  margin: '0px',
-                  textDecoration: 'underline',
-                  marginTop: '20px',
-                }}
-              >
-                {linkTitle}
-              </a>
-            ) : null}
           </Column>
         </Row>
       </a>

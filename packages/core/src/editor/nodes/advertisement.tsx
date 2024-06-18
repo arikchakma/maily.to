@@ -58,7 +58,7 @@ export function AdvertisementComponent(props: NodeViewProps) {
           >
             <div className="mly-no-prose mly-flex mly-flex-col mly-rounded-lg mly-border mly-border-gray-300">
               {image && (
-                <div className="mly-relative mly-aspect-[16/9] mly-w-full mly-shrink-0">
+                <div className="mly-relative mly-aspect-[16/9] mly-w-full mly-shrink-0 mly-mb-1.5">
                   <img
                     src={image}
                     alt="advertisement"

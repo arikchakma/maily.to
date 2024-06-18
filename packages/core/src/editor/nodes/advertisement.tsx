@@ -56,24 +56,19 @@ export function AdvertisementComponent(props: NodeViewProps) {
               editor.commands.setNodeSelection(pos);
             }}
           >
-            <div className="mly-no-prose mly-flex mly-flex-col mly-gap-2 mly-border mly-border-gray-300 mly-p-2">
-              <div className="mly-flex mly-items-stretch">
-                {image && (
-                  <div className="mly-relative mly-aspect-[4/5] mly-w-[160px] mly-shrink-0">
-                    <img
-                      src={image}
-                      alt="advertisement"
-                      className="mly-no-prose mly-absolute mly-inset-0 !mly-mb-0 mly-h-full mly-w-full mly-object-cover"
-                    />
-                  </div>
-                )}
-                <div
-                  className={cn(
-                    'mly-flex mly-flex-col',
-                    image ? 'mly-p-2.5' : ''
-                  )}
-                >
-                  <div className="!mly-mb-1 mly-flex mly-items-center mly-gap-1.5">
+            <div className="mly-no-prose mly-flex mly-flex-col mly-rounded-lg mly-border mly-border-gray-300">
+              {image && (
+                <div className="mly-relative mly-aspect-[16/9] mly-w-full mly-shrink-0">
+                  <img
+                    src={image}
+                    alt="advertisement"
+                    className="mly-no-prose mly-absolute mly-inset-0 !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg mly-object-cover"
+                  />
+                </div>
+              )}
+              <div className="mly-flex mly-items-stretch mly-p-3">
+                <div className={cn('mly-flex mly-flex-col')}>
+                  <div className="!mly-mb-1.5 mly-flex mly-items-center mly-gap-1.5">
                     <h2 className="!mly-mb-0 !mly-text-lg mly-font-semibold">
                       {title}
                     </h2>
@@ -89,16 +84,13 @@ export function AdvertisementComponent(props: NodeViewProps) {
                     )}
                   </div>
                   <p className="!mly-my-0 !mly-text-base mly-text-gray-500">
-                    {description}
+                    {description}{' '}
+                    {linkTitle ? (
+                      <a href={link} className="mly-font-semibold">
+                        {linkTitle}
+                      </a>
+                    ) : null}
                   </p>
-                  {linkTitle ? (
-                    <a
-                      href={link}
-                      className="mly-mt-5 mly-text-sm mly-font-semibold"
-                    >
-                      {linkTitle}
-                    </a>
-                  ) : null}
                 </div>
               </div>
             </div>
@@ -111,27 +103,6 @@ export function AdvertisementComponent(props: NodeViewProps) {
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <div className="mly-w-full mly-space-y-1">
-            <p className="mly-text-xs mly-font-normal mly-text-slate-400">
-              Layout
-            </p>
-            <div className="mly-flex mly-gap-1">
-              {items.layout(props).map((item, index) => (
-                <BaseButton
-                  key={index}
-                  data-state={item.isActive ? 'true' : 'false'}
-                  variant="ghost"
-                  className="mly-grow mly-font-normal mly-capitalize"
-                  size="sm"
-                  onClick={item.onClick}
-                  type="button"
-                >
-                  {item.name}
-                </BaseButton>
-              ))}
-            </div>
-          </div>
-
           <label className="mly-w-full mly-space-y-1">
             <span className="mly-text-xs mly-font-normal mly-text-slate-400">
               Image

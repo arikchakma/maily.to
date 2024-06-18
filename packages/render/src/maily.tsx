@@ -1064,7 +1064,7 @@ export class Maily {
                   {subTitle && !badgeText ? (
                     <span
                       style={{
-                        fontWeight: 600,
+                        fontWeight: 'normal',
                         color: this.config.theme?.colors?.advertisementSubTitle,
                         fontSize: '12px',
                         lineHeight: '12px',

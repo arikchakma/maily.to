@@ -78,7 +78,7 @@ export function AdvertisementComponent(props: NodeViewProps) {
                       </span>
                     )}{' '}
                     {subTitle && !badgeText && (
-                      <span className="!mly-font-base text-xs mly-rounded-md mly-font-semibold mly-leading-none mly-text-gray-400">
+                      <span className="!mly-font-base text-xs mly-rounded-md mly-font-regular mly-leading-none mly-text-gray-400">
                         {subTitle}
                       </span>
                     )}

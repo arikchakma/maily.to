@@ -37,7 +37,7 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Spacer
 - Footer
 - Inline Code
-- External Link
+- Link Cards
 
 ## Contributions
 

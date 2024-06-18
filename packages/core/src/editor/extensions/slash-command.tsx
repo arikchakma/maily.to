@@ -19,10 +19,12 @@ import {
   ImageIcon,
   List,
   ListOrdered,
+  Megaphone,
   MousePointer,
   MoveVertical,
   Text,
   TextQuote,
+  ArrowUpRightSquare
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -179,7 +181,7 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   {
     title: 'Spacer',
     description:
-      'Add a spacer to the page. Useful for adding space between sections.',
+      'Add a spacer to email. Useful for adding space between sections.',
     searchTerms: ['space', 'gap', 'divider'],
     icon: <MoveVertical className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
@@ -193,11 +195,20 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   },
   {
     title: 'Button',
-    description: 'Add a call to action button to the page.',
+    description: 'Add a call to action button to email.',
     searchTerms: ['link', 'button', 'cta'],
     icon: <MousePointer className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setButton().run();
+    },
+  },
+  {
+    title: 'Link Card',
+    description: 'Add a link card to email.',
+    searchTerms: ['link', 'button', 'image'],
+    icon: <ArrowUpRightSquare className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setLinkCard().run();
     },
   },
   {
@@ -220,7 +231,7 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   },
   {
     title: 'Footer',
-    description: 'Add a footer text to the page.',
+    description: 'Add a footer text to email.',
     searchTerms: ['footer', 'text'],
     icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {

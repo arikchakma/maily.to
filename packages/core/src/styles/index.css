@@ -91,11 +91,13 @@
 }
 
 .mly-editor .mly-prose .node-button + .spacer,
+.mly-editor .mly-prose .node-linkCard + .spacer,
 .mly-editor .mly-prose footer + .spacer {
   margin-top: -20px;
 }
 
-.mly-editor .mly-prose .node-button {
+.mly-editor .mly-prose .node-button,
+.mly-editor .mly-prose .node-linkCard {
   margin-top: 0;
   margin-bottom: 20px;
 }
@@ -169,8 +171,7 @@
 
 .mly-editor .react-colorful__saturation,
 .mly-editor .react-colorful__hue,
-.mly-editor .react-colorful__alpha
-{
+.mly-editor .react-colorful__alpha {
   border-radius: 8px;
 }
 

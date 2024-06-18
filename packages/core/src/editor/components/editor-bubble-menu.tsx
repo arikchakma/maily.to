@@ -128,6 +128,9 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
         editor.isActive('variable') ||
         editor.isActive({
           mailyComponent: 'button',
+        }) ||
+        editor.isActive({
+          mailyComponent: 'linkCard',
         })
       ) {
         return false;

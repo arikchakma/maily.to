@@ -89,6 +89,11 @@ export interface ThemeOptions {
     blockquoteBorder?: string;
     codeBackground?: string;
     codeText?: string;
+    linkCardTitle?: string;
+    linkCardDescription?: string;
+    linkCardBadgeText?: string;
+    linkCardBadgeBackground?: string;
+    linkCardSubTitle: string;
   };
   fontSize?: {
     paragraph?: string;
@@ -164,6 +169,11 @@ const DEFAULT_THEME: ThemeOptions = {
     blockquoteBorder: 'rgb(209, 213, 219)',
     codeBackground: 'rgb(239, 239, 239)',
     codeText: 'rgb(17, 24, 39)',
+    linkCardTitle: 'rgb(17, 24, 39)',
+    linkCardDescription: 'rgb(107, 114, 128)',
+    linkCardBadgeText: 'rgb(17, 24, 39)',
+    linkCardBadgeBackground: 'rgb(254, 240, 138)',
+    linkCardSubTitle: 'rgb(107, 114, 128)',
   },
   fontSize: {
     paragraph: '15px',
@@ -936,6 +946,164 @@ export class Maily {
       >
         {text}
       </code>
+    );
+  }
+  private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { next } = options || {};
+    const isNextSpacer = next?.type === 'spacer';
+
+    const width = 600;
+    const aspectRatio = 16 / 9;
+    const height = width / aspectRatio;
+
+    const { title, description, link, linkTitle, image, badgeText, subTitle } =
+      attrs || {};
+    const href =
+      this.linkValues.get(link) || this.variableValues.get(link) || link || '#';
+
+    return (
+      <a
+        href={href}
+        rel="noopener noreferrer"
+        style={{
+          border: '1px solid #eaeaea',
+          borderRadius: '10px',
+          textDecoration: 'none',
+          color: 'inherit',
+          display: 'block',
+          marginBottom: isNextSpacer ? '0px' : '20px',
+        }}
+        target="_blank"
+      >
+        {image ? (
+          <Row
+            style={{
+              marginBottom: '6px',
+            }}
+          >
+            <Column
+              style={{
+                width: `${width}px`,
+                height: `${height}px`,
+              }}
+            >
+              <Img
+                alt={title || 'Link Card'}
+                src={image}
+                style={{
+                  borderRadius: '10px 10px 0 0',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+                title={title || 'Link Card'}
+              />
+            </Column>
+          </Row>
+        ) : null}
+
+        <Row
+          style={{
+            padding: '15px',
+            marginTop: 0,
+            marginBottom: 0,
+          }}
+        >
+          <Column
+            style={{
+              verticalAlign: 'top',
+            }}
+          >
+            <Row
+              align={undefined}
+              style={{
+                marginBottom: '8px',
+                marginTop: '0px',
+              }}
+              width="auto"
+            >
+              <Column>
+                <Text
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: 600,
+                    color: this.config.theme?.colors?.linkCardTitle,
+                    margin: '0px',
+                    ...antialiased,
+                  }}
+                >
+                  {title}
+                </Text>
+              </Column>
+              {badgeText || subTitle ? (
+                <Column
+                  style={{
+                    paddingLeft: '6px',
+                    verticalAlign: 'middle',
+                  }}
+                >
+                  {badgeText ? (
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color:
+                          this.config.theme?.colors?.linkCardBadgeText,
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        backgroundColor:
+                          this.config.theme?.colors
+                            ?.linkCardBadgeBackground,
+                        fontSize: '12px',
+                        lineHeight: '12px',
+                      }}
+                    >
+                      {badgeText}
+                    </span>
+                  ) : null}{' '}
+                  {subTitle && !badgeText ? (
+                    <span
+                      style={{
+                        fontWeight: 'normal',
+                        color: this.config.theme?.colors?.linkCardSubTitle,
+                        fontSize: '12px',
+                        lineHeight: '12px',
+                      }}
+                    >
+                      {subTitle}
+                    </span>
+                  ) : null}
+                </Column>
+              ) : null}
+            </Row>
+            <Text
+              style={{
+                fontSize: '16px',
+                color: this.config.theme?.colors?.linkCardDescription,
+                marginTop: '0px',
+                marginBottom: '0px',
+                ...antialiased,
+              }}
+            >
+              {description}{' '}
+              {linkTitle ? (
+                <a
+                  href={href}
+                  rel="noopener noreferrer"
+                  style={{
+                    color: this.config.theme?.colors?.linkCardTitle,
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {linkTitle}
+                </a>
+              ) : null}
+            </Text>
+          </Column>
+        </Row>
+      </a>
     );
   }
 }

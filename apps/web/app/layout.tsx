@@ -3,7 +3,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { TopLoader } from '@/components/top-loader';
 import { config } from '@/lib/config';
 
@@ -75,7 +75,7 @@ export default function RootLayout(props: RootLayoutProps) {
         <TopLoader />
         {children}
         <Toaster richColors />
-        <GoogleTagManager gtmId={config.googleTrackingId} />
+        <GoogleAnalytics gaId={config.googleTrackingId} />
       </body>
     </html>
   );

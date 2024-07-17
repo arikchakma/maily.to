@@ -845,9 +845,10 @@ export class Maily {
         alt={alt || title || 'Image'}
         src={src}
         style={{
-          height,
-          width,
-          maxWidth: '100%',
+          height: '100%',
+          width: '100%',
+          maxWidth: width,
+          maxHeight: height,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -953,10 +954,6 @@ export class Maily {
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
-    const width = 600;
-    const aspectRatio = 16 / 9;
-    const height = width / aspectRatio;
-
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
     const href =
@@ -984,8 +981,8 @@ export class Maily {
           >
             <Column
               style={{
-                width: `${width}px`,
-                height: `${height}px`,
+                width: '100%',
+                height: '100%',
               }}
             >
               <Img
@@ -1047,13 +1044,11 @@ export class Maily {
                     <span
                       style={{
                         fontWeight: 600,
-                        color:
-                          this.config.theme?.colors?.linkCardBadgeText,
+                        color: this.config.theme?.colors?.linkCardBadgeText,
                         padding: '4px 8px',
                         borderRadius: '8px',
                         backgroundColor:
-                          this.config.theme?.colors
-                            ?.linkCardBadgeBackground,
+                          this.config.theme?.colors?.linkCardBadgeBackground,
                         fontSize: '12px',
                         lineHeight: '12px',
                       }}

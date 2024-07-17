@@ -1,8 +1,6 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import type { Database } from '@/types/database';
 import { TemplateSidebar } from '@/components/template-sidebar';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +11,7 @@ interface PlaygroundLayoutProps {
 export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
   const { children } = props;
 
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

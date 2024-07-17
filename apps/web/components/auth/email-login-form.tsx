@@ -15,7 +15,6 @@ export function EmailLoginForm() {
   const [action, isPending] = useServerAction(
     catchActionError(emailLoginAction),
     (result) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Result is always there
       const { error } = result!;
       if (error) {
         toast.error(error.message || 'Something went wrong');

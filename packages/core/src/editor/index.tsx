@@ -11,6 +11,9 @@ import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
 
+// prettier-ignore
+type ParitialMailContextType = Partial<MailyContextType>;
+
 export type EditorProps = {
   contentHtml?: string;
   contentJson?: JSONContent;
@@ -25,8 +28,9 @@ export type EditorProps = {
     contentClassName?: string;
     bodyClassName?: string;
     autofocus?: FocusPosition;
+    immediatelyRender?: boolean;
   };
-} & Partial<MailyContextType>;
+} & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
   const {
@@ -37,6 +41,7 @@ export function Editor(props: EditorProps) {
       hasMenuBar = true,
       spellCheck = false,
       autofocus = 'end',
+      immediatelyRender = false,
     } = {},
     onCreate,
     onUpdate,
@@ -88,6 +93,7 @@ export function Editor(props: EditorProps) {
         },
       },
     },
+    immediatelyRender,
     onCreate: ({ editor }) => {
       onCreate?.(editor);
     },

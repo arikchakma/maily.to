@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { renderAsync } from '@maily-to/render';
 import { cookies } from 'next/headers';
 import { Resend } from 'resend';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { revalidatePath } from 'next/cache';
 import {
   MAILY_API_KEY,
@@ -13,6 +12,7 @@ import {
 } from '@/utils/constants';
 import type { Database } from '@/types/database';
 import { UnreachableCaseError } from './error';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const previewEmailSchema = z.object({
   json: z.string().min(1, 'Please provide a JSON'),
@@ -208,7 +208,7 @@ export async function saveEmailAction(formData: FormData) {
 
   const { subject, json, previewText } = result.data;
 
-  const supabase = createServerActionClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -280,7 +280,7 @@ export async function updateEmailAction(formData: FormData) {
 
   const { templateId, subject, json, previewText } = result.data;
 
-  const supabase = createServerActionClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -367,7 +367,7 @@ export async function deleteEmailAction(formData: FormData) {
 
   const { templateId } = result.data;
 
-  const supabase = createServerActionClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -444,7 +444,7 @@ export async function duplicateEmailAction(formData: FormData) {
 
   const { templateId } = result.data;
 
-  const supabase = createServerActionClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

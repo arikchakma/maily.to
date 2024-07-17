@@ -1,9 +1,8 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { z } from 'zod';
 import { config } from '@/lib/config';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const emailLoginSchema = z.object({
   email: z.string().email('Please provide a valid email address'),
@@ -27,12 +26,12 @@ export async function emailLoginAction(formData: FormData) {
 
   const { email } = result.data;
 
-  const supabase = createServerActionClient({ cookies });
+  const supabase = createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       shouldCreateUser: true,
-      emailRedirectTo: `${config.appUrl}/auth/callback`,
+      emailRedirectTo: `${config.appUrl}/template`,
     },
   });
 

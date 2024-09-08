@@ -1,4 +1,3 @@
 export * from './maily';
-export * from './render-sync';
-export * from './render-async';
+export * from './render';
 export type { JSONContent } from '@tiptap/core';

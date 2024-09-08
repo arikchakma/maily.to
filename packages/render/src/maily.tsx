@@ -15,13 +15,10 @@ import {
   Row,
   Column,
 } from '@react-email/components';
-import {
-  render as reactEmailRender,
-  renderAsync as reactEmailRenderAsync,
-} from '@react-email/render';
+import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
-import merge from 'lodash/merge';
 import { generateKey } from './utils';
+import { deepMerge } from '@antfu/utils';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -81,27 +78,27 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
 };
 
 export interface ThemeOptions {
-  colors?: {
-    heading?: string;
-    paragraph?: string;
-    horizontal?: string;
-    footer?: string;
-    blockquoteBorder?: string;
-    codeBackground?: string;
-    codeText?: string;
-    linkCardTitle?: string;
-    linkCardDescription?: string;
-    linkCardBadgeText?: string;
-    linkCardBadgeBackground?: string;
+  colors?: Partial<{
+    heading: string;
+    paragraph: string;
+    horizontal: string;
+    footer: string;
+    blockquoteBorder: string;
+    codeBackground: string;
+    codeText: string;
+    linkCardTitle: string;
+    linkCardDescription: string;
+    linkCardBadgeText: string;
+    linkCardBadgeBackground: string;
     linkCardSubTitle: string;
-  };
-  fontSize?: {
-    paragraph?: string;
-    footer?: {
-      size?: string;
-      lineHeight?: string;
+  }>;
+  fontSize?: Partial<{
+    paragraph: string;
+    footer: {
+      size: string;
+      lineHeight: string;
     };
-  };
+  }>;
 }
 
 export interface MailyConfig {
@@ -152,7 +149,7 @@ export interface MailyConfig {
    * });
    * ```
    */
-  theme?: ThemeOptions;
+  theme?: Partial<ThemeOptions>;
 }
 
 const DEFAULT_RENDER_OPTIONS: RenderOptions = {
@@ -234,8 +231,8 @@ export class Maily {
     this.config.preview = preview;
   }
 
-  setTheme(theme?: ThemeOptions) {
-    this.config.theme = merge(this.config.theme, theme);
+  setTheme(theme: Partial<ThemeOptions>) {
+    this.config.theme = deepMerge(this.config.theme || DEFAULT_THEME, theme);
   }
 
   setVariableFormatter(formatter: VariableFormatter) {
@@ -365,12 +362,7 @@ export class Maily {
     }
   }
 
-  renderSync(options: RenderOptions = DEFAULT_RENDER_OPTIONS): string {
-    const markup = this.markup();
-    return reactEmailRender(markup, options);
-  }
-
-  async renderAsync(
+  async render(
     options: RenderOptions = DEFAULT_RENDER_OPTIONS
   ): Promise<string> {
     const markup = this.markup();

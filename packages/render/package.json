@@ -47,18 +47,18 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@antfu/utils": "^0.7.10",
     "@babel/preset-react": "^7.24.7",
-    "@tiptap/core": "^2.5.2",
+    "@tiptap/core": "^2.6.6",
     "@types/lodash": "^4.17.7",
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.5",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.21",
-    "@react-email/render": "^0.0.16",
-    "lodash": "^4.17.21"
+    "@react-email/components": "^0.0.25",
+    "@react-email/render": "^1.0.1"
   },
   "peerDependencies": {
     "react": "^18.3.1"

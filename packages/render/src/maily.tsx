@@ -15,13 +15,10 @@ import {
   Row,
   Column,
 } from '@react-email/components';
-import {
-  render as reactEmailRender,
-  renderAsync as reactEmailRenderAsync,
-} from '@react-email/render';
+import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
-import merge from 'lodash/merge';
 import { generateKey } from './utils';
+import { deepMerge } from '@antfu/utils';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -81,27 +78,27 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
 };
 
 export interface ThemeOptions {
-  colors?: {
-    heading?: string;
-    paragraph?: string;
-    horizontal?: string;
-    footer?: string;
-    blockquoteBorder?: string;
-    codeBackground?: string;
-    codeText?: string;
-    linkCardTitle?: string;
-    linkCardDescription?: string;
-    linkCardBadgeText?: string;
-    linkCardBadgeBackground?: string;
+  colors?: Partial<{
+    heading: string;
+    paragraph: string;
+    horizontal: string;
+    footer: string;
+    blockquoteBorder: string;
+    codeBackground: string;
+    codeText: string;
+    linkCardTitle: string;
+    linkCardDescription: string;
+    linkCardBadgeText: string;
+    linkCardBadgeBackground: string;
     linkCardSubTitle: string;
-  };
-  fontSize?: {
-    paragraph?: string;
-    footer?: {
-      size?: string;
-      lineHeight?: string;
+  }>;
+  fontSize?: Partial<{
+    paragraph: string;
+    footer: {
+      size: string;
+      lineHeight: string;
     };
-  };
+  }>;
 }
 
 export interface MailyConfig {
@@ -152,7 +149,7 @@ export interface MailyConfig {
    * });
    * ```
    */
-  theme?: ThemeOptions;
+  theme?: Partial<ThemeOptions>;
 }
 
 const DEFAULT_RENDER_OPTIONS: RenderOptions = {
@@ -234,8 +231,8 @@ export class Maily {
     this.config.preview = preview;
   }
 
-  setTheme(theme?: ThemeOptions) {
-    this.config.theme = merge(this.config.theme, theme);
+  setTheme(theme: Partial<ThemeOptions>) {
+    this.config.theme = deepMerge(this.config.theme || DEFAULT_THEME, theme);
   }
 
   setVariableFormatter(formatter: VariableFormatter) {
@@ -365,12 +362,7 @@ export class Maily {
     }
   }
 
-  renderSync(options: RenderOptions = DEFAULT_RENDER_OPTIONS): string {
-    const markup = this.markup();
-    return reactEmailRender(markup, options);
-  }
-
-  async renderAsync(
+  async render(
     options: RenderOptions = DEFAULT_RENDER_OPTIONS
   ): Promise<string> {
     const markup = this.markup();
@@ -845,9 +837,10 @@ export class Maily {
         alt={alt || title || 'Image'}
         src={src}
         style={{
-          height,
-          width,
-          maxWidth: '100%',
+          height: '100%',
+          width: '100%',
+          maxWidth: width,
+          maxHeight: height,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -953,10 +946,6 @@ export class Maily {
     const { next } = options || {};
     const isNextSpacer = next?.type === 'spacer';
 
-    const width = 600;
-    const aspectRatio = 16 / 9;
-    const height = width / aspectRatio;
-
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
     const href =
@@ -984,8 +973,8 @@ export class Maily {
           >
             <Column
               style={{
-                width: `${width}px`,
-                height: `${height}px`,
+                width: '100%',
+                height: '100%',
               }}
             >
               <Img
@@ -1047,13 +1036,11 @@ export class Maily {
                     <span
                       style={{
                         fontWeight: 600,
-                        color:
-                          this.config.theme?.colors?.linkCardBadgeText,
+                        color: this.config.theme?.colors?.linkCardBadgeText,
                         padding: '4px 8px',
                         borderRadius: '8px',
                         backgroundColor:
-                          this.config.theme?.colors
-                            ?.linkCardBadgeBackground,
+                          this.config.theme?.colors?.linkCardBadgeBackground,
                         fontSize: '12px',
                         lineHeight: '12px',
                       }}

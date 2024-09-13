@@ -2,7 +2,7 @@ import type { JSONContent } from '@tiptap/core';
 import { Maily } from './maily';
 import type { MailyConfig, RenderOptions } from './maily';
 
-export async function renderAsync(
+export async function render(
   content: JSONContent,
   config?: MailyConfig & RenderOptions
 ): Promise<string> {
@@ -10,7 +10,7 @@ export async function renderAsync(
 
   const maily = new Maily(content);
   maily.setPreviewText(preview);
-  maily.setTheme(theme);
+  maily.setTheme(theme || {});
 
-  return maily.renderAsync(rest);
+  return maily.render(rest);
 }

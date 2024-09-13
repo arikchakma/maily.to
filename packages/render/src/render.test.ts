@@ -1,7 +1,7 @@
-import { Maily, renderSync } from './index';
+import { Maily, render } from './index';
 
-describe('renderSync', () => {
-  it('should replace variables with values', () => {
+describe('render', () => {
+  it('should replace variables with values', async () => {
     const content = {
       type: 'doc',
       content: [
@@ -22,14 +22,14 @@ describe('renderSync', () => {
 
     const maily = new Maily(content);
     maily.setVariableValue('name', 'John Doe');
-    const result = maily.renderSync({
+    const result = await maily.render({
       plainText: true,
     });
 
     expect(result).toMatchInlineSnapshot(`"John Doe"`);
   });
 
-  it('should replace variables with default formatted value', () => {
+  it('should replace variables with default formatted value', async () => {
     const content = {
       type: 'doc',
       content: [
@@ -47,13 +47,13 @@ describe('renderSync', () => {
         },
       ],
     };
-    const result = renderSync(content, {
+    const result = await render(content, {
       plainText: true,
     });
     expect(result).toMatchInlineSnapshot(`"{{name,fallback=Buddy}}"`);
   });
 
-  it('should replace variables formatter with custom formatter', () => {
+  it('should replace variables formatter with custom formatter', async () => {
     const content = {
       type: 'doc',
       content: [
@@ -77,14 +77,14 @@ describe('renderSync', () => {
       const { fallback, variable } = options;
       return `[${variable},fallback=${fallback}]`;
     });
-    const result = maily.renderSync({
+    const result = await maily.render({
       plainText: true,
     });
 
     expect(result).toMatchInlineSnapshot(`"[name,fallback=Buddy]"`);
   });
 
-  it('should replace variables with fallback value', () => {
+  it('should replace variables with fallback value', async () => {
     const content = {
       type: 'doc',
       content: [
@@ -105,14 +105,14 @@ describe('renderSync', () => {
 
     const maily = new Maily(content);
     maily.setShouldReplaceVariableValues(true);
-    const result = maily.renderSync({
+    const result = await maily.render({
       plainText: true,
     });
 
     expect(result).toMatchInlineSnapshot(`"Buddy"`);
   });
 
-  it('should replace links with setLinkValue value', () => {
+  it('should replace links with setLinkValue value', async () => {
     const content = {
       type: 'doc',
       content: [
@@ -144,16 +144,16 @@ describe('renderSync', () => {
 
     const maily = new Maily(content);
     maily.setLinkValue('https://maily.to', 'https://maily.to/playground');
-    const result = maily.renderSync({
+    const result = await maily.render({
       plainText: true,
     });
 
     expect(result).toMatchInlineSnapshot(
-      `"maily.to [https://maily.to/playground]"`
+      `"maily.to https://maily.to/playground"`
     );
   });
 
-  it("should replace unsubscribe_url in button's href", () => {
+  it("should replace unsubscribe_url in button's href", async () => {
     const content = {
       type: 'doc',
       content: [
@@ -178,12 +178,47 @@ describe('renderSync', () => {
       'unsubscribe_url',
       'https://maily.to/unsubscribe_url'
     );
-    const result = maily.renderSync({
+    const result = await maily.render({
       plainText: true,
     });
 
     expect(result).toMatchInlineSnapshot(
-      `"Unsubscribe [https://maily.to/unsubscribe_url]"`
+      `"Unsubscribe https://maily.to/unsubscribe_url"`
     );
+  });
+
+  it('should apply custom theme', async () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'heading',
+          attrs: { level: 1 },
+          content: [{ type: 'text', text: 'Custom Heading' }],
+        },
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Custom Paragraph' }],
+        },
+      ],
+    };
+
+    const customTheme = {
+      colors: {
+        heading: 'rgb(255, 0, 0)',
+        paragraph: 'rgb(0, 255, 0)',
+      },
+      fontSize: {
+        paragraph: '18px',
+      },
+    };
+
+    const maily = new Maily(content);
+    maily.setTheme(customTheme);
+    const result = await maily.render();
+
+    expect(result).toContain('color:rgb(255, 0, 0)');
+    expect(result).toContain('color:rgb(0, 255, 0)');
+    expect(result).toContain('font-size:18px');
   });
 });

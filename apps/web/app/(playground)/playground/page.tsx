@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import NextLink from 'next/link';
 import { Balancer } from 'react-wrap-balancer';
 import { LogIn } from 'lucide-react';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SendTestEmail } from '@/components/send-test-email';
 import { PreviewEmail } from '@/components/preview-email';
 import { CopyEmailHtml } from '@/components/copy-email-html';
 import { EditorPreview } from '@/components/editor-preview';
-import type { Database } from '@/types/database';
 import { ApiConfiguration } from '@/components/api-config';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Playground | Maily',
@@ -49,7 +47,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Playground() {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

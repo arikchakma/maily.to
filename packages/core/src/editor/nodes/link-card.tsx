@@ -1,21 +1,12 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
-import { BaseButton } from '../components/base-button';
 import { Input } from '../components/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import { Textarea } from '../components/textarea';
 import { cn } from '../utils/classname';
 
 export function LinkCardComponent(props: NodeViewProps) {
-  const {
-    layout,
-    title,
-    description,
-    link,
-    linkTitle,
-    image,
-    badgeText,
-    subTitle,
-  } = props.node.attrs;
+  const { title, description, link, linkTitle, image, badgeText, subTitle } =
+    props.node.attrs;
   const { getPos, editor } = props;
 
   return (
@@ -38,11 +29,11 @@ export function LinkCardComponent(props: NodeViewProps) {
           >
             <div className="mly-no-prose mly-flex mly-flex-col mly-rounded-lg mly-border mly-border-gray-300">
               {image && (
-                <div className="mly-relative mly-aspect-[16/9] mly-w-full mly-shrink-0 mly-mb-1.5">
+                <div className="mly-relative mly-mb-1.5 mly-w-full mly-shrink-0">
                   <img
                     src={image}
                     alt="link-card"
-                    className="mly-no-prose mly-absolute mly-inset-0 !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg mly-object-cover"
+                    className="mly-no-prose !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg"
                   />
                 </div>
               )}
@@ -58,7 +49,7 @@ export function LinkCardComponent(props: NodeViewProps) {
                       </span>
                     )}{' '}
                     {subTitle && !badgeText && (
-                      <span className="!mly-font-base text-xs mly-rounded-md mly-font-regular mly-leading-none mly-text-gray-400">
+                      <span className="!mly-font-base text-xs mly-font-regular mly-rounded-md mly-leading-none mly-text-gray-400">
                         {subTitle}
                       </span>
                     )}

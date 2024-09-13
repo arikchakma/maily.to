@@ -1,9 +1,8 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { config } from '@/lib/config';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -20,13 +19,20 @@ export async function POST(request: NextRequest) {
   }
 
   const provider = result.data;
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = createSupabaseServerClient();
 
-  const { data } = await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
       redirectTo: `${config.appUrl}/auth/callback`,
+      ...(provider === 'google'
+        ? {
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent',
+            },
+          }
+        : {}),
     },
   });
 

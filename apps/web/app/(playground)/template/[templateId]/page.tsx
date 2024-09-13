@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { redirect } from 'next/navigation';
 import type { JSONContent } from '@tiptap/core';
 import {
@@ -17,6 +15,8 @@ import { UpdateEmail } from '@/components/update-email';
 import { DeleteEmail } from '@/components/delete-email';
 import { ApiConfiguration } from '@/components/api-config';
 import { SendTestEmail } from '@/components/send-test-email';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +46,7 @@ export default async function TemplatePage(props: TemplatePageProps) {
   const endpoint = cookieStore.get(MAILY_ENDPOINT)?.value;
   const provider = cookieStore.get(MAILY_PROVIDER)?.value;
 
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const supabase = createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -70,7 +70,6 @@ export default async function TemplatePage(props: TemplatePageProps) {
     return redirect('/template');
   }
 
-  // eslint-disable-next-line camelcase -- This is a prop
   const { preview_text, title } = template;
   let { content } = template;
   content = JSON.parse(content as string);

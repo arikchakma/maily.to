@@ -36,10 +36,6 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  console.log('-'.repeat(20));
-  console.log(data, error);
-  console.log('-'.repeat(20));
-
   if (!data.url) {
     return NextResponse.redirect(requestUrl.origin, {
       status: 301,

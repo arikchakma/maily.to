@@ -135,7 +135,7 @@ export async function sendTestEmailAction(formData: FormData) {
     const { error } = await resend.emails.send({
       to: enrichedTo,
       from,
-      reply_to: replyTo,
+      replyTo,
       subject,
       html,
     });

@@ -1,5 +1,6 @@
 'use client';
 
+// @ts-ignore
 import { useFormStatus } from 'react-dom';
 import { Eye, Loader2 } from 'lucide-react';
 import { useState } from 'react';

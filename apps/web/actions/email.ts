@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { renderAsync } from '@maily-to/render';
+import { render } from '@maily-to/render';
 import { cookies } from 'next/headers';
 import { Resend } from 'resend';
 import { revalidatePath } from 'next/cache';
@@ -39,7 +39,7 @@ export async function previewEmailAction(formData: FormData) {
   const { json, previewText } = result.data;
 
   const content = JSON.parse(json);
-  const html = await renderAsync(content, {
+  const html = await render(content, {
     preview: previewText,
   });
 
@@ -121,7 +121,7 @@ export async function sendTestEmailAction(formData: FormData) {
   const { subject, json, previewText, from, replyTo, to } = result.data;
 
   const content = JSON.parse(json);
-  const html = await renderAsync(content, {
+  const html = await render(content, {
     preview: previewText,
   });
 

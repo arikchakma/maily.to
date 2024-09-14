@@ -23,11 +23,11 @@ export interface BubbleMenuItem {
 }
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {
-  appedTo?: React.RefObject<any>;
+  appendTo?: React.RefObject<any>;
 };
 
 export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appedTo } = props;
+  const { editor, appendTo } = props;
 
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
   const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
@@ -110,7 +110,7 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appedTo ? { appedTo: appedTo.current } : {}),
+    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor, state, from, to }) => {
       const { doc, selection } = state;
       const { empty } = selection;

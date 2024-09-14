@@ -13,7 +13,7 @@ import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
 import { allowedLogoAlignment, allowedLogoSize } from '../nodes/logo';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appedTo } = props;
+  const { editor, appendTo } = props;
 
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
 
@@ -124,7 +124,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appedTo ? { appedTo: appedTo.current } : {}),
+    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       return editor.isActive('logo') || editor.isActive('image');
     },

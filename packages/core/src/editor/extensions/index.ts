@@ -24,6 +24,7 @@ import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
 import { Columns } from './columns/columns';
 import { Column } from './columns/column';
+import { Section } from './section/section';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -71,7 +72,8 @@ export function extensions(props: ExtensionsProps) {
           return `Heading ${node.attrs.level}`;
         } else if (
           node.type.name === 'columns' ||
-          node.type.name === 'column'
+          node.type.name === 'column' ||
+          node.type.name === 'section'
         ) {
           return '';
         }
@@ -99,5 +101,6 @@ export function extensions(props: ExtensionsProps) {
     ResizableImageExtension,
     LinkCardExtension,
     Focus,
+    Section,
   ];
 }

@@ -10,28 +10,101 @@
           "attrs": { "position": "left" },
           "content": [
             {
-              "type": "heading",
-              "attrs": { "textAlign": "left", "level": 1 },
-              "content": [
-                { "type": "text", "text": "This is the first Column" }
-              ]
-            }
+              "type": "logo",
+              "attrs": {
+                "src": "https://maily.to/brand/logo.png",
+                "alt": null,
+                "title": null,
+                "maily-component": "logo",
+                "size": "sm",
+                "alignment": "left"
+              }
+            },
+            { "type": "spacer", "attrs": { "height": "sm" } }
           ]
         },
         {
           "type": "column",
           "attrs": { "position": "right" },
           "content": [
+            { "type": "spacer", "attrs": { "height": "sm" } },
             {
-              "type": "heading",
-              "attrs": { "textAlign": "left", "level": 1 },
+              "type": "paragraph",
+              "attrs": { "textAlign": "right" },
               "content": [
-                { "type": "text", "text": "This is the second Column" }
+                {
+                  "type": "text",
+                  "marks": [{ "type": "bold" }],
+                  "text": "Latest Update"
+                }
               ]
             }
           ]
         }
       ]
+    },
+    {
+      "type": "section",
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": "left" },
+          "content": [
+            {
+              "type": "text",
+              "text": "This is A section with a gray background."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": { "textAlign": "left", "level": 2 },
+          "content": [{ "type": "text", "text": "Heading Inside Section" }]
+        }
+      ]
+    },
+    { "type": "spacer", "attrs": { "height": "xl" } },
+    {
+      "type": "heading",
+      "attrs": { "textAlign": "center", "level": 2 },
+      "content": [
+        { "type": "text", "text": "This is 1 update" },
+        { "type": "hardBreak" },
+        { "type": "text", "text": "that require your attention" }
+      ]
+    },
+    { "type": "spacer", "attrs": { "height": "xl" } },
+    { "type": "spacer", "attrs": { "height": "xl" } },
+    { "type": "spacer", "attrs": { "height": "xl" } },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "center" },
+      "content": [
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "Follow Us" }
+      ]
+    },
+    {
+      "type": "footer",
+      "attrs": { "textAlign": "center", "maily-component": "footer" },
+      "content": [
+        {
+          "type": "text",
+          "text": "650 2nd Street, San Francisco, California, 94107, USA"
+        },
+        { "type": "hardBreak" },
+        { "type": "text", "text": "© Copyright 2024. All Rights Reserved." }
+      ]
+    },
+    {
+      "type": "logo",
+      "attrs": {
+        "src": "https://maily.to/brand/logo.png",
+        "alt": null,
+        "title": null,
+        "maily-component": "logo",
+        "size": "sm",
+        "alignment": "center"
+      }
     }
   ]
 }

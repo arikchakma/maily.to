@@ -10,7 +10,7 @@ import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
-import { ColumnsMenu } from './extensions/columns/columns-menu';
+import { SectionBubbleMenu } from './components/section/section-bubble-menu';
 import { useRef } from 'react';
 
 // prettier-ignore
@@ -131,10 +131,11 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <EditorBubbleMenu editor={editor} appedTo={menuContainerRef} />
-          <ImageBubbleMenu editor={editor} appedTo={menuContainerRef} />
-          <SpacerBubbleMenu editor={editor} appedTo={menuContainerRef} />
+          <EditorBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
+          <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

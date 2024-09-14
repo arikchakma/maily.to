@@ -166,7 +166,10 @@
     outline: none;
   }
 
-  .is-editor-empty:first-child:not([data-type='columns'])::before {
+  .is-editor-empty:first-child:not(
+      [data-type='columns'],
+      [data-type='section']
+    )::before {
     content: attr(data-placeholder);
     float: left;
     color: #adb5bd;
@@ -174,7 +177,7 @@
     height: 0;
   }
 
-  .is-empty:not([data-type='columns'])::before {
+  .is-empty:not([data-type='columns'], [data-type='section'])::before {
     content: attr(data-placeholder);
     float: left;
     color: #adb5bd;
@@ -198,6 +201,13 @@
 
   [data-type='column'] {
     /* @apply rounded border-2 border-dotted border-transparent p-1; */
+    & > *:first-child {
+      margin-top: 0;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
 
     &:hover {
       /* @apply border-neutral-100 dark:border-neutral-900; */
@@ -207,5 +217,29 @@
     &.has-focus {
       /* @apply border-neutral-100 dark:border-neutral-900; */
     }
+  }
+
+  [data-type='section'] {
+    & > *:first-child {
+      margin-top: 0;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* Hide Number Count */
+.hide-number-controls {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
   }
 }

@@ -5,7 +5,7 @@ import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
 import { allowedSpacerSize } from '../nodes/spacer';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appedTo } = props;
+  const { editor, appendTo } = props;
 
   const items: BubbleMenuItem[] = allowedSpacerSize.map((height) => ({
     name: height,
@@ -17,7 +17,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appedTo ? { appedTo: appedTo.current } : {}),
+    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => editor.isActive('spacer'),
     tippyOptions: {
       maxWidth: '100%',

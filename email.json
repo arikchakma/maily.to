@@ -1,0 +1,37 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "columns",
+      "attrs": { "layout": "two-column" },
+      "content": [
+        {
+          "type": "column",
+          "attrs": { "position": "left" },
+          "content": [
+            {
+              "type": "heading",
+              "attrs": { "textAlign": "left", "level": 1 },
+              "content": [
+                { "type": "text", "text": "This is the first Column" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "column",
+          "attrs": { "position": "right" },
+          "content": [
+            {
+              "type": "heading",
+              "attrs": { "textAlign": "left", "level": 1 },
+              "content": [
+                { "type": "text", "text": "This is the second Column" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

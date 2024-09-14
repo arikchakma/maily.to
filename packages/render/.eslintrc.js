@@ -6,6 +6,6 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-argument': 'off',
     'import/no-extraneous-dependencies': 'off',
-    '@typescript-eslint/prefer-nullish-coalescing': 'true',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
   },
 };

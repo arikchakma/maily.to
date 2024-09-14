@@ -10,6 +10,8 @@ import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
+import { ColumnsMenu } from './extensions/columns/columns-menu';
+import { useRef } from 'react';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;
@@ -75,6 +77,7 @@ export function Editor(props: EditorProps) {
     };
   }
 
+  const menuContainerRef = useRef(null);
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -117,7 +120,10 @@ export function Editor(props: EditorProps) {
 
   return (
     <MailyProvider variables={variables}>
-      <div className={cn('mly-editor mly-antialiased', wrapClassName)}>
+      <div
+        className={cn('mly-editor mly-antialiased', wrapClassName)}
+        ref={menuContainerRef}
+      >
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
@@ -125,9 +131,9 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <EditorBubbleMenu editor={editor} />
-          <ImageBubbleMenu editor={editor} />
-          <SpacerBubbleMenu editor={editor} />
+          <EditorBubbleMenu editor={editor} appedTo={menuContainerRef} />
+          <ImageBubbleMenu editor={editor} appedTo={menuContainerRef} />
+          <SpacerBubbleMenu editor={editor} appedTo={menuContainerRef} />
           <EditorContent editor={editor} />
         </div>
       </div>

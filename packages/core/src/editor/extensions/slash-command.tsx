@@ -24,7 +24,8 @@ import {
   MoveVertical,
   Text,
   TextQuote,
-  ArrowUpRightSquare
+  ArrowUpRightSquare,
+  ColumnsIcon,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -245,6 +246,20 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     icon: <EraserIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().selectParentNode().deleteSelection().run();
+    },
+  },
+  {
+    title: 'Columns',
+    description: 'Add columns to email.',
+    searchTerms: ['layout', 'columns'],
+    icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setColumns()
+        .run();
     },
   },
 ];

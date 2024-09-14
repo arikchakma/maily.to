@@ -22,10 +22,12 @@ export interface BubbleMenuItem {
   icon?: LucideIcon;
 }
 
-export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'>;
+export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {
+  appedTo?: React.RefObject<any>;
+};
 
 export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor } = props;
+  const { editor, appedTo } = props;
 
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
   const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
@@ -108,6 +110,7 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
+    ...(appedTo ? { appedTo: appedTo.current } : {}),
     shouldShow: ({ editor, state, from, to }) => {
       const { doc, selection } = state;
       const { empty } = selection;

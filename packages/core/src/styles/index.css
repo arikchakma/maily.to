@@ -119,42 +119,6 @@
   content: none;
 }
 
-.ProseMirror {
-  position: relative;
-}
-
-.ProseMirror {
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  white-space: break-spaces;
-  -webkit-font-variant-ligatures: none;
-  font-variant-ligatures: none;
-  font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
-}
-
-.ProseMirror:focus {
-  outline: none;
-}
-
-.ProseMirror .is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
-}
-.ProseMirror .is-empty::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
-}
-
-.ProseMirror-selectednode {
-  outline: 3px solid #555;
-}
-
 /* Chrome, Safari and Opera */
 .mly-no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -183,4 +147,65 @@
 .mly-editor .react-colorful__pointer {
   width: 16px;
   height: 16px;
+}
+
+.ProseMirror-selectednode {
+  outline: 3px solid #555;
+}
+
+.ProseMirror {
+  position: relative;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
+
+  &:focus {
+    outline: none;
+  }
+
+  .is-editor-empty:first-child:not([data-type='columns'])::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+  }
+
+  .is-empty:not([data-type='columns'])::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+  }
+
+  [data-type='columns'] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    &.has-focus [data-type='column'],
+    &:hover [data-type='column'] {
+      /* @apply border-neutral-300 dark:border-neutral-700; */
+    }
+
+    [data-type='column'].has-focus {
+      outline: 2px solid #e9ecef;
+    }
+  }
+
+  [data-type='column'] {
+    /* @apply rounded border-2 border-dotted border-transparent p-1; */
+
+    &:hover {
+      /* @apply border-neutral-100 dark:border-neutral-900; */
+    }
+
+    &:has(.is-active),
+    &.has-focus {
+      /* @apply border-neutral-100 dark:border-neutral-900; */
+    }
+  }
 }

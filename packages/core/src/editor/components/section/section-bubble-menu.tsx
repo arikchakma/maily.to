@@ -1,4 +1,4 @@
-import { BubbleMenu } from '@tiptap/react';
+import { BubbleMenu, isTextSelection } from '@tiptap/react';
 import { EditorBubbleMenuProps } from './../editor-bubble-menu';
 import { useCallback } from 'react';
 import { getRenderContainer } from '../../utils/get-render-container';
@@ -25,7 +25,19 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
-    shouldShow: ({ editor }) => {
+    shouldShow: ({ editor, state, from, to }) => {
+      const { doc, selection } = state;
+      const { empty } = selection;
+
+      // Sometime check for `empty` is not enough.
+      // Doubleclick an empty paragraph returns a node size of 2.
+      // So we check also for an empty text size.
+      const isEmptyTextBlock =
+        !doc.textBetween(from, to).length && isTextSelection(state.selection);
+      if (!isEmptyTextBlock) {
+        return false;
+      }
+
       return editor.isActive('section');
     },
     tippyOptions: {

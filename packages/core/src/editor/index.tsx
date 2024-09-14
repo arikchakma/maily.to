@@ -11,6 +11,7 @@ import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
 import { SectionBubbleMenu } from './components/section/section-bubble-menu';
+import { ColumnBubbleMenu } from './components/column/column-bubble-menu';
 import { useRef } from 'react';
 
 // prettier-ignore
@@ -136,6 +137,7 @@ export function Editor(props: EditorProps) {
           <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ColumnBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

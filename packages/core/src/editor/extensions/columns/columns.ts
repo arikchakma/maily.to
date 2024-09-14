@@ -1,3 +1,4 @@
+import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
 
 export const allowedColumnLayouts = [
@@ -36,9 +37,6 @@ export const Columns = Node.create({
       setColumns:
         () =>
         ({ commands }) => {
-          // return commands.insertContent(
-          //   `<div data-type="columns"><div data-type="column" data-position="left"><p></p></div><div data-type="column" data-position="right"><p></p></div></div>`
-          // );
           return commands.insertContent({
             type: this.name,
             attrs: {
@@ -79,19 +77,20 @@ export const Columns = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'div',
-      {
+      'table',
+      mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
         class: `layout-${HTMLAttributes.layout}`,
-      },
-      0,
+        width: '100%',
+      }),
+      ['tbody', {}, ['tr', {}, 0]],
     ];
   },
 
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="columns"]',
+        tag: 'table[data-type="columns"]',
       },
     ];
   },

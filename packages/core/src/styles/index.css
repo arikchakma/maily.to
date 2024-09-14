@@ -186,8 +186,7 @@
   }
 
   [data-type='columns'] {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
 
     &.has-focus [data-type='column'],
     &:hover [data-type='column'] {
@@ -200,6 +199,7 @@
   }
 
   [data-type='column'] {
+    padding:0;
     /* @apply rounded border-2 border-dotted border-transparent p-1; */
     & > *:first-child {
       margin-top: 0;

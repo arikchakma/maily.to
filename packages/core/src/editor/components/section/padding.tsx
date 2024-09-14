@@ -1,4 +1,4 @@
-import { Box, ScanIcon } from 'lucide-react';
+import { Box } from 'lucide-react';
 
 type PaddingProps = {
   value: number;
@@ -9,7 +9,7 @@ export function Padding(props: PaddingProps) {
   const { value, onChange } = props;
 
   return (
-    <div className="mly-relative mly-flex mly-items-center mly-justify-center">
+    <label className="mly-relative mly-flex mly-items-center mly-justify-center">
       <Box size={14} className="mly-absolute mly-left-1.5" />
       <input
         type="number"
@@ -18,6 +18,6 @@ export function Padding(props: PaddingProps) {
         className="hide-number-controls focus-visible:outline-none mly-h-auto mly-max-w-12 mly-border-0 mly-border-none mly-p-1 mly-pl-[26px] mly-text-sm mly-tabular-nums mly-outline-none"
         min={0}
       />
-    </div>
+    </label>
   );
 }

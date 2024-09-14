@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -73,12 +73,10 @@ export const Section = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       'section',
-      {
+      mergeAttributes(HTMLAttributes,  {
         'data-type': 'section',
         class: 'mly-bg-gray-100',
-        style: `border-radius: ${HTMLAttributes.borderRadius || 0}px`,
-        ...HTMLAttributes,
-      },
+      }),
       0,
     ];
   },

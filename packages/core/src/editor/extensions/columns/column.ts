@@ -14,13 +14,29 @@ export const Column = Node.create({
         parseHTML: (element) => element.getAttribute('data-position'),
         renderHTML: (attributes) => ({ 'data-position': attributes.position }),
       },
+      verticalAlign: {
+        default: 'top',
+        parseHTML: (element) => element?.style?.verticalAlign || 'top',
+        renderHTML: (attributes) => {
+          if (!attributes?.verticalAlign) {
+            return {};
+          }
+
+          return {
+            style: `vertical-align: ${attributes?.verticalAlign || 'top'}`,
+          };
+        },
+      },
     };
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'div',
-      mergeAttributes(HTMLAttributes, { 'data-type': 'column' }),
+      'td',
+      mergeAttributes(HTMLAttributes, {
+        'data-type': 'column',
+        width: '50%',
+      }),
       0,
     ];
   },
@@ -28,7 +44,7 @@ export const Column = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="column"]',
+        tag: 'td[data-type="column"]',
       },
     ];
   },

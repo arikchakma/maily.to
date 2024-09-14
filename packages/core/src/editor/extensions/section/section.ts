@@ -11,7 +11,7 @@ declare module '@tiptap/core' {
 export const Section = Node.create({
   name: 'section',
   group: 'block',
-  content: 'block+',
+  content: '(block|columns)+',
   defining: true,
   isolating: true,
 
@@ -73,7 +73,7 @@ export const Section = Node.create({
   renderHTML({ HTMLAttributes }) {
     return [
       'section',
-      mergeAttributes(HTMLAttributes,  {
+      mergeAttributes(HTMLAttributes, {
         'data-type': 'section',
         class: 'mly-bg-gray-100',
       }),

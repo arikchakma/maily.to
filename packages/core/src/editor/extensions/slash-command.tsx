@@ -255,7 +255,13 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     searchTerms: ['layout', 'columns'],
     icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setColumns().run();
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setColumns()
+        .focus(editor.state.selection.head - 1)
+        .run();
     },
   },
   {

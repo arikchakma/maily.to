@@ -1,4 +1,4 @@
-import { updateAttribute } from '@/editor/utils/update-attribute';
+import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
 type SectionAttributes = {
@@ -11,7 +11,7 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     section: {
       setSection: () => ReturnType;
-      updateSection: (attr: keyof SectionAttributes, value: any) => ReturnType;
+      updateSection: (attrs: Partial<SectionAttributes>) => ReturnType;
     };
   }
 }
@@ -90,7 +90,7 @@ export const Section = Node.create({
             ],
           });
         },
-      updateSection: (attr, value) => updateAttribute(this.name, attr, value),
+      updateSection: (attrs) => updateAttributes(this.name, attrs),
     };
   },
 

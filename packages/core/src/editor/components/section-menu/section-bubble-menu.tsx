@@ -59,7 +59,9 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={Scan}
         value={state.currentBorderRadius}
         onValueChange={(value) => {
-          editor?.commands?.updateSection('borderRadius', value);
+          editor?.commands?.updateSection({
+            borderRadius: value,
+          });
         }}
       />
       <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
@@ -67,14 +69,18 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={Box}
         value={state.currentPadding}
         onValueChange={(value) => {
-          editor?.commands?.updateSection('padding', value);
+          editor?.commands?.updateSection({
+            padding: value,
+          });
         }}
       />
       <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
       <ColorPicker
         color={state.currentBackgroundColor}
         onColorChange={(color) => {
-          editor?.commands?.updateSection('backgroundColor', color);
+          editor?.commands?.updateSection({
+            backgroundColor: color,
+          });
         }}
       >
         <BaseButton

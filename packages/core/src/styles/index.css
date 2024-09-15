@@ -206,7 +206,6 @@
 
   [data-type='column'] {
     padding: 0;
-    /* @apply rounded border-2 border-dotted border-transparent p-1; */
     & > *:first-child {
       margin-top: 0;
     }
@@ -215,13 +214,8 @@
       margin-bottom: 0;
     }
 
-    &:hover {
-      /* @apply border-neutral-100 dark:border-neutral-900; */
-    }
-
     &:has(.is-active),
     &.has-focus {
-      /* @apply border-neutral-100 dark:border-neutral-900; */
     }
   }
 
@@ -232,6 +226,22 @@
 
     & > *:last-child {
       margin-bottom: 0;
+    }
+  }
+
+  /* Remove margin before and after of Gap Cursor */
+  *:has(+ .ProseMirror-gapcursor) {
+    margin-bottom: 0 !important;
+  }
+
+  .ProseMirror-gapcursor {
+    &::after {
+      border: 1.5px solid gray;
+      width: 24px;
+    }
+
+    & + * {
+      margin-top: 0 !important;
     }
   }
 }

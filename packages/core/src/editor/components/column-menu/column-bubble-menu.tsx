@@ -61,7 +61,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Top"
         icon={AlignVerticalDistributeStart}
         command={() => {
-          editor.commands.updateColumn('verticalAlign', 'top');
+          editor.commands.updateColumn({ verticalAlign: 'top' });
         }}
         isActive={() => state.isVerticalAlignTop}
       />
@@ -69,7 +69,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Middle"
         icon={AlignVerticalDistributeCenter}
         command={() => {
-          editor.commands.updateColumn('verticalAlign', 'middle');
+          editor.commands.updateColumn({ verticalAlign: 'middle' });
         }}
         isActive={() => state.isVerticalAlignMiddle}
       />
@@ -77,7 +77,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Bottom"
         icon={AlignVerticalDistributeEnd}
         command={() => {
-          editor.commands.updateColumn('verticalAlign', 'bottom');
+          editor.commands.updateColumn({ verticalAlign: 'bottom' });
         }}
         isActive={() => state.isVerticalAlignBottom}
       />

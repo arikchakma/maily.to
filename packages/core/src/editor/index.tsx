@@ -3,15 +3,15 @@
 import { Editor as TiptapEditor, Extension, FocusPosition } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
-import { EditorBubbleMenu } from './components/editor-bubble-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
-import { SectionBubbleMenu } from './components/section/section-bubble-menu';
-import { ColumnBubbleMenu } from './components/column/column-bubble-menu';
+import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
+import { ColumnBubbleMenu } from './components/column-menu/column-bubble-menu';
+import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 
 // prettier-ignore
@@ -132,7 +132,7 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <EditorBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />

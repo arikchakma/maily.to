@@ -11,8 +11,13 @@ import {
   StrikethroughIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { allowedLogoAlignment } from '../nodes/logo';
-import { BubbleMenuButton } from './bubble-menu-button';
+import { allowedLogoAlignment } from '../../nodes/logo';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { ColorPicker } from '../ui/color-picker';
+import { BaseButton } from '../base-button';
+import { useTextMenuState } from './use-text-menu-state';
+import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
+import { isTextSelected } from '@/editor/utils/is-text-selected';
 
 export interface BubbleMenuItem {
   name: string;
@@ -26,8 +31,12 @@ export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {
   appendTo?: React.RefObject<any>;
 };
 
-export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
+export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
+
+  if (!editor) {
+    return null;
+  }
 
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
   const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
@@ -111,40 +120,46 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
-    shouldShow: ({ editor, state, from, to }) => {
-      const { doc, selection } = state;
-      const { empty } = selection;
-
-      // Sometime check for `empty` is not enough.
-      // Doubleclick an empty paragraph returns a node size of 2.
-      // So we check also for an empty text size.
-      const isEmptyTextBlock =
-        !doc.textBetween(from, to).length && isTextSelection(state.selection);
-
-      if (
-        empty ||
-        isEmptyTextBlock ||
-        !editor.isEditable ||
-        editor.isActive('image') ||
-        editor.isActive('logo') ||
-        editor.isActive('spacer') ||
-        editor.isActive('variable') ||
-        editor.isActive({
-          mailyComponent: 'button',
-        }) ||
-        editor.isActive({
-          mailyComponent: 'linkCard',
-        })
-      ) {
+    pluginKey: 'textMenu',
+    shouldShow: ({ editor, state, from, to, view }) => {
+      if (!view || editor.view.dragging) {
         return false;
       }
 
-      return true;
+      const domAtPos = view.domAtPos(from || 0).node as HTMLElement;
+      const nodeDOM = view.nodeDOM(from || 0) as HTMLElement;
+      const node = nodeDOM || domAtPos;
+
+      if (isCustomNodeSelected(editor, node)) {
+        return false;
+      }
+
+      return isTextSelected(editor);
     },
     tippyOptions: {
+      popperOptions: {
+        placement: 'top-start',
+        modifiers: [
+          {
+            name: 'preventOverflow',
+            options: {
+              boundary: 'viewport',
+              padding: 8,
+            },
+          },
+          {
+            name: 'flip',
+            options: {
+              fallbackPlacements: ['bottom-start', 'top-end', 'bottom-end'],
+            },
+          },
+        ],
+      },
       maxWidth: '100%',
     },
   };
+
+  const state = useTextMenuState(editor);
 
   return (
     <BubbleMenu
@@ -154,6 +169,24 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
       {items.map((item, index) => (
         <BubbleMenuButton key={index} {...item} />
       ))}
+      <ColorPicker
+        color={state.currentTextColor}
+        onColorChange={(color) => {
+          editor?.chain().setColor(color).run();
+        }}
+      >
+        <BaseButton variant="ghost" size="sm" type="button">
+          <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
+            <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
+              A
+            </span>
+            <div
+              className="mly-h-[2px] mly-w-3"
+              style={{ backgroundColor: state.currentTextColor }}
+            />
+          </div>
+        </BaseButton>
+      </ColorPicker>
     </BubbleMenu>
   );
 }

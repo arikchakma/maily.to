@@ -1,5 +1,4 @@
 import { BubbleMenu, isTextSelection } from '@tiptap/react';
-import { EditorBubbleMenuProps } from './../editor-bubble-menu';
 import { useCallback } from 'react';
 import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
@@ -8,6 +7,8 @@ import { NumberInput } from '../ui/number-input';
 import { Box, Scan } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
+import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
+import { isTextSelected } from '@/editor/utils/is-text-selected';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -27,16 +28,8 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
-    shouldShow: ({ editor, state, from, to }) => {
-      const { doc, selection } = state;
-      const { empty } = selection;
-
-      // Sometime check for `empty` is not enough.
-      // Doubleclick an empty paragraph returns a node size of 2.
-      // So we check also for an empty text size.
-      const isEmptyTextBlock =
-        !doc.textBetween(from, to).length && isTextSelection(state.selection);
-      if (!isEmptyTextBlock) {
+    shouldShow: ({ editor }) => {
+      if (isTextSelected(editor)) {
         return false;
       }
 

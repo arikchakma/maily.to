@@ -3,9 +3,9 @@ import { EditorBubbleMenuProps } from './../editor-bubble-menu';
 import { useCallback } from 'react';
 import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
-import { BorderRadius } from './border-radius';
 import { useSectionState } from './use-section-state';
-import { Padding } from './padding';
+import { NumberInput } from '../ui/number-input';
+import { Box, Scan } from 'lucide-react';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -60,18 +60,20 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
       {...bubbleMenuProps}
       className="mly-flex mly-items-stretch mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
     >
-      <BorderRadius
+      <NumberInput
+        icon={Scan}
         value={state.currentBorderRadius}
-        onChange={(value) => {
+        onValueChange={(value) => {
           editor?.commands?.updateAttributes('section', {
             borderRadius: value,
           });
         }}
       />
       <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
-      <Padding
+      <NumberInput
+        icon={Box}
         value={state.currentPadding}
-        onChange={(value) => {
+        onValueChange={(value) => {
           editor?.commands?.updateAttributes('section', {
             padding: value,
           });

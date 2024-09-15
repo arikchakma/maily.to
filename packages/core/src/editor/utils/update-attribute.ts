@@ -53,8 +53,16 @@ export function updateAttributes(
         });
 
         if (lastPos !== null) {
-          for (const [attr, value] of Object.entries(attrs)) {
-            tr.setNodeAttribute(lastPos, attr, value);
+          const node = state.doc.nodeAt(lastPos);
+          if (node) {
+            tr.setNodeMarkup(lastPos, null, {
+              ...node.attrs,
+              ...attrs,
+            });
+          } else {
+            for (const [key, value] of Object.entries(attrs)) {
+              tr.setNodeAttribute(lastPos, key, value);
+            }
           }
         }
       }

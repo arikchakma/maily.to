@@ -5,7 +5,11 @@ import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
 import { useColumnState } from './use-column-state';
 import { BubbleMenuButton } from '../bubble-menu-button';
-import { AlignVerticalDistributeCenter, AlignVerticalDistributeEnd, AlignVerticalDistributeStart } from 'lucide-react';
+import {
+  AlignVerticalDistributeCenter,
+  AlignVerticalDistributeEnd,
+  AlignVerticalDistributeStart,
+} from 'lucide-react';
 
 export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -64,9 +68,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Top"
         icon={AlignVerticalDistributeStart}
         command={() => {
-          editor.commands.updateAttributes('column', {
-            verticalAlign: 'top',
-          });
+          editor.commands.updateColumn('verticalAlign', 'top');
         }}
         isActive={() => state.isVerticalAlignTop}
       />
@@ -74,9 +76,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Middle"
         icon={AlignVerticalDistributeCenter}
         command={() => {
-          editor.commands.updateAttributes('column', {
-            verticalAlign: 'middle',
-          });
+          editor.commands.updateColumn('verticalAlign', 'middle');
         }}
         isActive={() => state.isVerticalAlignMiddle}
       />
@@ -84,9 +84,7 @@ export function ColumnBubbleMenu(props: EditorBubbleMenuProps) {
         name="Vertical Align Bottom"
         icon={AlignVerticalDistributeEnd}
         command={() => {
-          editor.commands.updateAttributes('column', {
-            verticalAlign: 'bottom',
-          });
+          editor.commands.updateColumn('verticalAlign', 'bottom');
         }}
         isActive={() => state.isVerticalAlignBottom}
       />

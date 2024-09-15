@@ -1,10 +1,7 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { HexAlphaColorPicker, HexColorInput } from 'react-colorful';
-
 import { BaseButton } from '../components/base-button';
-import { ColorPicker } from '../components/color-picker';
+import { ColorPicker } from '../components/ui/color-picker';
 import { Input } from '../components/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
 import {
@@ -238,68 +235,38 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
   const { color, onChange, variant } = props;
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <BaseButton variant="ghost" className="" size="sm" type="button">
-          <div
-            className="mly-h-4 mly-w-4 mly-rounded"
-            style={{
-              backgroundColor: variant === 'filled' ? color : 'transparent',
-              borderStyle: 'solid',
-              borderWidth: variant === 'outline' ? 2 : 0,
-              borderColor: color,
-            }}
-          />
-        </BaseButton>
-      </PopoverTrigger>
-      <PopoverContent className="mly-w-full mly-rounded-none mly-border-0 !mly-bg-transparent !mly-p-0 mly-shadow-none mly-drop-shadow-md">
-        <ColorPicker
-          color={color}
-          onChange={(newColor) => {
-            // HACK: This is a workaround for a bug in tiptap
-            // https://github.com/ueberdosis/tiptap/issues/3580
-            //
-            //     ERROR: flushSync was called from inside a lifecycle
-            //
-            // To fix this, we need to make sure that the onChange
-            // callback is run after the current execution context.
-            queueMicrotask(() => {
-              onChange(newColor);
-            });
+    <ColorPicker color={color} onColorChange={onChange}>
+      <BaseButton variant="ghost" className="" size="sm" type="button">
+        <div
+          className="mly-h-4 mly-w-4 mly-rounded"
+          style={{
+            backgroundColor: variant === 'filled' ? color : 'transparent',
+            borderStyle: 'solid',
+            borderWidth: variant === 'outline' ? 2 : 0,
+            borderColor: color,
           }}
         />
-      </PopoverContent>
-    </Popover>
+      </BaseButton>
+    </ColorPicker>
   );
 }
 
 function TextColorPickerPopup(props: ColorPickerProps) {
   const { color, onChange } = props;
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <BaseButton variant="ghost" size="sm" type="button">
-          <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
-            <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
-              A
-            </span>
-            <div
-              className="mly-h-[2px] mly-w-3"
-              style={{ backgroundColor: color }}
-            />
-          </div>
-        </BaseButton>
-      </PopoverTrigger>
-      <PopoverContent className="mly-w-full mly-rounded-none mly-border-0 !mly-bg-transparent !mly-p-0 mly-shadow-none mly-drop-shadow-md">
-        <ColorPicker
-          color={color}
-          onChange={(color) => {
-            queueMicrotask(() => {
-              onChange(color);
-            });
-          }}
-        />
-      </PopoverContent>
-    </Popover>
+    <ColorPicker color={color} onColorChange={onChange}>
+      <BaseButton variant="ghost" size="sm" type="button">
+        <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
+          <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
+            A
+          </span>
+          <div
+            className="mly-h-[2px] mly-w-3"
+            style={{ backgroundColor: color }}
+          />
+        </div>
+      </BaseButton>
+    </ColorPicker>
   );
 }

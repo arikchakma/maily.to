@@ -6,6 +6,8 @@ import { sticky } from 'tippy.js';
 import { useSectionState } from './use-section-state';
 import { NumberInput } from '../ui/number-input';
 import { Box, Scan } from 'lucide-react';
+import { ColorPicker } from '../ui/color-picker';
+import { BaseButton } from '../base-button';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -64,9 +66,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={Scan}
         value={state.currentBorderRadius}
         onValueChange={(value) => {
-          editor?.commands?.updateAttributes('section', {
-            borderRadius: value,
-          });
+          editor?.commands?.updateSection('borderRadius', value);
         }}
       />
       <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
@@ -74,11 +74,30 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={Box}
         value={state.currentPadding}
         onValueChange={(value) => {
-          editor?.commands?.updateAttributes('section', {
-            padding: value,
-          });
+          editor?.commands?.updateSection('padding', value);
         }}
       />
+      <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
+      <ColorPicker
+        color={state.currentBackgroundColor}
+        onColorChange={(color) => {
+          editor?.commands?.updateSection('backgroundColor', color);
+        }}
+      >
+        <BaseButton
+          variant="ghost"
+          className="!mly-size-7 mly-shrink-0"
+          size="sm"
+          type="button"
+        >
+          <div
+            className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded mly-border mly-border-gray-700"
+            style={{
+              backgroundColor: state.currentBackgroundColor,
+            }}
+          />
+        </BaseButton>
+      </ColorPicker>
     </BubbleMenu>
   );
 }

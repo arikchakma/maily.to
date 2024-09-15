@@ -10,6 +10,8 @@ export const useSectionState = (editor: Editor) => {
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
         currentPadding:
           Number(ctx.editor.getAttributes('section')?.padding) || 0,
+        currentBackgroundColor:
+          ctx.editor.getAttributes('section')?.backgroundColor || '#ffffff',
       };
     },
     equalityFn: deepEql,

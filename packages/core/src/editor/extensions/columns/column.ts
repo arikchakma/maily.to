@@ -1,4 +1,18 @@
+import { updateAttribute } from '@/editor/utils/update-attribute';
 import { Node, mergeAttributes } from '@tiptap/core';
+
+interface ColumnAttributes {
+  position: string;
+  verticalAlign: 'top' | 'middle' | 'bottom';
+}
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    column: {
+      updateColumn: (attr: keyof ColumnAttributes, value: any) => ReturnType;
+    };
+  }
+}
 
 export const Column = Node.create({
   name: 'column',
@@ -27,6 +41,12 @@ export const Column = Node.create({
           };
         },
       },
+    };
+  },
+
+  addCommands() {
+    return {
+      updateColumn: (attr, value) => updateAttribute(this.name, attr, value),
     };
   },
 

@@ -1,9 +1,17 @@
+import { updateAttribute } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
+
+type SectionAttributes = {
+  borderRadius: number;
+  padding: number;
+  backgroundColor: string;
+};
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     section: {
       setSection: () => ReturnType;
+      updateSection: (attr: keyof SectionAttributes, value: any) => ReturnType;
     };
   }
 }
@@ -47,6 +55,21 @@ export const Section = Node.create({
           };
         },
       },
+      backgroundColor: {
+        default: '#ffffff',
+        parseHTML: (element) => {
+          return element.style.backgroundColor;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.backgroundColor) {
+            return {};
+          }
+
+          return {
+            style: `background-color: ${attributes.backgroundColor}`,
+          };
+        },
+      },
     };
   },
 
@@ -67,6 +90,7 @@ export const Section = Node.create({
             ],
           });
         },
+      updateSection: (attr, value) => updateAttribute(this.name, attr, value),
     };
   },
 

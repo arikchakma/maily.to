@@ -1,6 +1,8 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
+const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+
 type SectionAttributes = {
   borderRadius: number;
   padding: number;
@@ -56,7 +58,7 @@ export const Section = Node.create({
         },
       },
       backgroundColor: {
-        default: '#ffffff',
+        default: DEFAULT_SECTION_BACKGROUND_COLOR,
         parseHTML: (element) => {
           return element.style.backgroundColor;
         },

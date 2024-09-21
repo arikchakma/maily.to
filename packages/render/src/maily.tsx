@@ -17,8 +17,8 @@ import {
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
-import { generateKey } from './utils';
 import { deepMerge } from '@antfu/utils';
+import { generateKey } from './utils';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -183,6 +183,7 @@ const DEFAULT_THEME: ThemeOptions = {
 
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
 
 export interface RenderOptions {
   /**
@@ -457,15 +458,41 @@ export class Maily {
     return markup;
   }
 
+  private getMarginOverrideConditions(
+    node: JSONContent,
+    options?: NodeOptions
+  ) {
+    const { parent, prev, next } = options || {};
+
+    const isNextSpacer = next?.type === 'space';
+    const isPrevSpacer = prev?.type === 'space';
+    const isLastSectionElement = parent?.type === 'section' && !next;
+    const isFirstSectionElement = parent?.type === 'section' && !prev;
+    const isParentListItem = parent?.type === 'listItem';
+
+    return {
+      isNextSpacer,
+      isPrevSpacer,
+      isLastSectionElement,
+      isFirstSectionElement,
+      isParentListItem,
+    };
+  }
+
   // `getMappedContent` will call corresponding node type
   // and return text content
   private getMappedContent(
     node: JSONContent,
     options?: NodeOptions
   ): JSX.Element[] {
-    return node.content
-      ?.map((childNode) => {
-        const component = this.renderNode(childNode, options);
+    const allNodes = node.content || [];
+    return allNodes
+      .map((childNode, index) => {
+        const component = this.renderNode(childNode, {
+          ...options,
+          next: allNodes[index + 1],
+          prev: allNodes[index - 1],
+        });
         if (!component) {
           return null;
         }
@@ -513,16 +540,17 @@ export class Maily {
   private paragraph(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const alignment = attrs?.textAlign || 'left';
-
-    const { parent, next } = options || {};
-    const isParentListItem = parent?.type === 'listItem';
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement, isParentListItem } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <Text
         style={{
           textAlign: alignment,
-          marginBottom: isParentListItem || isNextSpacer ? '0px' : '20px',
+          marginBottom:
+            isParentListItem || isNextSpacer || isLastSectionElement
+              ? '0px'
+              : '20px',
           marginTop: '0px',
           fontSize: this.config.theme?.fontSize?.paragraph,
           color: this.config.theme?.colors?.paragraph,
@@ -592,13 +620,16 @@ export class Maily {
 
   private heading(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { next, prev } = options || {};
 
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
-    const isNextSpacer = next?.type === 'spacer';
-    const isPrevSpacer = prev?.type === 'spacer';
-
+    const {
+      isNextSpacer,
+      isPrevSpacer,
+      isFirstSectionElement,
+      isLastSectionElement,
+    } = this.getMarginOverrideConditions(node, options);
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
@@ -609,8 +640,8 @@ export class Maily {
         style={{
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
-          marginBottom: isNextSpacer ? '0px' : '12px',
-          marginTop: isPrevSpacer ? '0px' : '0px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '12px',
+          marginTop: isPrevSpacer || isFirstSectionElement ? '0px' : '0px',
           fontSize,
           lineHeight,
           fontWeight,
@@ -650,13 +681,16 @@ export class Maily {
     );
   }
 
-  private orderedList(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private orderedList(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
+
     return (
       <Container>
         <ol
           style={{
             marginTop: '0px',
-            marginBottom: '20px',
+            marginBottom: isNextSpacer || isLastSectionElement ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
@@ -667,7 +701,14 @@ export class Maily {
     );
   }
 
-  private bulletList(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private bulletList(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { parent, next } = options || {};
+    const { isLastSectionElement, isNextSpacer } =
+      this.getMarginOverrideConditions(node, {
+        parent,
+        next,
+      });
+
     return (
       <Container
         style={{
@@ -677,7 +718,7 @@ export class Maily {
         <ul
           style={{
             marginTop: '0px',
-            marginBottom: '20px',
+            marginBottom: isLastSectionElement || isNextSpacer ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
@@ -728,8 +769,8 @@ export class Maily {
       radius = '6px';
     }
 
-    const { next } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     const href =
       this.linkValues.get(url) || this.variableValues.get(url) || url;
@@ -739,7 +780,7 @@ export class Maily {
         style={{
           textAlign: alignment,
           maxWidth: '100%',
-          marginBottom: isNextSpacer ? '0px' : '20px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '20px',
         }}
       >
         <Button
@@ -792,14 +833,14 @@ export class Maily {
       alignment = 'left',
     } = attrs || {};
 
-    const { next } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <Row
         style={{
           marginTop: '0px',
-          marginBottom: isNextSpacer ? '0px' : '32px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -829,8 +870,8 @@ export class Maily {
       externalLink = '',
     } = attrs || {};
 
-    const { next } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     const mainImage = (
       <Img
@@ -853,7 +894,7 @@ export class Maily {
       <Row
         style={{
           marginTop: '0px',
-          marginBottom: isNextSpacer ? '0px' : '32px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -882,8 +923,8 @@ export class Maily {
     const { attrs } = node;
     const { textAlign = 'left' } = attrs || {};
 
-    const { next } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <Text
@@ -892,7 +933,7 @@ export class Maily {
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
           color: this.config.theme?.colors?.footer,
           marginTop: '0px',
-          marginBottom: isNextSpacer ? '0px' : '20px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '20px',
           textAlign,
           ...antialiased,
         }}
@@ -903,9 +944,8 @@ export class Maily {
   }
 
   private blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const { next, prev } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
-    const isPrevSpacer = prev?.type === 'spacer';
+    const { isNextSpacer, isPrevSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <blockquote
@@ -917,7 +957,7 @@ export class Maily {
           marginLeft: '0px',
           marginRight: '0px',
           marginTop: isPrevSpacer ? '0px' : '20px',
-          marginBottom: isNextSpacer ? '0px' : '20px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '20px',
         }}
       >
         {this.getMappedContent(node)}
@@ -943,8 +983,8 @@ export class Maily {
   }
   private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { next } = options || {};
-    const isNextSpacer = next?.type === 'spacer';
+    const { isNextSpacer, isLastSectionElement } =
+      this.getMarginOverrideConditions(node, options);
 
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
@@ -961,7 +1001,7 @@ export class Maily {
           textDecoration: 'none',
           color: 'inherit',
           display: 'block',
-          marginBottom: isNextSpacer ? '0px' : '20px',
+          marginBottom: isNextSpacer || isLastSectionElement ? '0px' : '20px',
         }}
         target="_blank"
       >
@@ -1091,6 +1131,30 @@ export class Maily {
           </Column>
         </Row>
       </a>
+    );
+  }
+
+  private section(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const {
+      borderRadius = 0,
+      padding = 0,
+      backgroundColor = DEFAULT_SECTION_BACKGROUND_COLOR,
+    } = attrs || {};
+
+    return (
+      <Container
+        style={{
+          backgroundColor,
+          borderRadius,
+          padding,
+        }}
+      >
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
+      </Container>
     );
   }
 }

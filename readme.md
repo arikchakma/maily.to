@@ -16,6 +16,13 @@
   <b>Powerful editor for creating beautiful, pre-designed, mobile-ready emails.</b></br>
   <sub>Just bring your text, use our pre-designed components, and be done.</sub><br>
 </p>
+<br />
+
+<p align="center">
+  <a href="https://novu.co">
+    <img src="https://github.com/user-attachments/assets/a4d3f4d1-9e76-4bc9-91f9-1156c9f14d5d" alt="Backed by Novu" style="height: 50px;" />
+  </a>
+</p>
 
 <br />
 

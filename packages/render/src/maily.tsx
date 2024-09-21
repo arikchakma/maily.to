@@ -424,7 +424,11 @@ export class Maily {
           <meta content="light" name="color-scheme" />
           <meta content="light" name="supported-color-schemes" />
         </Head>
-        <Body>
+        <Body
+          style={{
+            margin: 0,
+          }}
+        >
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}

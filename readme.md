@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://novu.co">
-    <img src="https://github.com/user-attachments/assets/a4d3f4d1-9e76-4bc9-91f9-1156c9f14d5d" alt="Backed by Novu" style="height: 50px;" />
+    <img src="https://github.com/user-attachments/assets/a4d3f4d1-9e76-4bc9-91f9-1156c9f14d5d" alt="Backed by Novu" style="height: 36px;" />
   </a>
 </p>
 

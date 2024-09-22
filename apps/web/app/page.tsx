@@ -4,6 +4,7 @@ import ArrowImage from '@/public/arrow.svg';
 import IconImage from '@/public/brand/icon.svg';
 import StarImage from '@/public/star.svg';
 import { Icons } from '@/components/icons';
+import { NovueIcon } from '@/components/partners/novu-icon';
 
 const components = [
   'Logo',
@@ -17,9 +18,10 @@ const components = [
   'Footer',
   'List',
   'Quote',
+  'Code',
 ];
 
-const comingSoon = ['Social', 'Code', 'Video', 'Table', 'Columns', 'Countdown'];
+const comingSoon = ['Social', 'Video', 'Table', 'Columns', 'Countdown'];
 
 export const dynamic = 'force-static';
 
@@ -27,7 +29,7 @@ export default function LandingPage() {
   return (
     <div>
       <div className="border-b-8 border-t-8 border-b-black border-t-black">
-        <div className="mx-auto max-w-[1050px] px-7 sm:px-10">
+        <div className="relative mx-auto max-w-[1050px] px-7 sm:px-10">
           <div className="flex items-center justify-start gap-4 py-10 md:py-14 lg:py-20">
             <div className="flex-grow">
               <h1 className="mb-2 text-6xl font-black sm:text-7xl md:mb-3 md:text-8xl lg:mb-4 lg:text-9xl">
@@ -67,6 +69,10 @@ export default function LandingPage() {
                 src={IconImage}
               />
             </div>
+          </div>
+
+          <div className="absolute bottom-0 translate-y-6 bg-white">
+            <NovueIcon />
           </div>
         </div>
       </div>

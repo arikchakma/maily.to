@@ -71,8 +71,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="absolute bottom-0 translate-y-6 bg-white">
-            <NovueIcon />
+          <div className="absolute bottom-0 translate-y-[26px] bg-white">
+            <a
+              href="https://novu.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-opacity duration-300 hover:opacity-80"
+            >
+              <NovueIcon />
+            </a>
           </div>
         </div>
       </div>

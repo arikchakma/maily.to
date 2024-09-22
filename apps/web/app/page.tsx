@@ -73,7 +73,7 @@ export default function LandingPage() {
 
           <div className="absolute bottom-0 translate-y-[26px] bg-white">
             <a
-              href="https://novu.co"
+              href="https://novu.co?ref=maily.to"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-opacity duration-300 hover:opacity-80"

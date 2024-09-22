@@ -117,10 +117,10 @@ export interface MailyConfig {
    * ```js
    * {
    *   colors: {
-   *     heading: 'rgb(17, 24, 39)',
-   *     paragraph: 'rgb(55, 65, 81)',
-   *     horizontal: 'rgb(234, 234, 234)',
-   *     footer: 'rgb(100, 116, 139)',
+   *     heading: '#111827',
+   *     paragraph: '#374151',
+   *     horizontal: '#EAEAEA',
+   *     footer: '#64748B',
    *   },
    *   fontSize: {
    *     paragraph: '15px',
@@ -137,7 +137,7 @@ export interface MailyConfig {
    * const maily = new Maily(content, {
    *   theme: {
    *     colors: {
-   *       heading: 'rgb(17, 24, 39)',
+   *       heading: '#111827',
    *     },
    *     fontSize: {
    *       footer: {
@@ -159,18 +159,18 @@ const DEFAULT_RENDER_OPTIONS: RenderOptions = {
 
 const DEFAULT_THEME: ThemeOptions = {
   colors: {
-    heading: 'rgb(17, 24, 39)',
-    paragraph: 'rgb(55, 65, 81)',
-    horizontal: 'rgb(234, 234, 234)',
-    footer: 'rgb(100, 116, 139)',
-    blockquoteBorder: 'rgb(209, 213, 219)',
-    codeBackground: 'rgb(239, 239, 239)',
-    codeText: 'rgb(17, 24, 39)',
-    linkCardTitle: 'rgb(17, 24, 39)',
-    linkCardDescription: 'rgb(107, 114, 128)',
-    linkCardBadgeText: 'rgb(17, 24, 39)',
-    linkCardBadgeBackground: 'rgb(254, 240, 138)',
-    linkCardSubTitle: 'rgb(107, 114, 128)',
+    heading: '#111827',
+    paragraph: '#374151',
+    horizontal: '#EAEAEA',
+    footer: '#64748B',
+    blockquoteBorder: '#D1D5DB',
+    codeBackground: '#EFEFEF',
+    codeText: '#111827',
+    linkCardTitle: '#111827',
+    linkCardDescription: '#6B7280',
+    linkCardBadgeText: '#111827',
+    linkCardBadgeBackground: '#FEF08A',
+    linkCardSubTitle: '#6B7280',
   },
   fontSize: {
     paragraph: '15px',

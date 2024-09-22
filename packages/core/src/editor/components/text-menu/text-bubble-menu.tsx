@@ -20,11 +20,14 @@ import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 
 export interface BubbleMenuItem {
-  name: string;
+  name?: string;
   isActive: () => boolean;
   command: () => void;
   shouldShow?: () => boolean;
   icon?: LucideIcon;
+  className?: string;
+  iconClassName?: string;
+  nameClassName?: string;
 }
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {

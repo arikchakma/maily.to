@@ -10,9 +10,9 @@ import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
-import { ColumnBubbleMenu } from './components/column-menu/column-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
+import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;
@@ -137,7 +137,7 @@ export function Editor(props: EditorProps) {
           <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ColumnBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

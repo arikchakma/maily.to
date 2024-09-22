@@ -33,7 +33,11 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         return false;
       }
 
-      return editor.isActive('section');
+      return (
+        editor.isActive('section') &&
+        !editor.isActive('columns') &&
+        !editor.isActive('column')
+      );
     },
     tippyOptions: {
       offset: [0, 8],

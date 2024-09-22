@@ -98,19 +98,32 @@ export const Section = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'section',
-      mergeAttributes(HTMLAttributes, {
-        'data-type': 'section',
-        class: 'mly-bg-gray-100',
-      }),
-      0,
+      'table',
+      {
+        'data-type': this.name,
+      },
+      [
+        'tbody',
+        {},
+        [
+          'tr',
+          {},
+          [
+            'td',
+            mergeAttributes(HTMLAttributes, {
+              'data-type': 'section-cell',
+            }),
+            0,
+          ],
+        ],
+      ],
     ];
   },
 
   parseHTML() {
     return [
       {
-        tag: 'section[data-type="section"]',
+        tag: 'table[data-type="section"]',
       },
     ];
   },

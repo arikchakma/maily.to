@@ -9,6 +9,7 @@ import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
+import { Divider } from '../ui/divider';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -68,7 +69,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           });
         }}
       />
-      <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
+      <Divider />
       <NumberInput
         icon={Box}
         value={state.currentPadding}
@@ -78,7 +79,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           });
         }}
       />
-      <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
+      <Divider />
       <ColorPicker
         color={state.currentBackgroundColor}
         onColorChange={(color) => {

@@ -15,6 +15,7 @@ import {
   AlignVerticalDistributeEnd,
   AlignVerticalDistributeStart,
 } from 'lucide-react';
+import { Divider } from '../ui/divider';
 
 export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -114,7 +115,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               });
             }}
           />
-          <div className="mly-mx-0.5 mly-w-px mly-bg-gray-200" />
+          <Divider />
           <BubbleMenuButton
             name="Align Left"
             isActive={() => state.isAlignLeft}

@@ -1,3 +1,7 @@
+:root {
+  --placeholder-color: #adb5bd;
+}
+
 .mly-editor .mly-prose p:where([class~='text-sm']) {
   font-size: 16px;
 }
@@ -179,7 +183,7 @@
     content: attr(data-placeholder);
     text-wrap: nowrap;
     float: left;
-    color: #adb5bd;
+    color: var(--placeholder-color);
     pointer-events: none;
     height: 0;
   }
@@ -188,7 +192,7 @@
     content: attr(data-placeholder);
     text-wrap: nowrap;
     float: left;
-    color: #adb5bd;
+    color: var(--placeholder-color);
     pointer-events: none;
     height: 0;
   }

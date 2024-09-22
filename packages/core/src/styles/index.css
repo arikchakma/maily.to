@@ -177,6 +177,7 @@
       [data-type='section']
     )::before {
     content: attr(data-placeholder);
+    text-wrap: nowrap;
     float: left;
     color: #adb5bd;
     pointer-events: none;
@@ -185,6 +186,7 @@
 
   .is-empty:not([data-type='columns'], [data-type='section'])::before {
     content: attr(data-placeholder);
+    text-wrap: nowrap;
     float: left;
     color: #adb5bd;
     pointer-events: none;
@@ -206,16 +208,13 @@
 
   [data-type='column'] {
     padding: 0;
+
     & > *:first-child {
       margin-top: 0;
     }
 
     & > *:last-child {
       margin-bottom: 0;
-    }
-
-    &:has(.is-active),
-    &.has-focus {
     }
   }
 

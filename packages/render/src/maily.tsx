@@ -468,8 +468,8 @@ export class Maily {
   ) {
     const { parent, prev, next } = options || {};
 
-    const isNextSpacer = next?.type === 'space';
-    const isPrevSpacer = prev?.type === 'space';
+    const isNextSpacer = next?.type === 'spacer';
+    const isPrevSpacer = prev?.type === 'spacer';
 
     const isParentListItem = parent?.type === 'listItem';
 
@@ -657,13 +657,8 @@ export class Maily {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
-    const {
-      isNextSpacer,
-      isPrevSpacer,
-      isFirstSectionElement,
-      isLastSectionElement,
-      isLastColumnElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
+      this.getMarginOverrideConditions(node, options);
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
@@ -676,15 +671,15 @@ export class Maily {
           color: this.config.theme?.colors?.heading,
           marginBottom:
             isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
+              ? '0'
               : '12px',
-          marginTop: isPrevSpacer || isFirstSectionElement ? '0px' : '0px',
+          marginTop: 0,
           fontSize,
           lineHeight,
           fontWeight,
         }}
       >
-        {this.getMappedContent(node)}
+        {this.getMappedContent(node, options)}
       </Heading>
     );
   }

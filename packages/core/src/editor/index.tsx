@@ -3,13 +3,16 @@
 import { Editor as TiptapEditor, Extension, FocusPosition } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
-import { EditorBubbleMenu } from './components/editor-bubble-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
 import { cn } from './utils/classname';
+import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
+import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
+import { useRef } from 'react';
+import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;
@@ -75,6 +78,7 @@ export function Editor(props: EditorProps) {
     };
   }
 
+  const menuContainerRef = useRef(null);
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -117,7 +121,10 @@ export function Editor(props: EditorProps) {
 
   return (
     <MailyProvider variables={variables}>
-      <div className={cn('mly-editor mly-antialiased', wrapClassName)}>
+      <div
+        className={cn('mly-editor mly-antialiased', wrapClassName)}
+        ref={menuContainerRef}
+      >
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
@@ -125,10 +132,12 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <EditorBubbleMenu editor={editor} />
-          <ImageBubbleMenu editor={editor} />
-          <SpacerBubbleMenu editor={editor} />
+          <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
+          <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

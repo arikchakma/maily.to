@@ -7,8 +7,8 @@ import { type CSSProperties, useRef, useState } from 'react';
 import TipTapImage from '@tiptap/extension-image';
 import { useEvent } from '../utils/use-event';
 
-const MIN_WIDTH = 60;
-const BORDER_COLOR = '#0096fd';
+const MIN_WIDTH = 20;
+const MAX_WIDTH = 600;
 
 function ResizableImageTemplate(props: NodeViewProps) {
   const { node, updateAttributes, selected } = props;
@@ -29,7 +29,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
         return;
       }
 
-      const imageParentWidth = imageParent.offsetWidth;
+      const imageParentWidth = Math.max(imageParent.offsetWidth, MAX_WIDTH);
 
       event.preventDefault();
       const direction = event.currentTarget.dataset.direction || '--';

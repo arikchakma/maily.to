@@ -1,3 +1,7 @@
+:root {
+  --placeholder-color: #adb5bd;
+}
+
 .mly-editor .mly-prose p:where([class~='text-sm']) {
   font-size: 16px;
 }
@@ -119,42 +123,6 @@
   content: none;
 }
 
-.ProseMirror {
-  position: relative;
-}
-
-.ProseMirror {
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  white-space: break-spaces;
-  -webkit-font-variant-ligatures: none;
-  font-variant-ligatures: none;
-  font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
-}
-
-.ProseMirror:focus {
-  outline: none;
-}
-
-.ProseMirror .is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
-}
-.ProseMirror .is-empty::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
-}
-
-.ProseMirror-selectednode {
-  outline: 3px solid #555;
-}
-
 /* Chrome, Safari and Opera */
 .mly-no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -183,4 +151,120 @@
 .mly-editor .react-colorful__pointer {
   width: 16px;
   height: 16px;
+}
+
+.ProseMirror-selectednode {
+  outline: 3px solid #555;
+}
+
+.mly-prose {
+  strong {
+    color: currentColor;
+  }
+}
+
+.ProseMirror {
+  position: relative;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
+
+  &:focus {
+    outline: none;
+  }
+
+  .is-editor-empty:first-child:not(
+      [data-type='columns'],
+      [data-type='section']
+    )::before {
+    content: attr(data-placeholder);
+    text-wrap: nowrap;
+    float: left;
+    color: var(--placeholder-color);
+    pointer-events: none;
+    height: 0;
+  }
+
+  .is-empty:not([data-type='columns'], [data-type='section'])::before {
+    content: attr(data-placeholder);
+    text-wrap: nowrap;
+    float: left;
+    color: var(--placeholder-color);
+    pointer-events: none;
+    height: 0;
+  }
+
+  [data-type='columns'] {
+    padding: 0;
+
+    &.has-focus [data-type='column'],
+    &:hover [data-type='column'] {
+      /* @apply border-neutral-300 dark:border-neutral-700; */
+    }
+
+    [data-type='column'].has-focus {
+      outline: 2px solid #e9ecef;
+    }
+  }
+
+  [data-type='column'] {
+    padding: 0;
+
+    & > *:first-child {
+      margin-top: 0;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  [data-type='section'] {
+    margin: 0;
+    padding: 0;
+
+    [data-type='section-cell'] {
+      padding: 0;
+      & > *:first-child {
+        margin-top: 0;
+      }
+
+      & > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  /* Remove margin before and after of Gap Cursor */
+  *:has(+ .ProseMirror-gapcursor) {
+    margin-bottom: 0 !important;
+  }
+
+  .ProseMirror-gapcursor {
+    &::after {
+      border: 1.5px solid gray;
+      width: 24px;
+    }
+
+    & + * {
+      margin-top: 0 !important;
+    }
+  }
+}
+
+/* Hide Number Count */
+.hide-number-controls {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
 }

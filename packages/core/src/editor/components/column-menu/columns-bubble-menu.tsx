@@ -124,14 +124,17 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
             icon={AlignLeft}
             command={() => editor.commands.updateColumns({ align: 'left' })}
           />
-          <BubbleMenuButton
-            name="Align Center"
-            isActive={() => state.isAlignCenter}
-            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-            iconClassName="mly-w-3 mly-h-3"
-            icon={AlignCenter}
-            command={() => editor.commands.updateColumns({ align: 'center' })}
-          />
+          {state.isSectionActive && (
+            <BubbleMenuButton
+              // Align Center is only available when it's in a section
+              name="Align Center"
+              isActive={() => state.isAlignCenter}
+              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+              iconClassName="mly-w-3 mly-h-3"
+              icon={AlignCenter}
+              command={() => editor.commands.updateColumns({ align: 'center' })}
+            />
+          )}
           <BubbleMenuButton
             name="Align Right"
             isActive={() => state.isAlignRight}

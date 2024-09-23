@@ -3,7 +3,7 @@ import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
-export const DEFAULT_COLUMNS_ALIGN = 'center';
+export const DEFAULT_COLUMNS_ALIGN = 'left';
 
 export const allowedColumnLayouts = [
   'sidebar-left',

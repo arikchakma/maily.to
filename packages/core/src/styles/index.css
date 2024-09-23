@@ -198,6 +198,7 @@
   }
 
   [data-type='columns'] {
+    margin: 0;
     padding: 0;
 
     &.has-focus [data-type='column'],
@@ -211,6 +212,7 @@
   }
 
   [data-type='column'] {
+    margin: 0;
     padding: 0;
 
     & > *:first-child {

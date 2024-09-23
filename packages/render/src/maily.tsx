@@ -184,6 +184,8 @@ const DEFAULT_THEME: ThemeOptions = {
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
 const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_COLUMNS_WIDTH = '100%';
+export const DEFAULT_COLUMNS_ALIGN = 'left';
 
 export interface RenderOptions {
   /**
@@ -1219,8 +1221,20 @@ export class Maily {
   }
 
   private columns(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { width = DEFAULT_COLUMNS_WIDTH, align = DEFAULT_COLUMNS_ALIGN } =
+      attrs || {};
+
     return (
-      <Row>
+      <Row
+        width={width}
+        align={align}
+        style={{
+          margin: 0,
+          padding: 0,
+          width,
+        }}
+      >
         {this.getMappedContent(node, {
           ...options,
           parent: node,
@@ -1238,6 +1252,8 @@ export class Maily {
         style={{
           width,
           verticalAlign,
+          margin: 0,
+          padding: 0,
         }}
       >
         {this.getMappedContent(node, {

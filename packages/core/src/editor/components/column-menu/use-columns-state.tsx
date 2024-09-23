@@ -11,7 +11,9 @@ export const useColumnsState = (editor: Editor) => {
         isAlignLeft: ctx.editor.getAttributes('columns')?.align === 'left',
         isAlignCenter: ctx.editor.getAttributes('columns')?.align === 'center',
         isAlignRight: ctx.editor.getAttributes('columns')?.align === 'right',
-        
+
+        isSectionActive: ctx.editor.isActive('section'),
+
         currentVerticalAlignment:
           ctx.editor.getAttributes('column')?.verticalAlign || 'top',
         isVerticalAlignTop:

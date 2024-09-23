@@ -75,7 +75,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 editor.commands.updateColumn({ verticalAlign: 'top' });
               }}
               isActive={() => state.isVerticalAlignTop}
-              className="mly-h-7 mly-w-7 mly-p-0"
+              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
               iconClassName="mly-w-3 mly-h-3"
             />
             <BubbleMenuButton
@@ -85,7 +85,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 editor.commands.updateColumn({ verticalAlign: 'middle' });
               }}
               isActive={() => state.isVerticalAlignMiddle}
-              className="mly-h-7 mly-w-7 mly-p-0"
+              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
               iconClassName="mly-w-3 mly-h-3"
             />
             <BubbleMenuButton
@@ -95,7 +95,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 editor.commands.updateColumn({ verticalAlign: 'bottom' });
               }}
               isActive={() => state.isVerticalAlignBottom}
-              className="mly-h-7 mly-w-7 mly-p-0"
+              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
               iconClassName="mly-w-3 mly-h-3"
             />
           </div>
@@ -104,7 +104,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
 
       <div className="mly-p-1 mly-pt-2">
         <span className="mly-ml-1 mly-block mly-text-[10px] mly-uppercase mly-leading-none mly-text-gray-500">
-          Columns
+          Table
         </span>
         <div className="mly-mt-2 mly-flex mly-items-stretch">
           <ColumnsWidth
@@ -119,7 +119,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
           <BubbleMenuButton
             name="Align Left"
             isActive={() => state.isAlignLeft}
-            className="mly-h-7 mly-w-7 mly-p-0"
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
             iconClassName="mly-w-3 mly-h-3"
             icon={AlignLeft}
             command={() => editor.commands.updateColumns({ align: 'left' })}
@@ -127,7 +127,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
           <BubbleMenuButton
             name="Align Center"
             isActive={() => state.isAlignCenter}
-            className="mly-h-7 mly-w-7 mly-p-0"
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
             iconClassName="mly-w-3 mly-h-3"
             icon={AlignCenter}
             command={() => editor.commands.updateColumns({ align: 'center' })}
@@ -135,7 +135,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
           <BubbleMenuButton
             name="Align Right"
             isActive={() => state.isAlignRight}
-            className="mly-h-7 mly-w-7 mly-p-0"
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
             iconClassName="mly-w-3 mly-h-3"
             icon={AlignRight}
             command={() => editor.commands.updateColumns({ align: 'right' })}

@@ -8,9 +8,6 @@ export const useColumnsState = (editor: Editor) => {
     selector: (ctx) => {
       return {
         width: ctx.editor.getAttributes('columns')?.width || '100%',
-        isAlignLeft: ctx.editor.getAttributes('columns')?.align === 'left',
-        isAlignCenter: ctx.editor.getAttributes('columns')?.align === 'center',
-        isAlignRight: ctx.editor.getAttributes('columns')?.align === 'right',
 
         isSectionActive: ctx.editor.isActive('section'),
 

@@ -1,12 +1,16 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
-export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_SECTION_BACKGROUND_COLOR = '#f1f1f1';
+export const DEFAULT_SECTION_BORDER_RADIUS = 0;
+export const DEFAULT_SECTION_PADDING = 5;
+export const DEFAULT_SECTION_ALIGN = 'left';
 
 type SectionAttributes = {
   borderRadius: number;
   padding: number;
   backgroundColor: string;
+  align: string;
 };
 
 declare module '@tiptap/core' {
@@ -43,7 +47,7 @@ export const Section = Node.create({
         },
       },
       padding: {
-        default: 0,
+        default: DEFAULT_SECTION_PADDING,
         parseHTML: (element) => {
           return Number(element?.style?.padding?.replace(/['"]+/g, ''));
         },
@@ -69,6 +73,21 @@ export const Section = Node.create({
 
           return {
             style: `background-color: ${attributes.backgroundColor}`,
+          };
+        },
+      },
+      align: {
+        default: DEFAULT_SECTION_ALIGN,
+        parseHTML: (element) => {
+          return element.getAttribute('align') || DEFAULT_SECTION_ALIGN;
+        },
+        renderHTML(attributes) {
+          if (!attributes.align) {
+            return {};
+          }
+
+          return {
+            align: attributes.align,
           };
         },
       },
@@ -101,23 +120,23 @@ export const Section = Node.create({
       'table',
       {
         'data-type': this.name,
+        class: 'mly-w-full',
       },
       [
         'tbody',
         {
-          class: 'mly-w-full mly-not-prose',
+          class: 'mly-w-full',
         },
         [
           'tr',
           {
-            class: 'mly-w-full mly-not-prose',
+            class: 'mly-w-full',
           },
           [
             'td',
             mergeAttributes(HTMLAttributes, {
               'data-type': 'section-cell',
-              align: 'center',
-              class: 'mly-w-full mly-not-prose',
+              class: 'mly-w-full [text-align:revert-layer]',
             }),
             0,
           ],

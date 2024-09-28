@@ -102,7 +102,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
         </div>
       )}
 
-      {state.isSectionActive && (
         <div className="mly-border-t mly-p-1 mly-pt-2">
           <span className="mly-ml-1 mly-block mly-text-[10px] mly-uppercase mly-leading-none mly-text-gray-500">
             Table
@@ -116,34 +115,8 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 });
               }}
             />
-            <Divider />
-            <BubbleMenuButton
-              name="Align Left"
-              isActive={() => state.isAlignLeft}
-              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-              iconClassName="mly-w-3 mly-h-3"
-              icon={AlignLeft}
-              command={() => editor.commands.updateColumns({ align: 'left' })}
-            />
-            <BubbleMenuButton
-              name="Align Center"
-              isActive={() => state.isAlignCenter}
-              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-              iconClassName="mly-w-3 mly-h-3"
-              icon={AlignCenter}
-              command={() => editor.commands.updateColumns({ align: 'center' })}
-            />
-            <BubbleMenuButton
-              name="Align Right"
-              isActive={() => state.isAlignRight}
-              className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-              iconClassName="mly-w-3 mly-h-3"
-              icon={AlignRight}
-              command={() => editor.commands.updateColumns({ align: 'right' })}
-            />
           </div>
         </div>
-      )}
     </BubbleMenu>
   );
 }

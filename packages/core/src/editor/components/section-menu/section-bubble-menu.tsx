@@ -4,12 +4,13 @@ import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
 import { useSectionState } from './use-section-state';
 import { NumberInput } from '../ui/number-input';
-import { Box, Scan } from 'lucide-react';
+import { AlignCenter, AlignLeft, AlignRight, Box, Scan } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
+import { BubbleMenuButton } from '../bubble-menu-button';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -102,6 +103,31 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           />
         </BaseButton>
       </ColorPicker>
+      <Divider />
+      <BubbleMenuButton
+        name="Align Left"
+        isActive={() => state.isAlignLeft}
+        className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+        iconClassName="mly-w-3 mly-h-3"
+        icon={AlignLeft}
+        command={() => editor.commands.updateSection({ align: 'left' })}
+      />
+      <BubbleMenuButton
+        name="Align Center"
+        isActive={() => state.isAlignCenter}
+        className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+        iconClassName="mly-w-3 mly-h-3"
+        icon={AlignCenter}
+        command={() => editor.commands.updateSection({ align: 'center' })}
+      />
+      <BubbleMenuButton
+        name="Align Right"
+        isActive={() => state.isAlignRight}
+        className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+        iconClassName="mly-w-3 mly-h-3"
+        icon={AlignRight}
+        command={() => editor.commands.updateSection({ align: 'right' })}
+      />
     </BubbleMenu>
   );
 }

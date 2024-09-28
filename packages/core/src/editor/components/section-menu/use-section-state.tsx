@@ -7,6 +7,10 @@ export const useSectionState = (editor: Editor) => {
     editor,
     selector: (ctx) => {
       return {
+        isAlignLeft: ctx.editor.getAttributes('section')?.align === 'left',
+        isAlignCenter: ctx.editor.getAttributes('section')?.align === 'center',
+        isAlignRight: ctx.editor.getAttributes('section')?.align === 'right',
+        
         currentBorderRadius:
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
         currentPadding:

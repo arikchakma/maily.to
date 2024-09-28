@@ -3,7 +3,6 @@ import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
-export const DEFAULT_COLUMNS_ALIGN = 'left';
 
 export const allowedColumnLayouts = [
   'sidebar-left',
@@ -14,7 +13,6 @@ export type ColumnLayout = (typeof allowedColumnLayouts)[number];
 
 interface ColumnsAttributes {
   width: string;
-  align: string;
 }
 
 declare module '@tiptap/core' {
@@ -49,20 +47,6 @@ export const Columns = Node.create({
 
           return {
             style: `width: ${attributes.width}`,
-          };
-        },
-      },
-      align: {
-        default: DEFAULT_COLUMNS_ALIGN,
-        parseHTML: (element) =>
-          element.getAttribute('align') || DEFAULT_COLUMNS_ALIGN,
-        renderHTML: (attributes) => {
-          if (!attributes.align) {
-            return {};
-          }
-
-          return {
-            align: attributes.align,
           };
         },
       },
@@ -123,12 +107,12 @@ export const Columns = Node.create({
       [
         'tbody',
         {
-          class: 'mly-w-full mly-not-prose',
+          class: 'mly-w-full',
         },
         [
           'tr',
           {
-            class: 'mly-w-full mly-not-prose',
+            class: 'mly-w-full',
           },
           0,
         ],

@@ -4,13 +4,6 @@ import { Node } from '@tiptap/core';
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
-export const allowedColumnLayouts = [
-  'sidebar-left',
-  'sidebar-right',
-  'two-column',
-] as const;
-export type ColumnLayout = (typeof allowedColumnLayouts)[number];
-
 interface ColumnsAttributes {
   width: string;
 }
@@ -19,7 +12,6 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     columns: {
       setColumns: () => ReturnType;
-      setLayout: (layout: ColumnLayout) => ReturnType;
       updateColumns: (attrs: Partial<ColumnsAttributes>) => ReturnType;
     };
   }
@@ -34,9 +26,6 @@ export const Columns = Node.create({
 
   addAttributes() {
     return {
-      layout: {
-        default: 'two-column',
-      },
       width: {
         default: DEFAULT_COLUMNS_WIDTH,
         parseHTML: (element) => element.style.width,
@@ -60,9 +49,7 @@ export const Columns = Node.create({
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: {
-              layout: 'two-column',
-            },
+            attrs: {},
             content: [
               {
                 type: 'column',
@@ -89,10 +76,6 @@ export const Columns = Node.create({
             ],
           });
         },
-      setLayout:
-        (layout: ColumnLayout) =>
-        ({ commands }) =>
-          commands.updateAttributes('columns', { layout }),
       updateColumns: (attrs) => updateAttributes(this.name, attrs),
     };
   },

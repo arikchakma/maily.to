@@ -1,4 +1,4 @@
-import { DEFAULT_SECTION_BACKGROUND_COLOR } from '@/editor/extensions/section/section';
+import { getColumnCount } from '@/editor/utils/columns';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -20,6 +20,8 @@ export const useColumnsState = (editor: Editor) => {
         isVerticalAlignBottom:
           ctx.editor.getAttributes('column')?.verticalAlign === 'bottom',
         isColumnActive: ctx.editor.isActive('column'),
+
+        columnsCount: getColumnCount(ctx.editor),
       };
     },
     equalityFn: deepEql,

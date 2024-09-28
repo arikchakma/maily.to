@@ -19,6 +19,7 @@ export type SlashCommandItem = {
   description: string;
   searchTerms: string[];
   icon: JSX.Element;
+  shouldBeHidden?: (editor: Editor) => boolean;
   command: (options: CommandProps) => void;
 };
 

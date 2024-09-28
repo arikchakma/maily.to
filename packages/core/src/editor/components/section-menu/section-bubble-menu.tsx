@@ -4,7 +4,14 @@ import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
 import { useSectionState } from './use-section-state';
 import { NumberInput } from '../ui/number-input';
-import { AlignCenter, AlignLeft, AlignRight, Box, Scan } from 'lucide-react';
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Box,
+  BoxSelect,
+  Scan,
+} from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
@@ -128,6 +135,41 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={AlignRight}
         command={() => editor.commands.updateSection({ align: 'right' })}
       />
+      <Divider />
+      <NumberInput
+        max={8}
+        icon={BoxSelect}
+        value={state.currentBorderWidth}
+        onValueChange={(value) => {
+          editor?.commands?.updateSection({
+            borderWidth: value,
+          });
+        }}
+      />
+      <Divider />
+      <ColorPicker
+        color={state.currentBorderColor}
+        onColorChange={(color) => {
+          editor?.commands?.updateSection({
+            borderColor: color,
+          });
+        }}
+      >
+        <BaseButton
+          variant="ghost"
+          className="!mly-size-7 mly-shrink-0"
+          size="sm"
+          type="button"
+        >
+          <div
+            className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded mly-border-2 mly-border-gray-700"
+            style={{
+              borderColor: state.currentBorderColor,
+              backgroundColor: 'transparent',
+            }}
+          />
+        </BaseButton>
+      </ColorPicker>
     </BubbleMenu>
   );
 }

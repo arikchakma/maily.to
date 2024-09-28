@@ -183,8 +183,10 @@ const DEFAULT_THEME: ThemeOptions = {
 
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
-const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
 export const DEFAULT_SECTION_ALIGN = 'left';
+export const DEFAULT_SECTION_BORDER_WIDTH = 1;
+export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
 export interface RenderOptions {
@@ -1208,6 +1210,8 @@ export class Maily {
       padding = 0,
       backgroundColor = DEFAULT_SECTION_BACKGROUND_COLOR,
       align = DEFAULT_SECTION_ALIGN,
+      borderWidth = DEFAULT_SECTION_BORDER_WIDTH,
+      borderColor = DEFAULT_SECTION_BORDER_COLOR,
     } = attrs || {};
 
     return (
@@ -1215,6 +1219,9 @@ export class Maily {
         <Column
           align={align}
           style={{
+            borderColor,
+            borderWidth,
+            borderStyle: 'solid',
             backgroundColor,
             borderRadius,
             padding,

@@ -1,4 +1,7 @@
-import { DEFAULT_SECTION_BACKGROUND_COLOR } from '@/editor/extensions/section/section';
+import {
+  DEFAULT_SECTION_BACKGROUND_COLOR,
+  DEFAULT_SECTION_BORDER_COLOR,
+} from '@/editor/extensions/section/section';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -10,7 +13,7 @@ export const useSectionState = (editor: Editor) => {
         isAlignLeft: ctx.editor.getAttributes('section')?.align === 'left',
         isAlignCenter: ctx.editor.getAttributes('section')?.align === 'center',
         isAlignRight: ctx.editor.getAttributes('section')?.align === 'right',
-        
+
         currentBorderRadius:
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
         currentPadding:
@@ -18,6 +21,12 @@ export const useSectionState = (editor: Editor) => {
         currentBackgroundColor:
           ctx.editor.getAttributes('section')?.backgroundColor ||
           DEFAULT_SECTION_BACKGROUND_COLOR,
+
+        currentBorderColor:
+          ctx.editor.getAttributes('section')?.borderColor ||
+          DEFAULT_SECTION_BORDER_COLOR,
+        currentBorderWidth:
+          Number(ctx.editor.getAttributes('section')?.borderWidth) || 0,
       };
     },
     equalityFn: deepEql,

@@ -158,7 +158,7 @@ export const ResizableImageExtension = TipTapImage.extend({
     return {
       ...this.parent?.(),
       width: {
-        default: "auto",
+        default: 'auto',
         parseHTML: (element) => {
           const width = element.style.width;
           return width ? { width } : null;
@@ -166,7 +166,7 @@ export const ResizableImageExtension = TipTapImage.extend({
         renderHTML: ({ width }) => ({ style: `width: ${width}` }),
       },
       height: {
-        default: "auto",
+        default: 'auto',
         parseHTML: (element) => {
           const height = element.style.height;
           return height ? { height } : null;

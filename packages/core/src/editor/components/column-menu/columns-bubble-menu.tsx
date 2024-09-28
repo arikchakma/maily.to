@@ -102,21 +102,21 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
         </div>
       )}
 
-        <div className="mly-border-t mly-p-1 mly-pt-2">
-          <span className="mly-ml-1 mly-block mly-text-[10px] mly-uppercase mly-leading-none mly-text-gray-500">
-            Table
-          </span>
-          <div className="mly-mt-2 mly-flex mly-items-stretch">
-            <ColumnsWidth
-              selectedValue={state.width}
-              onValueChange={(value) => {
-                editor.commands.updateColumns({
-                  width: value,
-                });
-              }}
-            />
-          </div>
+      <div className="mly-border-t mly-p-1 mly-pt-2">
+        <span className="mly-ml-1 mly-block mly-text-[10px] mly-uppercase mly-leading-none mly-text-gray-500">
+          Table
+        </span>
+        <div className="mly-mt-2 mly-flex mly-items-stretch">
+          <ColumnsWidth
+            selectedValue={state.width}
+            onValueChange={(value) => {
+              editor.commands.updateColumns({
+                width: value,
+              });
+            }}
+          />
         </div>
+      </div>
     </BubbleMenu>
   );
 }

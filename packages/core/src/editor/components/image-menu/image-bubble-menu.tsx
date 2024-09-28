@@ -7,13 +7,21 @@ import {
   Link,
   Unlink,
 } from 'lucide-react';
-
-import { BubbleMenuButton } from './bubble-menu-button';
-import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
-import { allowedLogoAlignment, allowedLogoSize } from '../nodes/logo';
+import {
+  BubbleMenuItem,
+  EditorBubbleMenuProps,
+} from '../text-menu/text-bubble-menu';
+import { allowedLogoAlignment, allowedLogoSize } from '@/editor/nodes/logo';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { ImageSize } from './image-size';
+import { Divider } from '../ui/divider';
+import { useImageState } from './use-image-state';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
+  if (!editor) {
+    return null;
+  }
 
   const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
 
@@ -122,6 +130,8 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
     ...sizeItems,
   ];
 
+  const state = useImageState(editor);
+
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
@@ -144,6 +154,23 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         .map((item, index) => {
           return <BubbleMenuButton key={index} {...item} />;
         })}
+
+      <Divider />
+      <ImageSize
+        dimension="width"
+        value={state?.width ?? 0}
+        onValueChange={(value) => {
+          editor?.chain().updateAttributes('image', { width: value }).run();
+        }}
+      />
+      <Divider />
+      <ImageSize
+        dimension="height"
+        value={state?.height ?? 0}
+        onValueChange={(value) => {
+          editor?.chain().updateAttributes('image', { height: value }).run();
+        }}
+      />
     </BubbleMenu>
   );
 }

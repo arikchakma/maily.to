@@ -56,6 +56,7 @@ export const Column = Node.create({
       mergeAttributes(HTMLAttributes, {
         'data-type': 'column',
         width: '50%',
+        class: 'mly-not-prose',
       }),
       0,
     ];

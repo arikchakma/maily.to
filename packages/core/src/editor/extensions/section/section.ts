@@ -104,14 +104,20 @@ export const Section = Node.create({
       },
       [
         'tbody',
-        {},
+        {
+          class: 'mly-w-full mly-not-prose',
+        },
         [
           'tr',
-          {},
+          {
+            class: 'mly-w-full mly-not-prose',
+          },
           [
             'td',
             mergeAttributes(HTMLAttributes, {
               'data-type': 'section-cell',
+              align: 'center',
+              class: 'mly-w-full mly-not-prose',
             }),
             0,
           ],

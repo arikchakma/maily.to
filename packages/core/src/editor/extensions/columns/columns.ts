@@ -120,7 +120,19 @@ export const Columns = Node.create({
         'data-type': 'columns',
         class: `layout-${HTMLAttributes.layout}`,
       }),
-      ['tbody', {}, ['tr', {}, 0]],
+      [
+        'tbody',
+        {
+          class: 'mly-w-full mly-not-prose',
+        },
+        [
+          'tr',
+          {
+            class: 'mly-w-full mly-not-prose',
+          },
+          0,
+        ],
+      ],
     ];
   },
 

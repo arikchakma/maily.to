@@ -919,6 +919,9 @@ export class Maily {
     const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
       this.getMarginOverrideConditions(node, options);
 
+    const wi = width === 'auto' ? '100%' : (width as number);
+    const hei = height === 'auto' ? '100%' : (height as number);
+
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
@@ -926,8 +929,10 @@ export class Maily {
         style={{
           height: '100%',
           width: '100%',
-          maxWidth: width,
-          maxHeight: height,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          maxWidth: `${wi}px`,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          maxHeight: `${hei}px`,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -1205,18 +1210,21 @@ export class Maily {
     } = attrs || {};
 
     return (
-      <Container
-        style={{
-          backgroundColor,
-          borderRadius,
-          padding,
-        }}
-      >
-        {this.getMappedContent(node, {
-          ...options,
-          parent: node,
-        })}
-      </Container>
+      <Row>
+        <Column
+          align="center"
+          style={{
+            backgroundColor,
+            borderRadius,
+            padding,
+          }}
+        >
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
+        </Column>
+      </Row>
     );
   }
 

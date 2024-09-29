@@ -98,7 +98,9 @@ export const Section = Node.create({
       borderWidth: {
         default: DEFAULT_SECTION_BORDER_WIDTH,
         parseHTML: (element) => {
-          return Number(element?.style?.borderWidth?.replace(/['"]+/g, '')) || 0;
+          return (
+            Number(element?.style?.borderWidth?.replace(/['"]+/g, '')) || 0
+          );
         },
         renderHTML: (attributes) => {
           if (!attributes.borderWidth) {

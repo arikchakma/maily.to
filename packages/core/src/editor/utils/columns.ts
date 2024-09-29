@@ -135,7 +135,9 @@ export function removeColumn(editor: Editor) {
   let activeColumnIndex = 0;
   let isRemoved = false;
   columnsNode.content.forEach((child, _, index) => {
-    const isActiveColumn = child.eq(activeColumnNode) && child?.attrs?.columnId === activeColumnNode?.attrs?.columnId
+    const isActiveColumn =
+      child.eq(activeColumnNode) &&
+      child?.attrs?.columnId === activeColumnNode?.attrs?.columnId;
     if (isActiveColumn && !isRemoved) {
       activeColumnIndex = index;
       isRemoved = true;
@@ -153,10 +155,12 @@ export function removeColumn(editor: Editor) {
     );
   });
 
+  const isLastColumn = activeColumnIndex === columnsNode.childCount - 1;
+
   const newColumnPos =
     columnsNodePos +
     updatedContent
-      .slice(0, activeColumnIndex)
+      .slice(0, isLastColumn ? activeColumnIndex - 1 : activeColumnIndex)
       .reduce((acc, node) => acc + node.nodeSize, 0);
 
   const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));

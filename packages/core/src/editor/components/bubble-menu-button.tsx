@@ -9,7 +9,10 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       size="sm"
       onClick={item.command}
       data-state={item.isActive()}
-      className={cn('mly-px-2.5 disabled:mly-cursor-not-allowed', item?.className)}
+      className={cn(
+        'mly-px-2.5 disabled:mly-cursor-not-allowed',
+        item?.className
+      )}
       type="button"
       disabled={item.disbabled}
     >

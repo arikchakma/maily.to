@@ -1,6 +1,7 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
+import { v4 as uuid } from 'uuid';
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
@@ -54,7 +55,7 @@ export const Columns = Node.create({
               {
                 type: 'column',
                 attrs: {
-                  position: 'left',
+                  columnId: uuid(),
                 },
                 content: [
                   {
@@ -65,7 +66,7 @@ export const Columns = Node.create({
               {
                 type: 'column',
                 attrs: {
-                  position: 'right',
+                  columnId: uuid(),
                 },
                 content: [
                   {
@@ -85,7 +86,6 @@ export const Columns = Node.create({
       'table',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
-        class: `layout-${HTMLAttributes.layout}`,
       }),
       [
         'tbody',

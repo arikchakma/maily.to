@@ -14,8 +14,11 @@ import {
   AlignVerticalDistributeCenter,
   AlignVerticalDistributeEnd,
   AlignVerticalDistributeStart,
+  Minus,
+  Plus,
 } from 'lucide-react';
 import { Divider } from '../ui/divider';
+import { addColumn, removeColumn } from '@/editor/utils/columns';
 
 export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -114,6 +117,27 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 width: value,
               });
             }}
+          />
+          <Divider />
+          <BubbleMenuButton
+            icon={Plus}
+            command={() => {
+              addColumn(editor);
+            }}
+            isActive={() => false}
+            disbabled={state.columnsCount >= 10}
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+            iconClassName="mly-w-3 mly-h-3"
+          />
+          <BubbleMenuButton
+            icon={Minus}
+            command={() => {
+              removeColumn(editor);
+            }}
+            isActive={() => false}
+            disbabled={state.columnsCount <= 2}
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+            iconClassName="mly-w-3 mly-h-3"
           />
         </div>
       </div>

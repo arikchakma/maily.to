@@ -1259,12 +1259,13 @@ export class Maily {
 
   private column(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = '50%', verticalAlign = 'top' } = attrs || {};
+    const { width = 50, verticalAlign = 'top' } = attrs || {};
 
     return (
       <Column
         style={{
-          width,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          width: `${width}%`,
           verticalAlign,
           margin: 0,
           padding: 0,

@@ -28,6 +28,7 @@ export interface BubbleMenuItem {
   className?: string;
   iconClassName?: string;
   nameClassName?: string;
+  disbabled?: boolean;
 }
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {

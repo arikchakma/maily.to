@@ -179,7 +179,10 @@
 
   .is-editor-empty:first-child:not(
       [data-type='columns'],
-      [data-type='section']
+      [data-type='section'],
+      ul,
+      li,
+      ol
     )::before {
     content: attr(data-placeholder);
     text-wrap: nowrap;
@@ -189,7 +192,13 @@
     height: 0;
   }
 
-  .is-empty:not([data-type='columns'], [data-type='section'])::before {
+  .is-empty:not(
+      [data-type='columns'],
+      [data-type='section'],
+      ol,
+      ul,
+      li
+    )::before {
     content: attr(data-placeholder);
     text-wrap: nowrap;
     float: left;

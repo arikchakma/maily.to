@@ -1,12 +1,12 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
-export const DEFAULT_SECTION_BACKGROUND_COLOR = '#f1f1f1';
+export const DEFAULT_SECTION_BACKGROUND_COLOR = '#f7f7f7';
 export const DEFAULT_SECTION_BORDER_RADIUS = 0;
 export const DEFAULT_SECTION_PADDING = 5;
 export const DEFAULT_SECTION_ALIGN = 'left';
 export const DEFAULT_SECTION_BORDER_WIDTH = 1;
-export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
+export const DEFAULT_SECTION_BORDER_COLOR = '#e2e2e2';
 
 type SectionAttributes = {
   borderRadius: number;

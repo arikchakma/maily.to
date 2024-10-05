@@ -1,6 +1,5 @@
 import { cn } from '@/editor/utils/classname';
-import { type LucideIcon, ScanIcon } from 'lucide-react';
-import type { HTMLAttributes } from 'react';
+import { type LucideIcon } from 'lucide-react';
 import { SVGIcon } from '../icons/grid-lines';
 
 type NumberInputProps = {
@@ -8,7 +7,7 @@ type NumberInputProps = {
   onValueChange: (value: number) => void;
   icon?: LucideIcon | SVGIcon;
   max?: number;
-} & HTMLAttributes<HTMLInputElement>;
+};
 
 export function NumberInput(props: NumberInputProps) {
   const { value, onValueChange, icon: Icon, max } = props;

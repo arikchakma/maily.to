@@ -13,6 +13,7 @@ import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
+import { EdgeSpacingControl } from './components/ui/edge-spacing-controls';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;

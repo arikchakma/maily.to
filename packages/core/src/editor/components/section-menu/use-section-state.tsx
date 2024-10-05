@@ -16,8 +16,6 @@ export const useSectionState = (editor: Editor) => {
 
         currentBorderRadius:
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
-        currentPadding:
-          Number(ctx.editor.getAttributes('section')?.padding) || 0,
         currentBackgroundColor:
           ctx.editor.getAttributes('section')?.backgroundColor ||
           DEFAULT_SECTION_BACKGROUND_COLOR,
@@ -28,7 +26,23 @@ export const useSectionState = (editor: Editor) => {
         currentBorderWidth:
           Number(ctx.editor.getAttributes('section')?.borderWidth) || 0,
 
-        currentMargin: Number(ctx.editor.getAttributes('section')?.margin) || 0,
+        currentMarginTop:
+          Number(ctx.editor.getAttributes('section')?.marginTop) || 0,
+        currentMarginRight:
+          Number(ctx.editor.getAttributes('section')?.marginRight) || 0,
+        currentMarginBottom:
+          Number(ctx.editor.getAttributes('section')?.marginBottom) || 0,
+        currentMarginLeft:
+          Number(ctx.editor.getAttributes('section')?.marginLeft) || 0,
+
+        currentPaddingTop:
+          Number(ctx.editor.getAttributes('section')?.paddingTop) || 0,
+        currentPaddingRight:
+          Number(ctx.editor.getAttributes('section')?.paddingRight) || 0,
+        currentPaddingBottom:
+          Number(ctx.editor.getAttributes('section')?.paddingBottom) || 0,
+        currentPaddingLeft:
+          Number(ctx.editor.getAttributes('section')?.paddingLeft) || 0,
       };
     },
     equalityFn: deepEql,

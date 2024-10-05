@@ -19,6 +19,7 @@ import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { GridLines } from '../icons/grid-lines';
+import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -65,6 +66,16 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
   const state = useSectionState(editor);
 
+  const isAllPaddingEqual =
+    state.currentPaddingTop === state.currentPaddingRight &&
+    state.currentPaddingTop === state.currentPaddingBottom &&
+    state.currentPaddingTop === state.currentPaddingLeft;
+
+  const isAllMarginEqual =
+    state.currentMarginTop === state.currentMarginRight &&
+    state.currentMarginTop === state.currentMarginBottom &&
+    state.currentMarginTop === state.currentMarginLeft;
+
   return (
     <BubbleMenu
       {...bubbleMenuProps}
@@ -82,21 +93,78 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
       <Divider />
       <NumberInput
         icon={Box}
-        value={state.currentPadding}
+        value={isAllPaddingEqual ? state.currentPaddingTop : 0}
         onValueChange={(value) => {
           editor?.commands?.updateSection({
-            padding: value,
+            paddingTop: value,
+            paddingRight: value,
+            paddingBottom: value,
+            paddingLeft: value,
+          });
+        }}
+      />
+      <EdgeSpacingControl
+        top={state.currentPaddingTop}
+        right={state.currentPaddingRight}
+        bottom={state.currentPaddingBottom}
+        left={state.currentPaddingLeft}
+        onTopValueChange={(value) => {
+          editor?.commands?.updateSection({
+            paddingTop: value,
+          });
+        }}
+        onRightValueChange={(value) => {
+          editor?.commands?.updateSection({
+            paddingRight: value,
+          });
+        }}
+        onBottomValueChange={(value) => {
+          editor?.commands?.updateSection({
+            paddingBottom: value,
+          });
+        }}
+        onLeftValueChange={(value) => {
+          editor?.commands?.updateSection({
+            paddingLeft: value,
           });
         }}
       />
       <Divider />
       <NumberInput
-        max={8}
         icon={GridLines}
-        value={state.currentMargin}
+        value={isAllMarginEqual ? state.currentMarginTop : 0}
         onValueChange={(value) => {
           editor?.commands?.updateSection({
-            margin: value,
+            marginTop: value,
+            marginRight: value,
+            marginBottom: value,
+            marginLeft: value,
+          });
+        }}
+      />
+      <EdgeSpacingControl
+        top={state.currentMarginTop}
+        right={state.currentMarginRight}
+        bottom={state.currentMarginBottom}
+        left={state.currentMarginLeft}
+        onTopValueChange={(value) => {
+          editor?.commands?.updateSection({
+            marginTop: value,
+          });
+        }}
+        onRightValueChange={(value) => {
+          editor?.commands?.updateSection({
+            marginRight: value,
+          });
+        }}
+        onBottomValueChange={(value) => {
+          editor?.commands?.updateSection({
+            marginBottom: value,
+          });
+        }}
+        onLeftValueChange={(value) => {
+          editor?.commands?.updateSection({
+            marginLeft: value,
           });
         }}
       />

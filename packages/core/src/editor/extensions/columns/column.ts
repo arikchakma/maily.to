@@ -7,8 +7,20 @@ export const DEFAULT_COLUMN_WIDTH = 50;
 export type COLUMN_VERTICAL_ALIGN = 'top' | 'middle' | 'bottom';
 export const DEFAULT_COLUMN_VERTICAL_ALIGN: COLUMN_VERTICAL_ALIGN = 'top';
 
+export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
+export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
+export const DEFAULT_COLUMN_PADDING = 0;
+export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
+export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
+
 interface ColumnAttributes {
   verticalAlign: COLUMN_VERTICAL_ALIGN;
+  backgroundColor: string;
+  borderRadius: number;
+  padding: number;
+  align: string;
+  borderWidth: number;
+  borderColor: string;
 }
 
 declare module '@tiptap/core' {
@@ -68,6 +80,83 @@ export const Column = Node.create({
 
           return {
             style: `vertical-align: ${attributes?.verticalAlign || 'top'}`,
+          };
+        },
+      },
+      borderRadius: {
+        default: 0,
+        parseHTML: (element) => {
+          return Number(element?.style?.borderRadius?.replace(/['"]+/g, ''));
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.borderRadius) {
+            return {};
+          }
+
+          return {
+            style: `border-radius: ${attributes.borderRadius}px`,
+          };
+        },
+      },
+      padding: {
+        default: DEFAULT_COLUMN_PADDING,
+        parseHTML: (element) => {
+          return Number(element?.style?.padding?.replace(/['"]+/g, ''));
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.padding) {
+            return {};
+          }
+
+          return {
+            style: `padding: ${attributes.padding}px`,
+          };
+        },
+      },
+      backgroundColor: {
+        default: DEFAULT_COLUMN_BACKGROUND_COLOR,
+        parseHTML: (element) => {
+          return element.style.backgroundColor;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.backgroundColor) {
+            return {};
+          }
+
+          return {
+            style: `background-color: ${attributes.backgroundColor}`,
+          };
+        },
+      },
+      borderWidth: {
+        default: DEFAULT_COLUMN_BORDER_WIDTH,
+        parseHTML: (element) => {
+          return (
+            Number(element?.style?.borderWidth?.replace(/['"]+/g, '')) || 0
+          );
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.borderWidth) {
+            return {};
+          }
+
+          return {
+            style: `border-width: ${attributes.borderWidth}px`,
+          };
+        },
+      },
+      borderColor: {
+        default: DEFAULT_COLUMN_BORDER_COLOR,
+        parseHTML: (element) => {
+          return element.style.borderColor;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.borderColor) {
+            return {};
+          }
+
+          return {
+            style: `border-color: ${attributes.borderColor}`,
           };
         },
       },

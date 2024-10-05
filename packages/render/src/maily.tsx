@@ -189,6 +189,12 @@ export const DEFAULT_SECTION_BORDER_WIDTH = 1;
 export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
+export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
+export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
+export const DEFAULT_COLUMN_PADDING = 0;
+export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
+export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
+
 export interface RenderOptions {
   /**
    * The options object allows you to customize the output of the rendered
@@ -1259,7 +1265,15 @@ export class Maily {
 
   private column(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = 50, verticalAlign = 'top' } = attrs || {};
+    const {
+      width = 50,
+      verticalAlign = 'top',
+      borderRadius = 0,
+      padding = 0,
+      backgroundColor = DEFAULT_COLUMN_BACKGROUND_COLOR,
+      borderWidth = DEFAULT_COLUMN_BORDER_WIDTH,
+      borderColor = DEFAULT_COLUMN_BORDER_COLOR,
+    } = attrs || {};
 
     return (
       <Column
@@ -1268,7 +1282,12 @@ export class Maily {
           width: `${width}%`,
           verticalAlign,
           margin: 0,
-          padding: 0,
+          borderColor,
+          borderWidth,
+          borderStyle: 'solid',
+          backgroundColor,
+          borderRadius,
+          padding,
         }}
       >
         {this.getMappedContent(node, {

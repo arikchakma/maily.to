@@ -25,6 +25,7 @@ import { addColumn, removeColumn } from '@/editor/utils/columns';
 import { NumberInput } from '../ui/number-input';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
+import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
 
 export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -60,11 +61,17 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
       appendTo: () => appendTo?.current,
       plugins: [sticky],
       sticky: 'popper',
+      maxWidth: 'auto',
     },
     pluginKey: 'columnsBubbleMenu',
   };
 
   const state = useColumnsState(editor);
+
+  const isColumnAllPaddingEqual =
+    state.columnPaddingTop === state.columnPaddingRight &&
+    state.columnPaddingRight === state.columnPaddingBottom &&
+    state.columnPaddingBottom === state.columnPaddingLeft;
 
   return (
     <BubbleMenu
@@ -155,16 +162,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               }}
             />
             <Divider />
-            <NumberInput
-              icon={Box}
-              value={state.columnPadding}
-              onValueChange={(value) => {
-                editor?.commands?.updateColumn({
-                  padding: value,
-                });
-              }}
-            />
-            <Divider />
             <ColorPicker
               color={state.columnBackgroundColor}
               onColorChange={(color) => {
@@ -187,6 +184,45 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 />
               </BaseButton>
             </ColorPicker>
+            <Divider />
+            <NumberInput
+              icon={Box}
+              value={isColumnAllPaddingEqual ? state.columnPaddingTop : 0}
+              onValueChange={(value) => {
+                editor?.commands?.updateSection({
+                  paddingTop: value,
+                  paddingRight: value,
+                  paddingBottom: value,
+                  paddingLeft: value,
+                });
+              }}
+            />
+            <EdgeSpacingControl
+              top={state.columnPaddingTop}
+              right={state.columnPaddingRight}
+              bottom={state.columnPaddingBottom}
+              left={state.columnPaddingLeft}
+              onTopValueChange={(value) => {
+                editor?.commands?.updateSection({
+                  paddingTop: value,
+                });
+              }}
+              onRightValueChange={(value) => {
+                editor?.commands?.updateSection({
+                  paddingRight: value,
+                });
+              }}
+              onBottomValueChange={(value) => {
+                editor?.commands?.updateSection({
+                  paddingBottom: value,
+                });
+              }}
+              onLeftValueChange={(value) => {
+                editor?.commands?.updateSection({
+                  paddingLeft: value,
+                });
+              }}
+            />
             <Divider />
             <NumberInput
               max={8}

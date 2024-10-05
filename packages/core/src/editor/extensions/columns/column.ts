@@ -13,14 +13,23 @@ export const DEFAULT_COLUMN_PADDING = 0;
 export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
 export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
 
+export const DEFAULT_COLUMN_PADDING_TOP = 5;
+export const DEFAULT_COLUMN_PADDING_RIGHT = 5;
+export const DEFAULT_COLUMN_PADDING_BOTTOM = 5;
+export const DEFAULT_COLUMN_PADDING_LEFT = 5;
+
 interface ColumnAttributes {
   verticalAlign: COLUMN_VERTICAL_ALIGN;
   backgroundColor: string;
   borderRadius: number;
-  padding: number;
   align: string;
   borderWidth: number;
   borderColor: string;
+
+  paddingTop: number;
+  paddingRight: number;
+  paddingBottom: number;
+  paddingLeft: number;
 }
 
 declare module '@tiptap/core' {
@@ -98,21 +107,6 @@ export const Column = Node.create({
           };
         },
       },
-      padding: {
-        default: DEFAULT_COLUMN_PADDING,
-        parseHTML: (element) => {
-          return Number(element?.style?.padding?.replace(/['"]+/g, ''));
-        },
-        renderHTML: (attributes) => {
-          if (!attributes.padding) {
-            return {};
-          }
-
-          return {
-            style: `padding: ${attributes.padding}px`,
-          };
-        },
-      },
       backgroundColor: {
         default: DEFAULT_COLUMN_BACKGROUND_COLOR,
         parseHTML: (element) => {
@@ -157,6 +151,63 @@ export const Column = Node.create({
 
           return {
             style: `border-color: ${attributes.borderColor}`,
+          };
+        },
+      },
+      paddingTop: {
+        default: DEFAULT_COLUMN_PADDING_TOP,
+        parseHTML: (element) => {
+          return Number(element?.style?.paddingTop?.replace(/['"]+/g, '')) || 0;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.paddingTop) {
+            return {};
+          }
+
+          return {
+            style: `padding-top: ${attributes.paddingTop}px`,
+          };
+        },
+      },
+      paddingRight: {
+        default: DEFAULT_COLUMN_PADDING_RIGHT,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingRight?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingRight) {
+            return {};
+          }
+
+          return {
+            style: `padding-right: ${attributes.paddingRight}px`,
+          };
+        },
+      },
+      paddingBottom: {
+        default: DEFAULT_COLUMN_PADDING_BOTTOM,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingBottom?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingBottom) {
+            return {};
+          }
+
+          return {
+            style: `padding-bottom: ${attributes.paddingBottom}px`,
+          };
+        },
+      },
+      paddingLeft: {
+        default: DEFAULT_COLUMN_PADDING_LEFT,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingLeft?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingLeft) {
+            return {};
+          }
+
+          return {
+            style: `padding-left: ${attributes.paddingLeft}px`,
           };
         },
       },

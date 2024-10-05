@@ -44,6 +44,15 @@ export const useColumnsState = (editor: Editor) => {
         columnBorderColor:
           ctx.editor.getAttributes('column')?.borderColor ||
           DEFAULT_COLUMN_BORDER_COLOR,
+
+        columnPaddingTop:
+          Number(ctx.editor.getAttributes('column')?.paddingTop) || 0,
+        columnPaddingRight:
+          Number(ctx.editor.getAttributes('column')?.paddingRight) || 0,
+        columnPaddingBottom:
+          Number(ctx.editor.getAttributes('column')?.paddingBottom) || 0,
+        columnPaddingLeft:
+          Number(ctx.editor.getAttributes('column')?.paddingLeft) || 0,
       };
     },
     equalityFn: deepEql,

@@ -187,6 +187,8 @@ export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
 export const DEFAULT_SECTION_ALIGN = 'left';
 export const DEFAULT_SECTION_BORDER_WIDTH = 1;
 export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
+export const DEFAULT_SECTION_MARGIN = 0;
+
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
 export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
@@ -1218,10 +1220,15 @@ export class Maily {
       align = DEFAULT_SECTION_ALIGN,
       borderWidth = DEFAULT_SECTION_BORDER_WIDTH,
       borderColor = DEFAULT_SECTION_BORDER_COLOR,
+      margin = DEFAULT_SECTION_MARGIN,
     } = attrs || {};
 
     return (
-      <Row>
+      <Row
+        style={{
+          margin,
+        }}
+      >
         <Column
           align={align}
           style={{

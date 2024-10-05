@@ -27,6 +27,8 @@ export const useSectionState = (editor: Editor) => {
           DEFAULT_SECTION_BORDER_COLOR,
         currentBorderWidth:
           Number(ctx.editor.getAttributes('section')?.borderWidth) || 0,
+
+        currentMargin: Number(ctx.editor.getAttributes('section')?.margin) || 0,
       };
     },
     equalityFn: deepEql,

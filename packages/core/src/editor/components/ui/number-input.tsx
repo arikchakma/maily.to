@@ -1,11 +1,12 @@
 import { cn } from '@/editor/utils/classname';
 import { type LucideIcon, ScanIcon } from 'lucide-react';
 import type { HTMLAttributes } from 'react';
+import { SVGIcon } from '../icons/grid-lines';
 
 type NumberInputProps = {
   value: number;
   onValueChange: (value: number) => void;
-  icon?: LucideIcon;
+  icon?: LucideIcon | SVGIcon;
   max?: number;
 } & HTMLAttributes<HTMLInputElement>;
 
@@ -14,7 +15,9 @@ export function NumberInput(props: NumberInputProps) {
 
   return (
     <label className="mly-relative mly-flex mly-items-center mly-justify-center">
-      {Icon ? <Icon size={14} className="mly-absolute mly-left-1.5" /> : null}
+      {Icon ? (
+        <Icon className="mly-absolute mly-left-1.5 mly-size-3.5" />
+      ) : null}
       <input
         min={0}
         {...(max ? { max } : {})}

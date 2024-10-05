@@ -2,11 +2,12 @@ import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
 export const DEFAULT_SECTION_BACKGROUND_COLOR = '#f7f7f7';
-export const DEFAULT_SECTION_BORDER_RADIUS = 0;
 export const DEFAULT_SECTION_PADDING = 5;
 export const DEFAULT_SECTION_ALIGN = 'left';
 export const DEFAULT_SECTION_BORDER_WIDTH = 1;
 export const DEFAULT_SECTION_BORDER_COLOR = '#e2e2e2';
+export const DEFAULT_SECTION_BORDER_RADIUS = 0;
+export const DEFAULT_SECTION_MARGIN = 0;
 
 type SectionAttributes = {
   borderRadius: number;
@@ -15,6 +16,7 @@ type SectionAttributes = {
   align: string;
   borderWidth: number;
   borderColor: string;
+  margin: number;
 };
 
 declare module '@tiptap/core' {
@@ -127,6 +129,21 @@ export const Section = Node.create({
           };
         },
       },
+      margin: {
+        default: DEFAULT_SECTION_MARGIN,
+        parseHTML: (element) => {
+          return Number(element?.style?.margin?.replace(/['"]+/g, '')) || 0;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.margin) {
+            return {};
+          }
+
+          return {
+            margin: attributes.margin,
+          };
+        },
+      },
     };
   },
 
@@ -160,6 +177,7 @@ export const Section = Node.create({
         cellpadding: 0,
         cellspacing: 0,
         class: 'mly-w-full mly-border-separate',
+        style: `margin: ${HTMLAttributes.margin}px`,
       },
       [
         'tbody',

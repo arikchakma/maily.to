@@ -18,6 +18,7 @@ import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
 import { BubbleMenuButton } from '../bubble-menu-button';
+import { GridLines } from '../icons/grid-lines';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -57,6 +58,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
       appendTo: () => appendTo?.current,
       plugins: [sticky],
       sticky: 'popper',
+      maxWidth: 'auto',
     },
     pluginKey: 'sectionBubbleMenu',
   };
@@ -84,6 +86,17 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         onValueChange={(value) => {
           editor?.commands?.updateSection({
             padding: value,
+          });
+        }}
+      />
+      <Divider />
+      <NumberInput
+        max={8}
+        icon={GridLines}
+        value={state.currentMargin}
+        onValueChange={(value) => {
+          editor?.commands?.updateSection({
+            margin: value,
           });
         }}
       />

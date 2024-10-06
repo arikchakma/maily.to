@@ -152,16 +152,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               iconClassName="mly-w-3 mly-h-3"
             />
             <Divider />
-            <NumberInput
-              icon={Scan}
-              value={state.columnBorderRadius}
-              onValueChange={(value) => {
-                editor?.commands?.updateColumn({
-                  borderRadius: value,
-                });
-              }}
-            />
-            <Divider />
             <ColorPicker
               color={state.columnBackgroundColor}
               onColorChange={(color) => {
@@ -220,6 +210,16 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               onLeftValueChange={(value) => {
                 editor?.commands?.updateSection({
                   paddingLeft: value,
+                });
+              }}
+            />
+            <Divider />
+            <NumberInput
+              icon={Scan}
+              value={state.columnBorderRadius}
+              onValueChange={(value) => {
+                editor?.commands?.updateColumn({
+                  borderRadius: value,
                 });
               }}
             />

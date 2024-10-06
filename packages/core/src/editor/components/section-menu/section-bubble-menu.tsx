@@ -92,6 +92,41 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
       />
       <Divider />
       <NumberInput
+        max={8}
+        icon={BoxSelect}
+        value={state.currentBorderWidth}
+        onValueChange={(value) => {
+          editor?.commands?.updateSection({
+            borderWidth: value,
+          });
+        }}
+      />
+      <Divider />
+      <ColorPicker
+        color={state.currentBorderColor}
+        onColorChange={(color) => {
+          editor?.commands?.updateSection({
+            borderColor: color,
+          });
+        }}
+      >
+        <BaseButton
+          variant="ghost"
+          className="!mly-size-7 mly-shrink-0"
+          size="sm"
+          type="button"
+        >
+          <div
+            className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded mly-border-2 mly-border-gray-700"
+            style={{
+              borderColor: state.currentBorderColor,
+              backgroundColor: 'transparent',
+            }}
+          />
+        </BaseButton>
+      </ColorPicker>
+      <Divider />
+      <NumberInput
         icon={Box}
         value={isAllPaddingEqual ? state.currentPaddingTop : 0}
         onValueChange={(value) => {
@@ -216,41 +251,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         icon={AlignRight}
         command={() => editor.commands.updateSection({ align: 'right' })}
       />
-      <Divider />
-      <NumberInput
-        max={8}
-        icon={BoxSelect}
-        value={state.currentBorderWidth}
-        onValueChange={(value) => {
-          editor?.commands?.updateSection({
-            borderWidth: value,
-          });
-        }}
-      />
-      <Divider />
-      <ColorPicker
-        color={state.currentBorderColor}
-        onColorChange={(color) => {
-          editor?.commands?.updateSection({
-            borderColor: color,
-          });
-        }}
-      >
-        <BaseButton
-          variant="ghost"
-          className="!mly-size-7 mly-shrink-0"
-          size="sm"
-          type="button"
-        >
-          <div
-            className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded mly-border-2 mly-border-gray-700"
-            style={{
-              borderColor: state.currentBorderColor,
-              backgroundColor: 'transparent',
-            }}
-          />
-        </BaseButton>
-      </ColorPicker>
     </BubbleMenu>
   );
 }

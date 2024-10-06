@@ -24,7 +24,7 @@ export function NumberInput(props: NumberInputProps) {
         value={value}
         onChange={(e) => onValueChange(Number(e.target.value))}
         className={cn(
-          'hide-number-controls focus-visible:outline-none mly-h-auto mly-max-w-12 mly-border-0 mly-border-none mly-p-1 mly-text-sm mly-tabular-nums mly-outline-none',
+          'hide-number-controls focus-visible:outline-none mly-h-auto mly-max-w-12 mly-border-0 mly-border-none mly-p-1 mly-text-center mly-text-sm mly-tabular-nums mly-outline-none',
           Icon ? 'mly-pl-[26px]' : ''
         )}
       />

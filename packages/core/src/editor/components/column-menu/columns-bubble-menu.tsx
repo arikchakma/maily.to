@@ -179,7 +179,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               icon={Box}
               value={isColumnAllPaddingEqual ? state.columnPaddingTop : 0}
               onValueChange={(value) => {
-                editor?.commands?.updateSection({
+                editor?.commands?.updateColumn({
                   paddingTop: value,
                   paddingRight: value,
                   paddingBottom: value,
@@ -193,22 +193,22 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
               bottom={state.columnPaddingBottom}
               left={state.columnPaddingLeft}
               onTopValueChange={(value) => {
-                editor?.commands?.updateSection({
+                editor?.commands?.updateColumn({
                   paddingTop: value,
                 });
               }}
               onRightValueChange={(value) => {
-                editor?.commands?.updateSection({
+                editor?.commands?.updateColumn({
                   paddingRight: value,
                 });
               }}
               onBottomValueChange={(value) => {
-                editor?.commands?.updateSection({
+                editor?.commands?.updateColumn({
                   paddingBottom: value,
                 });
               }}
               onLeftValueChange={(value) => {
-                editor?.commands?.updateSection({
+                editor?.commands?.updateColumn({
                   paddingLeft: value,
                 });
               }}

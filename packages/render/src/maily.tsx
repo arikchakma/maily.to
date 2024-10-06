@@ -187,15 +187,28 @@ export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
 export const DEFAULT_SECTION_ALIGN = 'left';
 export const DEFAULT_SECTION_BORDER_WIDTH = 1;
 export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
-export const DEFAULT_SECTION_MARGIN = 0;
+
+export const DEFAULT_SECTION_MARGIN_TOP = 0;
+export const DEFAULT_SECTION_MARGIN_RIGHT = 0;
+export const DEFAULT_SECTION_MARGIN_BOTTOM = 0;
+export const DEFAULT_SECTION_MARGIN_LEFT = 0;
+
+export const DEFAULT_SECTION_PADDING_TOP = 5;
+export const DEFAULT_SECTION_PADDING_RIGHT = 5;
+export const DEFAULT_SECTION_PADDING_BOTTOM = 5;
+export const DEFAULT_SECTION_PADDING_LEFT = 5;
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
 export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
 export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
-export const DEFAULT_COLUMN_PADDING = 0;
 export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
 export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
+
+export const DEFAULT_COLUMN_PADDING_TOP = 0;
+export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
+export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
+export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
 export interface RenderOptions {
   /**
@@ -1215,18 +1228,29 @@ export class Maily {
     const { attrs } = node;
     const {
       borderRadius = 0,
-      padding = 0,
       backgroundColor = DEFAULT_SECTION_BACKGROUND_COLOR,
       align = DEFAULT_SECTION_ALIGN,
       borderWidth = DEFAULT_SECTION_BORDER_WIDTH,
       borderColor = DEFAULT_SECTION_BORDER_COLOR,
-      margin = DEFAULT_SECTION_MARGIN,
+
+      marginTop = DEFAULT_SECTION_MARGIN_TOP,
+      marginRight = DEFAULT_SECTION_MARGIN_RIGHT,
+      marginBottom = DEFAULT_SECTION_MARGIN_BOTTOM,
+      marginLeft = DEFAULT_SECTION_MARGIN_LEFT,
+
+      paddingTop = DEFAULT_SECTION_PADDING_TOP,
+      paddingRight = DEFAULT_SECTION_PADDING_RIGHT,
+      paddingBottom = DEFAULT_SECTION_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_SECTION_PADDING_LEFT,
     } = attrs || {};
 
     return (
       <Row
         style={{
-          margin,
+          marginTop,
+          marginRight,
+          marginBottom,
+          marginLeft,
         }}
       >
         <Column
@@ -1237,7 +1261,11 @@ export class Maily {
             borderStyle: 'solid',
             backgroundColor,
             borderRadius,
-            padding,
+
+            paddingTop,
+            paddingRight,
+            paddingBottom,
+            paddingLeft,
           }}
         >
           {this.getMappedContent(node, {
@@ -1276,10 +1304,14 @@ export class Maily {
       width = 50,
       verticalAlign = 'top',
       borderRadius = 0,
-      padding = 0,
       backgroundColor = DEFAULT_COLUMN_BACKGROUND_COLOR,
       borderWidth = DEFAULT_COLUMN_BORDER_WIDTH,
       borderColor = DEFAULT_COLUMN_BORDER_COLOR,
+
+      paddingTop = DEFAULT_COLUMN_PADDING_TOP,
+      paddingRight = DEFAULT_COLUMN_PADDING_RIGHT,
+      paddingBottom = DEFAULT_COLUMN_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_COLUMN_PADDING_LEFT,
     } = attrs || {};
 
     return (
@@ -1294,7 +1326,11 @@ export class Maily {
           borderStyle: 'solid',
           backgroundColor,
           borderRadius,
-          padding,
+
+          paddingTop,
+          paddingRight,
+          paddingBottom,
+          paddingLeft,
         }}
       >
         {this.getMappedContent(node, {

@@ -13,10 +13,10 @@ export const DEFAULT_COLUMN_PADDING = 0;
 export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
 export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
 
-export const DEFAULT_COLUMN_PADDING_TOP = 5;
-export const DEFAULT_COLUMN_PADDING_RIGHT = 5;
-export const DEFAULT_COLUMN_PADDING_BOTTOM = 5;
-export const DEFAULT_COLUMN_PADDING_LEFT = 5;
+export const DEFAULT_COLUMN_PADDING_TOP = 0;
+export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
+export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
+export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
 interface ColumnAttributes {
   verticalAlign: COLUMN_VERTICAL_ALIGN;

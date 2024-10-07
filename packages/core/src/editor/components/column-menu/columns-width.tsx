@@ -12,7 +12,7 @@ export function ColumnsWidth(props: ColumnsWidthProps) {
         W
       </span>
       <select
-        className="mly-h-auto mly-max-w-28 mly-appearance-none mly-border-0 mly-border-none mly-p-1 mly-pl-[26px] mly-text-sm mly-uppercase mly-tabular-nums mly-outline-none focus-visible:mly-outline-none"
+        className="mly-h-auto mly-max-w-28 mly-appearance-none mly-border-0 mly-border-none mly-p-1 mly-pl-[26px] mly-text-sm mly-tabular-nums mly-outline-none focus-visible:mly-outline-none"
         value={selectedValue}
         onChange={(e) => onValueChange(e.target.value)}
       >

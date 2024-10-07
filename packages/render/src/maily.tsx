@@ -24,6 +24,8 @@ interface NodeOptions {
   parent?: JSONContent;
   prev?: JSONContent;
   next?: JSONContent;
+
+  payloadValue?: PayloadValue;
 }
 
 export interface MarkType {
@@ -232,6 +234,9 @@ export type VariableFormatter = (options: {
 export type VariableValues = Map<string, string>;
 export type LinkValues = Map<string, string>;
 
+export type PayloadValue = Record<string, any> | boolean;
+export type PayloadValues = Map<string, PayloadValue>;
+
 export class Maily {
   private readonly content: JSONContent;
   private config: MailyConfig = {
@@ -245,9 +250,10 @@ export class Maily {
   };
 
   private shouldReplaceVariableValues = false;
-  private variableValues: VariableValues = new Map<string, string>();
-  private linkValues: LinkValues = new Map<string, string>();
+  private variableValues: VariableValues = new Map();
+  private linkValues: LinkValues = new Map();
   private openTrackingPixel: string | undefined;
+  private payloadValues: PayloadValues = new Map();
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -312,6 +318,16 @@ export class Maily {
   setLinkValues(values: Record<string, string>) {
     Object.entries(values).forEach(([link, value]) => {
       this.setLinkValue(link, value);
+    });
+  }
+
+  setPayloadValue(key: string, value: PayloadValue) {
+    this.payloadValues.set(key, value);
+  }
+
+  setPayloadValues(values: Record<string, PayloadValue>) {
+    Object.entries(values).forEach(([key, value]) => {
+      this.setPayloadValue(key, value);
     });
   }
 
@@ -504,6 +520,9 @@ export class Maily {
     const isLastColumnElement = parent?.type === 'column' && !next;
     const isFirstColumnElement = parent?.type === 'column' && !prev;
 
+    const isFirstForElement = parent?.type === 'for' && !prev;
+    const isLastForElement = parent?.type === 'for' && !next;
+
     return {
       isNextSpacer,
       isPrevSpacer,
@@ -512,6 +531,8 @@ export class Maily {
       isParentListItem,
       isLastColumnElement,
       isFirstColumnElement,
+      isFirstForElement,
+      isLastForElement,
     };
   }
 
@@ -581,6 +602,7 @@ export class Maily {
       isLastSectionElement,
       isParentListItem,
       isLastColumnElement,
+      isLastForElement,
     } = this.getMarginOverrideConditions(node, options);
 
     return (
@@ -591,7 +613,8 @@ export class Maily {
             isParentListItem ||
             isNextSpacer ||
             isLastSectionElement ||
-            isLastColumnElement
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '20px',
           marginTop: '0px',
@@ -600,7 +623,14 @@ export class Maily {
           ...antialiased,
         }}
       >
-        {node.content ? this.getMappedContent(node) : <>&nbsp;</>}
+        {node.content ? (
+          this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })
+        ) : (
+          <>&nbsp;</>
+        )}
       </Text>
     );
   }
@@ -682,8 +712,12 @@ export class Maily {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
@@ -695,7 +729,10 @@ export class Maily {
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0'
               : '12px',
           marginTop: 0,
@@ -704,7 +741,10 @@ export class Maily {
           fontWeight,
         }}
       >
-        {this.getMappedContent(node, options)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </Heading>
     );
   }
@@ -739,8 +779,12 @@ export class Maily {
   }
 
   private orderedList(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     return (
       <Container>
@@ -748,14 +792,20 @@ export class Maily {
           style={{
             marginTop: '0px',
             marginBottom:
-              isNextSpacer || isLastSectionElement || isLastColumnElement
+              isNextSpacer ||
+              isLastSectionElement ||
+              isLastColumnElement ||
+              isLastForElement
                 ? '0'
                 : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
         >
-          {this.getMappedContent(node)}
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
         </ol>
       </Container>
     );
@@ -763,11 +813,15 @@ export class Maily {
 
   private bulletList(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { parent, next } = options || {};
-    const { isLastSectionElement, isNextSpacer, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, {
-        parent,
-        next,
-      });
+    const {
+      isLastSectionElement,
+      isNextSpacer,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, {
+      parent,
+      next,
+    });
 
     return (
       <Container
@@ -779,14 +833,20 @@ export class Maily {
           style={{
             marginTop: '0px',
             marginBottom:
-              isLastSectionElement || isNextSpacer || isLastColumnElement
+              isLastSectionElement ||
+              isNextSpacer ||
+              isLastColumnElement ||
+              isLastForElement
                 ? '0'
                 : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
         >
-          {this.getMappedContent(node)}
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
         </ul>
       </Container>
     );
@@ -832,8 +892,12 @@ export class Maily {
       radius = '6px';
     }
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     const href =
       this.linkValues.get(url) || this.variableValues.get(url) || url;
@@ -844,7 +908,10 @@ export class Maily {
           textAlign: alignment,
           maxWidth: '100%',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '20px',
         }}
@@ -899,15 +966,22 @@ export class Maily {
       alignment = 'left',
     } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     return (
       <Row
         style={{
           marginTop: '0px',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '32px',
         }}
@@ -939,8 +1013,12 @@ export class Maily {
       externalLink = '',
     } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     const wi = width === 'auto' ? '100%' : (width as number);
     const hei = height === 'auto' ? '100%' : (height as number);
@@ -969,7 +1047,10 @@ export class Maily {
         style={{
           marginTop: '0px',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '32px',
         }}
@@ -1000,8 +1081,12 @@ export class Maily {
     const { attrs } = node;
     const { textAlign = 'left' } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     return (
       <Text
@@ -1011,14 +1096,20 @@ export class Maily {
           color: this.config.theme?.colors?.footer,
           marginTop: '0px',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '20px',
           textAlign,
           ...antialiased,
         }}
       >
-        {this.getMappedContent(node)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </Text>
     );
   }
@@ -1029,6 +1120,7 @@ export class Maily {
       isPrevSpacer,
       isLastSectionElement,
       isLastColumnElement,
+      isLastForElement,
     } = this.getMarginOverrideConditions(node, options);
 
     return (
@@ -1042,12 +1134,18 @@ export class Maily {
           marginRight: '0px',
           marginTop: isPrevSpacer ? '0px' : '20px',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '20px',
         }}
       >
-        {this.getMappedContent(node)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </blockquote>
     );
   }
@@ -1070,8 +1168,12 @@ export class Maily {
   }
   private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const {
+      isNextSpacer,
+      isLastSectionElement,
+      isLastColumnElement,
+      isLastForElement,
+    } = this.getMarginOverrideConditions(node, options);
 
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
@@ -1089,7 +1191,10 @@ export class Maily {
           color: 'inherit',
           display: 'block',
           marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
+            isNextSpacer ||
+            isLastSectionElement ||
+            isLastColumnElement ||
+            isLastForElement
               ? '0px'
               : '20px',
         }}
@@ -1339,5 +1444,58 @@ export class Maily {
         })}
       </Column>
     );
+  }
+
+  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { each = '' } = attrs || {};
+
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+
+    const values = this.payloadValues.get(each) ||
+      payloadValue[each] || [
+        {
+          name: 'Hello World!!',
+        },
+        {
+          name: 'Hello Novu!!',
+        },
+        {
+          hello: 'World!',
+        },
+      ];
+    if (!Array.isArray(values)) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      throw new Error(`Payload value for each "${each}" is not an array`);
+    }
+
+    return (
+      <>
+        {values.map((value) => {
+          return (
+            <Fragment key={generateKey()}>
+              {this.getMappedContent(node, {
+                ...options,
+                parent: node,
+                payloadValue: value,
+              })}
+            </Fragment>
+          );
+        })}
+      </>
+    );
+  }
+
+  private payloadValue(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { id: key } = node.attrs || {};
+    const { payloadValue } = options || {};
+    if (payloadValue === undefined || !key) {
+      return <></>;
+    }
+
+    const value =
+      typeof payloadValue === 'object' ? payloadValue[key] : payloadValue;
+    return <>{value}</>;
   }
 }

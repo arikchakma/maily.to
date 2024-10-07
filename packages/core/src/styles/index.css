@@ -177,6 +177,10 @@
     outline: none;
   }
 
+  p {
+    margin-top: 0;
+  }
+
   .is-editor-empty:first-child:not(
       [data-type='columns'],
       [data-type='section'],
@@ -246,6 +250,18 @@
 
     [data-type='section-cell'] {
       padding: 0;
+      & > *:first-child {
+        margin-top: 0;
+      }
+
+      & > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  [data-type='for'] {
+    [data-node-view-content] > div {
       & > *:first-child {
         margin-top: 0;
       }

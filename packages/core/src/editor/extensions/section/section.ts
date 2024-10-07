@@ -1,12 +1,38 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes, Node } from '@tiptap/core';
 
-export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_SECTION_BACKGROUND_COLOR = '#f7f7f7';
+export const DEFAULT_SECTION_ALIGN = 'left';
+export const DEFAULT_SECTION_BORDER_WIDTH = 1;
+export const DEFAULT_SECTION_BORDER_COLOR = '#e2e2e2';
+export const DEFAULT_SECTION_BORDER_RADIUS = 0;
+
+export const DEFAULT_SECTION_MARGIN_TOP = 0;
+export const DEFAULT_SECTION_MARGIN_RIGHT = 0;
+export const DEFAULT_SECTION_MARGIN_BOTTOM = 0;
+export const DEFAULT_SECTION_MARGIN_LEFT = 0;
+
+export const DEFAULT_SECTION_PADDING_TOP = 5;
+export const DEFAULT_SECTION_PADDING_RIGHT = 5;
+export const DEFAULT_SECTION_PADDING_BOTTOM = 5;
+export const DEFAULT_SECTION_PADDING_LEFT = 5;
 
 type SectionAttributes = {
   borderRadius: number;
-  padding: number;
   backgroundColor: string;
+  align: string;
+  borderWidth: number;
+  borderColor: string;
+
+  marginTop: number;
+  marginRight: number;
+  marginBottom: number;
+  marginLeft: number;
+
+  paddingTop: number;
+  paddingRight: number;
+  paddingBottom: number;
+  paddingLeft: number;
 };
 
 declare module '@tiptap/core' {
@@ -42,21 +68,6 @@ export const Section = Node.create({
           };
         },
       },
-      padding: {
-        default: 0,
-        parseHTML: (element) => {
-          return Number(element?.style?.padding?.replace(/['"]+/g, ''));
-        },
-        renderHTML: (attributes) => {
-          if (!attributes.padding) {
-            return {};
-          }
-
-          return {
-            style: `padding: ${attributes.padding}px`,
-          };
-        },
-      },
       backgroundColor: {
         default: DEFAULT_SECTION_BACKGROUND_COLOR,
         parseHTML: (element) => {
@@ -69,6 +80,167 @@ export const Section = Node.create({
 
           return {
             style: `background-color: ${attributes.backgroundColor}`,
+          };
+        },
+      },
+      align: {
+        default: DEFAULT_SECTION_ALIGN,
+        parseHTML: (element) => {
+          return element.getAttribute('align') || DEFAULT_SECTION_ALIGN;
+        },
+        renderHTML(attributes) {
+          if (!attributes.align) {
+            return {};
+          }
+
+          return {
+            align: attributes.align,
+          };
+        },
+      },
+      borderWidth: {
+        default: DEFAULT_SECTION_BORDER_WIDTH,
+        parseHTML: (element) => {
+          return (
+            Number(element?.style?.borderWidth?.replace(/['"]+/g, '')) || 0
+          );
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.borderWidth) {
+            return {};
+          }
+
+          return {
+            style: `border-width: ${attributes.borderWidth}px`,
+          };
+        },
+      },
+      borderColor: {
+        default: DEFAULT_SECTION_BORDER_COLOR,
+        parseHTML: (element) => {
+          return element.style.borderColor;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.borderColor) {
+            return {};
+          }
+
+          return {
+            style: `border-color: ${attributes.borderColor}`,
+          };
+        },
+      },
+      paddingTop: {
+        default: DEFAULT_SECTION_PADDING_TOP,
+        parseHTML: (element) => {
+          return Number(element?.style?.paddingTop?.replace(/['"]+/g, '')) || 0;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.paddingTop) {
+            return {};
+          }
+
+          return {
+            style: `padding-top: ${attributes.paddingTop}px`,
+          };
+        },
+      },
+      paddingRight: {
+        default: DEFAULT_SECTION_PADDING_RIGHT,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingRight?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingRight) {
+            return {};
+          }
+
+          return {
+            style: `padding-right: ${attributes.paddingRight}px`,
+          };
+        },
+      },
+      paddingBottom: {
+        default: DEFAULT_SECTION_PADDING_BOTTOM,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingBottom?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingBottom) {
+            return {};
+          }
+
+          return {
+            style: `padding-bottom: ${attributes.paddingBottom}px`,
+          };
+        },
+      },
+      paddingLeft: {
+        default: DEFAULT_SECTION_PADDING_LEFT,
+        parseHTML: (element) =>
+          Number(element?.style?.paddingLeft?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.paddingLeft) {
+            return {};
+          }
+
+          return {
+            style: `padding-left: ${attributes.paddingLeft}px`,
+          };
+        },
+      },
+      marginTop: {
+        default: DEFAULT_SECTION_MARGIN_TOP,
+        parseHTML: (element) => {
+          return Number(element?.style?.marginTop?.replace(/['"]+/g, '')) || 0;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.marginTop) {
+            return {};
+          }
+
+          return {
+            marginTop: attributes.marginTop,
+          };
+        },
+      },
+      marginRight: {
+        default: DEFAULT_SECTION_MARGIN_RIGHT,
+        parseHTML: (element) =>
+          Number(element?.style?.marginRight?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.marginRight) {
+            return {};
+          }
+
+          return {
+            marginRight: attributes.marginRight,
+          };
+        },
+      },
+      marginBottom: {
+        default: DEFAULT_SECTION_MARGIN_BOTTOM,
+        parseHTML: (element) =>
+          Number(element?.style?.marginBottom?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.marginBottom) {
+            return {};
+          }
+
+          return {
+            marginBottom: attributes.marginBottom,
+          };
+        },
+      },
+      marginLeft: {
+        default: DEFAULT_SECTION_MARGIN_LEFT,
+        parseHTML: (element) =>
+          Number(element?.style?.marginLeft?.replace(/['"]+/g, '')) || 0,
+        renderHTML: (attributes) => {
+          if (!attributes.marginLeft) {
+            return {};
+          }
+
+          return {
+            marginLeft: attributes.marginLeft,
           };
         },
       },
@@ -97,21 +269,34 @@ export const Section = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
+    const { marginTop, marginRight, marginBottom, marginLeft } = HTMLAttributes;
+
     return [
       'table',
       {
         'data-type': this.name,
+        border: 0,
+        cellpadding: 0,
+        cellspacing: 0,
+        class: 'mly-w-full mly-border-separate',
+        style: `margin-top: ${marginTop}px; margin-right: ${marginRight}px; margin-bottom: ${marginBottom}px; margin-left: ${marginLeft}px;`,
       },
       [
         'tbody',
-        {},
+        {
+          class: 'mly-w-full',
+        },
         [
           'tr',
-          {},
+          {
+            class: 'mly-w-full',
+          },
           [
             'td',
             mergeAttributes(HTMLAttributes, {
               'data-type': 'section-cell',
+              style: 'border-style: solid',
+              class: 'mly-w-full [text-align:revert-layer]',
             }),
             0,
           ],

@@ -21,13 +21,14 @@ import { isTextSelected } from '@/editor/utils/is-text-selected';
 
 export interface BubbleMenuItem {
   name?: string;
-  isActive: () => boolean;
-  command: () => void;
+  isActive?: () => boolean;
+  command?: () => void;
   shouldShow?: () => boolean;
   icon?: LucideIcon;
   className?: string;
   iconClassName?: string;
   nameClassName?: string;
+  disbabled?: boolean;
 }
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {

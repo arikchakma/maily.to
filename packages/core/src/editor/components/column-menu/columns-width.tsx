@@ -16,8 +16,8 @@ export function ColumnsWidth(props: ColumnsWidthProps) {
         value={selectedValue}
         onChange={(e) => onValueChange(e.target.value)}
       >
-        <option value="auto">Contained</option>
-        <option value="100%">Full</option>
+        <option value="auto">Fit content</option>
+        <option value="100%">Stretch</option>
       </select>
     </label>
   );

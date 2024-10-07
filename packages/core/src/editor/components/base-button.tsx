@@ -28,7 +28,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
     const baseClass =
-      'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 disabled:mly-pointer-events-none disabled:mly-opacity-50';
+      'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 disabled:mly-opacity-50';
     const variantClasses = {
       default: 'mly-bg-gray-900 mly-text-gray-50 hover:mly-bg-gray-900/90',
       destructive: 'mly-bg-red-500 mly-text-gray-50 hover:mly-bg-red-500/90',

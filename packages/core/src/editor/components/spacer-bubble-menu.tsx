@@ -1,8 +1,11 @@
 import { BubbleMenu } from '@tiptap/react';
 
 import { BubbleMenuButton } from './bubble-menu-button';
-import { BubbleMenuItem, EditorBubbleMenuProps } from './editor-bubble-menu';
 import { allowedSpacerSize } from '../nodes/spacer';
+import {
+  BubbleMenuItem,
+  EditorBubbleMenuProps,
+} from './text-menu/text-bubble-menu';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;

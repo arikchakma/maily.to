@@ -1,4 +1,7 @@
-import { DEFAULT_SECTION_BACKGROUND_COLOR } from '@/editor/extensions/section/section';
+import {
+  DEFAULT_SECTION_BACKGROUND_COLOR,
+  DEFAULT_SECTION_BORDER_COLOR,
+} from '@/editor/extensions/section/section';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -7,13 +10,39 @@ export const useSectionState = (editor: Editor) => {
     editor,
     selector: (ctx) => {
       return {
+        isAlignLeft: ctx.editor.getAttributes('section')?.align === 'left',
+        isAlignCenter: ctx.editor.getAttributes('section')?.align === 'center',
+        isAlignRight: ctx.editor.getAttributes('section')?.align === 'right',
+
         currentBorderRadius:
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
-        currentPadding:
-          Number(ctx.editor.getAttributes('section')?.padding) || 0,
         currentBackgroundColor:
           ctx.editor.getAttributes('section')?.backgroundColor ||
           DEFAULT_SECTION_BACKGROUND_COLOR,
+
+        currentBorderColor:
+          ctx.editor.getAttributes('section')?.borderColor ||
+          DEFAULT_SECTION_BORDER_COLOR,
+        currentBorderWidth:
+          Number(ctx.editor.getAttributes('section')?.borderWidth) || 0,
+
+        currentMarginTop:
+          Number(ctx.editor.getAttributes('section')?.marginTop) || 0,
+        currentMarginRight:
+          Number(ctx.editor.getAttributes('section')?.marginRight) || 0,
+        currentMarginBottom:
+          Number(ctx.editor.getAttributes('section')?.marginBottom) || 0,
+        currentMarginLeft:
+          Number(ctx.editor.getAttributes('section')?.marginLeft) || 0,
+
+        currentPaddingTop:
+          Number(ctx.editor.getAttributes('section')?.paddingTop) || 0,
+        currentPaddingRight:
+          Number(ctx.editor.getAttributes('section')?.paddingRight) || 0,
+        currentPaddingBottom:
+          Number(ctx.editor.getAttributes('section')?.paddingBottom) || 0,
+        currentPaddingLeft:
+          Number(ctx.editor.getAttributes('section')?.paddingLeft) || 0,
       };
     },
     equalityFn: deepEql,

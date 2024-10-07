@@ -11,7 +11,7 @@ export function Divider(props: Props) {
   return (
     <div
       className={cn(
-        'mly-mx-0.5 mly-bg-gray-200',
+        'mly-mx-0.5 mly-shrink-0 mly-bg-gray-200',
         type === 'vertical' ? 'mly-w-px' : 'mly-h-px',
         className
       )}

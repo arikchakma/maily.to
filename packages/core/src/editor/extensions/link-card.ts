@@ -4,7 +4,7 @@ import { LinkCardComponent } from '../nodes/link-card';
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    'linkCard': {
+    linkCard: {
       setLinkCard: () => ReturnType;
     };
   }

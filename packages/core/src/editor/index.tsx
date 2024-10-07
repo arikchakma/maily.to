@@ -4,7 +4,7 @@ import { Editor as TiptapEditor, Extension, FocusPosition } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { ImageBubbleMenu } from './components/image-bubble-menu';
+import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { MailyContextType, MailyProvider } from './provider';
@@ -13,6 +13,7 @@ import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
+import { EdgeSpacingControl } from './components/ui/edge-spacing-controls';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;

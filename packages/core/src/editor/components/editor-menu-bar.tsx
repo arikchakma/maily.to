@@ -16,7 +16,7 @@ import {
 import { EditorProps } from '@/editor';
 
 import { BubbleMenuButton } from './bubble-menu-button';
-import { BubbleMenuItem } from './editor-bubble-menu';
+import { BubbleMenuItem } from './text-menu/text-bubble-menu';
 
 interface EditorMenuItem extends BubbleMenuItem {
   group: 'alignment' | 'image' | 'mark' | 'custom' | 'email';

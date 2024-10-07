@@ -33,7 +33,8 @@
 .mly-editor .mly-prose h1 + p,
 .mly-editor .mly-prose h2 + p,
 .mly-editor .mly-prose h3 + p,
-.mly-editor .mly-prose hr + p {
+.mly-editor .mly-prose hr + p,
+.mly-editor .mly-prose table + p {
   margin-top: 0;
 }
 
@@ -178,7 +179,10 @@
 
   .is-editor-empty:first-child:not(
       [data-type='columns'],
-      [data-type='section']
+      [data-type='section'],
+      ul,
+      li,
+      ol
     )::before {
     content: attr(data-placeholder);
     text-wrap: nowrap;
@@ -188,7 +192,13 @@
     height: 0;
   }
 
-  .is-empty:not([data-type='columns'], [data-type='section'])::before {
+  .is-empty:not(
+      [data-type='columns'],
+      [data-type='section'],
+      ol,
+      ul,
+      li
+    )::before {
     content: attr(data-placeholder);
     text-wrap: nowrap;
     float: left;
@@ -200,6 +210,12 @@
   [data-type='columns'] {
     margin: 0;
     padding: 0;
+
+    &.has-focus {
+      outline: 1.5px solid #e9ecef;
+      outline-style: dashed;
+      outline-offset: 6px;
+    }
 
     &.has-focus [data-type='column'],
     &:hover [data-type='column'] {

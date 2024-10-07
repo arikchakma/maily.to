@@ -183,9 +183,32 @@ const DEFAULT_THEME: ThemeOptions = {
 
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
-const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_SECTION_BACKGROUND_COLOR = '#ffffff';
+export const DEFAULT_SECTION_ALIGN = 'left';
+export const DEFAULT_SECTION_BORDER_WIDTH = 1;
+export const DEFAULT_SECTION_BORDER_COLOR = '#000000';
+
+export const DEFAULT_SECTION_MARGIN_TOP = 0;
+export const DEFAULT_SECTION_MARGIN_RIGHT = 0;
+export const DEFAULT_SECTION_MARGIN_BOTTOM = 0;
+export const DEFAULT_SECTION_MARGIN_LEFT = 0;
+
+export const DEFAULT_SECTION_PADDING_TOP = 5;
+export const DEFAULT_SECTION_PADDING_RIGHT = 5;
+export const DEFAULT_SECTION_PADDING_BOTTOM = 5;
+export const DEFAULT_SECTION_PADDING_LEFT = 5;
+
 export const DEFAULT_COLUMNS_WIDTH = '100%';
-export const DEFAULT_COLUMNS_ALIGN = 'left';
+
+export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
+export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
+export const DEFAULT_COLUMN_BORDER_WIDTH = 0;
+export const DEFAULT_COLUMN_BORDER_COLOR = 'transparent';
+
+export const DEFAULT_COLUMN_PADDING_TOP = 0;
+export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
+export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
+export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
 export interface RenderOptions {
   /**
@@ -919,6 +942,9 @@ export class Maily {
     const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
       this.getMarginOverrideConditions(node, options);
 
+    const wi = width === 'auto' ? '100%' : (width as number);
+    const hei = height === 'auto' ? '100%' : (height as number);
+
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
@@ -926,8 +952,10 @@ export class Maily {
         style={{
           height: '100%',
           width: '100%',
-          maxWidth: width,
-          maxHeight: height,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          maxWidth: `${wi}px`,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          maxHeight: `${hei}px`,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -1200,35 +1228,62 @@ export class Maily {
     const { attrs } = node;
     const {
       borderRadius = 0,
-      padding = 0,
       backgroundColor = DEFAULT_SECTION_BACKGROUND_COLOR,
+      align = DEFAULT_SECTION_ALIGN,
+      borderWidth = DEFAULT_SECTION_BORDER_WIDTH,
+      borderColor = DEFAULT_SECTION_BORDER_COLOR,
+
+      marginTop = DEFAULT_SECTION_MARGIN_TOP,
+      marginRight = DEFAULT_SECTION_MARGIN_RIGHT,
+      marginBottom = DEFAULT_SECTION_MARGIN_BOTTOM,
+      marginLeft = DEFAULT_SECTION_MARGIN_LEFT,
+
+      paddingTop = DEFAULT_SECTION_PADDING_TOP,
+      paddingRight = DEFAULT_SECTION_PADDING_RIGHT,
+      paddingBottom = DEFAULT_SECTION_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_SECTION_PADDING_LEFT,
     } = attrs || {};
 
     return (
-      <Container
+      <Row
         style={{
-          backgroundColor,
-          borderRadius,
-          padding,
+          marginTop,
+          marginRight,
+          marginBottom,
+          marginLeft,
         }}
       >
-        {this.getMappedContent(node, {
-          ...options,
-          parent: node,
-        })}
-      </Container>
+        <Column
+          align={align}
+          style={{
+            borderColor,
+            borderWidth,
+            borderStyle: 'solid',
+            backgroundColor,
+            borderRadius,
+
+            paddingTop,
+            paddingRight,
+            paddingBottom,
+            paddingLeft,
+          }}
+        >
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
+        </Column>
+      </Row>
     );
   }
 
   private columns(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = DEFAULT_COLUMNS_WIDTH, align = DEFAULT_COLUMNS_ALIGN } =
-      attrs || {};
+    const { width = DEFAULT_COLUMNS_WIDTH } = attrs || {};
 
     return (
       <Row
         width={width}
-        align={align}
         style={{
           margin: 0,
           padding: 0,
@@ -1245,15 +1300,37 @@ export class Maily {
 
   private column(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = '50%', verticalAlign = 'top' } = attrs || {};
+    const {
+      width = 50,
+      verticalAlign = 'top',
+      borderRadius = 0,
+      backgroundColor = DEFAULT_COLUMN_BACKGROUND_COLOR,
+      borderWidth = DEFAULT_COLUMN_BORDER_WIDTH,
+      borderColor = DEFAULT_COLUMN_BORDER_COLOR,
+
+      paddingTop = DEFAULT_COLUMN_PADDING_TOP,
+      paddingRight = DEFAULT_COLUMN_PADDING_RIGHT,
+      paddingBottom = DEFAULT_COLUMN_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_COLUMN_PADDING_LEFT,
+    } = attrs || {};
 
     return (
       <Column
         style={{
-          width,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          width: `${width}%`,
           verticalAlign,
           margin: 0,
-          padding: 0,
+          borderColor,
+          borderWidth,
+          borderStyle: 'solid',
+          backgroundColor,
+          borderRadius,
+
+          paddingTop,
+          paddingRight,
+          paddingBottom,
+          paddingLeft,
         }}
       >
         {this.getMappedContent(node, {

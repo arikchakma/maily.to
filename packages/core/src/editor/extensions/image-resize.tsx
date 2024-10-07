@@ -6,6 +6,7 @@ import {
 import { type CSSProperties, useRef, useState } from 'react';
 import TipTapImage from '@tiptap/extension-image';
 import { useEvent } from '../utils/use-event';
+import { useEffect } from 'react';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
@@ -100,8 +101,8 @@ function ResizableImageTemplate(props: NodeViewProps) {
       draggable
       data-drag-handle
       style={{
-        width,
-        height,
+        width: `${width}px`,
+        height: `${height}px`,
         ...resizingStyle,
         overflow: 'hidden',
         position: 'relative',
@@ -156,8 +157,22 @@ export const ResizableImageExtension = TipTapImage.extend({
   addAttributes() {
     return {
       ...this.parent?.(),
-      width: { renderHTML: ({ width }) => ({ width }) },
-      height: { renderHTML: ({ height }) => ({ height }) },
+      width: {
+        default: 'auto',
+        parseHTML: (element) => {
+          const width = element.style.width;
+          return width ? { width } : null;
+        },
+        renderHTML: ({ width }) => ({ style: `width: ${width}` }),
+      },
+      height: {
+        default: 'auto',
+        parseHTML: (element) => {
+          const height = element.style.height;
+          return height ? { height } : null;
+        },
+        renderHTML: ({ height }) => ({ style: `height: ${height}` }),
+      },
       alignment: {
         default: 'center',
         renderHTML: ({ alignment }) => ({ 'data-alignment': alignment }),

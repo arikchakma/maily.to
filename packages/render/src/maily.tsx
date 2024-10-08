@@ -854,21 +854,15 @@ export class Maily {
 
   private listItem(node: JSONContent, options?: NodeOptions): JSX.Element {
     return (
-      <Container
+      <li
         style={{
-          maxWidth: '100%',
+          marginBottom: '8px',
+          paddingLeft: '6px',
+          ...antialiased,
         }}
       >
-        <li
-          style={{
-            marginBottom: '8px',
-            paddingLeft: '6px',
-            ...antialiased,
-          }}
-        >
-          {this.getMappedContent(node, { ...options, parent: node })}
-        </li>
-      </Container>
+        {this.getMappedContent(node, { ...options, parent: node })}
+      </li>
     );
   }
 
@@ -1453,18 +1447,7 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
 
-    const values = this.payloadValues.get(each) ||
-      payloadValue[each] || [
-        {
-          name: 'Hello World!!',
-        },
-        {
-          name: 'Hello Novu!!',
-        },
-        {
-          hello: 'World!',
-        },
-      ];
+    const values = this.payloadValues.get(each) || payloadValue[each] || [];
     if (!Array.isArray(values)) {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Payload value for each "${each}" is not an array`);

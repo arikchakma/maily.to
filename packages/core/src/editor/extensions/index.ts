@@ -25,6 +25,9 @@ import { LinkCardExtension } from './link-card';
 import { Columns } from './columns/columns';
 import { Column } from './columns/column';
 import { Section } from './section/section';
+import { ForExtension } from './for/for';
+import { PayloadValueExtension } from './for/payload-value';
+import { getPlayloadValueSuggestions } from './for/payload-value-view';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -71,9 +74,7 @@ export function extensions(props: ExtensionsProps) {
         if (node.type.name === 'heading') {
           return `Heading ${node.attrs.level}`;
         } else if (
-          node.type.name === 'columns' ||
-          node.type.name === 'column' ||
-          node.type.name === 'section'
+          ['columns', 'column', 'section', 'for'].includes(node.type.name)
         ) {
           return '';
         }
@@ -102,5 +103,9 @@ export function extensions(props: ExtensionsProps) {
     LinkCardExtension,
     Focus,
     Section,
+    ForExtension,
+    PayloadValueExtension.configure({
+      suggestion: getPlayloadValueSuggestions([]),
+    }),
   ];
 }

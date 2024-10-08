@@ -27,6 +27,7 @@ import {
   ArrowUpRightSquare,
   ColumnsIcon,
   SectionIcon,
+  Repeat2,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -271,6 +272,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     icon: <SectionIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setSection().run();
+    },
+  },
+  {
+    title: 'For',
+    description: 'Loop over an array of items.',
+    searchTerms: ['for', 'loop'],
+    icon: <Repeat2 className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setFor().run();
     },
   },
 ];

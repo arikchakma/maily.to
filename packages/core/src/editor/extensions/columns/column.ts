@@ -42,9 +42,7 @@ declare module '@tiptap/core' {
 
 export const Column = Node.create({
   name: 'column',
-
   content: '(block|columns)+',
-
   isolating: true,
 
   addAttributes() {

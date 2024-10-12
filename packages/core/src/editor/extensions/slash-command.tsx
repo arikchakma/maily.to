@@ -255,6 +255,9 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     description: 'Add columns to email.',
     searchTerms: ['layout', 'columns'],
     icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
+    shouldBeHidden: (editor) => {
+      return editor.isActive('columns');
+    },
     command: ({ editor, range }: CommandProps) => {
       editor
         .chain()
@@ -270,6 +273,9 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     description: 'Add a section to email.',
     searchTerms: ['layout', 'section'],
     icon: <SectionIcon className="mly-h-4 mly-w-4" />,
+    shouldBeHidden: (editor) => {
+      return editor.isActive('section') || editor.isActive('columns');
+    },
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setSection().run();
     },
@@ -425,10 +431,15 @@ export function getSlashCommandSuggestions(
   commands: SlashCommandItem[] = []
 ): Omit<SuggestionOptions, 'editor'> {
   return {
-    items: ({ query }) => {
+    items: ({ query, editor }) => {
       return [...DEFAULT_SLASH_COMMANDS, ...commands].filter((item) => {
         if (typeof query === 'string' && query.length > 0) {
           const search = query.toLowerCase();
+
+          if (item?.shouldBeHidden?.(editor)) {
+            return false;
+          }
+
           return (
             item.title.toLowerCase().includes(search) ||
             item.description.toLowerCase().includes(search) ||

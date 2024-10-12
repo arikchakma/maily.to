@@ -90,7 +90,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           });
         }}
       />
-      <Divider />
       <NumberInput
         max={8}
         icon={BoxSelect}
@@ -101,7 +100,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           });
         }}
       />
-      <Divider />
       <ColorPicker
         color={state.currentBorderColor}
         onColorChange={(color) => {

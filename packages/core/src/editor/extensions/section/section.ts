@@ -49,7 +49,7 @@ export const Section = Node.create({
   group: 'block',
   content: '(block|columns)+',
   defining: true,
-  isolating: false,
+  isolating: true,
 
   addAttributes() {
     return {

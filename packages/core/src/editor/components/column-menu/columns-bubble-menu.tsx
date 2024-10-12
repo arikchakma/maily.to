@@ -223,7 +223,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 });
               }}
             />
-            <Divider />
             <NumberInput
               max={8}
               icon={BoxSelect}
@@ -234,7 +233,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
                 });
               }}
             />
-            <Divider />
             <ColorPicker
               color={state.columnBorderColor}
               onColorChange={(color) => {

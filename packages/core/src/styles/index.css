@@ -215,19 +215,14 @@
     margin: 0;
     padding: 0;
 
-    &.has-focus {
-      outline: 1.5px solid #e9ecef;
-      outline-style: dashed;
-      outline-offset: 6px;
-    }
-
     &.has-focus [data-type='column'],
     &:hover [data-type='column'] {
-      /* @apply border-neutral-300 dark:border-neutral-700; */
+      outline: 1.5px solid #e9ecef;
+      outline-style: dashed;
     }
 
     [data-type='column'].has-focus {
-      outline: 2px solid #e9ecef;
+      outline-style: solid;
     }
   }
 

@@ -15,7 +15,7 @@ export function ForView(props: NodeViewProps) {
       data-type="for"
     >
       <div className="mly-border-b mly-px-2 mly-py-1 mly-text-sm">
-        <code contentEditable={false}>
+        <code contentEditable={false} className="mly-text-gray-400">
           {'<For'}&nbsp;{`each="payload.`}
           {isUpdatingKey ? (
             <input
@@ -56,7 +56,7 @@ export function ForView(props: NodeViewProps) {
         className="mly-border-t mly-px-2 mly-py-1 mly-text-sm"
         contentEditable={false}
       >
-        <code>{'</For>'}</code>
+        <code className="mly-text-gray-400">{'</For>'}</code>
       </div>
     </NodeViewWrapper>
   );

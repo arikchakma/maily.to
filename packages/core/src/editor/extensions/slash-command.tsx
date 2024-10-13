@@ -291,14 +291,14 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     },
   },
   {
-    title: "Show",
-    description: "Show when a condition is true.",
-    searchTerms: ["show", "if"],
+    title: 'Show',
+    description: 'Show when a condition is true.',
+    searchTerms: ['show', 'if'],
     icon: <EyeIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setShow().run();
     },
-  }
+  },
 ];
 
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {

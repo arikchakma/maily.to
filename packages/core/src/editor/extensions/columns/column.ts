@@ -73,7 +73,7 @@ export const Column = Node.create({
           }
 
           return {
-            style: `width: ${attributes.width}%; max-width: ${attributes.width}%`
+            style: `width: ${attributes.width}%; max-width: ${attributes.width}%`,
           };
         },
       },

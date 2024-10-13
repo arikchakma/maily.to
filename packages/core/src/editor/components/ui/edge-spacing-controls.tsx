@@ -90,7 +90,7 @@ function InputWithLabel(props: InputWithLabelProps) {
         id={id}
         min={0}
         type="number"
-        value={value}
+        value={value + ''}
         onChange={(e) => onChange(Number(e.target.value))}
         className={cn(
           'hide-number-controls focus-visible:outline-none mly-size-5 mly-border-0 mly-border-none mly-bg-gray-200 mly-p-0.5 mly-text-center mly-text-xs mly-tabular-nums mly-outline-none',

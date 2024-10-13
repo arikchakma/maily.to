@@ -1481,4 +1481,27 @@ export class Maily {
       typeof payloadValue === 'object' ? payloadValue[key] : payloadValue;
     return <>{value}</>;
   }
+
+  private show(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { when = '' } = attrs || {};
+
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+
+    const value = this.payloadValues.get(when) || payloadValue[when];
+
+    if (!value) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
+      </>
+    );
+  }
 }

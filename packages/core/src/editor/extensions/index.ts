@@ -29,6 +29,7 @@ import { ForExtension } from './for/for';
 import { PayloadValueExtension } from './for/payload-value';
 import { getPlayloadValueSuggestions } from './for/payload-value-view';
 import { TrailingNode } from './tailing-node/tailing-node';
+import { ShowExtension } from './show/show';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -75,7 +76,9 @@ export function extensions(props: ExtensionsProps) {
         if (node.type.name === 'heading') {
           return `Heading ${node.attrs.level}`;
         } else if (
-          ['columns', 'column', 'section', 'for'].includes(node.type.name)
+          ['columns', 'column', 'section', 'for', 'show'].includes(
+            node.type.name
+          )
         ) {
           return '';
         }
@@ -109,5 +112,6 @@ export function extensions(props: ExtensionsProps) {
       suggestion: getPlayloadValueSuggestions([]),
     }),
     TrailingNode,
+    ShowExtension,
   ];
 }

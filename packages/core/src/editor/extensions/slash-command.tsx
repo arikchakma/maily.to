@@ -28,6 +28,7 @@ import {
   ColumnsIcon,
   SectionIcon,
   Repeat2,
+  EyeIcon,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -289,6 +290,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).setFor().run();
     },
   },
+  {
+    title: "Show",
+    description: "Show when a condition is true.",
+    searchTerms: ["show", "if"],
+    icon: <EyeIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setShow().run();
+    },
+  }
 ];
 
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {

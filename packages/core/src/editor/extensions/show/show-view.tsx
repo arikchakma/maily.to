@@ -11,10 +11,10 @@ export function ShowView(props: NodeViewProps) {
     <NodeViewWrapper
       draggable="true"
       data-drag-handle=""
-      className="mly-rounded-md mly-border"
+      className="mly-rounded-md mly-border mly-border-gray-200"
       data-type="for"
     >
-      <div className="mly-border-b mly-px-2 mly-py-1 mly-text-sm">
+      <div className="mly-border-b mly-border-gray-200 mly-px-2 mly-py-1 mly-text-sm">
         <code contentEditable={false} className="mly-text-gray-400">
           {'<Show'}&nbsp;{`when="payload.`}
           {isUpdatingKey ? (
@@ -53,7 +53,7 @@ export function ShowView(props: NodeViewProps) {
       </div>
       <NodeViewContent className="is-editable" />
       <div
-        className="mly-border-t mly-px-2 mly-py-1 mly-text-sm"
+        className="mly-border-t mly-border-gray-200 mly-px-2 mly-py-1 mly-text-sm"
         contentEditable={false}
       >
         <code className="mly-text-gray-400">{'</Show>'}</code>

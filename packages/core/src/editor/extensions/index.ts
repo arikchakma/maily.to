@@ -28,6 +28,7 @@ import { Section } from './section/section';
 import { ForExtension } from './for/for';
 import { PayloadValueExtension } from './for/payload-value';
 import { getPlayloadValueSuggestions } from './for/payload-value-view';
+import { TrailingNode } from './tailing-node/tailing-node';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -107,5 +108,6 @@ export function extensions(props: ExtensionsProps) {
     PayloadValueExtension.configure({
       suggestion: getPlayloadValueSuggestions([]),
     }),
+    TrailingNode,
   ];
 }

@@ -23,7 +23,7 @@ export const Columns = Node.create({
   group: 'columns',
   content: 'column+',
   defining: true,
-  isolating: false,
+  isolating: true,
 
   addAttributes() {
     return {

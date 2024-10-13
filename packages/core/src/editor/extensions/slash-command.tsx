@@ -265,7 +265,7 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
         .focus()
         .deleteRange(range)
         .setColumns()
-        .focus(editor.state.selection.head - 1)
+        .focus(editor.state.selection.head - 2)
         .run();
     },
   },

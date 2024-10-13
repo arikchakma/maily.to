@@ -523,6 +523,9 @@ export class Maily {
     const isFirstForElement = parent?.type === 'for' && !prev;
     const isLastForElement = parent?.type === 'for' && !next;
 
+    const isFirstShowElement = parent?.type === 'show' && !prev;
+    const isLastShowElement = parent?.type === 'show' && !next;
+
     return {
       isNextSpacer,
       isPrevSpacer,
@@ -533,6 +536,21 @@ export class Maily {
       isFirstColumnElement,
       isFirstForElement,
       isLastForElement,
+      isFirstShowElement,
+      isLastShowElement,
+
+      shouldRemoveTopMargin:
+        isPrevSpacer ||
+        isFirstSectionElement ||
+        isFirstColumnElement ||
+        isFirstForElement ||
+        isFirstShowElement,
+      shouldRemoveBottomMargin:
+        isNextSpacer ||
+        isLastSectionElement ||
+        isLastColumnElement ||
+        isLastForElement ||
+        isLastShowElement,
     };
   }
 
@@ -597,26 +615,15 @@ export class Maily {
   private paragraph(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const alignment = attrs?.textAlign || 'left';
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isParentListItem,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { isParentListItem, shouldRemoveBottomMargin } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <Text
         style={{
           textAlign: alignment,
           marginBottom:
-            isParentListItem ||
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '20px',
+            isParentListItem || shouldRemoveBottomMargin ? '0px' : '20px',
           marginTop: '0px',
           fontSize: this.config.theme?.fontSize?.paragraph,
           color: this.config.theme?.colors?.paragraph,
@@ -712,12 +719,10 @@ export class Maily {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
@@ -728,13 +733,7 @@ export class Maily {
         style={{
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0'
-              : '12px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '12px',
           marginTop: 0,
           fontSize,
           lineHeight,
@@ -779,25 +778,17 @@ export class Maily {
   }
 
   private orderedList(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Container>
         <ol
           style={{
             marginTop: '0px',
-            marginBottom:
-              isNextSpacer ||
-              isLastSectionElement ||
-              isLastColumnElement ||
-              isLastForElement
-                ? '0'
-                : '20px',
+            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
@@ -813,15 +804,13 @@ export class Maily {
 
   private bulletList(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { parent, next } = options || {};
-    const {
-      isLastSectionElement,
-      isNextSpacer,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, {
-      parent,
-      next,
-    });
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      {
+        parent,
+        next,
+      }
+    );
 
     return (
       <Container
@@ -832,13 +821,7 @@ export class Maily {
         <ul
           style={{
             marginTop: '0px',
-            marginBottom:
-              isLastSectionElement ||
-              isNextSpacer ||
-              isLastColumnElement ||
-              isLastForElement
-                ? '0'
-                : '20px',
+            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
@@ -886,12 +869,10 @@ export class Maily {
       radius = '6px';
     }
 
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     const href =
       this.linkValues.get(url) || this.variableValues.get(url) || url;
@@ -901,13 +882,7 @@ export class Maily {
         style={{
           textAlign: alignment,
           maxWidth: '100%',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
       >
         <Button
@@ -960,24 +935,16 @@ export class Maily {
       alignment = 'left',
     } = attrs || {};
 
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Row
         style={{
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '32px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -1007,12 +974,10 @@ export class Maily {
       externalLink = '',
     } = attrs || {};
 
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     const wi = width === 'auto' ? '100%' : (width as number);
     const hei = height === 'auto' ? '100%' : (height as number);
@@ -1040,13 +1005,7 @@ export class Maily {
       <Row
         style={{
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '32px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -1075,12 +1034,10 @@ export class Maily {
     const { attrs } = node;
     const { textAlign = 'left' } = attrs || {};
 
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Text
@@ -1089,13 +1046,7 @@ export class Maily {
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
           color: this.config.theme?.colors?.footer,
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
           textAlign,
           ...antialiased,
         }}
@@ -1109,13 +1060,8 @@ export class Maily {
   }
 
   private blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const {
-      isNextSpacer,
-      isPrevSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { isPrevSpacer, shouldRemoveBottomMargin } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <blockquote
@@ -1127,13 +1073,7 @@ export class Maily {
           marginLeft: '0px',
           marginRight: '0px',
           marginTop: isPrevSpacer ? '0px' : '20px',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
       >
         {this.getMappedContent(node, {
@@ -1162,12 +1102,10 @@ export class Maily {
   }
   private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-      isLastForElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
@@ -1184,13 +1122,7 @@ export class Maily {
           textDecoration: 'none',
           color: 'inherit',
           display: 'block',
-          marginBottom:
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement ||
-            isLastForElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
         target="_blank"
       >

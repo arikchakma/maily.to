@@ -267,6 +267,18 @@
     }
   }
 
+  [data-type='show'] {
+    [data-node-view-content] > div {
+      & > *:first-child {
+        margin-top: 0;
+      }
+
+      & > *:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   /* Remove margin before and after of Gap Cursor */
   *:has(+ .ProseMirror-gapcursor) {
     margin-bottom: 0 !important;

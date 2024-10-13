@@ -10,6 +10,7 @@ import Heading from '@tiptap/extension-heading';
 import Underline from '@tiptap/extension-underline';
 import Document from '@tiptap/extension-document';
 import Focus from '@tiptap/extension-focus';
+import Dropcursor from '@tiptap/extension-dropcursor';
 
 import { HorizontalRule } from './horizontal-rule';
 import { ButtonExtension } from './button-extension';
@@ -46,23 +47,20 @@ export function extensions(props: ExtensionsProps) {
       heading: {
         levels: [1, 2, 3],
       },
-      dropcursor: {
-        color: '#555',
-        width: 3,
-      },
       code: {
         HTMLAttributes: {
           class:
             'mly-px-1 mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
         },
       },
-      horizontalRule: false,
       blockquote: {
         HTMLAttributes: {
           class:
             'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4',
         },
       },
+      horizontalRule: false,
+      dropcursor: false,
       document: false,
     }),
     Underline,
@@ -111,7 +109,11 @@ export function extensions(props: ExtensionsProps) {
     PayloadValueExtension.configure({
       suggestion: getPlayloadValueSuggestions([]),
     }),
-    TrailingNode,
     ShowExtension,
+    Dropcursor.configure({
+      color: '#555',
+      width: 3,
+      class: 'ProseMirror-dropcursor',
+    }),
   ];
 }

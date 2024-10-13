@@ -15,6 +15,7 @@ export const ShowExtension = Node.create({
   group: 'block',
   content: '(block|columns)+',
   draggable: true,
+  isolating: true,
 
   addAttributes() {
     return {

@@ -21,6 +21,8 @@ export function NumberInput(props: NumberInputProps) {
         min={0}
         {...(max ? { max } : {})}
         type="number"
+        // Error: https://github.com/facebook/react/issues/9402
+        // adding `+ ''` to convert number to string so that number don't have leading zero(0)
         value={value + ''}
         onChange={(e) => onValueChange(Number(e.target.value))}
         className={cn(

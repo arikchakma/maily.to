@@ -11,12 +11,12 @@ export function ShowView(props: NodeViewProps) {
     <NodeViewWrapper
       draggable="true"
       data-drag-handle=""
-      className="mly-rounded-md mly-border mly-border-gray-200"
+      className="mly-rounded-md mly-border mly-border-gray-100"
       data-type="for"
     >
       <div
         contentEditable={false}
-        className="mly-border-b mly-border-gray-200 mly-px-2 mly-py-1 mly-text-sm"
+        className="mly-border-b mly-border-gray-100 mly-px-2 mly-py-1 mly-text-sm"
       >
         <code contentEditable={false} className="mly-text-gray-400">
           {'<Show'}&nbsp;{`when="payload.`}
@@ -54,9 +54,9 @@ export function ShowView(props: NodeViewProps) {
           {`">`}
         </code>
       </div>
-      <NodeViewContent className="is-editable" />
+      <NodeViewContent className="is-editable mly-p-0.5 mly-px-1" />
       <div
-        className="mly-border-t mly-border-gray-200 mly-px-2 mly-py-1 mly-text-sm"
+        className="mly-border-t mly-border-gray-100 mly-px-2 mly-py-1 mly-text-sm"
         contentEditable={false}
       >
         <code className="mly-text-gray-400" contentEditable={false}>

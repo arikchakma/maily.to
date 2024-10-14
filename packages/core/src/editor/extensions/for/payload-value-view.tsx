@@ -58,7 +58,7 @@ export const PlayloadValueList = forwardRef((props: any, ref) => {
               index === selectedIndex ? 'mly-bg-gray-200' : 'mly-bg-white'
             )}
           >
-            {item}
+            #item.{item}
           </button>
         ))
       ) : (

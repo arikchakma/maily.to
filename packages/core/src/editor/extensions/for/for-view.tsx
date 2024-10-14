@@ -54,7 +54,7 @@ export function ForView(props: NodeViewProps) {
           {`">`}
         </code>
       </div>
-      <NodeViewContent className="is-editable" />
+      <NodeViewContent className="is-editable mly-p-0.5 mly-px-1" />
       <div
         className="mly-border-t mly-border-gray-100 mly-px-2 mly-py-1 mly-text-sm"
         contentEditable={false}

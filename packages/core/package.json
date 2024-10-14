@@ -46,9 +46,11 @@
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.2",
     "@tiptap/core": "^2.6.6",
     "@tiptap/extension-color": "^2.6.6",
     "@tiptap/extension-document": "^2.6.6",
+    "@tiptap/extension-dropcursor": "^2.8.0",
     "@tiptap/extension-focus": "^2.6.6",
     "@tiptap/extension-heading": "^2.6.6",
     "@tiptap/extension-horizontal-rule": "^2.6.6",

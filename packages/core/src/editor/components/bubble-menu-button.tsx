@@ -1,9 +1,12 @@
 import { BaseButton } from '@/editor/components/base-button';
 import { cn } from '@/editor/utils/classname';
 import { BubbleMenuItem } from './text-menu/text-bubble-menu';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export function BubbleMenuButton(item: BubbleMenuItem) {
-  return (
+  const { tooltip } = item;
+
+  const content = (
     <BaseButton
       variant="ghost"
       size="sm"
@@ -32,4 +35,15 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       )}
     </BaseButton>
   );
+
+  if (tooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent sideOffset={8}>{tooltip}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
 }

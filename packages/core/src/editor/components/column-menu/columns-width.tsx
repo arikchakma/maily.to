@@ -1,12 +1,16 @@
+import { forwardRef } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+
 type ColumnsWidthProps = {
   selectedValue: string;
   onValueChange: (value: string) => void;
+  tooltip?: string;
 };
 
 export function ColumnsWidth(props: ColumnsWidthProps) {
-  const { selectedValue, onValueChange } = props;
+  const { selectedValue, onValueChange, tooltip } = props;
 
-  return (
+  const content = (
     <label className="mly-relative mly-flex mly-items-center">
       <span className="mly-absolute mly-inset-y-0 mly-left-2 mly-flex mly-items-center mly-text-xs mly-leading-none mly-text-gray-400">
         W
@@ -21,4 +25,17 @@ export function ColumnsWidth(props: ColumnsWidthProps) {
       </select>
     </label>
   );
+
+  if (tooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{content}</span>
+        </TooltipTrigger>
+        <TooltipContent sideOffset={8}>{tooltip}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
 }

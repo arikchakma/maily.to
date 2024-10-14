@@ -16,6 +16,7 @@ import { BubbleMenuButton } from '../bubble-menu-button';
 import { ImageSize } from './image-size';
 import { Divider } from '../ui/divider';
 import { useImageState } from './use-image-state';
+import { TooltipProvider } from '../ui/tooltip';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -45,6 +46,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         }
       },
       icon: icons[index],
+      tooltip: alignment.charAt(0).toUpperCase() + alignment.slice(1),
     })
   );
 
@@ -85,6 +87,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
       icon: Link,
+      tooltip: 'Logo URL',
     },
     {
       name: 'image-url',
@@ -107,6 +110,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         editor?.commands.setNodeSelection(selection?.from || 0);
       },
       icon: Unlink,
+      tooltip: 'Image URL',
     },
     {
       name: 'image-external-url',
@@ -125,6 +129,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
         editor?.commands.updateAttributes('image', { externalLink: url || '' });
       },
       icon: ArrowUpRight,
+      tooltip: 'Image External URL',
     },
 
     ...sizeItems,
@@ -149,28 +154,38 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       {...bubbleMenuProps}
       className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
     >
-      {items
-        .filter((item) => item.shouldShow?.())
-        .map((item, index) => {
-          return <BubbleMenuButton key={index} {...item} />;
-        })}
+      <TooltipProvider>
+        {items
+          .filter((item) => item.shouldShow?.())
+          .map((item, index) => {
+            return (
+              <BubbleMenuButton
+                key={index}
+                className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+                iconClassName="mly-w-3 mly-h-3"
+                nameClassName="mly-text-xs"
+                {...item}
+              />
+            );
+          })}
 
-      <Divider />
-      <ImageSize
-        dimension="width"
-        value={state?.width ?? 0}
-        onValueChange={(value) => {
-          editor?.chain().updateAttributes('image', { width: value }).run();
-        }}
-      />
-      <Divider />
-      <ImageSize
-        dimension="height"
-        value={state?.height ?? 0}
-        onValueChange={(value) => {
-          editor?.chain().updateAttributes('image', { height: value }).run();
-        }}
-      />
+        <Divider />
+        <ImageSize
+          dimension="width"
+          value={state?.width ?? 0}
+          onValueChange={(value) => {
+            editor?.chain().updateAttributes('image', { width: value }).run();
+          }}
+        />
+        <Divider />
+        <ImageSize
+          dimension="height"
+          value={state?.height ?? 0}
+          onValueChange={(value) => {
+            editor?.chain().updateAttributes('image', { height: value }).run();
+          }}
+        />
+      </TooltipProvider>
     </BubbleMenu>
   );
 }

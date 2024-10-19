@@ -168,23 +168,32 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               />
             );
           })}
-
-        <Divider />
-        <ImageSize
-          dimension="width"
-          value={state?.width ?? 0}
-          onValueChange={(value) => {
-            editor?.chain().updateAttributes('image', { width: value }).run();
-          }}
-        />
-        <Divider />
-        <ImageSize
-          dimension="height"
-          value={state?.height ?? 0}
-          onValueChange={(value) => {
-            editor?.chain().updateAttributes('image', { height: value }).run();
-          }}
-        />
+        {state.isImageActive && (
+          <>
+            <Divider />
+            <ImageSize
+              dimension="width"
+              value={state?.width ?? 0}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', { width: value })
+                  .run();
+              }}
+            />
+            <Divider />
+            <ImageSize
+              dimension="height"
+              value={state?.height ?? 0}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', { height: value })
+                  .run();
+              }}
+            />
+          </>
+        )}
       </TooltipProvider>
     </BubbleMenu>
   );

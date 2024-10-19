@@ -58,6 +58,7 @@ export function SaveEmail() {
   );
 
   return (
+    // @ts-ignore
     <form action={action}>
       <input name="subject" type="hidden" value={subject} />
       <input name="json" type="hidden" value={JSON.stringify(json) || ''} />

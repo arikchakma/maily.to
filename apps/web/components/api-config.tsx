@@ -92,6 +92,7 @@ export function ApiConfiguration() {
             are saved in your browser.
           </DialogDescription>
         </DialogHeader>
+        {/* @ts-ignore */}
         <form action={action} className="mt-2 flex flex-col gap-2.5">
           <Label className="font-normal">
             <span className="w-20 after:ml-0.5 after:text-red-400 after:content-['*']">

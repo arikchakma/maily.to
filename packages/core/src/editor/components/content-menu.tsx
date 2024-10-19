@@ -37,7 +37,7 @@ export function ContentMenu(props: ContentMenuProps) {
   useEffect(() => {
     if (dragElement.current && !editor.isDestroyed) {
       pluginRef.current = DragHandlePlugin({
-        editor: editor,
+        editor,
         element: dragElement.current,
         pluginKey,
         tippyOptions: {

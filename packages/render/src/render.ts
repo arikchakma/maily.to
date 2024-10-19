@@ -12,5 +12,16 @@ export async function render(
   maily.setPreviewText(preview);
   maily.setTheme(theme || {});
 
+  maily.setPayloadValue('items', [
+    {
+      name: 'John Doe',
+    },
+    {
+      name: 'Novu',
+    },
+  ]);
+
+  maily.setPayloadValue('shouldShow', true);
+
   return maily.render(rest);
 }

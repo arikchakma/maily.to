@@ -7,5 +7,6 @@ module.exports = {
     '@typescript-eslint/no-unsafe-argument': 'off',
     'import/no-extraneous-dependencies': 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
   },
 };

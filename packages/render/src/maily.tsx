@@ -24,6 +24,8 @@ interface NodeOptions {
   parent?: JSONContent;
   prev?: JSONContent;
   next?: JSONContent;
+
+  payloadValue?: PayloadValue;
 }
 
 export interface MarkType {
@@ -232,6 +234,9 @@ export type VariableFormatter = (options: {
 export type VariableValues = Map<string, string>;
 export type LinkValues = Map<string, string>;
 
+export type PayloadValue = Record<string, any> | boolean;
+export type PayloadValues = Map<string, PayloadValue>;
+
 export class Maily {
   private readonly content: JSONContent;
   private config: MailyConfig = {
@@ -245,9 +250,10 @@ export class Maily {
   };
 
   private shouldReplaceVariableValues = false;
-  private variableValues: VariableValues = new Map<string, string>();
-  private linkValues: LinkValues = new Map<string, string>();
+  private variableValues: VariableValues = new Map();
+  private linkValues: LinkValues = new Map();
   private openTrackingPixel: string | undefined;
+  private payloadValues: PayloadValues = new Map();
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -312,6 +318,16 @@ export class Maily {
   setLinkValues(values: Record<string, string>) {
     Object.entries(values).forEach(([link, value]) => {
       this.setLinkValue(link, value);
+    });
+  }
+
+  setPayloadValue(key: string, value: PayloadValue) {
+    this.payloadValues.set(key, value);
+  }
+
+  setPayloadValues(values: Record<string, PayloadValue>) {
+    Object.entries(values).forEach(([key, value]) => {
+      this.setPayloadValue(key, value);
     });
   }
 
@@ -504,6 +520,12 @@ export class Maily {
     const isLastColumnElement = parent?.type === 'column' && !next;
     const isFirstColumnElement = parent?.type === 'column' && !prev;
 
+    const isFirstForElement = parent?.type === 'for' && !prev;
+    const isLastForElement = parent?.type === 'for' && !next;
+
+    const isFirstShowElement = parent?.type === 'show' && !prev;
+    const isLastShowElement = parent?.type === 'show' && !next;
+
     return {
       isNextSpacer,
       isPrevSpacer,
@@ -512,6 +534,23 @@ export class Maily {
       isParentListItem,
       isLastColumnElement,
       isFirstColumnElement,
+      isFirstForElement,
+      isLastForElement,
+      isFirstShowElement,
+      isLastShowElement,
+
+      shouldRemoveTopMargin:
+        isPrevSpacer ||
+        isFirstSectionElement ||
+        isFirstColumnElement ||
+        isFirstForElement ||
+        isFirstShowElement,
+      shouldRemoveBottomMargin:
+        isNextSpacer ||
+        isLastSectionElement ||
+        isLastColumnElement ||
+        isLastForElement ||
+        isLastShowElement,
     };
   }
 
@@ -576,31 +615,29 @@ export class Maily {
   private paragraph(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const alignment = attrs?.textAlign || 'left';
-    const {
-      isNextSpacer,
-      isLastSectionElement,
-      isParentListItem,
-      isLastColumnElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { isParentListItem, shouldRemoveBottomMargin } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <Text
         style={{
           textAlign: alignment,
           marginBottom:
-            isParentListItem ||
-            isNextSpacer ||
-            isLastSectionElement ||
-            isLastColumnElement
-              ? '0px'
-              : '20px',
+            isParentListItem || shouldRemoveBottomMargin ? '0px' : '20px',
           marginTop: '0px',
           fontSize: this.config.theme?.fontSize?.paragraph,
           color: this.config.theme?.colors?.paragraph,
           ...antialiased,
         }}
       >
-        {node.content ? this.getMappedContent(node) : <>&nbsp;</>}
+        {node.content ? (
+          this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })
+        ) : (
+          <>&nbsp;</>
+        )}
       </Text>
     );
   }
@@ -679,11 +716,12 @@ export class Maily {
   private heading(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
 
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
@@ -694,17 +732,17 @@ export class Maily {
         style={{
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0'
-              : '12px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '12px',
           marginTop: 0,
           fontSize,
           lineHeight,
           fontWeight,
         }}
       >
-        {this.getMappedContent(node, options)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </Heading>
     );
   }
@@ -739,23 +777,25 @@ export class Maily {
   }
 
   private orderedList(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Container>
         <ol
           style={{
             marginTop: '0px',
-            marginBottom:
-              isNextSpacer || isLastSectionElement || isLastColumnElement
-                ? '0'
-                : '20px',
+            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
         >
-          {this.getMappedContent(node)}
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
         </ol>
       </Container>
     );
@@ -763,11 +803,13 @@ export class Maily {
 
   private bulletList(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { parent, next } = options || {};
-    const { isLastSectionElement, isNextSpacer, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, {
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      {
         parent,
         next,
-      });
+      }
+    );
 
     return (
       <Container
@@ -778,15 +820,15 @@ export class Maily {
         <ul
           style={{
             marginTop: '0px',
-            marginBottom:
-              isLastSectionElement || isNextSpacer || isLastColumnElement
-                ? '0'
-                : '20px',
+            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
         >
-          {this.getMappedContent(node)}
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
         </ul>
       </Container>
     );
@@ -794,21 +836,15 @@ export class Maily {
 
   private listItem(node: JSONContent, options?: NodeOptions): JSX.Element {
     return (
-      <Container
+      <li
         style={{
-          maxWidth: '100%',
+          marginBottom: '8px',
+          paddingLeft: '6px',
+          ...antialiased,
         }}
       >
-        <li
-          style={{
-            marginBottom: '8px',
-            paddingLeft: '6px',
-            ...antialiased,
-          }}
-        >
-          {this.getMappedContent(node, { ...options, parent: node })}
-        </li>
-      </Container>
+        {this.getMappedContent(node, { ...options, parent: node })}
+      </li>
     );
   }
 
@@ -832,8 +868,10 @@ export class Maily {
       radius = '6px';
     }
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     const href =
       this.linkValues.get(url) || this.variableValues.get(url) || url;
@@ -843,10 +881,7 @@ export class Maily {
         style={{
           textAlign: alignment,
           maxWidth: '100%',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
       >
         <Button
@@ -899,17 +934,16 @@ export class Maily {
       alignment = 'left',
     } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Row
         style={{
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '32px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -939,11 +973,13 @@ export class Maily {
       externalLink = '',
     } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
-    const wi = width === 'auto' ? '100%' : (width as number);
-    const hei = height === 'auto' ? '100%' : (height as number);
+    const wi = width === 'auto' ? '100%' : `${Number(width)}px`;
+    const hei = height === 'auto' ? '100%' : `${Number(height)}px`;
 
     const mainImage = (
       <Img
@@ -952,10 +988,8 @@ export class Maily {
         style={{
           height: '100%',
           width: '100%',
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          maxWidth: `${wi}px`,
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          maxHeight: `${hei}px`,
+          maxWidth: wi,
+          maxHeight: hei,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -968,10 +1002,7 @@ export class Maily {
       <Row
         style={{
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '32px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
         <Column align={alignment}>
@@ -1000,8 +1031,10 @@ export class Maily {
     const { attrs } = node;
     const { textAlign = 'left' } = attrs || {};
 
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     return (
       <Text
@@ -1010,26 +1043,22 @@ export class Maily {
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
           color: this.config.theme?.colors?.footer,
           marginTop: '0px',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
           textAlign,
           ...antialiased,
         }}
       >
-        {this.getMappedContent(node)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </Text>
     );
   }
 
   private blockquote(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const {
-      isNextSpacer,
-      isPrevSpacer,
-      isLastSectionElement,
-      isLastColumnElement,
-    } = this.getMarginOverrideConditions(node, options);
+    const { isPrevSpacer, shouldRemoveBottomMargin } =
+      this.getMarginOverrideConditions(node, options);
 
     return (
       <blockquote
@@ -1041,13 +1070,13 @@ export class Maily {
           marginLeft: '0px',
           marginRight: '0px',
           marginTop: isPrevSpacer ? '0px' : '20px',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
       >
-        {this.getMappedContent(node)}
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
       </blockquote>
     );
   }
@@ -1070,8 +1099,10 @@ export class Maily {
   }
   private linkCard(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { isNextSpacer, isLastSectionElement, isLastColumnElement } =
-      this.getMarginOverrideConditions(node, options);
+    const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
+      node,
+      options
+    );
 
     const { title, description, link, linkTitle, image, badgeText, subTitle } =
       attrs || {};
@@ -1088,10 +1119,7 @@ export class Maily {
           textDecoration: 'none',
           color: 'inherit',
           display: 'block',
-          marginBottom:
-            isNextSpacer || isLastSectionElement || isLastColumnElement
-              ? '0px'
-              : '20px',
+          marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
         target="_blank"
       >
@@ -1317,8 +1345,7 @@ export class Maily {
     return (
       <Column
         style={{
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          width: `${width}%`,
+          width: `${Number(width)}%`,
           verticalAlign,
           margin: 0,
           borderColor,
@@ -1338,6 +1365,70 @@ export class Maily {
           parent: node,
         })}
       </Column>
+    );
+  }
+
+  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { each = '' } = attrs || {};
+
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+
+    const values = this.payloadValues.get(each) || payloadValue[each] || [];
+    if (!Array.isArray(values)) {
+      throw new Error(`Payload value for each "${each}" is not an array`);
+    }
+
+    return (
+      <>
+        {values.map((value) => {
+          return (
+            <Fragment key={generateKey()}>
+              {this.getMappedContent(node, {
+                ...options,
+                parent: node,
+                payloadValue: value,
+              })}
+            </Fragment>
+          );
+        })}
+      </>
+    );
+  }
+
+  private payloadValue(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { id: key } = node.attrs || {};
+    const { payloadValue } = options || {};
+    if (payloadValue === undefined || !key) {
+      return <></>;
+    }
+
+    const value =
+      typeof payloadValue === 'object' ? payloadValue[key] : payloadValue;
+    return <>{value}</>;
+  }
+
+  private show(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    const { when = '' } = attrs || {};
+
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+
+    const value = this.payloadValues.get(when) || payloadValue[when];
+
+    if (!value) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {this.getMappedContent(node, {
+          ...options,
+          parent: node,
+        })}
+      </>
     );
   }
 }

@@ -34,7 +34,13 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
     >
       {items.map((item, index) => (
-        <BubbleMenuButton key={index} {...item} />
+        <BubbleMenuButton
+          key={index}
+          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+          iconClassName="mly-w-3 mly-h-3"
+          nameClassName="mly-text-xs"
+          {...item}
+        />
       ))}
     </BubbleMenu>
   );

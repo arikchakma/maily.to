@@ -18,6 +18,7 @@ import { BaseButton } from '../base-button';
 import { useTextMenuState } from './use-text-menu-state';
 import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
+import { TooltipProvider } from '../ui/tooltip';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -29,6 +30,8 @@ export interface BubbleMenuItem {
   iconClassName?: string;
   nameClassName?: string;
   disbabled?: boolean;
+
+  tooltip?: string;
 }
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {
@@ -55,6 +58,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
         }
       },
       icon: icons[index],
+      tooltip: alignment.charAt(0).toUpperCase() + alignment.slice(1),
     })
   );
 
@@ -64,24 +68,28 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       isActive: () => editor?.isActive('bold')!,
       command: () => editor?.chain().focus().toggleBold().run()!,
       icon: BoldIcon,
+      tooltip: 'Bold',
     },
     {
       name: 'italic',
       isActive: () => editor?.isActive('italic')!,
       command: () => editor?.chain().focus().toggleItalic().run()!,
       icon: ItalicIcon,
+      tooltip: 'Italic',
     },
     {
       name: 'underline',
       isActive: () => editor?.isActive('underline')!,
       command: () => editor?.chain().focus().toggleUnderline().run()!,
       icon: UnderlineIcon,
+      tooltip: 'Underline',
     },
     {
       name: 'strike',
       isActive: () => editor?.isActive('strike')!,
       command: () => editor?.chain().focus().toggleStrike().run()!,
       icon: StrikethroughIcon,
+      tooltip: 'Strikethrough',
     },
     ...alignmentItems,
     {
@@ -89,6 +97,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       isActive: () => editor?.isActive('code')!,
       command: () => editor?.chain().focus().toggleCode().run()!,
       icon: CodeIcon,
+      tooltip: 'Code',
     },
     {
       name: 'link',
@@ -118,6 +127,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       },
       isActive: () => editor?.isActive('link')!,
       icon: LinkIcon,
+      tooltip: 'Link',
     },
   ];
 
@@ -170,27 +180,40 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       {...bubbleMenuProps}
       className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
     >
-      {items.map((item, index) => (
-        <BubbleMenuButton key={index} {...item} />
-      ))}
-      <ColorPicker
-        color={state.currentTextColor}
-        onColorChange={(color) => {
-          editor?.chain().setColor(color).run();
-        }}
-      >
-        <BaseButton variant="ghost" size="sm" type="button">
-          <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
-            <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
-              A
-            </span>
-            <div
-              className="mly-h-[2px] mly-w-3"
-              style={{ backgroundColor: state.currentTextColor }}
-            />
-          </div>
-        </BaseButton>
-      </ColorPicker>
+      <TooltipProvider>
+        {items.map((item, index) => (
+          <BubbleMenuButton
+            key={index}
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+            iconClassName="mly-w-3 mly-h-3"
+            {...item}
+          />
+        ))}
+        <ColorPicker
+          color={state.currentTextColor}
+          onColorChange={(color) => {
+            editor?.chain().setColor(color).run();
+          }}
+          tooltip="Text Color"
+        >
+          <BaseButton
+            variant="ghost"
+            size="sm"
+            type="button"
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+          >
+            <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
+              <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
+                A
+              </span>
+              <div
+                className="mly-h-[2px] mly-w-3"
+                style={{ backgroundColor: state.currentTextColor }}
+              />
+            </div>
+          </BaseButton>
+        </ColorPicker>
+      </TooltipProvider>
     </BubbleMenu>
   );
 }

@@ -10,6 +10,7 @@ import Heading from '@tiptap/extension-heading';
 import Underline from '@tiptap/extension-underline';
 import Document from '@tiptap/extension-document';
 import Focus from '@tiptap/extension-focus';
+import Dropcursor from '@tiptap/extension-dropcursor';
 
 import { HorizontalRule } from './horizontal-rule';
 import { ButtonExtension } from './button-extension';
@@ -25,6 +26,11 @@ import { LinkCardExtension } from './link-card';
 import { Columns } from './columns/columns';
 import { Column } from './columns/column';
 import { Section } from './section/section';
+import { ForExtension } from './for/for';
+import { PayloadValueExtension } from './for/payload-value';
+import { getPlayloadValueSuggestions } from './for/payload-value-view';
+import { TrailingNode } from './tailing-node/tailing-node';
+import { ShowExtension } from './show/show';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -41,23 +47,20 @@ export function extensions(props: ExtensionsProps) {
       heading: {
         levels: [1, 2, 3],
       },
-      dropcursor: {
-        color: '#555',
-        width: 3,
-      },
       code: {
         HTMLAttributes: {
           class:
             'mly-px-1 mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
         },
       },
-      horizontalRule: false,
       blockquote: {
         HTMLAttributes: {
           class:
             'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4',
         },
       },
+      horizontalRule: false,
+      dropcursor: false,
       document: false,
     }),
     Underline,
@@ -71,9 +74,9 @@ export function extensions(props: ExtensionsProps) {
         if (node.type.name === 'heading') {
           return `Heading ${node.attrs.level}`;
         } else if (
-          node.type.name === 'columns' ||
-          node.type.name === 'column' ||
-          node.type.name === 'section'
+          ['columns', 'column', 'section', 'for', 'show'].includes(
+            node.type.name
+          )
         ) {
           return '';
         }
@@ -102,5 +105,15 @@ export function extensions(props: ExtensionsProps) {
     LinkCardExtension,
     Focus,
     Section,
+    ForExtension,
+    PayloadValueExtension.configure({
+      suggestion: getPlayloadValueSuggestions([]),
+    }),
+    ShowExtension,
+    Dropcursor.configure({
+      color: '#555',
+      width: 3,
+      class: 'ProseMirror-dropcursor',
+    }),
   ];
 }

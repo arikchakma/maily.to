@@ -27,6 +27,8 @@ import {
   ArrowUpRightSquare,
   ColumnsIcon,
   SectionIcon,
+  Repeat2,
+  EyeIcon,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -181,6 +183,54 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     },
   },
   {
+    title: 'Columns',
+    description: 'Add columns to email.',
+    searchTerms: ['layout', 'columns'],
+    icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
+    shouldBeHidden: (editor) => {
+      return editor.isActive('columns');
+    },
+    command: ({ editor, range }: CommandProps) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .setColumns()
+        .focus(editor.state.selection.head - 2)
+        .run();
+    },
+  },
+  {
+    title: 'Section',
+    description: 'Add a section to email.',
+    searchTerms: ['layout', 'section'],
+    icon: <SectionIcon className="mly-h-4 mly-w-4" />,
+    shouldBeHidden: (editor) => {
+      return editor.isActive('section') || editor.isActive('columns');
+    },
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setSection().run();
+    },
+  },
+  {
+    title: 'For',
+    description: 'Loop over an array of items.',
+    searchTerms: ['for', 'loop'],
+    icon: <Repeat2 className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setFor().run();
+    },
+  },
+  // {
+  //   title: 'Show',
+  //   description: 'Show when a condition is true.',
+  //   searchTerms: ['show', 'if'],
+  //   icon: <EyeIcon className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setShow().run();
+  //   },
+  // },
+  {
     title: 'Spacer',
     description:
       'Add a spacer to email. Useful for adding space between sections.',
@@ -247,30 +297,6 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     icon: <EraserIcon className="mly-h-4 mly-w-4" />,
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().selectParentNode().deleteSelection().run();
-    },
-  },
-  {
-    title: 'Columns',
-    description: 'Add columns to email.',
-    searchTerms: ['layout', 'columns'],
-    icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .setColumns()
-        .focus(editor.state.selection.head - 1)
-        .run();
-    },
-  },
-  {
-    title: 'Section',
-    description: 'Add a section to email.',
-    searchTerms: ['layout', 'section'],
-    icon: <SectionIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setSection().run();
     },
   },
 ];
@@ -415,10 +441,15 @@ export function getSlashCommandSuggestions(
   commands: SlashCommandItem[] = []
 ): Omit<SuggestionOptions, 'editor'> {
   return {
-    items: ({ query }) => {
+    items: ({ query, editor }) => {
       return [...DEFAULT_SLASH_COMMANDS, ...commands].filter((item) => {
         if (typeof query === 'string' && query.length > 0) {
           const search = query.toLowerCase();
+
+          if (item?.shouldBeHidden?.(editor)) {
+            return false;
+          }
+
           return (
             item.title.toLowerCase().includes(search) ||
             item.description.toLowerCase().includes(search) ||

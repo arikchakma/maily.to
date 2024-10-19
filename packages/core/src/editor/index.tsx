@@ -13,7 +13,7 @@ import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
-import { EdgeSpacingControl } from './components/ui/edge-spacing-controls';
+import { ContentMenu } from './components/content-menu';
 
 // prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;
@@ -139,6 +139,7 @@ export function Editor(props: EditorProps) {
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ContentMenu editor={editor} pluginKey="mly-content-menu" />
         </div>
       </div>
     </MailyProvider>

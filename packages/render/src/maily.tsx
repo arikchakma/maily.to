@@ -716,7 +716,6 @@ export class Maily {
   private heading(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
 
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     const level = `h${Number(attrs?.level) || 1}`;
     const alignment = attrs?.textAlign || 'left';
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
@@ -979,8 +978,8 @@ export class Maily {
       options
     );
 
-    const wi = width === 'auto' ? '100%' : (width as number);
-    const hei = height === 'auto' ? '100%' : (height as number);
+    const wi = width === 'auto' ? '100%' : `${Number(width)}px`;
+    const hei = height === 'auto' ? '100%' : `${Number(height)}px`;
 
     const mainImage = (
       <Img
@@ -989,10 +988,8 @@ export class Maily {
         style={{
           height: '100%',
           width: '100%',
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          maxWidth: `${wi}px`,
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          maxHeight: `${hei}px`,
+          maxWidth: wi,
+          maxHeight: hei,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
@@ -1348,8 +1345,7 @@ export class Maily {
     return (
       <Column
         style={{
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          width: `${width}%`,
+          width: `${Number(width)}%`,
           verticalAlign,
           margin: 0,
           borderColor,
@@ -1381,7 +1377,6 @@ export class Maily {
 
     const values = this.payloadValues.get(each) || payloadValue[each] || [];
     if (!Array.isArray(values)) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       throw new Error(`Payload value for each "${each}" is not an array`);
     }
 

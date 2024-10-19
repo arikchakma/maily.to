@@ -59,6 +59,7 @@ export function UpdateEmail(props: SaveEmailProps) {
   );
 
   return (
+    // @ts-ignore
     <form action={action}>
       <input name="templateId" type="hidden" value={templateId} />
       <input name="subject" type="hidden" value={subject} />

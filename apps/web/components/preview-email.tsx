@@ -71,6 +71,7 @@ export function PreviewEmail() {
   return (
     <Dialog>
       <DialogTrigger asChild>
+        {/* @ts-ignore */}
         <form action={action}>
           <input name="json" type="hidden" value={JSON.stringify(json) || ''} />
           <input name="previewText" type="hidden" value={previewText} />

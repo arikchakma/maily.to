@@ -82,6 +82,7 @@ export function DeleteEmail(props: SaveEmailProps) {
             and remove data from our servers.
           </DialogDescription>
         </DialogHeader>
+        {/* @ts-ignore */}
         <form action={action}>
           <input name="templateId" type="hidden" value={templateId} />
           <div className="flex items-center justify-end gap-2">

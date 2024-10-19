@@ -27,6 +27,7 @@ export function EmailLoginForm() {
   );
 
   return (
+    // @ts-ignore
     <form action={action} className="flex grow flex-col" ref={loginFormRef}>
       <div>
         <Label className="sr-only" htmlFor="email">

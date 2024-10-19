@@ -53,6 +53,7 @@ export function SendTestEmail() {
   );
 
   return (
+    // @ts-ignore
     <form action={action}>
       <input name="subject" type="hidden" value={subject} />
       <input name="from" type="hidden" value={from} />

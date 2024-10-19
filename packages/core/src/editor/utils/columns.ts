@@ -101,8 +101,9 @@ export function addColumn(editor: Editor) {
   );
 
   // Calculate the position of the new column by adding the new column's position
-  // 2 is the offset for the column node
-  const textSelection = TextSelection.create(transaction.doc, newColumnPos + 2);
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(newColumnPos)
+  );
   transaction.setSelection(textSelection);
 
   dispatch(transaction);
@@ -172,8 +173,9 @@ export function removeColumn(editor: Editor) {
   );
 
   // Calculate the position of the new column by adding the new column's position
-  // 2 is the offset for the column node
-  const textSelection = TextSelection.create(transaction.doc, newColumnPos + 2);
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(newColumnPos)
+  );
   transaction.setSelection(textSelection);
 
   dispatch(transaction);

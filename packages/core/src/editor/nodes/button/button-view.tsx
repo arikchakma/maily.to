@@ -125,7 +125,7 @@ export function ButtonView(props: NodeViewProps) {
                   }}
                   className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
                 />
-                <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
+                <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
                   <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
                 </div>
               </label>

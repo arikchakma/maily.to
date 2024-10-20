@@ -13,7 +13,7 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       onClick={item.command}
       data-state={item?.isActive?.()}
       className={cn(
-        'mly-px-2.5 disabled:mly-cursor-not-allowed',
+        '!mly-size-7 mly-px-2.5 disabled:mly-cursor-not-allowed',
         item?.className
       )}
       type="button"
@@ -21,7 +21,10 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
     >
       {item.icon ? (
         <item.icon
-          className={cn('shrink-0 mly-h-3.5 mly-w-3.5', item?.iconClassName)}
+          className={cn(
+            'mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]',
+            item?.iconClassName
+          )}
         />
       ) : (
         <span

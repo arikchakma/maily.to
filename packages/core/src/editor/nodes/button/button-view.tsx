@@ -9,12 +9,17 @@ import { NodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import {
   AllowedButtonBorderRadius,
   allowedButtonBorderRadius,
+  AllowedButtonVariant,
   allowedButtonVariant,
 } from './button';
-import { Input } from '@/editor/components/input';
-import { AlignLeft, Pencil } from 'lucide-react';
+import { AlignLeft, Pencil, AlignRight, AlignCenter } from 'lucide-react';
 import { Divider } from '@/editor/components/ui/divider';
 import { BubbleMenuButton } from '@/editor/components/bubble-menu-button';
+import { AllowedLogoAlignment } from '../logo';
+import { TooltipProvider } from '@/editor/components/ui/tooltip';
+import { ColorPicker } from '@/editor/components/ui/color-picker';
+import { BaseButton } from '@/editor/components/base-button';
+import { LinkInputPopover } from '@/editor/components/ui/link-input-popover';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
@@ -25,7 +30,38 @@ export function ButtonView(props: NodeViewProps) {
     borderRadius: _radius,
     buttonColor,
     textColor,
+    url: externalLink,
   } = node.attrs;
+
+  const alignOptions = {
+    left: {
+      icon: AlignLeft,
+      tooltip: 'Align Left',
+      command: () => {
+        updateAttributes({
+          alignment: 'center',
+        });
+      },
+    },
+    center: {
+      icon: AlignCenter,
+      tooltip: 'Align Center',
+      command: () => {
+        updateAttributes({
+          alignment: 'right',
+        });
+      },
+    },
+    right: {
+      icon: AlignRight,
+      tooltip: 'Align Right',
+      command: () => {
+        updateAttributes({
+          alignment: 'left',
+        });
+      },
+    },
+  }[alignment as AllowedLogoAlignment];
 
   return (
     <NodeViewWrapper
@@ -71,71 +107,167 @@ export function ButtonView(props: NodeViewProps) {
         </PopoverTrigger>
         <PopoverContent
           align="end"
+          side="top"
           className="mly-w-max mly-rounded-lg !mly-p-0.5"
           sideOffset={10}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <div className="mly-flex mly-items-stretch mly-text-red-400">
-            <div className="relative">
-              <input
-                value={text}
-                onChange={(e) => {
-                  updateAttributes({
-                    text: e.target.value,
-                  });
-                }}
-                className="mly-h-7 mly-max-w-24 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-              />
-              <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                <Pencil className="mly-h-3 mly-w-3 mly-text-midnight-gray" />
+          <TooltipProvider>
+            <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
+              <label className="relative">
+                <input
+                  value={text}
+                  onChange={(e) => {
+                    updateAttributes({
+                      text: e.target.value,
+                    });
+                  }}
+                  className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+                />
+                <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
+                  <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+                </div>
+              </label>
+
+              <Divider />
+
+              <div className="mly-flex mly-space-x-0.5">
+                <Select
+                  label="Border Radius"
+                  value={_radius}
+                  options={allowedButtonBorderRadius.map((value) => ({
+                    value,
+                    label: value,
+                  }))}
+                  onValueChange={(value) => {
+                    updateAttributes({
+                      borderRadius: value,
+                    });
+                  }}
+                  tooltip="Border Radius"
+                />
+
+                <Select
+                  label="Style"
+                  value={variant}
+                  options={allowedButtonVariant.map((value) => ({
+                    value,
+                    label: value,
+                  }))}
+                  onValueChange={(value) => {
+                    updateAttributes({
+                      variant: value,
+                    });
+                  }}
+                  tooltip="Style"
+                />
+              </div>
+
+              <Divider />
+
+              <div className="mly-flex mly-space-x-0.5">
+                <BubbleMenuButton
+                  icon={alignOptions.icon}
+                  tooltip={alignOptions.tooltip}
+                  command={alignOptions.command}
+                />
+                <LinkInputPopover
+                  defaultValue={externalLink || ''}
+                  onValueChange={(value) => {
+                    updateAttributes({
+                      url: value,
+                    });
+                  }}
+                />
+              </div>
+
+              <Divider />
+
+              <div className="mly-flex mly-space-x-0.5">
+                <BackgroundColorPickerPopup
+                  variant={variant}
+                  color={buttonColor}
+                  onChange={(color) => {
+                    updateAttributes({
+                      buttonColor: color,
+                    });
+                  }}
+                />
+
+                <TextColorPickerPopup
+                  color={textColor}
+                  onChange={(color) => {
+                    updateAttributes({
+                      textColor: color,
+                    });
+                  }}
+                />
               </div>
             </div>
-
-            <Divider />
-
-            <div className="mly-flex mly-space-x-0.5">
-              <Select
-                label="Border Radius"
-                value={_radius}
-                options={allowedButtonBorderRadius.map((value) => ({
-                  value,
-                  label: value,
-                }))}
-                onValueChange={(value) => {
-                  updateAttributes({
-                    borderRadius: value,
-                  });
-                }}
-              />
-
-              <Select
-                label="Style"
-                value={variant}
-                options={allowedButtonVariant.map((value) => ({
-                  value,
-                  label: value,
-                }))}
-                onValueChange={(value) => {
-                  updateAttributes({
-                    variant: value,
-                  });
-                }}
-              />
-            </div>
-
-            <Divider />
-
-            <div className="mly-flex mly-space-x-0.5">
-            <BubbleMenuButton
-              icon={AlignLeft}
-             tooltip='Align Left'
-             
-              />
-            </div>
-          </div>
+          </TooltipProvider>
         </PopoverContent>
       </Popover>
     </NodeViewWrapper>
+  );
+}
+
+type ColorPickerProps = {
+  variant?: AllowedButtonVariant;
+  color: string;
+  onChange: (color: string) => void;
+};
+
+function BackgroundColorPickerPopup(props: ColorPickerProps) {
+  const { color, onChange, variant } = props;
+
+  return (
+    <ColorPicker
+      color={color}
+      onColorChange={onChange}
+      tooltip="Background Color"
+    >
+      <BaseButton
+        variant="ghost"
+        size="sm"
+        type="button"
+        className="mly-size-7"
+      >
+        <div
+          className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded-full mly-shadow"
+          style={{
+            backgroundColor: variant === 'filled' ? color : 'transparent',
+            borderStyle: 'solid',
+            borderWidth: 2,
+            borderColor: variant === 'filled' ? 'white' : color,
+          }}
+        />
+      </BaseButton>
+    </ColorPicker>
+  );
+}
+
+function TextColorPickerPopup(props: ColorPickerProps) {
+  const { color, onChange } = props;
+
+  return (
+    <ColorPicker color={color} onColorChange={onChange} tooltip="Text Color">
+      <BaseButton
+        variant="ghost"
+        size="sm"
+        type="button"
+        className="mly-size-7"
+      >
+        <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
+          <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-midnight-gray">
+            A
+          </span>
+          <div
+            className="mly-h-[2px] mly-w-3 mly-shrink-0 mly-rounded-md mly-shadow"
+            style={{ backgroundColor: color }}
+          />
+        </div>
+      </BaseButton>
+    </ColorPicker>
   );
 }

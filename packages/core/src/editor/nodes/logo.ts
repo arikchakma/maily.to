@@ -16,6 +16,7 @@ interface LogoOptions {
 }
 
 interface LogoAttributes {
+  src?: string;
   size?: AllowedLogoSize;
   alignment?: AllowedLogoAlignment;
 }
@@ -36,7 +37,7 @@ export interface TiptapLogoAttributes {
 }
 
 const DEFAULT_ALIGNMENT: AllowedLogoAlignment = 'left';
-const DEFAULT_SIZE: AllowedLogoSize = 'sm';
+export const DEFAULT_LOGO_SIZE: AllowedLogoSize = 'sm';
 
 function getSizeStyle(size: TiptapLogoAttributes['size']): string[] {
   const sizes: Record<AllowedLogoSize, string> = {
@@ -45,8 +46,8 @@ function getSizeStyle(size: TiptapLogoAttributes['size']): string[] {
     lg: '64px',
   };
   return [
-    `height:${sizes[size] || sizes[DEFAULT_SIZE]}`,
-    `width:${sizes[size] || sizes[DEFAULT_SIZE]}`,
+    `height:${sizes[size] || sizes[DEFAULT_LOGO_SIZE]}`,
+    `width:${sizes[size] || sizes[DEFAULT_LOGO_SIZE]}`,
   ];
 }
 
@@ -78,7 +79,7 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
           element.getAttribute('data-maily-component'),
       },
       size: {
-        default: DEFAULT_SIZE,
+        default: DEFAULT_LOGO_SIZE,
         parseHTML: (element) =>
           element.getAttribute('data-size') as AllowedLogoSize,
         renderHTML: (attributes) => {

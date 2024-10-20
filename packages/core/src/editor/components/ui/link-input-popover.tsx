@@ -1,37 +1,58 @@
-import { ArrowUpRight, Link } from 'lucide-react';
+import { ArrowUpRight, Link, LucideIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
+import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
 
 type LinkInputPopoverProps = {
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+
+  icon?: LucideIcon;
+  tooltip?: string;
 };
 
 export function LinkInputPopover(props: LinkInputPopoverProps) {
-  const { defaultValue = '', onValueChange } = props;
+  const {
+    defaultValue = '',
+    onValueChange,
+    tooltip,
+    icon: Icon = Link,
+  } = props;
 
   const [isOpen, setIsOpen] = useState(false);
   const linkInputRef = useRef<HTMLInputElement>(null);
 
+  const popoverButton = (
+    <PopoverTrigger asChild>
+      <BaseButton
+        variant="ghost"
+        size="sm"
+        type="button"
+        className="mly-size-7"
+        data-state={!!defaultValue}
+      >
+        <Icon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-midnight-gray" />
+      </BaseButton>
+    </PopoverTrigger>
+  );
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <BaseButton
-          variant="ghost"
-          size="sm"
-          type="button"
-          className="mly-size-7"
-          data-state={!!defaultValue}
-        >
-          <Link className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-midnight-gray" />
-        </BaseButton>
-      </PopoverTrigger>
+      {tooltip ? (
+        <Tooltip>
+          <TooltipTrigger asChild>{popoverButton}</TooltipTrigger>
+          <TooltipContent sideOffset={8}>{tooltip}</TooltipContent>
+        </Tooltip>
+      ) : (
+        popoverButton
+      )}
+
       <PopoverContent
         align="end"
         side="top"
         className="mly-w-max mly-rounded-lg !mly-p-0.5"
-        sideOffset={10}
+        sideOffset={8}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <form

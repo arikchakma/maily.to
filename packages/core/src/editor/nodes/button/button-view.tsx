@@ -1,25 +1,23 @@
+import { AlignmentSwitch } from '@/editor/components/alignment-switch';
+import { BaseButton } from '@/editor/components/base-button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/editor/components/popover';
+import { ColorPicker } from '@/editor/components/ui/color-picker';
+import { Divider } from '@/editor/components/ui/divider';
+import { LinkInputPopover } from '@/editor/components/ui/link-input-popover';
 import { Select } from '@/editor/components/ui/select';
+import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { cn } from '@/editor/utils/classname';
-import { NodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
+import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
+import { Pencil } from 'lucide-react';
 import {
-  AllowedButtonBorderRadius,
   allowedButtonBorderRadius,
   AllowedButtonVariant,
   allowedButtonVariant,
 } from './button';
-import { AlignLeft, Pencil, AlignRight, AlignCenter } from 'lucide-react';
-import { Divider } from '@/editor/components/ui/divider';
-import { BubbleMenuButton } from '@/editor/components/bubble-menu-button';
-import { AllowedLogoAlignment } from '../logo';
-import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import { ColorPicker } from '@/editor/components/ui/color-picker';
-import { BaseButton } from '@/editor/components/base-button';
-import { LinkInputPopover } from '@/editor/components/ui/link-input-popover';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
@@ -32,36 +30,6 @@ export function ButtonView(props: NodeViewProps) {
     textColor,
     url: externalLink,
   } = node.attrs;
-
-  const alignOptions = {
-    left: {
-      icon: AlignLeft,
-      tooltip: 'Align Left',
-      command: () => {
-        updateAttributes({
-          alignment: 'center',
-        });
-      },
-    },
-    center: {
-      icon: AlignCenter,
-      tooltip: 'Align Center',
-      command: () => {
-        updateAttributes({
-          alignment: 'right',
-        });
-      },
-    },
-    right: {
-      icon: AlignRight,
-      tooltip: 'Align Right',
-      command: () => {
-        updateAttributes({
-          alignment: 'left',
-        });
-      },
-    },
-  }[alignment as AllowedLogoAlignment];
 
   return (
     <NodeViewWrapper
@@ -146,6 +114,7 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Border Radius"
+                  className="mly-capitalize"
                 />
 
                 <Select
@@ -161,17 +130,22 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Style"
+                  className="mly-capitalize"
                 />
               </div>
 
               <Divider />
 
               <div className="mly-flex mly-space-x-0.5">
-                <BubbleMenuButton
-                  icon={alignOptions.icon}
-                  tooltip={alignOptions.tooltip}
-                  command={alignOptions.command}
+                <AlignmentSwitch
+                  alignment={alignment}
+                  onAlignmentChange={(alignment) => {
+                    updateAttributes({
+                      alignment,
+                    });
+                  }}
                 />
+
                 <LinkInputPopover
                   defaultValue={externalLink || ''}
                   onValueChange={(value) => {
@@ -179,6 +153,7 @@ export function ButtonView(props: NodeViewProps) {
                       url: value,
                     });
                   }}
+                  tooltip="Update External Link"
                 />
               </div>
 

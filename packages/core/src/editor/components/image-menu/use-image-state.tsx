@@ -1,4 +1,4 @@
-import { DEFAULT_SECTION_BACKGROUND_COLOR } from '@/editor/extensions/section/section';
+import { DEFAULT_SECTION_BACKGROUND_COLOR } from '@/editor/nodes/section/section';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 

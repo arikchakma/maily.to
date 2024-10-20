@@ -8,9 +8,6 @@ import { useColumnsState } from './use-columns-state';
 import { ColumnsWidth } from './columns-width';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import {
-  AlignCenter,
-  AlignLeft,
-  AlignRight,
   AlignVerticalDistributeCenter,
   AlignVerticalDistributeEnd,
   AlignVerticalDistributeStart,
@@ -24,7 +21,6 @@ import { Divider } from '../ui/divider';
 import { addColumn, removeColumn } from '@/editor/utils/columns';
 import { NumberInput } from '../ui/number-input';
 import { ColorPicker } from '../ui/color-picker';
-import { BaseButton } from '../base-button';
 import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
 import { TooltipProvider } from '../ui/tooltip';
 

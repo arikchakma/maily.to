@@ -24,9 +24,9 @@ export interface ButtonOptions {
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    button: {
-      setButton: () => ReturnType;
-    };
+    // button: {
+    //   setButton: () => ReturnType;
+    // };
   }
 }
 

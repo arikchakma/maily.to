@@ -44,7 +44,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const Section = Node.create({
+export const SectionExtension = Node.create({
   name: 'section',
   group: 'block',
   content: '(block|columns)+',

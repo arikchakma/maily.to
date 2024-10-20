@@ -17,7 +17,10 @@ export function getRenderContainer(editor: Editor, nodeType: string) {
     (element &&
       element.getAttribute('data-type') &&
       element.getAttribute('data-type') === nodeType) ||
-    (element && element.classList && element.classList.contains(nodeType))
+    (element &&
+      element.classList &&
+      (element.classList.contains(nodeType) ||
+        element.classList.contains(`node-${nodeType}`)))
   ) {
     return element;
   }

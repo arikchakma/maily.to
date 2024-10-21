@@ -13,7 +13,6 @@ import Focus from '@tiptap/extension-focus';
 import Dropcursor from '@tiptap/extension-dropcursor';
 
 import { HorizontalRule } from './horizontal-rule';
-import { ButtonExtension } from './button-extension';
 import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
@@ -23,14 +22,14 @@ import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
-import { Columns } from './columns/columns';
-import { Column } from './columns/column';
-import { Section } from './section/section';
-import { ForExtension } from './for/for';
-import { PayloadValueExtension } from './for/payload-value';
-import { getPlayloadValueSuggestions } from './for/payload-value-view';
-import { TrailingNode } from './tailing-node/tailing-node';
-import { ShowExtension } from './show/show';
+import { Columns } from '../nodes/columns/columns';
+import { Column } from '../nodes/columns/column';
+import { SectionExtension } from '../nodes/section/section';
+import { ForExtension } from '../nodes/for/for';
+import { PayloadValueExtension } from '../nodes/for/payload-value';
+import { getPlayloadValueSuggestions } from '../nodes/for/payload-value-view';
+import { ShowExtension } from '../nodes/show/show';
+import { ButtonExtension } from '../nodes/button/button';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -100,11 +99,10 @@ export function extensions(props: ExtensionsProps) {
       },
       openOnClick: false,
     }),
-    ButtonExtension,
     ResizableImageExtension,
     LinkCardExtension,
     Focus,
-    Section,
+    SectionExtension,
     ForExtension,
     PayloadValueExtension.configure({
       suggestion: getPlayloadValueSuggestions([]),
@@ -115,5 +113,6 @@ export function extensions(props: ExtensionsProps) {
       width: 3,
       class: 'ProseMirror-dropcursor',
     }),
+    ButtonExtension,
   ];
 }

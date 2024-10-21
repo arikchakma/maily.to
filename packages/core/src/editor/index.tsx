@@ -15,7 +15,6 @@ import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 
-// prettier-ignore
 type ParitialMailContextType = Partial<MailyContextType>;
 
 export type EditorProps = {

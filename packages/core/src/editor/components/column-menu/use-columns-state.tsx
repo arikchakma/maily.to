@@ -4,7 +4,7 @@ import {
   DEFAULT_COLUMN_BORDER_RADIUS,
   DEFAULT_COLUMN_BORDER_WIDTH,
   DEFAULT_COLUMN_PADDING,
-} from '@/editor/extensions/columns/column';
+} from '@/editor/nodes/columns/column';
 import { getColumnCount } from '@/editor/utils/columns';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';

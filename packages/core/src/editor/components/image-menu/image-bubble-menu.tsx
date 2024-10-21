@@ -1,139 +1,20 @@
+import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo';
 import { BubbleMenu } from '@tiptap/react';
-import {
-  AlignCenterIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
-  ArrowUpRight,
-  Link,
-  Unlink,
-} from 'lucide-react';
-import {
-  BubbleMenuItem,
-  EditorBubbleMenuProps,
-} from '../text-menu/text-bubble-menu';
-import { allowedLogoAlignment, allowedLogoSize } from '@/editor/nodes/logo';
-import { BubbleMenuButton } from '../bubble-menu-button';
-import { ImageSize } from './image-size';
+import { ArrowUpRight } from 'lucide-react';
+import { AlignmentSwitch } from '../alignment-switch';
+import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
-import { useImageState } from './use-image-state';
+import { LinkInputPopover } from '../ui/link-input-popover';
+import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
+import { ImageSize } from './image-size';
+import { useImageState } from './use-image-state';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
   if (!editor) {
     return null;
   }
-
-  const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
-
-  const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
-    (alignment, index) => ({
-      name: alignment,
-      isActive: () =>
-        editor?.isActive('logo', { alignment })! ||
-        editor?.isActive('image', { alignment })!,
-      shouldShow: () => editor?.isActive('logo')! || editor?.isActive('image')!,
-      command: () => {
-        const isCurrentNodeLogo = editor?.isActive('logo')!;
-        if (isCurrentNodeLogo) {
-          props?.editor?.chain().focus().setLogoAttributes({ alignment }).run();
-        } else {
-          props?.editor
-            ?.chain()
-            .focus()
-            .updateAttributes('image', { alignment })
-            .run();
-        }
-      },
-      icon: icons[index],
-      tooltip: alignment.charAt(0).toUpperCase() + alignment.slice(1),
-    })
-  );
-
-  const sizeItems: BubbleMenuItem[] = allowedLogoSize.map((size) => ({
-    name: size,
-    isActive: () => props?.editor?.isActive('logo', { size })!,
-    shouldShow: () => editor?.isActive('logo')!,
-    command: () => {
-      props?.editor?.chain().focus().setLogoAttributes({ size }).run();
-    },
-  }));
-
-  const items: BubbleMenuItem[] = [
-    ...alignmentItems,
-    {
-      name: 'url',
-      isActive: () => false,
-      shouldShow: () => editor?.isActive('logo')!,
-      command: () => {
-        const { editor } = props;
-        const currentUrl = editor?.getAttributes('logo')?.src;
-        const url = window.prompt('Update logo URL', currentUrl);
-        if (!url) {
-          return;
-        }
-
-        const size = editor?.getAttributes('logo')?.size;
-        const alignment = editor?.getAttributes('logo')?.alignment;
-
-        // Remove the current logo
-        // and insert a new one
-        const selection = editor?.state.selection;
-        editor?.commands.setLogoImage({
-          src: url,
-          size: size,
-          alignment: alignment,
-        });
-        editor?.commands.setNodeSelection(selection?.from || 0);
-      },
-      icon: Link,
-      tooltip: 'Logo URL',
-    },
-    {
-      name: 'image-url',
-      isActive: () => false,
-      shouldShow: () => editor?.isActive('image')!,
-      command: () => {
-        const { editor } = props;
-        const currentUrl = editor?.getAttributes('image')?.src;
-        const url = window.prompt('Update Image URL', currentUrl);
-        if (!url) {
-          return;
-        }
-
-        // Remove the current logo
-        // and insert a new one
-        const selection = editor?.state.selection;
-        editor?.commands.setImage({
-          src: url,
-        });
-        editor?.commands.setNodeSelection(selection?.from || 0);
-      },
-      icon: Unlink,
-      tooltip: 'Image URL',
-    },
-    {
-      name: 'image-external-url',
-      isActive: () => false,
-      shouldShow: () => editor?.isActive('image')!,
-      command: () => {
-        const { editor } = props;
-        // const currentUrl = editor?.getAttributes('image')?.ex
-        const externalLink = editor?.getAttributes('image')?.externalLink;
-
-        const url = window.prompt(
-          'Update Image External URL',
-          externalLink || ''
-        );
-
-        editor?.commands.updateAttributes('image', { externalLink: url || '' });
-      },
-      icon: ArrowUpRight,
-      tooltip: 'Image External URL',
-    },
-
-    ...sizeItems,
-  ];
 
   const state = useImageState(editor);
 
@@ -152,46 +33,102 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
+      className="mly-flex mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
-        {items
-          .filter((item) => item.shouldShow?.())
-          .map((item, index) => {
-            return (
-              <BubbleMenuButton
-                key={index}
-                className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-                iconClassName="mly-w-3 mly-h-3"
-                nameClassName="mly-text-xs"
-                {...item}
-              />
-            );
-          })}
+        {state.isLogoActive && (
+          <>
+            <Select
+              label="Size"
+              tooltip="Size"
+              value={state.logoSize}
+              options={allowedLogoSize.map((size) => ({
+                value: size,
+                label: size,
+              }))}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .focus()
+                  .setLogoAttributes({ size: value as AllowedLogoSize })
+                  .run();
+              }}
+            />
+
+            <Divider />
+          </>
+        )}
+
+        <div className="mly-flex mly-space-x-0.5">
+          <AlignmentSwitch
+            alignment={state.alignment}
+            onAlignmentChange={(alignment) => {
+              const isCurrentNodeImage = state.isImageActive;
+              if (!isCurrentNodeImage) {
+                editor?.chain().focus().setLogoAttributes({ alignment }).run();
+              } else {
+                editor
+                  ?.chain()
+                  .focus()
+                  .updateAttributes('image', { alignment })
+                  .run();
+              }
+            }}
+          />
+
+          <LinkInputPopover
+            defaultValue={state?.imageSrc ?? ''}
+            onValueChange={(value) => {
+              if (state.isLogoActive) {
+                editor?.chain().setLogoAttributes({ src: value }).run();
+              } else {
+                editor?.chain().updateAttributes('image', { src: value }).run();
+              }
+            }}
+            tooltip="Source URL"
+          />
+
+          {state.isImageActive && (
+            <LinkInputPopover
+              defaultValue={state?.imageExternalLink ?? ''}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', { externalLink: value })
+                  .run();
+              }}
+              tooltip="External URL"
+              icon={ArrowUpRight}
+            />
+          )}
+        </div>
+
         {state.isImageActive && (
           <>
             <Divider />
-            <ImageSize
-              dimension="width"
-              value={state?.width ?? 0}
-              onValueChange={(value) => {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', { width: value })
-                  .run();
-              }}
-            />
-            <Divider />
-            <ImageSize
-              dimension="height"
-              value={state?.height ?? 0}
-              onValueChange={(value) => {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', { height: value })
-                  .run();
-              }}
-            />
+
+            <div className="mly-flex mly-space-x-0.5">
+              <ImageSize
+                dimension="width"
+                value={state?.width ?? 0}
+                onValueChange={(value) => {
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', { width: value })
+                    .run();
+                }}
+              />
+              <ImageSize
+                dimension="height"
+                value={state?.height ?? 0}
+                onValueChange={(value) => {
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', { height: value })
+                    .run();
+                }}
+              />
+            </div>
           </>
         )}
       </TooltipProvider>

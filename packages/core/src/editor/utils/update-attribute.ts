@@ -65,6 +65,10 @@ export function updateAttributes(
             }
           }
         }
+
+        if (type === 'button') {
+          tr.setSelection(tr.selection);
+        }
       }
 
       return true;

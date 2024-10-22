@@ -10,6 +10,7 @@ import { cn } from '@/utils/classname';
 import { Input } from './ui/input';
 import { PreviewTextInfo } from './preview-text-info';
 import { Label } from './ui/label';
+import defaultEditorJSON from '../utils/default-editor-json.json';
 
 interface EditorPreviewProps {
   className?: string;
@@ -18,7 +19,11 @@ interface EditorPreviewProps {
 }
 
 export function EditorPreview(props: EditorPreviewProps) {
-  const { className, content: defaultContent, config: defaultConfig } = props;
+  const {
+    className,
+    content: defaultContent = defaultEditorJSON,
+    config: defaultConfig,
+  } = props;
   const {
     editor,
     previewText,
@@ -37,8 +42,6 @@ export function EditorPreview(props: EditorPreviewProps) {
   } = useEditorContext((s) => s);
 
   const [showReplyTo, setShowReplyTo] = useState(false);
-
-  const defaultHtml = `<img src="https://maily.to/brand/logo.png" data-maily-component="logo" data-size="md" data-alignment="left" style="position:relative;margin-top:0;height:48px;margin-right:auto;margin-left:0"><div data-maily-component="spacer" data-height="xl" style="width: 100%; height: 64px;" class="spacer" contenteditable="false"></div><h2><strong>Discover Maily</strong></h2><p>Are you ready to transform your email communication? Introducing Maily, the powerful email editor that enables you to craft captivating emails effortlessly.</p><p>Elevate your email communication with Maily! Click below to try it out:</p><a data-maily-component="button" mailycomponent="button" text="Try Maily Now →" url="" alignment="left" variant="filled" borderradius="round" buttoncolor="#141313" textcolor="#ffffff"></a><div data-maily-component="spacer" data-height="xl" style="width: 100%; height: 64px;" class="spacer" contenteditable="false"></div><p>Join our vibrant community of users and developers on GitHub, where Maily is an <a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com/arikchakma/maily.to"><em>open-source</em></a> project. Together, we'll shape the future of email editing.</p><p>Regards,<br>Arikko</p>`;
 
   return (
     <div className={cn('mt-8', className)}>
@@ -158,7 +161,6 @@ export function EditorPreview(props: EditorPreviewProps) {
             autofocus: false,
             ...defaultConfig,
           }}
-          contentHtml={defaultHtml}
           contentJson={defaultContent}
           onCreate={(e) => {
             setEditor(e as unknown as TiptapEditor);

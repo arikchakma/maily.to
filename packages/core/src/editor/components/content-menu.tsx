@@ -109,7 +109,17 @@ export function ContentMenu(props: ContentMenuProps) {
     } else {
       editor.commands.setMeta('lockDragHandle', false);
     }
+
+    return () => {
+      editor.commands.setMeta('lockDragHandle', false);
+    };
   }, [editor, menuOpen]);
+
+  console.log('ContentMenu render');
+  console.log('-'.repeat(20));
+  console.log('Current Node: ', currentNode);
+  console.log('Current Node Pos: ', currentNodePos);
+  console.log('-'.repeat(20));
 
   return (
     <DragHandle

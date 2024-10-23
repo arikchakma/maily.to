@@ -1,5 +1,5 @@
 import type { Editor } from '@tiptap/core';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { NodeSelection } from '@tiptap/pm/state';
 import {
@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { DragHandle } from './drag-handle';
 
 export type ContentMenuProps = {
   editor: Editor;
@@ -28,43 +29,20 @@ export type ContentMenuProps = {
 export function ContentMenu(props: ContentMenuProps) {
   const { editor, pluginKey = dragHandlePluginDefaultKey, className } = props;
 
-  const [currentNode, setCurrentNode] = useState<Node | null>(null);
-  const [currentNodePos, setCurrentNodePos] = useState(-1);
-  const dragElement = useRef(null);
-  const pluginRef = useRef<any | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentNode, setCurrentNode] = useState<Node | null>(null);
+  const [currentNodePos, setCurrentNodePos] = useState<number>(-1);
 
-  useEffect(() => {
-    if (dragElement.current && !editor.isDestroyed) {
-      pluginRef.current = DragHandlePlugin({
-        editor,
-        element: dragElement.current,
-        pluginKey,
-        tippyOptions: {
-          offset: [-2, 0],
-          zIndex: 99,
-          // moveTransition: 'transform 0.15s ease-out',
-        },
-        onNodeChange: (props) => {
-          const { node, pos } = props;
-          if (node) {
-            setCurrentNode(node);
-          }
-
-          setCurrentNodePos(pos);
-        },
-      });
-
-      editor.registerPlugin(pluginRef.current);
-    }
-
-    return () => {
-      if (pluginRef.current) {
-        editor.unregisterPlugin(pluginKey);
-        pluginRef.current = null;
+  const handleNodeChange = useCallback(
+    (data: { node: Node | null; editor: Editor; pos: number }) => {
+      if (data.node) {
+        setCurrentNode(data.node);
       }
-    };
-  }, [editor, dragElement]);
+
+      setCurrentNodePos(data.pos);
+    },
+    [setCurrentNodePos, setCurrentNode]
+  );
 
   function duplicateNode() {
     editor.commands.setNodeSelection(currentNodePos);
@@ -135,17 +113,18 @@ export function ContentMenu(props: ContentMenuProps) {
     return () => {
       editor.commands.setMeta('lockDragHandle', false);
     };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (editor?.isDestroyed && pluginRef.current) {
-      editor.unregisterPlugin(pluginKey);
-      pluginRef.current = null;
-    }
-  }, [editor?.isDestroyed]);
+  }, [editor, menuOpen]);
 
   return (
-    <div className={cn('drag-handle', className)} ref={dragElement}>
+    <DragHandle
+      pluginKey="ContentMenu"
+      editor={editor}
+      tippyOptions={{
+        offset: [-2, 0],
+        zIndex: 99,
+      }}
+      onNodeChange={handleNodeChange}
+    >
       <div className="mly-flex mly-items-center mly-gap-0.5">
         <BaseButton
           variant="ghost"
@@ -189,6 +168,6 @@ export function ContentMenu(props: ContentMenuProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
+    </DragHandle>
   );
 }

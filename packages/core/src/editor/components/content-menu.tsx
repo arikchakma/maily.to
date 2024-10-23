@@ -115,12 +115,6 @@ export function ContentMenu(props: ContentMenuProps) {
     };
   }, [editor, menuOpen]);
 
-  console.log('ContentMenu render');
-  console.log('-'.repeat(20));
-  console.log('Current Node: ', currentNode);
-  console.log('Current Node Pos: ', currentNodePos);
-  console.log('-'.repeat(20));
-
   return (
     <DragHandle
       pluginKey="ContentMenu"
@@ -150,6 +144,10 @@ export function ContentMenu(props: ContentMenuProps) {
               onClick={(e) => {
                 e.preventDefault();
                 setMenuOpen(true);
+
+                setTimeout(() => {
+                  setMenuOpen(true);
+                }, 0);
               }}
               type="button"
             >
@@ -158,7 +156,7 @@ export function ContentMenu(props: ContentMenuProps) {
             <DropdownMenuTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
           </div>
 
-          <DropdownMenuContent align="start" side="bottom" sideOffset={0}>
+          <DropdownMenuContent align="start" side="bottom" sideOffset={8}>
             <DropdownMenuItem onClick={duplicateNode} className="!mly-rounded">
               <Copy className="mly-size-[15px] mly-shrink-0" />
               Duplicate

@@ -20,6 +20,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Divider } from './ui/divider';
 
 export type ContentMenuProps = {
   editor: Editor;
@@ -56,6 +58,8 @@ export function ContentMenu(props: ContentMenuProps) {
         selectedNode.toJSON()
       )
       .run();
+
+    setMenuOpen(false);
   }
 
   function deleteCurrentNode() {
@@ -65,6 +69,8 @@ export function ContentMenu(props: ContentMenuProps) {
       .setNodeSelection(currentNodePos)
       .deleteSelection()
       .run();
+
+    setMenuOpen(false);
   }
 
   function handleAddNewNode() {
@@ -140,7 +146,7 @@ export function ContentMenu(props: ContentMenuProps) {
             </TooltipTrigger>
             <TooltipContent sideOffset={8}>Add new node</TooltipContent>
           </Tooltip>
-          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+          <Popover open={menuOpen} onOpenChange={setMenuOpen}>
             <div className="mly-relative mly-flex mly-flex-col">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -159,27 +165,33 @@ export function ContentMenu(props: ContentMenuProps) {
                 </TooltipTrigger>
                 <TooltipContent sideOffset={8}>Node actions</TooltipContent>
               </Tooltip>
-              <DropdownMenuTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
+              <PopoverTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
             </div>
 
-            <DropdownMenuContent align="start" side="bottom" sideOffset={8}>
-              <DropdownMenuItem
+            <PopoverContent
+              align="start"
+              side="bottom"
+              sideOffset={8}
+              className="mly-flex mly-w-max mly-flex-col mly-rounded-md mly-p-1"
+            >
+              <BaseButton
+                variant="ghost"
                 onClick={duplicateNode}
-                className="!mly-rounded"
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm"
               >
                 <Copy className="mly-size-[15px] mly-shrink-0" />
                 Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
+              </BaseButton>
+              <Divider type="horizontal" />
+              <BaseButton
                 onClick={deleteCurrentNode}
-                className="!mly-rounded mly-bg-red-100 mly-text-red-600 focus:mly-bg-red-200"
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-bg-red-100 mly-px-2 mly-py-1 mly-text-sm mly-text-red-600 hover:mly-bg-red-200 focus:mly-bg-red-200"
               >
                 <Trash2 className="mly-size-[15px] mly-shrink-0" />
                 Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </BaseButton>
+            </PopoverContent>
+          </Popover>
         </div>
       </TooltipProvider>
     </DragHandle>

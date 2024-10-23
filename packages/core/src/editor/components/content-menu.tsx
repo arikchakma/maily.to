@@ -1,15 +1,10 @@
 import type { Editor } from '@tiptap/core';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { NodeSelection } from '@tiptap/pm/state';
-import {
-  DragHandlePlugin,
-  dragHandlePluginDefaultKey,
-} from 'echo-drag-handle-plugin';
 
 import type { Node } from '@tiptap/pm/model';
 import { Copy, GripVertical, Plus, Trash2 } from 'lucide-react';
-import { cn } from '../utils/classname';
 import { BaseButton } from './base-button';
 import {
   DropdownMenu,
@@ -19,15 +14,19 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { DragHandle } from './drag-handle';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
 export type ContentMenuProps = {
   editor: Editor;
-  className?: string;
-  pluginKey?: string;
 };
 
 export function ContentMenu(props: ContentMenuProps) {
-  const { editor, pluginKey = dragHandlePluginDefaultKey, className } = props;
+  const { editor } = props;
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentNode, setCurrentNode] = useState<Node | null>(null);
@@ -125,49 +124,64 @@ export function ContentMenu(props: ContentMenuProps) {
       }}
       onNodeChange={handleNodeChange}
     >
-      <div className="mly-flex mly-items-center mly-gap-0.5">
-        <BaseButton
-          variant="ghost"
-          size="icon"
-          className="!mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
-          onClick={handleAddNewNode}
-          type="button"
-        >
-          <Plus className="mly-size-4 mly-shrink-0" />
-        </BaseButton>
-        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-          <div className="mly-relative mly-flex mly-flex-col">
-            <BaseButton
-              variant="ghost"
-              size="icon"
-              className="mly-relative mly-z-[1] !mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
-              onClick={(e) => {
-                e.preventDefault();
-                setMenuOpen(true);
-              }}
-              type="button"
-            >
-              <GripVertical className="mly-size-4 mly-shrink-0" />
-            </BaseButton>
-            <DropdownMenuTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
-          </div>
+      <TooltipProvider>
+        <div className="mly-flex mly-items-center mly-gap-0.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <BaseButton
+                variant="ghost"
+                size="icon"
+                className="!mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                onClick={handleAddNewNode}
+                type="button"
+              >
+                <Plus className="mly-size-4 mly-shrink-0" />
+              </BaseButton>
+            </TooltipTrigger>
+            <TooltipContent sideOffset={8}>Add new node</TooltipContent>
+          </Tooltip>
+          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+            <div className="mly-relative mly-flex mly-flex-col">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <BaseButton
+                    variant="ghost"
+                    size="icon"
+                    className="mly-relative mly-z-[1] !mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMenuOpen(true);
+                    }}
+                    type="button"
+                  >
+                    <GripVertical className="mly-size-4 mly-shrink-0" />
+                  </BaseButton>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={8}>Node actions</TooltipContent>
+              </Tooltip>
+              <DropdownMenuTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
+            </div>
 
-          <DropdownMenuContent align="start" side="bottom" sideOffset={8}>
-            <DropdownMenuItem onClick={duplicateNode} className="!mly-rounded">
-              <Copy className="mly-size-[15px] mly-shrink-0" />
-              Duplicate
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={deleteCurrentNode}
-              className="!mly-rounded mly-bg-red-100 mly-text-red-600 focus:mly-bg-red-200"
-            >
-              <Trash2 className="mly-size-[15px] mly-shrink-0" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+            <DropdownMenuContent align="start" side="bottom" sideOffset={8}>
+              <DropdownMenuItem
+                onClick={duplicateNode}
+                className="!mly-rounded"
+              >
+                <Copy className="mly-size-[15px] mly-shrink-0" />
+                Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={deleteCurrentNode}
+                className="!mly-rounded mly-bg-red-100 mly-text-red-600 focus:mly-bg-red-200"
+              >
+                <Trash2 className="mly-size-[15px] mly-shrink-0" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </TooltipProvider>
     </DragHandle>
   );
 }

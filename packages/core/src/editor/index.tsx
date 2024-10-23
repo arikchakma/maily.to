@@ -138,7 +138,7 @@ export function Editor(props: EditorProps) {
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ContentMenu editor={editor} pluginKey="mly-content-menu" />
+          <ContentMenu editor={editor} />
         </div>
       </div>
     </MailyProvider>

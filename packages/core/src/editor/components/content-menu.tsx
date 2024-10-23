@@ -144,10 +144,6 @@ export function ContentMenu(props: ContentMenuProps) {
               onClick={(e) => {
                 e.preventDefault();
                 setMenuOpen(true);
-
-                setTimeout(() => {
-                  setMenuOpen(true);
-                }, 0);
               }}
               type="button"
             >

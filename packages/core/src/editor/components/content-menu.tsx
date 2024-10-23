@@ -1,15 +1,10 @@
 import type { Editor } from '@tiptap/core';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { NodeSelection } from '@tiptap/pm/state';
-import {
-  DragHandlePlugin,
-  dragHandlePluginDefaultKey,
-} from 'echo-drag-handle-plugin';
 
 import type { Node } from '@tiptap/pm/model';
 import { Copy, GripVertical, Plus, Trash2 } from 'lucide-react';
-import { cn } from '../utils/classname';
 import { BaseButton } from './base-button';
 import {
   DropdownMenu,
@@ -18,53 +13,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { DragHandle } from './drag-handle';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Divider } from './ui/divider';
 
 export type ContentMenuProps = {
   editor: Editor;
-  className?: string;
-  pluginKey?: string;
 };
 
 export function ContentMenu(props: ContentMenuProps) {
-  const { editor, pluginKey = dragHandlePluginDefaultKey, className } = props;
+  const { editor } = props;
 
-  const [currentNode, setCurrentNode] = useState<Node | null>(null);
-  const [currentNodePos, setCurrentNodePos] = useState(-1);
-  const dragElement = useRef(null);
-  const pluginRef = useRef<any | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentNode, setCurrentNode] = useState<Node | null>(null);
+  const [currentNodePos, setCurrentNodePos] = useState<number>(-1);
 
-  useEffect(() => {
-    if (dragElement.current && !editor.isDestroyed) {
-      pluginRef.current = DragHandlePlugin({
-        editor,
-        element: dragElement.current,
-        pluginKey,
-        tippyOptions: {
-          offset: [-2, 0],
-          zIndex: 99,
-          // moveTransition: 'transform 0.15s ease-out',
-        },
-        onNodeChange: (props) => {
-          const { node, pos } = props;
-          if (node) {
-            setCurrentNode(node);
-          }
-
-          setCurrentNodePos(pos);
-        },
-      });
-
-      editor.registerPlugin(pluginRef.current);
-    }
-
-    return () => {
-      if (pluginRef.current) {
-        editor.unregisterPlugin(pluginKey);
-        pluginRef.current = null;
+  const handleNodeChange = useCallback(
+    (data: { node: Node | null; editor: Editor; pos: number }) => {
+      if (data.node) {
+        setCurrentNode(data.node);
       }
-    };
-  }, [editor, dragElement]);
+
+      setCurrentNodePos(data.pos);
+    },
+    [setCurrentNodePos, setCurrentNode]
+  );
 
   function duplicateNode() {
     editor.commands.setNodeSelection(currentNodePos);
@@ -79,6 +58,8 @@ export function ContentMenu(props: ContentMenuProps) {
         selectedNode.toJSON()
       )
       .run();
+
+    setMenuOpen(false);
   }
 
   function deleteCurrentNode() {
@@ -88,6 +69,8 @@ export function ContentMenu(props: ContentMenuProps) {
       .setNodeSelection(currentNodePos)
       .deleteSelection()
       .run();
+
+    setMenuOpen(false);
   }
 
   function handleAddNewNode() {
@@ -135,60 +118,82 @@ export function ContentMenu(props: ContentMenuProps) {
     return () => {
       editor.commands.setMeta('lockDragHandle', false);
     };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (editor?.isDestroyed && pluginRef.current) {
-      editor.unregisterPlugin(pluginKey);
-      pluginRef.current = null;
-    }
-  }, [editor?.isDestroyed]);
+  }, [editor, menuOpen]);
 
   return (
-    <div className={cn('drag-handle', className)} ref={dragElement}>
-      <div className="mly-flex mly-items-center mly-gap-0.5">
-        <BaseButton
-          variant="ghost"
-          size="icon"
-          className="!mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
-          onClick={handleAddNewNode}
-          type="button"
-        >
-          <Plus className="mly-size-4 mly-shrink-0" />
-        </BaseButton>
-        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-          <div className="mly-relative mly-flex mly-flex-col">
-            <BaseButton
-              variant="ghost"
-              size="icon"
-              className="mly-relative mly-z-[1] !mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
-              onClick={(e) => {
-                e.preventDefault();
-                setMenuOpen(true);
-              }}
-              type="button"
-            >
-              <GripVertical className="mly-size-4 mly-shrink-0" />
-            </BaseButton>
-            <DropdownMenuTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
-          </div>
+    <DragHandle
+      pluginKey="ContentMenu"
+      editor={editor}
+      tippyOptions={{
+        offset: [-2, 0],
+        zIndex: 99,
+      }}
+      onNodeChange={handleNodeChange}
+    >
+      <TooltipProvider>
+        <div className="mly-flex mly-items-center mly-gap-0.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <BaseButton
+                variant="ghost"
+                size="icon"
+                className="!mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                onClick={handleAddNewNode}
+                type="button"
+              >
+                <Plus className="mly-size-4 mly-shrink-0" />
+              </BaseButton>
+            </TooltipTrigger>
+            <TooltipContent sideOffset={8}>Add new node</TooltipContent>
+          </Tooltip>
+          <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+            <div className="mly-relative mly-flex mly-flex-col">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <BaseButton
+                    variant="ghost"
+                    size="icon"
+                    className="mly-relative mly-z-[1] !mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMenuOpen(true);
+                    }}
+                    type="button"
+                  >
+                    <GripVertical className="mly-size-4 mly-shrink-0" />
+                  </BaseButton>
+                </TooltipTrigger>
+                <TooltipContent sideOffset={8}>Node actions</TooltipContent>
+              </Tooltip>
+              <PopoverTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
+            </div>
 
-          <DropdownMenuContent align="start" side="bottom" sideOffset={0}>
-            <DropdownMenuItem onClick={duplicateNode} className="!mly-rounded">
-              <Copy className="mly-size-[15px] mly-shrink-0" />
-              Duplicate
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={deleteCurrentNode}
-              className="!mly-rounded mly-bg-red-100 mly-text-red-600 focus:mly-bg-red-200"
+            <PopoverContent
+              align="start"
+              side="bottom"
+              sideOffset={8}
+              className="mly-flex mly-w-max mly-flex-col mly-rounded-md mly-p-1"
             >
-              <Trash2 className="mly-size-[15px] mly-shrink-0" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
+              <BaseButton
+                variant="ghost"
+                onClick={duplicateNode}
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm"
+              >
+                <Copy className="mly-size-[15px] mly-shrink-0" />
+                Duplicate
+              </BaseButton>
+              <Divider type="horizontal" />
+              <BaseButton
+                onClick={deleteCurrentNode}
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-bg-red-100 mly-px-2 mly-py-1 mly-text-sm mly-text-red-600 hover:mly-bg-red-200 focus:mly-bg-red-200"
+              >
+                <Trash2 className="mly-size-[15px] mly-shrink-0" />
+                Delete
+              </BaseButton>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </TooltipProvider>
+    </DragHandle>
   );
 }

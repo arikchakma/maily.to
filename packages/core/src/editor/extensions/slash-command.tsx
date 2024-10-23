@@ -206,7 +206,7 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     searchTerms: ['layout', 'section'],
     icon: <SectionIcon className="mly-h-4 mly-w-4" />,
     shouldBeHidden: (editor) => {
-      return editor.isActive('section') || editor.isActive('columns');
+      return editor.isActive('columns');
     },
     command: ({ editor, range }: CommandProps) => {
       editor.chain().focus().deleteRange(range).setSection().run();

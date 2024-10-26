@@ -50,7 +50,7 @@ export function VariableView(props: NodeViewProps) {
         >
           <TooltipProvider>
             <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
-              <label className="relative">
+              <label className="mly-relative">
                 <span className="mly-inline-block mly-px-2 mly-text-xs mly-text-midnight-gray">
                   Variable
                 </span>
@@ -68,7 +68,7 @@ export function VariableView(props: NodeViewProps) {
 
               <Divider className="mly-mx-1.5" />
 
-              <label className="relative">
+              <label className="mly-relative">
                 <span className="mly-inline-block mly-px-2 mly-pl-1 mly-text-xs mly-text-midnight-gray">
                   Default
                 </span>

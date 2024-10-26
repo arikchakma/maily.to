@@ -1,11 +1,18 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ForView } from './for-view';
+import { updateAttributes } from '@/editor/utils/update-attribute';
+
+type ForAttributes = {
+  each: string;
+  isUpdatingKey: boolean;
+};
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     for: {
       setFor: () => ReturnType;
+      updateFor: (attrs: Partial<ForAttributes>) => ReturnType;
     };
   }
 }
@@ -73,6 +80,7 @@ export const ForExtension = Node.create({
             ],
           });
         },
+      updateFor: (attrs) => updateAttributes(this.name, attrs),
     };
   },
 

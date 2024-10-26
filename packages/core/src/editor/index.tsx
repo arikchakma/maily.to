@@ -14,6 +14,7 @@ import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
+import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -139,6 +140,7 @@ export function Editor(props: EditorProps) {
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
+          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

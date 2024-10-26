@@ -83,7 +83,7 @@ export function ButtonView(props: NodeViewProps) {
         >
           <TooltipProvider>
             <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
-              <label className="relative">
+              <label className="mly-relative">
                 <input
                   value={text}
                   onChange={(e) => {

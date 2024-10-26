@@ -13,19 +13,13 @@ import {
   Scan,
 } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
-import { BaseButton } from '../base-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { GridLines } from '../icons/grid-lines';
 import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../ui/tooltip';
+import { TooltipProvider } from '../ui/tooltip';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;

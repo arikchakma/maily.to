@@ -1,17 +1,14 @@
-import { BubbleMenu, BubbleMenuProps, isTextSelection } from '@tiptap/react';
+import { BubbleMenu, BubbleMenuProps } from '@tiptap/react';
 import {
-  AlignCenterIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
   BoldIcon,
   CodeIcon,
   ItalicIcon,
-  LinkIcon,
+  List,
+  ListOrdered,
   LucideIcon,
   StrikethroughIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { allowedLogoAlignment } from '../../nodes/logo';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
@@ -137,12 +134,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
     >
       <TooltipProvider>
         {items.map((item, index) => (
-          <BubbleMenuButton
-            key={index}
-            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-            iconClassName="mly-w-3 mly-h-3"
-            {...item}
-          />
+          <BubbleMenuButton key={index} {...item} />
         ))}
 
         <AlignmentSwitch
@@ -151,6 +143,25 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
             editor?.chain().focus().setTextAlign(alignment).run();
           }}
         />
+
+        {!state.isListActive && (
+          <>
+            <BubbleMenuButton
+              icon={List}
+              command={() => {
+                editor.chain().focus().toggleBulletList().run();
+              }}
+              tooltip="Bullet List"
+            />
+            <BubbleMenuButton
+              icon={ListOrdered}
+              command={() => {
+                editor.chain().focus().toggleOrderedList().run();
+              }}
+              tooltip="Ordered List"
+            />
+          </>
+        )}
 
         <LinkInputPopover
           defaultValue={state?.linkUrl ?? ''}

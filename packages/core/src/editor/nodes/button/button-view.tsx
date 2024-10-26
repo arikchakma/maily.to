@@ -77,7 +77,7 @@ export function ButtonView(props: NodeViewProps) {
           align="end"
           side="top"
           className="mly-w-max mly-rounded-lg !mly-p-0.5"
-          sideOffset={10}
+          sideOffset={8}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >

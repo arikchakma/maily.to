@@ -23,12 +23,19 @@ export type SlashCommandItem = {
   command: (options: CommandProps) => void;
 };
 
+export const DEFAULT_VARIABLE_SUGGESTION_CHAR = '@';
+export const DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR = '#';
+
 export type MailyContextType = {
+  variableSuggestionChar?: string;
+  payloadValueSuggestionChar?: string;
   variables?: Variables;
   slashCommands?: SlashCommandItem[];
 };
 
 export const MailyContext = createContext<MailyContextType>({
+  variableSuggestionChar: DEFAULT_VARIABLE_SUGGESTION_CHAR,
+  payloadValueSuggestionChar: DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
   variables: [],
   slashCommands: [],
 });

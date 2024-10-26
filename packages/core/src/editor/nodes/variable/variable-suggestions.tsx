@@ -1,4 +1,4 @@
-import { Variables } from '@/editor/provider';
+import { DEFAULT_VARIABLE_SUGGESTION_CHAR, Variables } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
@@ -68,11 +68,13 @@ export const VariableList = forwardRef((props: any, ref) => {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: Variables = []
+  variables: Variables = [],
+  char: string = DEFAULT_VARIABLE_SUGGESTION_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   const defaultVariables = variables.map((variable) => variable.name);
 
   return {
+    char,
     items: ({ query }) => {
       return defaultVariables
         .concat(query.length > 0 ? [query] : [])

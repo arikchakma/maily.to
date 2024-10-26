@@ -34,7 +34,12 @@ import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const { variables, slashCommands } = props;
+  const {
+    variables,
+    slashCommands,
+    variableSuggestionChar,
+    payloadValueSuggestionChar,
+  } = props;
 
   return [
     Document.extend({
@@ -102,7 +107,7 @@ export function extensions(props: ExtensionsProps) {
     SectionExtension,
     ForExtension,
     PayloadValueExtension.configure({
-      suggestion: getPlayloadValueSuggestions([]),
+      suggestion: getPlayloadValueSuggestions([], payloadValueSuggestionChar),
     }),
     ShowExtension,
     Dropcursor.configure({
@@ -112,7 +117,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables),
+      suggestion: getVariableSuggestions(variables, variableSuggestionChar),
     }),
   ];
 }

@@ -62,7 +62,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         <Divider />
         <label className="mly-relative">
           <input
-            value={state.each}
+            value={state?.each || ''}
             onChange={(e) => {
               editor.commands.updateFor({
                 each: e.target.value,
@@ -74,7 +74,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             <Braces className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
           </div>
         </label>
-        <Divider />
       </TooltipProvider>
     </BubbleMenu>
   );

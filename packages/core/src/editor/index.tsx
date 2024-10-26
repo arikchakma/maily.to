@@ -7,7 +7,12 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { MailyContextType, MailyProvider } from './provider';
+import {
+  DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
+  DEFAULT_VARIABLE_SUGGESTION_CHAR,
+  MailyContextType,
+  MailyProvider,
+} from './provider';
 import { cn } from './utils/classname';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
@@ -54,6 +59,8 @@ export function Editor(props: EditorProps) {
     contentJson,
     variables,
     slashCommands,
+    variableSuggestionChar = DEFAULT_VARIABLE_SUGGESTION_CHAR,
+    payloadValueSuggestionChar = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
   } = props;
 
   let formattedContent: any = null;
@@ -109,6 +116,8 @@ export function Editor(props: EditorProps) {
       ...defaultExtensions({
         variables,
         slashCommands,
+        variableSuggestionChar,
+        payloadValueSuggestionChar,
       }),
       ...(extensions || []),
     ],

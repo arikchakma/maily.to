@@ -59,7 +59,12 @@ export const PayloadValueExtension = Node.create<PayloadValueOptions>({
 
           window.getSelection()?.collapseToEnd();
         },
-        allow: ({ state, range }) => {
+        allow: ({ state, range, editor }) => {
+          // Should be allowed when the `For` node is active
+          if (!editor.isActive('for')) {
+            return false;
+          }
+
           const $from = state.doc.resolve(range.from);
           const type = state.schema.nodes[this.name];
           const allow = !!$from.parent.type.contentMatch.matchType(type);

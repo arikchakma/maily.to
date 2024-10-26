@@ -1,6 +1,8 @@
 import { useId } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { cn } from '@/editor/utils/classname';
+import { LucideIcon } from 'lucide-react';
+import { SVGIcon } from '../icons/grid-lines';
 
 type SelectProps = {
   label: string;
@@ -14,23 +16,42 @@ type SelectProps = {
 
   tooltip?: string;
   className?: string;
+
+  icon?: LucideIcon | SVGIcon;
+  iconClassName?: string;
 };
 
 export function Select(props: SelectProps) {
-  const { label, options, value, onValueChange, tooltip, className } = props;
+  const {
+    label,
+    options,
+    value,
+    onValueChange,
+    tooltip,
+    className,
+    icon: Icon,
+    iconClassName,
+  } = props;
 
   const selectId = `mly${useId()}`;
 
   const content = (
-    <div>
+    <div className="relative">
       <label htmlFor={selectId} className="sr-only">
         {label}
       </label>
+
+      {Icon && (
+        <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-left-2 mly-flex mly-items-center">
+          <Icon className={cn('mly-size-3', iconClassName)} />
+        </div>
+      )}
 
       <select
         id={selectId}
         className={cn(
           'mly-flex mly-min-h-7 mly-max-w-max mly-appearance-none mly-items-center mly-rounded-md mly-px-1.5 mly-py-0.5 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-outline-none active:mly-bg-soft-gray',
+          !!Icon && 'mly-pl-7',
           className
         )}
         value={value}

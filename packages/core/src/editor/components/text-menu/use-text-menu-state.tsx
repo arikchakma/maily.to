@@ -10,6 +10,9 @@ export const useTextMenuState = (editor: Editor) => {
       return {
         currentTextColor:
           ctx.editor.getAttributes('textStyle').color || DEFAULT_TEXT_COLOR,
+
+        linkUrl: editor?.getAttributes('link').href,
+        textAlign: editor?.getAttributes('paragraph')?.textAlign || 'left',
       };
     },
     equalityFn: deepEql,

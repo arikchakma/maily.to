@@ -19,6 +19,9 @@ import { useTextMenuState } from './use-text-menu-state';
 import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { TooltipProvider } from '../ui/tooltip';
+import { LinkInputPopover } from '../ui/link-input-popover';
+import { Divider } from '../ui/divider';
+import { AlignmentSwitch } from '../alignment-switch';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -44,23 +47,6 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   if (!editor) {
     return null;
   }
-
-  const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
-  const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
-    (alignment, index) => ({
-      name: alignment,
-      isActive: () => editor?.isActive({ textAlign: alignment })!,
-      command: () => {
-        if (props?.editor?.isActive({ textAlign: alignment })) {
-          props?.editor?.chain()?.focus().unsetTextAlign().run();
-        } else {
-          props?.editor?.chain().focus().setTextAlign(alignment).run()!;
-        }
-      },
-      icon: icons[index],
-      tooltip: alignment.charAt(0).toUpperCase() + alignment.slice(1),
-    })
-  );
 
   const items: BubbleMenuItem[] = [
     {
@@ -91,43 +77,12 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       icon: StrikethroughIcon,
       tooltip: 'Strikethrough',
     },
-    ...alignmentItems,
     {
       name: 'code',
       isActive: () => editor?.isActive('code')!,
       command: () => editor?.chain().focus().toggleCode().run()!,
       icon: CodeIcon,
       tooltip: 'Code',
-    },
-    {
-      name: 'link',
-      command: () => {
-        const previousUrl = editor?.getAttributes('link').href!;
-        const url = window.prompt('URL', previousUrl);
-
-        // If the user cancels the prompt, we don't want to toggle the link
-        if (url === null) {
-          return;
-        }
-
-        // If the user deletes the URL entirely, we'll unlink the selected text
-        if (url === '') {
-          editor?.chain().focus().extendMarkRange('link').unsetLink().run();
-
-          return;
-        }
-
-        // Otherwise, we set the link to the given URL
-        editor
-          ?.chain()
-          .focus()
-          .extendMarkRange('link')
-          .setLink({ href: url })
-          .run()!;
-      },
-      isActive: () => editor?.isActive('link')!,
-      icon: LinkIcon,
-      tooltip: 'Link',
     },
   ];
 
@@ -189,6 +144,33 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
             {...item}
           />
         ))}
+
+        <AlignmentSwitch
+          alignment={state.textAlign}
+          onAlignmentChange={(alignment) => {
+            editor?.chain().focus().setTextAlign(alignment).run();
+          }}
+        />
+
+        <LinkInputPopover
+          defaultValue={state?.linkUrl ?? ''}
+          onValueChange={(value) => {
+            if (!value) {
+              editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+              return;
+            }
+
+            editor
+              ?.chain()
+              .extendMarkRange('link')
+              .setLink({ href: value })
+              .run()!;
+          }}
+          tooltip="External URL"
+        />
+
+        <Divider />
+
         <ColorPicker
           color={state.currentTextColor}
           onColorChange={(color) => {

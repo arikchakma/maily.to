@@ -103,6 +103,17 @@ export function removeColumn(editor: Editor) {
   const { state, dispatch } = editor.view;
   const { tr } = state;
 
+  // If there is only one column, remove the entire columns node
+  if (columnsNode.childCount === 1) {
+    const transaction = tr.delete(
+      columnsNodePos,
+      columnsNodePos + columnsNode.nodeSize
+    );
+    dispatch(transaction);
+    editor.view.focus();
+    return;
+  }
+
   const calculatedWidth = +Number(100 / (columnsNode.childCount - 1)).toFixed(
     2
   );

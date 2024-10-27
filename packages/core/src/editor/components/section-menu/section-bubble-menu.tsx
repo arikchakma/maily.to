@@ -10,6 +10,7 @@ import {
   AlignRight,
   Box,
   BoxSelect,
+  ChevronUp,
   Scan,
 } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
@@ -27,6 +28,8 @@ import { Select } from '../ui/select';
 import { allowedButtonBorderRadius } from '@/editor/nodes/button/button';
 import { MarginIcon } from '../icons/margin-icon';
 import { PaddingIcon } from '../icons/padding-icon';
+import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
+import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -51,11 +54,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         return false;
       }
 
-      return (
-        editor.isActive('section') &&
-        !editor.isActive('columns') &&
-        !editor.isActive('column')
-      );
+      return editor.isActive('section');
     },
     tippyOptions: {
       offset: [0, 8],
@@ -72,16 +71,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   };
 
   const state = useSectionState(editor);
-
-  const isAllPaddingEqual =
-    state.currentPaddingTop === state.currentPaddingRight &&
-    state.currentPaddingTop === state.currentPaddingBottom &&
-    state.currentPaddingTop === state.currentPaddingLeft;
-
-  const isAllMarginEqual =
-    state.currentMarginTop === state.currentMarginRight &&
-    state.currentMarginTop === state.currentMarginBottom &&
-    state.currentMarginTop === state.currentMarginLeft;
 
   const borderRadiusOptions = [
     { value: '0', label: 'Sharp' },
@@ -138,6 +127,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             className="mly-capitalize"
           />
         </div>
+
         <Divider />
 
         <Select
@@ -229,6 +219,32 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
           />
         </div>
+
+        {state.isColumnsActive && (
+          <>
+            <Divider />
+            <Popover>
+              <PopoverTrigger className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm hover:mly-bg-soft-gray data-[state=open]:mly-bg-soft-gray">
+                Column
+                <ChevronUp className="mly-h-3 mly-w-3" />
+              </PopoverTrigger>
+              <PopoverContent
+                className="mly-w-max mly-rounded-lg !mly-p-0.5"
+                side="top"
+                sideOffset={8}
+                align="end"
+                onOpenAutoFocus={(e) => {
+                  e.preventDefault();
+                }}
+                onCloseAutoFocus={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <ColumnsBubbleMenuContent editor={editor} />
+              </PopoverContent>
+            </Popover>
+          </>
+        )}
       </TooltipProvider>
     </BubbleMenu>
   );

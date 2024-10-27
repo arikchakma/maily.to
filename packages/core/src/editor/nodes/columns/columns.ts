@@ -86,6 +86,10 @@ export const Columns = Node.create({
       'table',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
+        border: 0,
+        cellpadding: 0,
+        cellspacing: 0,
+        class: 'mly-w-full mly-border-separate',
       }),
       [
         'tbody',

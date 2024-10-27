@@ -20,12 +20,6 @@ export const useColumnsState = (editor: Editor) => {
 
         currentVerticalAlignment:
           ctx.editor.getAttributes('column')?.verticalAlign || 'top',
-        isVerticalAlignTop:
-          ctx.editor.getAttributes('column')?.verticalAlign === 'top',
-        isVerticalAlignMiddle:
-          ctx.editor.getAttributes('column')?.verticalAlign === 'middle',
-        isVerticalAlignBottom:
-          ctx.editor.getAttributes('column')?.verticalAlign === 'bottom',
         isColumnActive: ctx.editor.isActive('column'),
 
         columnsCount: getColumnCount(ctx.editor),

@@ -4,8 +4,8 @@ import { v4 as uuid } from 'uuid';
 
 export const DEFAULT_COLUMN_WIDTH = 50;
 
-export type COLUMN_VERTICAL_ALIGN = 'top' | 'middle' | 'bottom';
-export const DEFAULT_COLUMN_VERTICAL_ALIGN: COLUMN_VERTICAL_ALIGN = 'top';
+export type AllowedColumnVerticalAlign = 'top' | 'middle' | 'bottom';
+export const DEFAULT_COLUMN_VERTICAL_ALIGN: AllowedColumnVerticalAlign = 'top';
 
 export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
 export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
@@ -19,7 +19,7 @@ export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
 interface ColumnAttributes {
-  verticalAlign: COLUMN_VERTICAL_ALIGN;
+  verticalAlign: AllowedColumnVerticalAlign;
   backgroundColor: string;
   borderRadius: number;
   align: string;

@@ -19,13 +19,14 @@ import { TooltipProvider } from '../ui/tooltip';
 import { LinkInputPopover } from '../ui/link-input-popover';
 import { Divider } from '../ui/divider';
 import { AlignmentSwitch } from '../alignment-switch';
+import { SVGIcon } from '../icons/grid-lines';
 
 export interface BubbleMenuItem {
   name?: string;
   isActive?: () => boolean;
   command?: () => void;
   shouldShow?: () => boolean;
-  icon?: LucideIcon;
+  icon?: LucideIcon | SVGIcon;
   className?: string;
   iconClassName?: string;
   nameClassName?: string;

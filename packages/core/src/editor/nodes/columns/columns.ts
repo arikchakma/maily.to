@@ -1,3 +1,4 @@
+import { goToColumn } from '@/editor/utils/columns';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
@@ -113,5 +114,16 @@ export const Columns = Node.create({
         tag: 'table[data-type="columns"]',
       },
     ];
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => {
+        return goToColumn(this.editor, 'next');
+      },
+      'Shift-Tab': () => {
+        return goToColumn(this.editor, 'previous');
+      },
+    };
   },
 });

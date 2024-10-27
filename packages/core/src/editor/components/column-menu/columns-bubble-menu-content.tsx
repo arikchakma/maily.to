@@ -1,9 +1,4 @@
-import { BubbleMenu } from '@tiptap/react';
-import { useCallback } from 'react';
-import { getRenderContainer } from '../../utils/get-render-container';
-import { sticky } from 'tippy.js';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
-import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { useColumnsState } from './use-columns-state';
 import { Divider } from '../ui/divider';
 import { ColorPicker } from '../ui/color-picker';
@@ -12,6 +7,10 @@ import { Select } from '../ui/select';
 import { BaseButton } from '../base-button';
 import { BorderColor } from '../icons/border-color';
 import { VerticalAlignmentSwitch } from '../vertical-alignment-switch';
+import { PaddingIcon } from '../icons/padding-icon';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { ListMinus, ListPlus } from 'lucide-react';
+import { addColumn, removeColumn } from '@/editor/utils/columns';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -104,6 +103,31 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
             </div>
 
             <Divider />
+            <Select
+              icon={PaddingIcon}
+              iconClassName="mly-stroke-[1]"
+              label="Padding"
+              value={String(state.columnPaddingTop)}
+              options={[
+                { value: '0', label: 'None' },
+                { value: '4', label: 'Small' },
+                { value: '8', label: 'Medium' },
+                { value: '12', label: 'Large' },
+              ]}
+              onValueChange={(_value) => {
+                const value = Number(_value);
+                editor?.commands?.updateColumn({
+                  paddingTop: value,
+                  paddingRight: value,
+                  paddingBottom: value,
+                  paddingLeft: value,
+                });
+              }}
+              tooltip="Padding"
+              className="mly-capitalize"
+            />
+
+            <Divider />
 
             <div className="mly-flex mly-space-x-0.5">
               <ColorPicker
@@ -142,6 +166,24 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
                 className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
               />
             </div>
+
+            <Divider />
+
+            <BubbleMenuButton
+              icon={ListPlus}
+              command={() => {
+                addColumn(editor);
+              }}
+              tooltip="Add Column"
+              disbabled={state.columnsCount >= 8}
+            />
+            <BubbleMenuButton
+              icon={ListMinus}
+              command={() => {
+                removeColumn(editor);
+              }}
+              tooltip="Remove Column"
+            />
           </>
         )}
       </div>

@@ -2,49 +2,26 @@ import { Editor } from '@tiptap/react';
 import { Fragment, Node } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
 import { v4 as uuid } from 'uuid';
+import { findParentNode } from '@tiptap/core';
 
 export function getColumnCount(editor: Editor) {
   return getClosestNodeByName(editor, 'columns')?.node?.childCount || 0;
 }
 
 export function getClosestNodeByName(editor: Editor, name: string) {
-  const { from } = editor.state.selection;
-  let closestNode: Node | undefined;
-  let containingPosition: number | undefined;
-
-  editor.state.doc.descendants((node, pos) => {
-    if (node.type.name === name) {
-      // Check if the cursor is within the boundaries of the columns node
-      const start = pos;
-      const end = pos + node.nodeSize;
-
-      if (from >= start && from <= end) {
-        closestNode = node;
-        containingPosition = pos;
-        // Stop traversal once we've found the containing node
-        return false;
-      }
-    }
-  });
-
-  if (!closestNode) {
-    return {};
-  }
-
-  return { node: closestNode, pos: containingPosition ?? 0 };
+  const { state } = editor.view;
+  return findParentNode((node) => node.type.name === name)(state.selection);
 }
 
 export function addColumn(editor: Editor) {
-  const { node: columnsNode, pos: columnsNodePos = 0 } = getClosestNodeByName(
-    editor,
-    'columns'
-  );
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
   if (!columnsNode) {
     return;
   }
 
   const { node: activeColumnNode, pos: activeColumnNodePos = 0 } =
-    getClosestNodeByName(editor, 'column');
+    getClosestNodeByName(editor, 'column') || {};
   if (!activeColumnNode) {
     return;
   }
@@ -111,16 +88,14 @@ export function addColumn(editor: Editor) {
 }
 
 export function removeColumn(editor: Editor) {
-  const { node: columnsNode, pos: columnsNodePos = 0 } = getClosestNodeByName(
-    editor,
-    'columns'
-  );
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
   if (!columnsNode) {
     return;
   }
 
   const { node: activeColumnNode, pos: activeColumnNodePos = 0 } =
-    getClosestNodeByName(editor, 'column');
+    getClosestNodeByName(editor, 'column') || {};
   if (!activeColumnNode) {
     return;
   }
@@ -180,4 +155,47 @@ export function removeColumn(editor: Editor) {
 
   dispatch(transaction);
   editor.view.focus();
+}
+
+export function goToColumn(editor: Editor, type: 'next' | 'previous') {
+  const columnsNode = getClosestNodeByName(editor, 'columns');
+  const columnNode = getClosestNodeByName(editor, 'column');
+  if (!columnsNode || !columnNode) {
+    return false;
+  }
+
+  const { state, dispatch } = editor.view;
+  // Get the current columns node position and add the columns size
+  // to the end of the columns node
+  const cols = columnsNode.node;
+  let currColumnIndex = 0;
+  cols.content.forEach((child, _, index) => {
+    if (
+      child.eq(columnNode.node) &&
+      child?.attrs?.columnId === columnNode.node?.attrs?.columnId
+    ) {
+      currColumnIndex = index;
+    }
+  });
+
+  const nextColumnIndex =
+    type === 'next' ? currColumnIndex + 1 : currColumnIndex - 1;
+  // if the next column index is out of bounds, return
+  if (nextColumnIndex < 0 || nextColumnIndex >= cols.childCount) {
+    return false;
+  }
+
+  let nextColumnPos = columnsNode.pos;
+  cols.content.forEach((child, _, index) => {
+    if (index < nextColumnIndex) {
+      nextColumnPos += child.nodeSize;
+    }
+  });
+
+  const tr = state.tr.setTime(Date.now());
+  const textSelection = TextSelection.near(tr.doc.resolve(nextColumnPos));
+  tr.setSelection(textSelection);
+
+  dispatch(tr);
+  return true;
 }

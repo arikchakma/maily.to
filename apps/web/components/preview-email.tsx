@@ -79,7 +79,7 @@ export function PreviewEmail() {
         </form>
       </DialogTrigger>
       {!isPending ? (
-        <DialogContent className="animation-none min-h-[75vh] w-full min-w-0 max-w-[620px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
+        <DialogContent className="animation-none z-[99999] min-h-[75vh] w-full min-w-0 max-w-[620px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
           <DialogTitle className="sr-only">Preview Email</DialogTitle>
           <DialogDescription className="sr-only">
             Preview of the email that end users will receive

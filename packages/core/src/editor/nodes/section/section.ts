@@ -17,6 +17,8 @@ export const DEFAULT_SECTION_PADDING_RIGHT = 5;
 export const DEFAULT_SECTION_PADDING_BOTTOM = 5;
 export const DEFAULT_SECTION_PADDING_LEFT = 5;
 
+export const DEFAULT_SECTION_SHOW_IF_KEY = null;
+
 type SectionAttributes = {
   borderRadius: number;
   backgroundColor: string;
@@ -33,6 +35,8 @@ type SectionAttributes = {
   paddingRight: number;
   paddingBottom: number;
   paddingLeft: number;
+
+  showIfKey: string | null;
 };
 
 declare module '@tiptap/core' {
@@ -241,6 +245,24 @@ export const SectionExtension = Node.create({
 
           return {
             marginLeft: attributes.marginLeft,
+          };
+        },
+      },
+
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') || DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
           };
         },
       },

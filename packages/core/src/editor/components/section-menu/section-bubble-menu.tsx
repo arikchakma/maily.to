@@ -30,6 +30,7 @@ import { MarginIcon } from '../icons/margin-icon';
 import { PaddingIcon } from '../icons/padding-icon';
 import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
+import { ShowPopover } from '../show-popover';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -219,6 +220,17 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
           />
         </div>
+
+        <Divider />
+
+        <ShowPopover
+          showIfKey={state.currentShowIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor.commands.updateSection({
+              showIfKey: value,
+            });
+          }}
+        />
 
         {state.isColumnsActive && (
           <>

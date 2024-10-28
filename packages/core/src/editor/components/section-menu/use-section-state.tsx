@@ -43,6 +43,8 @@ export const useSectionState = (editor: Editor) => {
           Number(ctx.editor.getAttributes('section')?.paddingLeft) || 0,
 
         isColumnsActive: ctx.editor.isActive('columns'),
+
+        currentShowIfKey: ctx.editor.getAttributes('section')?.showIfKey || '',
       };
     },
     equalityFn: deepEql,

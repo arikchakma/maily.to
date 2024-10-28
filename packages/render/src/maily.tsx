@@ -1272,6 +1272,11 @@ export class Maily {
       paddingLeft = DEFAULT_SECTION_PADDING_LEFT,
     } = attrs || {};
 
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
+
     return (
       <Row
         style={{
@@ -1375,7 +1380,7 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
 
-    const values = this.payloadValues.get(each) || payloadValue[each] || [];
+    const values = this.payloadValues.get(each) ?? payloadValue[each] ?? [];
     if (!Array.isArray(values)) {
       throw new Error(`Payload value for each "${each}" is not an array`);
     }
@@ -1416,7 +1421,7 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
 
-    const value = this.payloadValues.get(when) || payloadValue[when];
+    const value = this.payloadValues.get(when) ?? payloadValue[when];
 
     if (!value) {
       return <></>;
@@ -1430,5 +1435,16 @@ export class Maily {
         })}
       </>
     );
+  }
+
+  private shouldShow(node: JSONContent, options?: NodeOptions): boolean {
+    const showIfKey = node?.attrs?.showIfKey ?? '';
+    if (!showIfKey) {
+      return true;
+    }
+
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+    return !!(this.payloadValues.get(showIfKey) ?? payloadValue[showIfKey]);
   }
 }

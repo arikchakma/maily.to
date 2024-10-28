@@ -3,7 +3,7 @@ import { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
-import { VariableComponent } from '../nodes/variable';
+import { VariableView } from './variable-view';
 
 export type VariableOptions = {
   HTMLAttributes: Record<string, any>;
@@ -16,7 +16,7 @@ export type VariableOptions = {
 
 export const VariablePluginKey = new PluginKey('variable');
 
-export const Variable = Node.create<VariableOptions>({
+export const VariableExtension = Node.create<VariableOptions>({
   name: 'variable',
   group: 'inline',
   inline: true,
@@ -186,6 +186,6 @@ export const Variable = Node.create<VariableOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(VariableComponent);
+    return ReactNodeViewRenderer(VariableView);
   },
 });

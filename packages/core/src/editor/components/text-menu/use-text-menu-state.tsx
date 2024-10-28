@@ -10,6 +10,13 @@ export const useTextMenuState = (editor: Editor) => {
       return {
         currentTextColor:
           ctx.editor.getAttributes('textStyle').color || DEFAULT_TEXT_COLOR,
+
+        linkUrl: ctx.editor?.getAttributes('link').href,
+        textAlign: ctx.editor?.getAttributes('paragraph')?.textAlign || 'left',
+
+        isListActive:
+          ctx.editor.isActive('bulletList') ||
+          ctx.editor.isActive('orderedList'),
       };
     },
     equalityFn: deepEql,

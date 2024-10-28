@@ -1,17 +1,14 @@
-import { BubbleMenu, BubbleMenuProps, isTextSelection } from '@tiptap/react';
+import { BubbleMenu, BubbleMenuProps } from '@tiptap/react';
 import {
-  AlignCenterIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
   BoldIcon,
   CodeIcon,
   ItalicIcon,
-  LinkIcon,
+  List,
+  ListOrdered,
   LucideIcon,
   StrikethroughIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { allowedLogoAlignment } from '../../nodes/logo';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { ColorPicker } from '../ui/color-picker';
 import { BaseButton } from '../base-button';
@@ -19,13 +16,17 @@ import { useTextMenuState } from './use-text-menu-state';
 import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { TooltipProvider } from '../ui/tooltip';
+import { LinkInputPopover } from '../ui/link-input-popover';
+import { Divider } from '../ui/divider';
+import { AlignmentSwitch } from '../alignment-switch';
+import { SVGIcon } from '../icons/grid-lines';
 
 export interface BubbleMenuItem {
   name?: string;
   isActive?: () => boolean;
   command?: () => void;
   shouldShow?: () => boolean;
-  icon?: LucideIcon;
+  icon?: LucideIcon | SVGIcon;
   className?: string;
   iconClassName?: string;
   nameClassName?: string;
@@ -44,23 +45,6 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   if (!editor) {
     return null;
   }
-
-  const icons = [AlignLeftIcon, AlignCenterIcon, AlignRightIcon];
-  const alignmentItems: BubbleMenuItem[] = allowedLogoAlignment.map(
-    (alignment, index) => ({
-      name: alignment,
-      isActive: () => editor?.isActive({ textAlign: alignment })!,
-      command: () => {
-        if (props?.editor?.isActive({ textAlign: alignment })) {
-          props?.editor?.chain()?.focus().unsetTextAlign().run();
-        } else {
-          props?.editor?.chain().focus().setTextAlign(alignment).run()!;
-        }
-      },
-      icon: icons[index],
-      tooltip: alignment.charAt(0).toUpperCase() + alignment.slice(1),
-    })
-  );
 
   const items: BubbleMenuItem[] = [
     {
@@ -91,43 +75,12 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       icon: StrikethroughIcon,
       tooltip: 'Strikethrough',
     },
-    ...alignmentItems,
     {
       name: 'code',
       isActive: () => editor?.isActive('code')!,
       command: () => editor?.chain().focus().toggleCode().run()!,
       icon: CodeIcon,
       tooltip: 'Code',
-    },
-    {
-      name: 'link',
-      command: () => {
-        const previousUrl = editor?.getAttributes('link').href!;
-        const url = window.prompt('URL', previousUrl);
-
-        // If the user cancels the prompt, we don't want to toggle the link
-        if (url === null) {
-          return;
-        }
-
-        // If the user deletes the URL entirely, we'll unlink the selected text
-        if (url === '') {
-          editor?.chain().focus().extendMarkRange('link').unsetLink().run();
-
-          return;
-        }
-
-        // Otherwise, we set the link to the given URL
-        editor
-          ?.chain()
-          .focus()
-          .extendMarkRange('link')
-          .setLink({ href: url })
-          .run()!;
-      },
-      isActive: () => editor?.isActive('link')!,
-      icon: LinkIcon,
-      tooltip: 'Link',
     },
   ];
 
@@ -178,17 +131,58 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-1 mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
+      className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         {items.map((item, index) => (
-          <BubbleMenuButton
-            key={index}
-            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-            iconClassName="mly-w-3 mly-h-3"
-            {...item}
-          />
+          <BubbleMenuButton key={index} {...item} />
         ))}
+
+        <AlignmentSwitch
+          alignment={state.textAlign}
+          onAlignmentChange={(alignment) => {
+            editor?.chain().focus().setTextAlign(alignment).run();
+          }}
+        />
+
+        {!state.isListActive && (
+          <>
+            <BubbleMenuButton
+              icon={List}
+              command={() => {
+                editor.chain().focus().toggleBulletList().run();
+              }}
+              tooltip="Bullet List"
+            />
+            <BubbleMenuButton
+              icon={ListOrdered}
+              command={() => {
+                editor.chain().focus().toggleOrderedList().run();
+              }}
+              tooltip="Ordered List"
+            />
+          </>
+        )}
+
+        <LinkInputPopover
+          defaultValue={state?.linkUrl ?? ''}
+          onValueChange={(value) => {
+            if (!value) {
+              editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+              return;
+            }
+
+            editor
+              ?.chain()
+              .extendMarkRange('link')
+              .setLink({ href: value })
+              .run()!;
+          }}
+          tooltip="External URL"
+        />
+
+        <Divider />
+
         <ColorPicker
           color={state.currentTextColor}
           onColorChange={(color) => {

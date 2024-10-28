@@ -7,13 +7,19 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { MailyContextType, MailyProvider } from './provider';
+import {
+  DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
+  DEFAULT_VARIABLE_SUGGESTION_CHAR,
+  MailyContextType,
+  MailyProvider,
+} from './provider';
 import { cn } from './utils/classname';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
+import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -53,6 +59,8 @@ export function Editor(props: EditorProps) {
     contentJson,
     variables,
     slashCommands,
+    variableSuggestionChar = DEFAULT_VARIABLE_SUGGESTION_CHAR,
+    payloadValueSuggestionChar = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
   } = props;
 
   let formattedContent: any = null;
@@ -108,6 +116,8 @@ export function Editor(props: EditorProps) {
       ...defaultExtensions({
         variables,
         slashCommands,
+        variableSuggestionChar,
+        payloadValueSuggestionChar,
       }),
       ...(extensions || []),
     ],
@@ -139,6 +149,7 @@ export function Editor(props: EditorProps) {
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
+          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

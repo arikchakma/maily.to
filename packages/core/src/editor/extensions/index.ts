@@ -16,9 +16,7 @@ import { HorizontalRule } from './horizontal-rule';
 import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
-import { getVariableSuggestions } from '../nodes/variable';
 import { getSlashCommandSuggestions, SlashCommand } from './slash-command';
-import { Variable } from './variable-extension';
 import { ResizableImageExtension } from './image-resize';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
@@ -30,11 +28,18 @@ import { PayloadValueExtension } from '../nodes/for/payload-value';
 import { getPlayloadValueSuggestions } from '../nodes/for/payload-value-view';
 import { ShowExtension } from '../nodes/show/show';
 import { ButtonExtension } from '../nodes/button/button';
+import { VariableExtension } from '../nodes/variable/variable';
+import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const { variables, slashCommands } = props;
+  const {
+    variables,
+    slashCommands,
+    variableSuggestionChar,
+    payloadValueSuggestionChar,
+  } = props;
 
   return [
     Document.extend({
@@ -86,9 +91,6 @@ export function extensions(props: ExtensionsProps) {
     }),
     Spacer,
     Footer,
-    Variable.configure({
-      suggestion: getVariableSuggestions(variables),
-    }),
     SlashCommand.configure({
       suggestion: getSlashCommandSuggestions(slashCommands),
     }),
@@ -105,7 +107,7 @@ export function extensions(props: ExtensionsProps) {
     SectionExtension,
     ForExtension,
     PayloadValueExtension.configure({
-      suggestion: getPlayloadValueSuggestions([]),
+      suggestion: getPlayloadValueSuggestions([], payloadValueSuggestionChar),
     }),
     ShowExtension,
     Dropcursor.configure({
@@ -114,5 +116,8 @@ export function extensions(props: ExtensionsProps) {
       class: 'ProseMirror-dropcursor',
     }),
     ButtonExtension,
+    VariableExtension.configure({
+      suggestion: getVariableSuggestions(variables, variableSuggestionChar),
+    }),
   ];
 }

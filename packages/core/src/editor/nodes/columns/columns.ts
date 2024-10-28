@@ -1,3 +1,4 @@
+import { goToColumn } from '@/editor/utils/columns';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
@@ -86,6 +87,10 @@ export const Columns = Node.create({
       'table',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
+        border: 0,
+        cellpadding: 0,
+        cellspacing: 0,
+        class: 'mly-w-full mly-border-separate',
       }),
       [
         'tbody',
@@ -109,5 +114,16 @@ export const Columns = Node.create({
         tag: 'table[data-type="columns"]',
       },
     ];
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => {
+        return goToColumn(this.editor, 'next');
+      },
+      'Shift-Tab': () => {
+        return goToColumn(this.editor, 'previous');
+      },
+    };
   },
 });

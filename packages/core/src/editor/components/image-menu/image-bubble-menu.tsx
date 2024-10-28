@@ -1,6 +1,6 @@
 import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo';
 import { BubbleMenu } from '@tiptap/react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ImageDown } from 'lucide-react';
 import { AlignmentSwitch } from '../alignment-switch';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
@@ -86,6 +86,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               }
             }}
             tooltip="Source URL"
+            icon={ImageDown}
           />
 
           {state.isImageActive && (
@@ -98,7 +99,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   .run();
               }}
               tooltip="External URL"
-              icon={ArrowUpRight}
             />
           )}
         </div>

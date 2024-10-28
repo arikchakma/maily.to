@@ -10,9 +10,7 @@ export const useSectionState = (editor: Editor) => {
     editor,
     selector: (ctx) => {
       return {
-        isAlignLeft: ctx.editor.getAttributes('section')?.align === 'left',
-        isAlignCenter: ctx.editor.getAttributes('section')?.align === 'center',
-        isAlignRight: ctx.editor.getAttributes('section')?.align === 'right',
+        currentAlignment: ctx.editor.getAttributes('section')?.align || 'left',
 
         currentBorderRadius:
           Number(ctx.editor.getAttributes('section')?.borderRadius) || 0,
@@ -43,6 +41,8 @@ export const useSectionState = (editor: Editor) => {
           Number(ctx.editor.getAttributes('section')?.paddingBottom) || 0,
         currentPaddingLeft:
           Number(ctx.editor.getAttributes('section')?.paddingLeft) || 0,
+
+        isColumnsActive: ctx.editor.isActive('columns'),
       };
     },
     equalityFn: deepEql,

@@ -10,22 +10,26 @@ import {
   AlignRight,
   Box,
   BoxSelect,
+  ChevronUp,
   Scan,
 } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
-import { BaseButton } from '../base-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { GridLines } from '../icons/grid-lines';
 import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../ui/tooltip';
+import { TooltipProvider } from '../ui/tooltip';
+import { AlignmentSwitch } from '../alignment-switch';
+import { BaseButton } from '../base-button';
+import { BorderColor } from '../icons/border-color';
+import { Select } from '../ui/select';
+import { allowedButtonBorderRadius } from '@/editor/nodes/button/button';
+import { MarginIcon } from '../icons/margin-icon';
+import { PaddingIcon } from '../icons/padding-icon';
+import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
+import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -50,11 +54,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         return false;
       }
 
-      return (
-        editor.isActive('section') &&
-        !editor.isActive('columns') &&
-        !editor.isActive('column')
-      );
+      return editor.isActive('section');
     },
     tippyOptions: {
       offset: [0, 8],
@@ -72,107 +72,77 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
   const state = useSectionState(editor);
 
-  const isAllPaddingEqual =
-    state.currentPaddingTop === state.currentPaddingRight &&
-    state.currentPaddingTop === state.currentPaddingBottom &&
-    state.currentPaddingTop === state.currentPaddingLeft;
-
-  const isAllMarginEqual =
-    state.currentMarginTop === state.currentMarginRight &&
-    state.currentMarginTop === state.currentMarginBottom &&
-    state.currentMarginTop === state.currentMarginLeft;
+  const borderRadiusOptions = [
+    { value: '0', label: 'Sharp' },
+    { value: '6', label: 'Smooth' },
+    { value: '9999', label: 'Round' },
+  ];
 
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-md mly-border mly-border-slate-200 mly-bg-white mly-p-1 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
-        <NumberInput
-          icon={Scan}
-          value={state.currentBorderRadius}
-          onValueChange={(value) => {
+        <AlignmentSwitch
+          alignment={state.currentAlignment}
+          onAlignmentChange={(alignment) => {
             editor?.commands?.updateSection({
-              borderRadius: value,
-            });
-          }}
-          tooltip="Border Radius"
-        />
-
-        <NumberInput
-          max={8}
-          icon={BoxSelect}
-          value={state.currentBorderWidth}
-          onValueChange={(value) => {
-            editor?.commands?.updateSection({
-              borderWidth: value,
-            });
-          }}
-          tooltip="Border Width"
-        />
-
-        <ColorPicker
-          color={state.currentBorderColor}
-          onColorChange={(color) => {
-            editor?.commands?.updateSection({
-              borderColor: color,
-            });
-          }}
-          borderColor={state.currentBorderColor}
-          backgroundColor="transparent"
-          tooltip="Border Color"
-          className="mly-shadow"
-        />
-
-        <Divider />
-
-        <NumberInput
-          icon={Box}
-          value={isAllPaddingEqual ? state.currentPaddingTop : 0}
-          onValueChange={(value) => {
-            editor?.commands?.updateSection({
-              paddingTop: value,
-              paddingRight: value,
-              paddingBottom: value,
-              paddingLeft: value,
-            });
-          }}
-          tooltip="Padding"
-        />
-
-        <EdgeSpacingControl
-          top={state.currentPaddingTop}
-          right={state.currentPaddingRight}
-          bottom={state.currentPaddingBottom}
-          left={state.currentPaddingLeft}
-          onTopValueChange={(value) => {
-            editor?.commands?.updateSection({
-              paddingTop: value,
-            });
-          }}
-          onRightValueChange={(value) => {
-            editor?.commands?.updateSection({
-              paddingRight: value,
-            });
-          }}
-          onBottomValueChange={(value) => {
-            editor?.commands?.updateSection({
-              paddingBottom: value,
-            });
-          }}
-          onLeftValueChange={(value) => {
-            editor?.commands?.updateSection({
-              paddingLeft: value,
+              align: alignment,
             });
           }}
         />
 
         <Divider />
 
-        <NumberInput
-          icon={GridLines}
-          value={isAllMarginEqual ? state.currentMarginTop : 0}
-          onValueChange={(value) => {
+        <div className="mly-flex mly-space-x-0.5">
+          <Select
+            label="Border Radius"
+            value={String(state.currentBorderRadius)}
+            options={borderRadiusOptions}
+            onValueChange={(value) => {
+              editor?.commands?.updateSection({
+                borderRadius: Number(value),
+              });
+            }}
+            tooltip="Border Radius"
+            className="mly-capitalize"
+          />
+
+          <Select
+            label="Border Width"
+            value={String(state.currentBorderWidth)}
+            options={[
+              { value: '0', label: 'None' },
+              { value: '1', label: 'Thin' },
+              { value: '2', label: 'Medium' },
+              { value: '3', label: 'Thick' },
+            ]}
+            onValueChange={(value) => {
+              editor?.commands?.updateSection({
+                borderWidth: Number(value),
+              });
+            }}
+            tooltip="Border Width"
+            className="mly-capitalize"
+          />
+        </div>
+
+        <Divider />
+
+        <Select
+          icon={MarginIcon}
+          iconClassName="mly-stroke-[1.2] mly-size-3.5"
+          label="Margin"
+          value={String(state.currentMarginTop)}
+          options={[
+            { value: '0', label: 'None' },
+            { value: '4', label: 'Small' },
+            { value: '8', label: 'Medium' },
+            { value: '12', label: 'Large' },
+          ]}
+          onValueChange={(_value) => {
+            const value = Number(_value);
             editor?.commands?.updateSection({
               marginTop: value,
               marginRight: value,
@@ -181,78 +151,100 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             });
           }}
           tooltip="Margin"
-        />
-
-        <EdgeSpacingControl
-          top={state.currentMarginTop}
-          right={state.currentMarginRight}
-          bottom={state.currentMarginBottom}
-          left={state.currentMarginLeft}
-          onTopValueChange={(value) => {
-            editor?.commands?.updateSection({
-              marginTop: value,
-            });
-          }}
-          onRightValueChange={(value) => {
-            editor?.commands?.updateSection({
-              marginRight: value,
-            });
-          }}
-          onBottomValueChange={(value) => {
-            editor?.commands?.updateSection({
-              marginBottom: value,
-            });
-          }}
-          onLeftValueChange={(value) => {
-            editor?.commands?.updateSection({
-              marginLeft: value,
-            });
-          }}
+          className="mly-capitalize"
         />
 
         <Divider />
 
-        <ColorPicker
-          color={state.currentBackgroundColor}
-          onColorChange={(color) => {
+        <Select
+          icon={PaddingIcon}
+          iconClassName="mly-stroke-[1]"
+          label="Padding"
+          value={String(state.currentPaddingTop)}
+          options={[
+            { value: '0', label: 'None' },
+            { value: '4', label: 'Small' },
+            { value: '8', label: 'Medium' },
+            { value: '12', label: 'Large' },
+          ]}
+          onValueChange={(_value) => {
+            const value = Number(_value);
             editor?.commands?.updateSection({
-              backgroundColor: color,
+              paddingTop: value,
+              paddingRight: value,
+              paddingBottom: value,
+              paddingLeft: value,
             });
           }}
-          backgroundColor={state.currentBackgroundColor}
-          tooltip="Background Color"
-          className="mly-border-[1px]"
+          tooltip="Padding"
+          className="mly-capitalize"
         />
 
         <Divider />
 
-        <BubbleMenuButton
-          name="Align Left"
-          isActive={() => state.isAlignLeft}
-          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-          iconClassName="mly-w-3 mly-h-3"
-          icon={AlignLeft}
-          command={() => editor.commands.updateSection({ align: 'left' })}
-          tooltip="Align Left"
-        />
-        <BubbleMenuButton
-          name="Align Center"
-          isActive={() => state.isAlignCenter}
-          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-          iconClassName="mly-w-3 mly-h-3"
-          icon={AlignCenter}
-          command={() => editor.commands.updateSection({ align: 'center' })}
-          tooltip="Align Center"
-        />
-        <BubbleMenuButton
-          name="Align Right"
-          isActive={() => state.isAlignRight}
-          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-          iconClassName="mly-w-3 mly-h-3"
-          icon={AlignRight}
-          command={() => editor.commands.updateSection({ align: 'right' })}
-          tooltip="Align Right"
-        />
+        <div className="mly-flex mly-space-x-0.5">
+          <ColorPicker
+            color={state.currentBorderColor}
+            onColorChange={(color) => {
+              editor?.commands?.updateSection({
+                borderColor: color,
+              });
+            }}
+            tooltip="Border Color"
+          >
+            <BaseButton
+              variant="ghost"
+              className="!mly-size-7 mly-shrink-0"
+              size="sm"
+              type="button"
+            >
+              <BorderColor
+                className="mly-size-3 mly-shrink-0"
+                topBarClassName="mly-stroke-midnight-gray"
+                style={{
+                  color: state.currentBorderColor,
+                }}
+              />
+            </BaseButton>
+          </ColorPicker>
+          <ColorPicker
+            color={state.currentBackgroundColor}
+            onColorChange={(color) => {
+              editor?.commands?.updateSection({
+                backgroundColor: color,
+              });
+            }}
+            backgroundColor={state.currentBackgroundColor}
+            tooltip="Background Color"
+            className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
+          />
+        </div>
+
+        {state.isColumnsActive && (
+          <>
+            <Divider />
+            <Popover>
+              <PopoverTrigger className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm hover:mly-bg-soft-gray data-[state=open]:mly-bg-soft-gray">
+                Column
+                <ChevronUp className="mly-h-3 mly-w-3" />
+              </PopoverTrigger>
+              <PopoverContent
+                className="mly-w-max mly-rounded-lg !mly-p-0.5"
+                side="top"
+                sideOffset={8}
+                align="end"
+                onOpenAutoFocus={(e) => {
+                  e.preventDefault();
+                }}
+                onCloseAutoFocus={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <ColumnsBubbleMenuContent editor={editor} />
+              </PopoverContent>
+            </Popover>
+          </>
+        )}
       </TooltipProvider>
     </BubbleMenu>
   );

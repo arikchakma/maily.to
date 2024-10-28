@@ -75,7 +75,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
               }}
               ref={linkInputRef}
               type="url"
-              className="mly-h-7 mly-max-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+              className="mly-h-7 mly-w-48 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
             />
             <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
               <ArrowUpRight className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />

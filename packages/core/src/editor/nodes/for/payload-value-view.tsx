@@ -9,6 +9,7 @@ import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { cn } from '@/editor/utils/classname';
+import { DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR } from '@/editor/provider';
 
 export const PlayloadValueList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -75,13 +76,15 @@ PlayloadValueList.displayName = 'PlayloadValueList';
 export type PlayloadValues = { name: string }[];
 
 export function getPlayloadValueSuggestions(
-  payloadValues: PlayloadValues = []
+  payloadValues: PlayloadValues = [],
+  char: string = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   const defaultPlayloadValues = payloadValues.map(
     (payloadValue) => payloadValue.name
   );
 
   return {
+    char,
     items: ({ query }) => {
       return defaultPlayloadValues
         .concat(query.length > 0 ? [query] : [])

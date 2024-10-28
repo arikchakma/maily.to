@@ -1,18 +1,9 @@
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-import { NodeViewProps, NodeViewWrapper, ReactRenderer } from '@tiptap/react';
+import { DEFAULT_VARIABLE_SUGGESTION_CHAR, Variables } from '@/editor/provider';
+import { cn } from '@/editor/utils/classname';
+import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-import { AlertTriangle, Braces } from 'lucide-react';
-import { cn } from '../utils/classname';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/popover';
-import { Input } from '../components/input';
-import { useMailyContext, Variables } from '../provider';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -77,11 +68,13 @@ export const VariableList = forwardRef((props: any, ref) => {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: Variables = []
+  variables: Variables = [],
+  char: string = DEFAULT_VARIABLE_SUGGESTION_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   const defaultVariables = variables.map((variable) => variable.name);
 
   return {
+    char,
     items: ({ query }) => {
       return defaultVariables
         .concat(query.length > 0 ? [query] : [])
@@ -148,79 +141,4 @@ export function getVariableSuggestions(
       };
     },
   };
-}
-
-export function VariableComponent(props: NodeViewProps) {
-  const { node, selected, updateAttributes } = props;
-  const { id, fallback } = node.attrs;
-
-  const { variables = [] } = useMailyContext();
-  const isRequired =
-    variables.find((variable) => variable.name === id)?.required ?? true;
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <NodeViewWrapper
-      className={cn(
-        'react-component',
-        selected && 'ProseMirror-selectednode',
-        'mly-inline-block mly-leading-none'
-      )}
-      draggable="false"
-    >
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger>
-          <span
-            tabIndex={-1}
-            className="mly-inline-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-border-rose-200 mly-bg-rose-50 mly-px-2 mly-py-1 mly-leading-none mly-text-rose-800"
-          >
-            {id}
-            {isRequired && !fallback && (
-              <AlertTriangle className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
-            )}
-          </span>
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="mly-space-y-2"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          onCloseAutoFocus={(e) => e.preventDefault()}
-        >
-          <label className="mly-block mly-w-full mly-space-y-1.5 mly-leading-none">
-            <span className="mly-text-xs mly-font-normal mly-leading-none">
-              Variable Name
-            </span>
-            <Input
-              placeholder="Add Variable Name"
-              value={id}
-              onChange={(e) => {
-                updateAttributes({
-                  id: e.target.value,
-                });
-              }}
-            />
-          </label>
-          <label className="mly-block mly-w-full mly-space-y-1.5 mly-leading-none">
-            <span className="mly-text-xs mly-font-normal mly-leading-none">
-              Fallback Value
-            </span>
-            <Input
-              placeholder="Fallback Value"
-              value={fallback || ''}
-              onChange={(e) => {
-                updateAttributes({
-                  fallback: e.target.value,
-                });
-              }}
-            />
-
-            <p className="mly-text-xs mly-text-gray-500">
-              If the variable doesn't exist, this fallback value will be used.
-            </p>
-          </label>
-        </PopoverContent>
-      </Popover>
-    </NodeViewWrapper>
-  );
 }

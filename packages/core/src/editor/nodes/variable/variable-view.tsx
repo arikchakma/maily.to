@@ -28,7 +28,7 @@ export function VariableView(props: NodeViewProps) {
       )}
       draggable="false"
     >
-      <Popover open={selected}>
+      <Popover>
         <PopoverTrigger>
           <span
             tabIndex={-1}

@@ -45,6 +45,15 @@ type MailyProviderProps = PropsWithChildren<MailyContextType>;
 export function MailyProvider(props: MailyProviderProps) {
   const { children, ...defaultValues } = props;
 
+  if (defaultValues.variableSuggestionChar === '') {
+    throw new Error('variableSuggestionChar cannot be an empty string');
+  }
+
+  if (defaultValues.payloadValueSuggestionChar === '') {
+    throw new Error('payloadValueSuggestionChar cannot be an empty string');
+  }
+
+
   return (
     <MailyContext.Provider value={defaultValues}>
       {children}

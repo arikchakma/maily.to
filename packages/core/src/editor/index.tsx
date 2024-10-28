@@ -130,7 +130,12 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <MailyProvider variables={variables}>
+    <MailyProvider
+      variables={variables}
+      slashCommands={slashCommands}
+      variableSuggestionChar={variableSuggestionChar}
+      payloadValueSuggestionChar={payloadValueSuggestionChar}
+    >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}
         ref={menuContainerRef}

@@ -5,7 +5,6 @@ import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
-import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import {
   DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
@@ -20,6 +19,7 @@ import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
+import { SpacerBubbleMenu } from './components/spacer/spacer-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 

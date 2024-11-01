@@ -1,5 +1,6 @@
 import { mergeAttributes } from '@tiptap/core';
 import TiptapImage from '@tiptap/extension-image';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from './section/section';
 
 export const allowedLogoSize = ['sm', 'md', 'lg'] as const;
 export type AllowedLogoSize = (typeof allowedLogoSize)[number];
@@ -34,6 +35,8 @@ export interface TiptapLogoAttributes {
   size: AllowedLogoSize;
   alignment: AllowedLogoAlignment;
   HTMLAttributes: Record<string, any>;
+
+  showIfKey: string;
 }
 
 const DEFAULT_ALIGNMENT: AllowedLogoAlignment = 'left';
@@ -95,6 +98,24 @@ export const TiptapLogoExtension = TiptapImage.extend<TiptapLogoAttributes>({
         renderHTML: (attributes) => {
           return {
             'data-alignment': attributes.alignment,
+          };
+        },
+      },
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
           };
         },
       },

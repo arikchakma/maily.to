@@ -53,7 +53,6 @@ export function MailyProvider(props: MailyProviderProps) {
     throw new Error('payloadValueSuggestionChar cannot be an empty string');
   }
 
-
   return (
     <MailyContext.Provider value={defaultValues}>
       {children}

@@ -47,6 +47,8 @@ export const useColumnsState = (editor: Editor) => {
           Number(ctx.editor.getAttributes('column')?.paddingBottom) || 0,
         columnPaddingLeft:
           Number(ctx.editor.getAttributes('column')?.paddingLeft) || 0,
+
+        currentShowIfKey: ctx.editor.getAttributes('columns')?.showIfKey || '',
       };
     },
     equalityFn: deepEql,

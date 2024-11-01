@@ -253,7 +253,8 @@ export const SectionExtension = Node.create({
         default: DEFAULT_SECTION_SHOW_IF_KEY,
         parseHTML: (element) => {
           return (
-            element.getAttribute('data-show-if-key') || DEFAULT_SECTION_SHOW_IF_KEY
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
           );
         },
         renderHTML(attributes) {

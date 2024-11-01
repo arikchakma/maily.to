@@ -3,11 +3,13 @@ import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
 import { v4 as uuid } from 'uuid';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
 
 interface ColumnsAttributes {
   width: string;
+  showIfKey: string;
 }
 
 declare module '@tiptap/core' {
@@ -38,6 +40,24 @@ export const Columns = Node.create({
 
           return {
             style: `width: ${attributes.width}`,
+          };
+        },
+      },
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
           };
         },
       },

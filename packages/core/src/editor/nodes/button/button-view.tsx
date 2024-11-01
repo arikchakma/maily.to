@@ -18,6 +18,7 @@ import {
   AllowedButtonVariant,
   allowedButtonVariant,
 } from './button';
+import { ShowPopover } from '@/editor/components/show-popover';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
@@ -29,6 +30,7 @@ export function ButtonView(props: NodeViewProps) {
     buttonColor,
     textColor,
     url: externalLink,
+    showIfKey = '',
   } = node.attrs;
 
   return (
@@ -179,6 +181,17 @@ export function ButtonView(props: NodeViewProps) {
                   }}
                 />
               </div>
+
+              <Divider />
+
+              <ShowPopover
+                showIfKey={showIfKey}
+                onShowIfKeyValueChange={(value) => {
+                  updateAttributes({
+                    showIfKey: value,
+                  });
+                }}
+              />
             </div>
           </TooltipProvider>
         </PopoverContent>

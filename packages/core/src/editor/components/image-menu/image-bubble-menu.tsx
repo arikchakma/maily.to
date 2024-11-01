@@ -9,6 +9,7 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
+import { ShowPopover } from '../show-popover';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -131,6 +132,19 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             </div>
           </>
         )}
+
+        <Divider />
+        <ShowPopover
+          showIfKey={state.currentShowIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor
+              ?.chain()
+              .updateAttributes(state.isLogoActive ? 'logo' : 'image', {
+                showIfKey: value,
+              })
+              .run();
+          }}
+        />
       </TooltipProvider>
     </BubbleMenu>
   );

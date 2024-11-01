@@ -3,6 +3,7 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ButtonView } from './button-view';
 import { AllowedLogoAlignment } from '@/editor/nodes/logo';
 import { updateAttributes } from '@/editor/utils/update-attribute';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 export const DEFAULT_BUTTON_ALIGNMENT: AllowedLogoAlignment = 'left';
 export const DEFAULT_BUTTON_VARIANT: AllowedButtonVariant = 'filled';
@@ -25,6 +26,8 @@ type ButtonAttributes = {
   borderRadius: AllowedButtonBorderRadius;
   buttonColor: string;
   textColor: string;
+
+  showIfKey: string;
 };
 
 declare module '@tiptap/core' {
@@ -128,6 +131,24 @@ export const ButtonExtension = Node.create({
         renderHTML: (attributes) => {
           return {
             'data-text-color': attributes.textColor,
+          };
+        },
+      },
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
           };
         },
       },

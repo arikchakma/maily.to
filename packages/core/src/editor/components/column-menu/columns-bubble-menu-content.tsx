@@ -11,6 +11,7 @@ import { PaddingIcon } from '../icons/padding-icon';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { ListMinus, ListPlus } from 'lucide-react';
 import { addColumn, removeColumn } from '@/editor/utils/columns';
+import { ShowPopover } from '../show-popover';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -186,6 +187,16 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
             />
           </>
         )}
+
+        <Divider />
+        <ShowPopover
+          showIfKey={state.currentShowIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor.commands.updateColumns({
+              showIfKey: value,
+            });
+          }}
+        />
       </div>
     </TooltipProvider>
   );

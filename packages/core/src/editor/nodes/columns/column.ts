@@ -30,6 +30,8 @@ interface ColumnAttributes {
   paddingRight: number;
   paddingBottom: number;
   paddingLeft: number;
+
+  showIfKey: string;
 }
 
 declare module '@tiptap/core' {

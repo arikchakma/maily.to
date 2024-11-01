@@ -7,6 +7,7 @@ import { type CSSProperties, useRef, useState } from 'react';
 import TipTapImage from '@tiptap/extension-image';
 import { useEvent } from '../utils/use-event';
 import { useEffect } from 'react';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from '../nodes/section/section';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
@@ -192,6 +193,25 @@ export const ResizableImageExtension = TipTapImage.extend({
         parseHTML: (element) => {
           const externalLink = element.getAttribute('data-external-link');
           return externalLink ? { externalLink } : null;
+        },
+      },
+
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
+          };
         },
       },
     };

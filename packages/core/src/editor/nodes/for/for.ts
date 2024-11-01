@@ -2,10 +2,12 @@ import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ForView } from './for-view';
 import { updateAttributes } from '@/editor/utils/update-attribute';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 type ForAttributes = {
   each: string;
   isUpdatingKey: boolean;
+  showIfKey: string;
 };
 
 declare module '@tiptap/core' {
@@ -43,6 +45,24 @@ export const ForExtension = Node.create({
       },
       isUpdatingKey: {
         default: false,
+      },
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
+          };
+        },
       },
     };
   },

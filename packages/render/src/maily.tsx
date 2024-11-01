@@ -861,6 +861,11 @@ export class Maily {
       alignment = 'left',
     } = attrs || {};
 
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
+
     let radius: string | undefined = '0px';
     if (borderRadius === 'round') {
       radius = '9999px';
@@ -906,9 +911,14 @@ export class Maily {
     );
   }
 
-  private spacer(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private spacer(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const { height = 'auto' } = attrs || {};
+
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
 
     return (
       <Container
@@ -933,6 +943,11 @@ export class Maily {
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
     } = attrs || {};
+
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
 
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
@@ -972,6 +987,11 @@ export class Maily {
       alignment = 'center',
       externalLink = '',
     } = attrs || {};
+
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
 
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
@@ -1314,6 +1334,11 @@ export class Maily {
     const { attrs } = node;
     const { width = DEFAULT_COLUMNS_WIDTH } = attrs || {};
 
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
+
     return (
       <Row
         width={width}
@@ -1376,6 +1401,11 @@ export class Maily {
   private for(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const { each = '' } = attrs || {};
+
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
 
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};

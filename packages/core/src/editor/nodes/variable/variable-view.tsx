@@ -3,6 +3,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/editor/components/popover';
+import { ShowPopover } from '@/editor/components/show-popover';
 import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { useMailyContext } from '@/editor/provider';
@@ -13,7 +14,7 @@ import { AlertTriangle, Pencil } from 'lucide-react';
 
 export function VariableView(props: NodeViewProps) {
   const { node, selected, updateAttributes } = props;
-  const { id, fallback } = node.attrs;
+  const { id, fallback, showIfKey = '' } = node.attrs;
 
   const { variables = [] } = useMailyContext();
   const isRequired =
@@ -86,6 +87,17 @@ export function VariableView(props: NodeViewProps) {
                   <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
                 </div>
               </label>
+
+              <Divider />
+
+              <ShowPopover
+                showIfKey={showIfKey}
+                onShowIfKeyValueChange={(value) => {
+                  updateAttributes({
+                    showIfKey: value,
+                  });
+                }}
+              />
             </div>
           </TooltipProvider>
         </PopoverContent>

@@ -747,8 +747,13 @@ export class Maily {
     );
   }
 
-  private variable(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private variable(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { id: variable, fallback } = node.attrs || {};
+
+    const shouldShow = this.shouldShow(node, options);
+    if (!shouldShow) {
+      return <></>;
+    }
 
     let formattedVariable = this.variableFormatter({
       variable,

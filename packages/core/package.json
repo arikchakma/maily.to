@@ -10,15 +10,26 @@
     "dist/**"
   ],
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "browser": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./blocks": {
+      "browser": "./dist/blocks/index.mjs",
+      "import": "./dist/blocks/index.mjs",
+      "require": "./dist/blocks/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ],
+      "blocks": [
+        "dist/blocks/index.d.ts"
+      ]
     }
   },
   "scripts": {

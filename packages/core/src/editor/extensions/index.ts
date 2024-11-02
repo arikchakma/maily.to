@@ -16,7 +16,6 @@ import { HorizontalRule } from './horizontal-rule';
 import { Footer } from '../nodes/footer';
 import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
-import { getSlashCommandSuggestions, SlashCommand } from './slash-command';
 import { ResizableImageExtension } from './image-resize';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
@@ -30,13 +29,15 @@ import { ShowExtension } from '../nodes/show/show';
 import { ButtonExtension } from '../nodes/button/button';
 import { VariableExtension } from '../nodes/variable/variable';
 import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
+import { SlashCommand } from './slash-command/slash-command';
+import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
   const {
     variables,
-    slashCommands,
+    blocks,
     variableSuggestionChar,
     payloadValueSuggestionChar,
   } = props;
@@ -92,7 +93,7 @@ export function extensions(props: ExtensionsProps) {
     Spacer,
     Footer,
     SlashCommand.configure({
-      suggestion: getSlashCommandSuggestions(slashCommands),
+      suggestion: getSlashCommandSuggestions(blocks),
     }),
     TiptapLink.configure({
       HTMLAttributes: {

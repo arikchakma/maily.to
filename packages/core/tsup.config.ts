@@ -1,17 +1,32 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig, Options } from 'tsup';
 
-// eslint-disable-next-line import/no-default-export
-export default defineConfig((options: Options) => ({
-  entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
-  banner: {
-    js: "'use client'",
-  },
-  dts: true,
-  minify: true,
+const packageOptions: Options = {
+  splitting: false,
+  sourcemap: true,
   clean: true,
-  external: ['react'],
-  injectStyle: true,
-  ...options,
-}));
+  treeshake: false,
+  dts: true,
+  format: ['esm', 'cjs'],
+};
+
+export default defineConfig([
+  {
+    ...packageOptions,
+    entry: {
+      index: 'src/index.ts',
+    },
+    external: ['react'],
+    injectStyle: true,
+    banner: {
+      js: "'use client'",
+    },
+  },
+  {
+    ...packageOptions,
+    entry: {
+      index: 'src/blocks.ts',
+    },
+    external: ['react'],
+    outDir: 'dist/blocks',
+  },
+]);

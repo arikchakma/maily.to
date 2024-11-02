@@ -1,11 +1,11 @@
 import type { BlockItem } from './types';
-import { ImageIcon } from 'lucide-react';
+import { ColumnsIcon, SectionIcon, Repeat2, MoveVertical } from 'lucide-react';
 
 export const columns: BlockItem = {
   title: 'Columns',
   description: 'Add columns to email.',
   searchTerms: ['layout', 'columns'],
-  icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+  icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
     return editor.isActive('columns');
   },
@@ -26,7 +26,7 @@ export const section: BlockItem = {
   title: 'Section',
   description: 'Add a section to email.',
   searchTerms: ['layout', 'section'],
-  icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+  icon: <SectionIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
     return editor.isActive('columns');
   },
@@ -40,7 +40,7 @@ export const forLoop: BlockItem = {
   title: 'For',
   description: 'Loop over an array of items.',
   searchTerms: ['for', 'loop'],
-  icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+  icon: <Repeat2 className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setFor().run();
@@ -51,7 +51,7 @@ export const spacer: BlockItem = {
   title: 'Spacer',
   description: 'Add space between blocks.',
   searchTerms: ['space', 'gap', 'divider'],
-  icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+  icon: <MoveVertical className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setSpacer({ height: 'sm' }).run();

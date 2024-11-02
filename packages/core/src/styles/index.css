@@ -289,6 +289,10 @@
       }
     }
   }
+  
+  .node-for.has-focus [data-repeat-indicator] {
+    opacity: 1;
+  }
 
   [data-type='show'] {
     [data-node-view-content] > div {

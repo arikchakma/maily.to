@@ -90,7 +90,7 @@ function CommandList(props: CommandListProps) {
       <div
         id="slash-command"
         ref={commandListContainer}
-        className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-px-1 mly-py-2"
+        className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-p-1"
       >
         {items.map((item: CommandItemProps, index: number) => {
           return (

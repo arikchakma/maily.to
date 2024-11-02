@@ -117,8 +117,12 @@ export const Column = Node.create({
             return {};
           }
 
+          const bgColorVariable =
+            attributes.backgroundColor === 'transparent'
+              ? '#ffffff'
+              : attributes.backgroundColor;
           return {
-            style: `background-color: ${attributes.backgroundColor};--bg-color: ${attributes.backgroundColor}`,
+            style: `background-color: ${attributes.backgroundColor};--bg-color: ${bgColorVariable}`,
           };
         },
       },

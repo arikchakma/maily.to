@@ -83,7 +83,7 @@ export const SectionExtension = Node.create({
           }
 
           return {
-            style: `background-color: ${attributes.backgroundColor}`,
+            style: `background-color: ${attributes.backgroundColor};--bg-color: ${attributes.backgroundColor}`,
           };
         },
       },
@@ -292,7 +292,12 @@ export const SectionExtension = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const { marginTop, marginRight, marginBottom, marginLeft } = HTMLAttributes;
+    const {
+      marginTop = 0,
+      marginRight = 0,
+      marginBottom = 0,
+      marginLeft = 0,
+    } = HTMLAttributes;
 
     return [
       'table',

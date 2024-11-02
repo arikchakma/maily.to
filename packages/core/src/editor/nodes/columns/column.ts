@@ -118,7 +118,7 @@ export const Column = Node.create({
           }
 
           return {
-            style: `background-color: ${attributes.backgroundColor}`,
+            style: `background-color: ${attributes.backgroundColor};--bg-color: ${attributes.backgroundColor}`,
           };
         },
       },

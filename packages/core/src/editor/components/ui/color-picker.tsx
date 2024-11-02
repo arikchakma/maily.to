@@ -1,6 +1,6 @@
 'use client';
 
-import { HexAlphaColorPicker, HexColorInput } from 'react-colorful';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
@@ -81,7 +81,7 @@ export function ColorPicker(props: ColorPickerProps) {
 
       <PopoverContent className="mly-w-full mly-rounded-none mly-border-0 !mly-bg-transparent !mly-p-0 mly-shadow-none mly-drop-shadow-md">
         <div className="mly-min-w-[260px] mly-rounded-xl mly-border mly-bg-white mly-p-4">
-          <HexAlphaColorPicker
+          <HexColorPicker
             color={color}
             onChange={handleColorChange}
             className="mly-flex !mly-w-full mly-flex-col mly-gap-4"

@@ -1,5 +1,10 @@
 import type { BlockItem } from './types';
-import { ColumnsIcon, SectionIcon, Repeat2, MoveVertical } from 'lucide-react';
+import {
+  ColumnsIcon,
+  Repeat2,
+  MoveVertical,
+  RectangleHorizontal,
+} from 'lucide-react';
 
 export const columns: BlockItem = {
   title: 'Columns',
@@ -26,10 +31,7 @@ export const section: BlockItem = {
   title: 'Section',
   description: 'Add a section to email.',
   searchTerms: ['layout', 'section'],
-  icon: <SectionIcon className="mly-h-4 mly-w-4" />,
-  shouldBeHidden: (editor) => {
-    return editor.isActive('columns');
-  },
+  icon: <RectangleHorizontal className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setSection().run();

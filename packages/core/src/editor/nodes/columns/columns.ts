@@ -5,8 +5,6 @@ import { Node } from '@tiptap/core';
 import { v4 as uuid } from 'uuid';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
-export const DEFAULT_COLUMNS_WIDTH = '100%';
-
 interface ColumnsAttributes {
   width: string;
   showIfKey: string;
@@ -30,19 +28,6 @@ export const Columns = Node.create({
 
   addAttributes() {
     return {
-      width: {
-        default: DEFAULT_COLUMNS_WIDTH,
-        parseHTML: (element) => element.style.width,
-        renderHTML: (attributes) => {
-          if (!attributes.width) {
-            return {};
-          }
-
-          return {
-            style: `width: ${attributes.width}`,
-          };
-        },
-      },
       showIfKey: {
         default: DEFAULT_SECTION_SHOW_IF_KEY,
         parseHTML: (element) => {
@@ -108,7 +93,7 @@ export const Columns = Node.create({
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
       }),
-     0
+      0,
     ];
   },
 

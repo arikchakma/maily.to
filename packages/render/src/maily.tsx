@@ -1338,7 +1338,6 @@ export class Maily {
 
   private columns(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = DEFAULT_COLUMNS_WIDTH } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {
@@ -1353,7 +1352,7 @@ export class Maily {
         style={{
           margin: 0,
           padding: 0,
-          width: `${width}%`,
+          width: `${totalWidth}%`,
         }}
       >
         {this.getMappedContent(newNode, {
@@ -1381,7 +1380,7 @@ export class Maily {
     );
 
     const remainingWidth = totalWidth - totalWidthUsed;
-    const width = remainingWidth / autoWidthColumns.length;
+    const measuredWidth = remainingWidth / autoWidthColumns.length;
 
     return [
       {
@@ -1390,15 +1389,15 @@ export class Maily {
           const isAutoWidthColumn =
             c.type === 'column' &&
             (c.attrs?.width === 'auto' || !c.attrs?.width);
-          if (!isAutoWidthColumn) {
-            return c;
-          }
 
           return {
             ...c,
             attrs: {
               ...c.attrs,
-              width,
+              width: isAutoWidthColumn ? measuredWidth : c.attrs?.width,
+
+              isFirstColumn: index === 0,
+              isLastColumn: index === content.length - 1,
               index,
             },
           };
@@ -1415,17 +1414,8 @@ export class Maily {
     const {
       width,
       verticalAlign = 'top',
-      borderRadius = 0,
-      backgroundColor = DEFAULT_COLUMN_BACKGROUND_COLOR,
-      borderWidth = DEFAULT_COLUMN_BORDER_WIDTH,
-      borderColor = DEFAULT_COLUMN_BORDER_COLOR,
-
-      paddingTop = DEFAULT_COLUMN_PADDING_TOP,
-      paddingRight = DEFAULT_COLUMN_PADDING_RIGHT,
-      paddingBottom = DEFAULT_COLUMN_PADDING_BOTTOM,
-      paddingLeft = DEFAULT_COLUMN_PADDING_LEFT,
-
-      index,
+      isFirstColumn,
+      isLastColumn,
     } = attrs || {};
 
     return (
@@ -1434,24 +1424,14 @@ export class Maily {
         style={{
           width: `${Number(width)}%`,
           margin: 0,
-          paddingLeft: '4px',
-          paddingRight: '4px',
           verticalAlign,
-
-          borderColor,
-          borderWidth,
-          borderStyle: 'solid',
-          backgroundColor,
-          borderRadius,
         }}
       >
         <Section
           style={{
             margin: 0,
-            paddingTop,
-            paddingRight,
-            paddingBottom,
-            paddingLeft,
+            paddingRight: isLastColumn ? 0 : '4px',
+            paddingLeft: isFirstColumn ? 0 : '4px',
           }}
         >
           {this.getMappedContent(node, {

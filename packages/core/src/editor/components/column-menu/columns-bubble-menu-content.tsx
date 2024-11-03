@@ -10,8 +10,15 @@ import { VerticalAlignmentSwitch } from '../vertical-alignment-switch';
 import { PaddingIcon } from '../icons/padding-icon';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { ListMinus, ListPlus } from 'lucide-react';
-import { addColumn, removeColumn } from '@/editor/utils/columns';
+import {
+  addColumn,
+  addColumnByIndex,
+  removeColumn,
+  removeColumnByIndex,
+  updateColumnWidth,
+} from '@/editor/utils/columns';
 import { ShowPopover } from '../show-popover';
+import { ColumnsWidthConfig } from './columns-width-config';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -30,6 +37,8 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
     { value: '6', label: 'Smooth' },
     { value: '9999', label: 'Round' },
   ];
+
+  const currentColumnCount = state.columnsCount;
 
   return (
     <TooltipProvider>
@@ -53,6 +62,23 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
             },
           ]}
           tooltip="Row width"
+        />
+
+        <Divider />
+
+        <ColumnsWidthConfig
+          columnsCount={currentColumnCount}
+          columnWidths={state.columnWidths}
+          onColumnsCountChange={(count) => {
+            if (count > currentColumnCount) {
+              addColumnByIndex(editor);
+            } else {
+              removeColumnByIndex(editor);
+            }
+          }}
+          onColumnWidthChange={(index, width) => {
+            updateColumnWidth(editor, index, width);
+          }}
         />
 
         {state.isColumnActive && (

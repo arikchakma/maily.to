@@ -104,34 +104,18 @@ export const Columns = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'table',
+      'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
-        border: 0,
-        cellpadding: 0,
-        cellspacing: 0,
-        class: 'mly-w-full mly-border-separate',
       }),
-      [
-        'tbody',
-        {
-          class: 'mly-w-full',
-        },
-        [
-          'tr',
-          {
-            class: 'mly-w-full',
-          },
-          0,
-        ],
-      ],
+     0
     ];
   },
 
   parseHTML() {
     return [
       {
-        tag: 'table[data-type="columns"]',
+        tag: 'div[data-type="columns"]',
       },
     ];
   },

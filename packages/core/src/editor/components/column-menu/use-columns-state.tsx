@@ -5,7 +5,7 @@ import {
   DEFAULT_COLUMN_BORDER_WIDTH,
   DEFAULT_COLUMN_PADDING,
 } from '@/editor/nodes/columns/column';
-import { getColumnCount } from '@/editor/utils/columns';
+import { getColumnCount, getColumnWidths } from '@/editor/utils/columns';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -21,8 +21,6 @@ export const useColumnsState = (editor: Editor) => {
         currentVerticalAlignment:
           ctx.editor.getAttributes('column')?.verticalAlign || 'top',
         isColumnActive: ctx.editor.isActive('column'),
-
-        columnsCount: getColumnCount(ctx.editor),
 
         columnBorderRadius:
           ctx.editor.getAttributes('column')?.borderRadius ||
@@ -49,6 +47,9 @@ export const useColumnsState = (editor: Editor) => {
           Number(ctx.editor.getAttributes('column')?.paddingLeft) || 0,
 
         currentShowIfKey: ctx.editor.getAttributes('columns')?.showIfKey || '',
+
+        columnsCount: getColumnCount(ctx.editor),
+        columnWidths: getColumnWidths(ctx.editor).map((c) => c.width),
       };
     },
     equalityFn: deepEql,

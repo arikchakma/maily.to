@@ -2,7 +2,7 @@ import { updateAttributes } from '@/editor/utils/update-attribute';
 import { Node, mergeAttributes } from '@tiptap/core';
 import { v4 as uuid } from 'uuid';
 
-export const DEFAULT_COLUMN_WIDTH = 50;
+export const DEFAULT_COLUMN_WIDTH = 'auto';
 
 export type AllowedColumnVerticalAlign = 'top' | 'middle' | 'bottom';
 export const DEFAULT_COLUMN_VERTICAL_ALIGN: AllowedColumnVerticalAlign = 'top';
@@ -68,14 +68,14 @@ export const Column = Node.create({
       width: {
         default: DEFAULT_COLUMN_WIDTH,
         parseHTML: (element) =>
-          Number(element.style.width.replace(/['"]+/g, '')) || 50,
+          element.style.width.replace(/['"]+/g, '') || DEFAULT_COLUMN_WIDTH,
         renderHTML: (attributes) => {
-          if (!attributes.width) {
+          if (!attributes.width || attributes.width === DEFAULT_COLUMN_WIDTH) {
             return {};
           }
 
           return {
-            style: `width: ${attributes.width}%; max-width: ${attributes.width}%`,
+            style: `width: ${attributes.width}%;max-width:${attributes.width}%`,
           };
         },
       },
@@ -83,13 +83,23 @@ export const Column = Node.create({
         default: DEFAULT_COLUMN_VERTICAL_ALIGN,
         parseHTML: (element) => element?.style?.verticalAlign || 'top',
         renderHTML: (attributes) => {
-          if (!attributes?.verticalAlign) {
+          const { verticalAlign } = attributes;
+          if (
+            !verticalAlign ||
+            verticalAlign === DEFAULT_COLUMN_VERTICAL_ALIGN
+          ) {
             return {};
           }
 
-          return {
-            style: `vertical-align: ${attributes?.verticalAlign || 'top'}`,
-          };
+          if (verticalAlign === 'middle') {
+            return {
+              style: `display: flex;flex-direction: column;justify-content: center;`,
+            };
+          } else if (verticalAlign === 'bottom') {
+            return {
+              style: `display: flex;flex-direction: column;justify-content: flex-end;`,
+            }
+          }
         },
       },
       borderRadius: {
@@ -226,9 +236,10 @@ export const Column = Node.create({
 
   renderHTML({ HTMLAttributes }) {
     return [
-      'td',
+      'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'column',
+        class: 'hide-scrollbars',
       }),
       0,
     ];
@@ -237,7 +248,7 @@ export const Column = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'td[data-type="column"]',
+        tag: 'div[data-type="column"]',
       },
     ];
   },

@@ -14,6 +14,7 @@ import {
   Preview,
   Row,
   Column,
+  Section,
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
@@ -1337,68 +1338,107 @@ export class Maily {
 
   private columns(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { width = DEFAULT_COLUMNS_WIDTH } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {
       return <></>;
     }
 
+    const [newNode, totalWidth] = this.adjustAutoWidthColumns(node);
+
     return (
       <Row
-        width={width}
+        width={`${totalWidth}%`}
         style={{
           margin: 0,
           padding: 0,
-          width,
+          width: `${totalWidth}%`,
         }}
       >
-        {this.getMappedContent(node, {
+        {this.getMappedContent(newNode, {
           ...options,
-          parent: node,
+          parent: newNode,
         })}
       </Row>
     );
   }
 
+  private adjustAutoWidthColumns(node: JSONContent): [JSONContent, number] {
+    const { content = [] } = node;
+    const totalWidth = 100;
+    const columnsWithWidth = content.filter(
+      (c) => c.type === 'column' && Boolean(Number(c.attrs?.width || 0))
+    );
+    const autoWidthColumns = content.filter(
+      (c) =>
+        c.type === 'column' && (c.attrs?.width === 'auto' || !c.attrs?.width)
+    );
+
+    const totalWidthUsed = columnsWithWidth.reduce(
+      (acc, c) => acc + Number(c.attrs?.width),
+      0
+    );
+
+    const remainingWidth = totalWidth - totalWidthUsed;
+    const measuredWidth = remainingWidth / autoWidthColumns.length;
+
+    return [
+      {
+        ...node,
+        content: content.map((c, index) => {
+          const isAutoWidthColumn =
+            c.type === 'column' &&
+            (c.attrs?.width === 'auto' || !c.attrs?.width);
+
+          return {
+            ...c,
+            attrs: {
+              ...c.attrs,
+              width: isAutoWidthColumn ? measuredWidth : c.attrs?.width,
+
+              isFirstColumn: index === 0,
+              isLastColumn: index === content.length - 1,
+              index,
+            },
+          };
+        }),
+      },
+      autoWidthColumns.length === 0
+        ? Math.min(totalWidth, totalWidthUsed)
+        : totalWidth,
+    ];
+  }
+
   private column(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const {
-      width = 50,
+      width,
       verticalAlign = 'top',
-      borderRadius = 0,
-      backgroundColor = DEFAULT_COLUMN_BACKGROUND_COLOR,
-      borderWidth = DEFAULT_COLUMN_BORDER_WIDTH,
-      borderColor = DEFAULT_COLUMN_BORDER_COLOR,
-
-      paddingTop = DEFAULT_COLUMN_PADDING_TOP,
-      paddingRight = DEFAULT_COLUMN_PADDING_RIGHT,
-      paddingBottom = DEFAULT_COLUMN_PADDING_BOTTOM,
-      paddingLeft = DEFAULT_COLUMN_PADDING_LEFT,
+      isFirstColumn,
+      isLastColumn,
     } = attrs || {};
 
     return (
       <Column
+        width={`${Number(width)}%`}
         style={{
           width: `${Number(width)}%`,
-          verticalAlign,
           margin: 0,
-          borderColor,
-          borderWidth,
-          borderStyle: 'solid',
-          backgroundColor,
-          borderRadius,
-
-          paddingTop,
-          paddingRight,
-          paddingBottom,
-          paddingLeft,
+          verticalAlign,
         }}
       >
-        {this.getMappedContent(node, {
-          ...options,
-          parent: node,
-        })}
+        <Section
+          style={{
+            margin: 0,
+            paddingRight: isLastColumn ? 0 : '4px',
+            paddingLeft: isFirstColumn ? 0 : '4px',
+          }}
+        >
+          {this.getMappedContent(node, {
+            ...options,
+            parent: node,
+          })}
+        </Section>
       </Column>
     );
   }

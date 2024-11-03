@@ -94,7 +94,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
   }
 
   let { alignment = 'center', width, height } = node.attrs || {};
-  const { externalLink, ...attrs } = node.attrs || {};
+  const { externalLink, showIfKey, ...attrs } = node.attrs || {};
 
   return (
     <NodeViewWrapper

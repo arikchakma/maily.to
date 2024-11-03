@@ -10,8 +10,15 @@ import { VerticalAlignmentSwitch } from '../vertical-alignment-switch';
 import { PaddingIcon } from '../icons/padding-icon';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { ListMinus, ListPlus } from 'lucide-react';
-import { addColumn, removeColumn } from '@/editor/utils/columns';
+import {
+  addColumn,
+  addColumnByIndex,
+  removeColumn,
+  removeColumnByIndex,
+  updateColumnWidth,
+} from '@/editor/utils/columns';
 import { ShowPopover } from '../show-popover';
+import { ColumnsWidthConfig } from './columns-width-config';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -25,170 +32,39 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
 
   const state = useColumnsState(editor);
 
-  const borderRadiusOptions = [
-    { value: '0', label: 'Sharp' },
-    { value: '6', label: 'Smooth' },
-    { value: '9999', label: 'Round' },
-  ];
+  const currentColumnCount = state.columnsCount;
 
   return (
     <TooltipProvider>
       <div className="mly-flex mly-items-stretch">
-        <Select
-          label="Row Width"
-          value={state.width}
-          onValueChange={(value) => {
-            editor.commands.updateColumns({
-              width: value,
-            });
+        <ColumnsWidthConfig
+          columnsCount={currentColumnCount}
+          columnWidths={state.columnWidths}
+          onColumnsCountChange={(count) => {
+            if (count > currentColumnCount) {
+              addColumnByIndex(editor);
+            } else {
+              removeColumnByIndex(editor);
+            }
           }}
-          options={[
-            {
-              label: 'Fit content',
-              value: 'auto',
-            },
-            {
-              label: 'Stretch',
-              value: '100%',
-            },
-          ]}
-          tooltip="Row width"
+          onColumnWidthChange={(index, width) => {
+            updateColumnWidth(editor, index, width);
+          }}
         />
 
-        {state.isColumnActive && (
-          <>
-            <Divider />
+        <Divider />
 
-            <VerticalAlignmentSwitch
-              alignment={state.currentVerticalAlignment}
-              onAlignmentChange={(value) => {
-                editor.commands.updateColumn({
-                  verticalAlign: value,
-                });
-              }}
-            />
-
-            <Divider />
-
-            <div className="mly-flex mly-space-x-0.5">
-              <Select
-                label="Border Radius"
-                value={String(state.columnBorderRadius)}
-                options={borderRadiusOptions}
-                onValueChange={(value) => {
-                  editor?.commands?.updateColumn({
-                    borderRadius: Number(value),
-                  });
-                }}
-                tooltip="Border Radius"
-                className="mly-capitalize"
-              />
-
-              <Select
-                label="Border Width"
-                value={String(state.columnBorderWidth)}
-                options={[
-                  { value: '0', label: 'None' },
-                  { value: '1', label: 'Thin' },
-                  { value: '2', label: 'Medium' },
-                  { value: '3', label: 'Thick' },
-                ]}
-                onValueChange={(value) => {
-                  editor?.commands?.updateColumn({
-                    borderWidth: Number(value),
-                  });
-                }}
-                tooltip="Border Width"
-                className="mly-capitalize"
-              />
-            </div>
-
-            <Divider />
-            <Select
-              icon={PaddingIcon}
-              iconClassName="mly-stroke-[1]"
-              label="Padding"
-              value={String(state.columnPaddingTop)}
-              options={[
-                { value: '0', label: 'None' },
-                { value: '4', label: 'Small' },
-                { value: '8', label: 'Medium' },
-                { value: '12', label: 'Large' },
-              ]}
-              onValueChange={(_value) => {
-                const value = Number(_value);
-                editor?.commands?.updateColumn({
-                  paddingTop: value,
-                  paddingRight: value,
-                  paddingBottom: value,
-                  paddingLeft: value,
-                });
-              }}
-              tooltip="Padding"
-              className="mly-capitalize"
-            />
-
-            <Divider />
-
-            <div className="mly-flex mly-space-x-0.5">
-              <ColorPicker
-                color={state.columnBorderColor}
-                onColorChange={(color) => {
-                  editor?.commands?.updateColumn({
-                    borderColor: color,
-                  });
-                }}
-                tooltip="Border Color"
-              >
-                <BaseButton
-                  variant="ghost"
-                  className="!mly-size-7 mly-shrink-0"
-                  size="sm"
-                  type="button"
-                >
-                  <BorderColor
-                    className="mly-size-3 mly-shrink-0"
-                    topBarClassName="mly-stroke-midnight-gray"
-                    style={{
-                      color: state.columnBorderColor,
-                    }}
-                  />
-                </BaseButton>
-              </ColorPicker>
-              <ColorPicker
-                color={state.columnBackgroundColor}
-                onColorChange={(color) => {
-                  editor?.commands?.updateColumn({
-                    backgroundColor: color,
-                  });
-                }}
-                backgroundColor={state.columnBackgroundColor}
-                tooltip="Background Color"
-                className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
-              />
-            </div>
-
-            <Divider />
-
-            <BubbleMenuButton
-              icon={ListPlus}
-              command={() => {
-                addColumn(editor);
-              }}
-              tooltip="Add Column"
-              disbabled={state.columnsCount >= 8}
-            />
-            <BubbleMenuButton
-              icon={ListMinus}
-              command={() => {
-                removeColumn(editor);
-              }}
-              tooltip="Remove Column"
-            />
-          </>
-        )}
+        <VerticalAlignmentSwitch
+          alignment={state.currentVerticalAlignment}
+          onAlignmentChange={(value) => {
+            editor.commands.updateColumn({
+              verticalAlign: value,
+            });
+          }}
+        />
 
         <Divider />
+
         <ShowPopover
           showIfKey={state.currentShowIfKey}
           onShowIfKeyValueChange={(value) => {

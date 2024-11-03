@@ -1,7 +1,6 @@
-import { ForExtension } from '@/editor/nodes/for/for';
+
 import type { BlockItem } from './types';
 import { ColumnsIcon, SectionIcon, Repeat2, MoveVertical } from 'lucide-react';
-import { Columns } from '@/editor/nodes/columns/columns';
 
 export const columns: BlockItem = {
   title: 'Columns',
@@ -9,7 +8,7 @@ export const columns: BlockItem = {
   searchTerms: ['layout', 'columns'],
   icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive(Columns.name);
+    return editor.isActive("columns");
   },
   command: ({ editor, range }) => {
     // @ts-ignore
@@ -30,7 +29,7 @@ export const section: BlockItem = {
   searchTerms: ['layout', 'section'],
   icon: <SectionIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive(Columns.name);
+    return editor.isActive("columns");
   },
   command: ({ editor, range }) => {
     // @ts-ignore
@@ -44,7 +43,7 @@ export const forLoop: BlockItem = {
   searchTerms: ['for', 'loop'],
   icon: <Repeat2 className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive(ForExtension.name);
+    return editor.isActive("for");
   },
   command: ({ editor, range }) => {
     // @ts-ignore

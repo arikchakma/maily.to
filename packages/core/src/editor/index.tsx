@@ -19,7 +19,7 @@ import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
-import { SpacerBubbleMenu } from './components/spacer/spacer-bubble-menu';
+import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 type ParitialMailContextType = Partial<MailyContextType>;

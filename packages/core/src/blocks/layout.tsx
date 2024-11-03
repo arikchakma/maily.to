@@ -1,4 +1,3 @@
-
 import type { BlockItem } from './types';
 import { ColumnsIcon, SectionIcon, Repeat2, MoveVertical } from 'lucide-react';
 
@@ -8,7 +7,7 @@ export const columns: BlockItem = {
   searchTerms: ['layout', 'columns'],
   icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive("columns");
+    return editor.isActive('columns');
   },
   command: ({ editor, range }) => {
     // @ts-ignore
@@ -29,7 +28,7 @@ export const section: BlockItem = {
   searchTerms: ['layout', 'section'],
   icon: <SectionIcon className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive("columns");
+    return editor.isActive('columns');
   },
   command: ({ editor, range }) => {
     // @ts-ignore
@@ -43,7 +42,7 @@ export const forLoop: BlockItem = {
   searchTerms: ['for', 'loop'],
   icon: <Repeat2 className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive("for");
+    return editor.isActive('for');
   },
   command: ({ editor, range }) => {
     // @ts-ignore

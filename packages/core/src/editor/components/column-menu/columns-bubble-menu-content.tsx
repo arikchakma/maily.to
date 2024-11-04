@@ -1,19 +1,10 @@
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { useColumnsState } from './use-columns-state';
 import { Divider } from '../ui/divider';
-import { ColorPicker } from '../ui/color-picker';
 import { TooltipProvider } from '../ui/tooltip';
-import { Select } from '../ui/select';
-import { BaseButton } from '../base-button';
-import { BorderColor } from '../icons/border-color';
 import { VerticalAlignmentSwitch } from '../vertical-alignment-switch';
-import { PaddingIcon } from '../icons/padding-icon';
-import { BubbleMenuButton } from '../bubble-menu-button';
-import { ListMinus, ListPlus } from 'lucide-react';
 import {
-  addColumn,
   addColumnByIndex,
-  removeColumn,
   removeColumnByIndex,
   updateColumnWidth,
 } from '@/editor/utils/columns';
@@ -37,22 +28,26 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
   return (
     <TooltipProvider>
       <div className="mly-flex mly-items-stretch">
-        <ColumnsWidthConfig
-          columnsCount={currentColumnCount}
-          columnWidths={state.columnWidths}
-          onColumnsCountChange={(count) => {
-            if (count > currentColumnCount) {
-              addColumnByIndex(editor);
-            } else {
-              removeColumnByIndex(editor);
-            }
-          }}
-          onColumnWidthChange={(index, width) => {
-            updateColumnWidth(editor, index, width);
-          }}
-        />
+        {state.isColumnActive && (
+          <>
+            <ColumnsWidthConfig
+              columnsCount={currentColumnCount}
+              columnWidths={state.columnWidths}
+              onColumnsCountChange={(count) => {
+                if (count > currentColumnCount) {
+                  addColumnByIndex(editor);
+                } else {
+                  removeColumnByIndex(editor);
+                }
+              }}
+              onColumnWidthChange={(index, width) => {
+                updateColumnWidth(editor, index, width);
+              }}
+            />
 
-        <Divider />
+            <Divider />
+          </>
+        )}
 
         <VerticalAlignmentSwitch
           alignment={state.currentVerticalAlignment}

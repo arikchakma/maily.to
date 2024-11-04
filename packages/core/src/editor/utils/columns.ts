@@ -292,6 +292,20 @@ export function addColumnByIndex(editor: Editor, index: number = -1) {
     updatedColumnsNode
   );
 
+  // Set the selection to the new column
+  // if the index is out of bounds, set the selection
+  // to the last column
+  const newColumnPos =
+    columnsNodePos +
+    updatedContent
+      .slice(0, columnIndex)
+      .reduce((acc, node) => acc + node.nodeSize, 0);
+
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(newColumnPos)
+  );
+  transaction.setSelection(textSelection);
+
   editor.view.dispatch(transaction);
   return true;
 }
@@ -323,6 +337,22 @@ export function removeColumnByIndex(editor: Editor, index: number = -1) {
     columnsNodePos + columnsNode.nodeSize,
     updatedColumnsNode
   );
+
+  // Set the selection to the next column
+  // if the index is out of bounds, set the selection
+  // to the last column
+  const nextColumnIndex =
+    index === columnsNode.childCount - 1 ? index - 1 : index;
+  const nextColumnPos =
+    columnsNodePos +
+    updatedContent
+      .slice(0, nextColumnIndex)
+      .reduce((acc, node) => acc + node.nodeSize, 0);
+
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(nextColumnPos)
+  );
+  transaction.setSelection(textSelection);
 
   dispatch(transaction);
   return true;

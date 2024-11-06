@@ -27,8 +27,8 @@ type ParitialMailContextType = Partial<MailyContextType>;
 export type EditorProps = {
   contentHtml?: string;
   contentJson?: JSONContent;
-  onUpdate?: (editor?: TiptapEditor) => void;
-  onCreate?: (editor?: TiptapEditor) => void;
+  onUpdate?: (editor: TiptapEditor) => void;
+  onCreate?: (editor: TiptapEditor) => void;
   extensions?: Extension[];
   config?: {
     hasMenuBar?: boolean;

@@ -18,7 +18,7 @@
 
 ## Install
 
-Install `maily` from your command line.
+Install `@maily-to/render` from your command line.
 
 ```sh
 pnpm add @maily-to/render
@@ -30,10 +30,10 @@ pnpm add @maily-to/render
 
 Convert React components into a HTML string.
 
-```jsx
-import { renderSync } from '@maily-to/render';
+```ts
+import { render } from '@maily-to/render';
 
-const html = renderSync({
+const html = await render({
   type: 'doc',
   content: [
     {
@@ -47,6 +47,65 @@ const html = renderSync({
     },
   ],
 });
+```
+
+### Variables
+
+You can replace variables in the content.
+
+```ts
+import { Maily } from '@maily-to/render';
+
+const maily = new Maily({
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      attrs: { textAlign: 'left' },
+      content: [
+        {
+          type: 'variable',
+          attrs: {
+            id: 'currentDate',
+            fallback: 'now',
+            showIfKey: null,
+          },
+        },
+      ],
+    },
+  ],
+});
+
+maily.setVariableValue('currentDate', new Date().toISOString());
+const html = await maily.render();
+```
+
+### Payloads
+
+Payload values are used for the `For Loop` and `Show If` blocks.
+
+```ts
+// (Omitted repeated imports)
+
+const maily = new Maily({
+  type: 'doc',
+  content: [
+    {
+      type: 'for',
+      attrs: { each: 'items', showIfKey: null },
+      content: [
+        {
+          type: 'paragraph',
+          attrs: { textAlign: 'left' },
+          content: [{ type: 'text', text: 'Hello' }],
+        },
+      ],
+    },
+  ],
+});
+
+maily.setPayloadValue('items', ['Alice', 'Bob', 'Charlie']);
+const html = await maily.render();
 ```
 
 ## Contributions

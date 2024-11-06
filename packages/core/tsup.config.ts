@@ -14,4 +14,5 @@ export default defineConfig((options: Options) => ({
   external: ['react'],
   injectStyle: true,
   ...options,
+  onSuccess: 'cp -r src/styles dist/', // Copy CSS files to dist after build
 }));

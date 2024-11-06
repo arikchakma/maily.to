@@ -1,0 +1,25 @@
+{
+  "name": "@maily-to/elements",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A bundle of selected React components from core.",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "dev": "rollup -c --watch",
+    "clean": "rm -rf dist",
+    "build": "rollup -c"
+  },
+  "dependencies": {
+    "@maily-to/core": "workspace:*",
+    "@maily-to/render": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  }
+}

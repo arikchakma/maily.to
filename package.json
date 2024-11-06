@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter='!@maily-to/elements' --filter='!@maily-to/actions'",
     "clean": "turbo run clean",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",

@@ -182,45 +182,45 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().setLogoImage({ src: logoUrl }).run();
     },
   },
-  {
-    title: 'Columns',
-    description: 'Add columns to email.',
-    searchTerms: ['layout', 'columns'],
-    icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
-    shouldBeHidden: (editor) => {
-      return editor.isActive('columns');
-    },
-    command: ({ editor, range }: CommandProps) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .setColumns()
-        .focus(editor.state.selection.head - 2)
-        .run();
-    },
-  },
-  {
-    title: 'Section',
-    description: 'Add a section to email.',
-    searchTerms: ['layout', 'section'],
-    icon: <SectionIcon className="mly-h-4 mly-w-4" />,
-    shouldBeHidden: (editor) => {
-      return editor.isActive('columns');
-    },
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setSection().run();
-    },
-  },
-  {
-    title: 'For',
-    description: 'Loop over an array of items.',
-    searchTerms: ['for', 'loop'],
-    icon: <Repeat2 className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setFor().run();
-    },
-  },
+  // {
+  //   title: 'Columns',
+  //   description: 'Add columns to email.',
+  //   searchTerms: ['layout', 'columns'],
+  //   icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
+  //   shouldBeHidden: (editor) => {
+  //     return editor.isActive('columns');
+  //   },
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor
+  //       .chain()
+  //       .focus()
+  //       .deleteRange(range)
+  //       .setColumns()
+  //       .focus(editor.state.selection.head - 2)
+  //       .run();
+  //   },
+  // },
+  // {
+  //   title: 'Section',
+  //   description: 'Add a section to email.',
+  //   searchTerms: ['layout', 'section'],
+  //   icon: <SectionIcon className="mly-h-4 mly-w-4" />,
+  //   shouldBeHidden: (editor) => {
+  //     return editor.isActive('columns');
+  //   },
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setSection().run();
+  //   },
+  // },
+  // {
+  //   title: 'For',
+  //   description: 'Loop over an array of items.',
+  //   searchTerms: ['for', 'loop'],
+  //   icon: <Repeat2 className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setFor().run();
+  //   },
+  // },
   // {
   //   title: 'Show',
   //   description: 'Show when a condition is true.',
@@ -254,15 +254,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).setButton().run();
     },
   },
-  {
-    title: 'Link Card',
-    description: 'Add a link card to email.',
-    searchTerms: ['link', 'button', 'image'],
-    icon: <ArrowUpRightSquare className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setLinkCard().run();
-    },
-  },
+  // {
+  //   title: 'Link Card',
+  //   description: 'Add a link card to email.',
+  //   searchTerms: ['link', 'button', 'image'],
+  //   icon: <ArrowUpRightSquare className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setLinkCard().run();
+  //   },
+  // },
   {
     title: 'Hard Break',
     description: 'Add a break between lines.',
@@ -272,15 +272,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().deleteRange(range).setHardBreak().run();
     },
   },
-  {
-    title: 'Blockquote',
-    description: 'Add blockquote.',
-    searchTerms: ['quote', 'blockquote'],
-    icon: <TextQuote className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).toggleBlockquote().run();
-    },
-  },
+  // {
+  //   title: 'Blockquote',
+  //   description: 'Add blockquote.',
+  //   searchTerms: ['quote', 'blockquote'],
+  //   icon: <TextQuote className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+  //   },
+  // },
   {
     title: 'Footer',
     description: 'Add a footer text to email.',

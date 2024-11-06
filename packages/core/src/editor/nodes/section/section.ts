@@ -83,7 +83,7 @@ export const SectionExtension = Node.create({
           }
 
           return {
-            style: `background-color: ${attributes.backgroundColor}`,
+            style: `background-color: ${attributes.backgroundColor};--bg-color: ${attributes.backgroundColor}`,
           };
         },
       },
@@ -253,7 +253,8 @@ export const SectionExtension = Node.create({
         default: DEFAULT_SECTION_SHOW_IF_KEY,
         parseHTML: (element) => {
           return (
-            element.getAttribute('data-show-if-key') || DEFAULT_SECTION_SHOW_IF_KEY
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
           );
         },
         renderHTML(attributes) {
@@ -291,7 +292,12 @@ export const SectionExtension = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const { marginTop, marginRight, marginBottom, marginLeft } = HTMLAttributes;
+    const {
+      marginTop = 0,
+      marginRight = 0,
+      marginBottom = 0,
+      marginLeft = 0,
+    } = HTMLAttributes;
 
     return [
       'table',

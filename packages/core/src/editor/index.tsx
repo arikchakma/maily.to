@@ -5,7 +5,6 @@ import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
-import { SpacerBubbleMenu } from './components/spacer-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import {
   DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
@@ -20,6 +19,8 @@ import { useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
+import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -58,7 +59,7 @@ export function Editor(props: EditorProps) {
     contentHtml,
     contentJson,
     variables,
-    slashCommands,
+    blocks = DEFAULT_SLASH_COMMANDS,
     variableSuggestionChar = DEFAULT_VARIABLE_SUGGESTION_CHAR,
     payloadValueSuggestionChar = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
   } = props;
@@ -115,7 +116,7 @@ export function Editor(props: EditorProps) {
     extensions: [
       ...defaultExtensions({
         variables,
-        slashCommands,
+        blocks,
         variableSuggestionChar,
         payloadValueSuggestionChar,
       }),
@@ -132,7 +133,7 @@ export function Editor(props: EditorProps) {
   return (
     <MailyProvider
       variables={variables}
-      slashCommands={slashCommands}
+      blocks={blocks}
       variableSuggestionChar={variableSuggestionChar}
       payloadValueSuggestionChar={payloadValueSuggestionChar}
     >

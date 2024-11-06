@@ -1,5 +1,6 @@
 :root {
   --placeholder-color: #adb5bd;
+  --bg-color: #ffffff;
 }
 
 .mly-editor .mly-prose p:where([class~='text-sm']) {
@@ -201,7 +202,7 @@
       ol
     )::before {
     content: attr(data-placeholder);
-    text-wrap: nowrap;
+    /* text-wrap: nowrap; */
     float: left;
     color: var(--placeholder-color);
     pointer-events: none;
@@ -216,14 +217,26 @@
       li
     )::before {
     content: attr(data-placeholder);
-    text-wrap: nowrap;
+    /* text-wrap: nowrap; */
     float: left;
     color: var(--placeholder-color);
     pointer-events: none;
     height: 0;
   }
 
+  [data-type='columns'] .is-empty::before,
+  [data-type='section'] .is-empty::before {
+    --l-threshold: 0.66;
+    --diff: calc(var(--l-threshold) - l);
+    color: oklch(
+      from var(--bg-color)
+        clamp(0.05, max(min(var(--diff) * infinity, 1), 0), 0.95) c h
+    );
+  }
+
   [data-type='columns'] {
+    display: flex;
+    gap: 8px;
     margin: 0;
     padding: 0;
 
@@ -239,8 +252,10 @@
   }
 
   [data-type='column'] {
-    margin: 0;
-    padding: 0;
+    display: table-cell;
+    flex-basis: 0;
+    flex-grow: 1;
+    overflow: auto;
 
     & > *:first-child {
       margin-top: 0;
@@ -277,6 +292,10 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  .node-for.has-focus [data-repeat-indicator] {
+    opacity: 1;
   }
 
   [data-type='show'] {
@@ -319,5 +338,14 @@
   /* Firefox */
   &[type='number'] {
     -moz-appearance: textfield;
+  }
+}
+
+.hide-scrollbars {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

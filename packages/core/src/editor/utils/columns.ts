@@ -3,6 +3,7 @@ import { Fragment, Node } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
 import { v4 as uuid } from 'uuid';
 import { findParentNode } from '@tiptap/core';
+import { DEFAULT_COLUMN_WIDTH } from '../nodes/columns/column';
 
 export function getColumnCount(editor: Editor) {
   return getClosestNodeByName(editor, 'columns')?.node?.childCount || 0;
@@ -209,4 +210,169 @@ export function goToColumn(editor: Editor, type: 'next' | 'previous') {
 
   dispatch(tr);
   return true;
+}
+
+export function updateColumnWidth(
+  editor: Editor,
+  index: number,
+  width: string = 'auto'
+) {
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
+  if (!columnsNode) {
+    return false;
+  }
+
+  const { state, dispatch } = editor.view;
+  const { tr } = state;
+
+  const updatedContent: Node[] = [];
+  columnsNode.content.forEach((child, _, i) => {
+    updatedContent.push(
+      child.type.create(
+        {
+          ...child?.attrs,
+          width: i === index ? width : child?.attrs?.width,
+        },
+        child.content
+      )
+    );
+  });
+
+  const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
+  const transaction = tr.replaceWith(
+    columnsNodePos,
+    columnsNodePos + columnsNode.nodeSize,
+    updatedColumnsNode
+  );
+
+  dispatch(transaction);
+  return true;
+}
+
+export function addColumnByIndex(editor: Editor, index: number = -1) {
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
+  if (!columnsNode) {
+    return false;
+  }
+
+  // If the index is out of bounds, append the column to the end
+  // of the columns node
+  const columnIndex = index < 0 ? columnsNode.childCount : index;
+  // Keep the original width of the columns
+  // and set the new column width to auto
+  const { state } = editor.view;
+  const newColumn = state.schema.nodes.column.create(
+    {
+      width: DEFAULT_COLUMN_WIDTH,
+      columnId: uuid(),
+    },
+    state.schema.nodes.paragraph.create(null)
+  );
+
+  // append the new column to the columns node
+  // at the specified index
+  const updatedContent: Node[] = [];
+  columnsNode.content.forEach((child, _, i) => {
+    updatedContent.push(child);
+    if (i === columnIndex) {
+      updatedContent.push(newColumn);
+    }
+  });
+
+  if (index === -1) {
+    updatedContent.push(newColumn);
+  }
+
+  const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
+  const transaction = state.tr.replaceWith(
+    columnsNodePos,
+    columnsNodePos + columnsNode.nodeSize,
+    updatedColumnsNode
+  );
+
+  // Set the selection to the new column
+  // if the index is out of bounds, set the selection
+  // to the last column
+  const newColumnPos =
+    columnsNodePos +
+    updatedContent
+      .slice(0, columnIndex)
+      .reduce((acc, node) => acc + node.nodeSize, 0);
+
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(newColumnPos)
+  );
+  transaction.setSelection(textSelection);
+
+  editor.view.dispatch(transaction);
+  return true;
+}
+
+export function removeColumnByIndex(editor: Editor, index: number = -1) {
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
+  if (!columnsNode) {
+    return false;
+  }
+
+  const { state, dispatch } = editor.view;
+  const { tr } = state;
+
+  const updatedContent: Node[] = [];
+  columnsNode.content.forEach((child, _, i) => {
+    if (i !== index) {
+      updatedContent.push(child);
+    }
+  });
+
+  if (index === -1) {
+    updatedContent.pop();
+  }
+
+  const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
+  const transaction = tr.replaceWith(
+    columnsNodePos,
+    columnsNodePos + columnsNode.nodeSize,
+    updatedColumnsNode
+  );
+
+  // Set the selection to the next column
+  // if the index is out of bounds, set the selection
+  // to the last column
+  const nextColumnIndex =
+    index === columnsNode.childCount - 1 ? index - 1 : index;
+  const nextColumnPos =
+    columnsNodePos +
+    updatedContent
+      .slice(0, nextColumnIndex)
+      .reduce((acc, node) => acc + node.nodeSize, 0);
+
+  const textSelection = TextSelection.near(
+    transaction.doc.resolve(nextColumnPos)
+  );
+  transaction.setSelection(textSelection);
+
+  dispatch(transaction);
+  return true;
+}
+
+export function getColumnWidths(editor: Editor): {
+  id: string;
+  width: string;
+}[] {
+  const { node: columnsNode, pos: columnsNodePos = 0 } =
+    getClosestNodeByName(editor, 'columns') || {};
+  if (!columnsNode) {
+    return [];
+  }
+
+  const columnsWidth: { id: string; width: string }[] = [];
+  columnsNode.content.forEach((child) => {
+    const { columnId, width } = child.attrs;
+    columnsWidth.push({ id: columnId, width });
+  });
+
+  return columnsWidth;
 }

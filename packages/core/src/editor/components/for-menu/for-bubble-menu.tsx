@@ -10,6 +10,7 @@ import { Divider } from '../ui/divider';
 import { Braces } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/editor/utils/classname';
+import { ShowPopover } from '../show-popover';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -118,6 +119,16 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             </label>
           </form>
         )}
+
+        <Divider />
+        <ShowPopover
+          showIfKey={state.currentShowIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor.commands.updateFor({
+              showIfKey: value,
+            });
+          }}
+        />
       </TooltipProvider>
     </BubbleMenu>
   );

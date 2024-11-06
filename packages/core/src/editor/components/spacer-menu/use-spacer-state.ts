@@ -1,13 +1,12 @@
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
-export const useForState = (editor: Editor) => {
+export const useSpacerState = (editor: Editor) => {
   const states = useEditorState({
     editor,
     selector: (ctx) => {
       return {
-        each: ctx.editor.getAttributes('for')?.each,
-        currentShowIfKey: ctx.editor.getAttributes('for')?.showIfKey || '',
+        currentShowIfKey: ctx.editor.getAttributes('spacer')?.showIfKey || '',
       };
     },
     equalityFn: deepEql,

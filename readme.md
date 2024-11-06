@@ -45,6 +45,10 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Footer
 - Inline Code
 - Link Cards
+- Section
+- Columns
+- For Loop
+- Show If Condition
 
 ## Contributions
 

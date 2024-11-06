@@ -22,6 +22,11 @@ export const useImageState = (editor: Editor) => {
           '',
         imageExternalLink:
           ctx.editor.getAttributes('image')?.externalLink || '',
+
+        currentShowIfKey:
+          ctx.editor.getAttributes('image')?.showIfKey ||
+          ctx.editor.getAttributes('logo')?.showIfKey ||
+          '',
       };
     },
     equalityFn: deepEql,

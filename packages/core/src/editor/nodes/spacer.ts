@@ -1,10 +1,12 @@
 import { mergeAttributes, Node } from '@tiptap/core';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from './section/section';
 
 export const allowedSpacerSize = ['sm', 'md', 'lg', 'xl'] as const;
 export type AllowedSpacerSize = (typeof allowedSpacerSize)[number];
 
 export interface SpacerOptions {
   height: AllowedSpacerSize;
+  showIfKey: string;
   HTMLAttributes: Record<string, any>;
 }
 
@@ -13,6 +15,7 @@ declare module '@tiptap/core' {
     spacer: {
       setSpacer: (options: { height: AllowedSpacerSize }) => ReturnType;
       setSpacerSize: (height: AllowedSpacerSize) => ReturnType;
+      setSpacerShowIfKey: (showIfKey: string) => ReturnType;
       unsetSpacer: () => ReturnType;
     };
   }
@@ -43,6 +46,24 @@ export const Spacer = Node.create<SpacerOptions>({
           };
         },
       },
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
+          };
+        },
+      },
     };
   },
 
@@ -66,6 +87,12 @@ export const Spacer = Node.create<SpacerOptions>({
             throw new Error('Invalid spacer height');
           }
           return commands.updateAttributes('spacer', { height });
+        },
+
+      setSpacerShowIfKey:
+        (showIfKey) =>
+        ({ commands }) => {
+          return commands.updateAttributes('spacer', { showIfKey });
         },
 
       unsetSpacer:

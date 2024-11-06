@@ -1,27 +1,14 @@
 'use client';
 
-import { Editor, Range } from '@tiptap/core';
+import { BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 export type Variables = Array<{
   name: string;
   // Default is true
   required?: boolean;
 }>;
-
-export interface CommandProps {
-  editor: Editor;
-  range: Range;
-}
-
-export type SlashCommandItem = {
-  title: string;
-  description: string;
-  searchTerms: string[];
-  icon: JSX.Element;
-  shouldBeHidden?: (editor: Editor) => boolean;
-  command: (options: CommandProps) => void;
-};
 
 export const DEFAULT_VARIABLE_SUGGESTION_CHAR = '@';
 export const DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR = '#';
@@ -30,14 +17,14 @@ export type MailyContextType = {
   variableSuggestionChar?: string;
   payloadValueSuggestionChar?: string;
   variables?: Variables;
-  slashCommands?: SlashCommandItem[];
+  blocks?: BlockItem[];
 };
 
 export const MailyContext = createContext<MailyContextType>({
   variableSuggestionChar: DEFAULT_VARIABLE_SUGGESTION_CHAR,
   payloadValueSuggestionChar: DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
   variables: [],
-  slashCommands: [],
+  blocks: DEFAULT_SLASH_COMMANDS,
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;
@@ -52,7 +39,6 @@ export function MailyProvider(props: MailyProviderProps) {
   if (defaultValues.payloadValueSuggestionChar === '') {
     throw new Error('payloadValueSuggestionChar cannot be an empty string');
   }
-
 
   return (
     <MailyContext.Provider value={defaultValues}>

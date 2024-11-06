@@ -6,13 +6,6 @@ import type { NodeSelection } from '@tiptap/pm/state';
 import type { Node } from '@tiptap/pm/model';
 import { Copy, GripVertical, Plus, Trash2 } from 'lucide-react';
 import { BaseButton } from './base-button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
 import { DragHandle } from './drag-handle';
 import {
   Tooltip,
@@ -177,7 +170,7 @@ export function ContentMenu(props: ContentMenuProps) {
               <BaseButton
                 variant="ghost"
                 onClick={duplicateNode}
-                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm"
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm mly-font-normal"
               >
                 <Copy className="mly-size-[15px] mly-shrink-0" />
                 Duplicate
@@ -185,7 +178,7 @@ export function ContentMenu(props: ContentMenuProps) {
               <Divider type="horizontal" />
               <BaseButton
                 onClick={deleteCurrentNode}
-                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-bg-red-100 mly-px-2 mly-py-1 mly-text-sm mly-text-red-600 hover:mly-bg-red-200 focus:mly-bg-red-200"
+                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-bg-red-100 mly-px-2 mly-py-1 mly-text-sm mly-font-normal mly-text-red-600 hover:mly-bg-red-200 focus:mly-bg-red-200"
               >
                 <Trash2 className="mly-size-[15px] mly-shrink-0" />
                 Delete

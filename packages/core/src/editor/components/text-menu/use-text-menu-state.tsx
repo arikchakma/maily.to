@@ -1,3 +1,4 @@
+import { AllowedLogoAlignment } from '@/editor/nodes/logo';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -12,7 +13,15 @@ export const useTextMenuState = (editor: Editor) => {
           ctx.editor.getAttributes('textStyle').color || DEFAULT_TEXT_COLOR,
 
         linkUrl: ctx.editor?.getAttributes('link').href,
-        textAlign: ctx.editor?.getAttributes('paragraph')?.textAlign || 'left',
+        textAlign: (ctx.editor?.isActive({ textAlign: 'left' })
+          ? 'left'
+          : ctx.editor?.isActive({ textAlign: 'center' })
+            ? 'center'
+            : ctx.editor?.isActive({ textAlign: 'right' })
+              ? 'right'
+              : ctx.editor?.isActive({ textAlign: 'justify' })
+                ? 'justify'
+                : 'left') as AllowedLogoAlignment,
 
         isListActive:
           ctx.editor.isActive('bulletList') ||

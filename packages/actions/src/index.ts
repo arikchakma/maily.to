@@ -1,9 +1,16 @@
-import '../../core/dist/styles/index.css';
-import '../../core/dist/styles/preflight.css';
-import '../../core/dist/styles/tailwind.css';
+'use server';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Editor } from '@maily-to/core';
+import { render } from '@maily-to/render';
 
-export { React, ReactDOM, Editor };
+export async function renderEmail(json: string, previewText?: string) {
+  if (!json) {
+    throw new Error('JSON is required');
+  }
+
+  const content = JSON.parse(json);
+  const html = await render(content, {
+    preview: previewText,
+  });
+
+  return html;
+}

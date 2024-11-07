@@ -14,3 +14,5 @@ export async function renderEmail(json: string, previewText?: string) {
 
   return html;
 }
+
+globalThis.renderEmail = renderEmail;

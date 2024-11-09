@@ -2,6 +2,7 @@ import { DEFAULT_VARIABLE_SUGGESTION_CHAR, Variables } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
+import { ArrowDown, ArrowUp, Braces, CornerDownLeft } from 'lucide-react';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
@@ -42,28 +43,74 @@ export const VariableList = forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="mly-z-50 mly-h-auto mly-min-w-[128px] mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-p-1 mly-shadow-md mly-transition-all">
-      {props?.items?.length ? (
-        props?.items?.map((item: string, index: number) => (
-          <button
-            key={index}
-            onClick={() => selectItem(index)}
-            className={cn(
-              'mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100',
-              index === selectedIndex ? 'mly-bg-gray-200' : 'mly-bg-white'
-            )}
-          >
-            {item}
-          </button>
-        ))
-      ) : (
-        <button className="mly-flex mly-w-full mly-space-x-2 mly-rounded-md mly-bg-white mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100">
-          No result
-        </button>
-      )}
+    <div className="mly-z-50 mly-h-auto mly-min-w-[240px] mly-overflow-hidden mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
+      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-b mly-border-gray-200 mly-bg-soft-gray/40 mly-px-2 mly-py-1.5 mly-text-gray-500">
+        <span className="mly-text-xs mly-uppercase">Variables</span>
+        <VariableIcon>
+          <Braces className="mly-size-3 mly-stroke-[2.5]" />
+        </VariableIcon>
+      </div>
+
+      <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
+        {props?.items?.length ? (
+          props?.items?.map((item: string, index: number) => (
+            <button
+              key={index}
+              onClick={() => selectItem(index)}
+              className={cn(
+                'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
+                index === selectedIndex ? 'mly-bg-soft-gray' : 'mly-bg-white'
+              )}
+            >
+              <Braces className="mly-size-3 mly-stroke-[2.5] mly-text-rose-600" />
+              {item}
+            </button>
+          ))
+        ) : (
+          <div className="mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray">
+            No result
+          </div>
+        )}
+      </div>
+
+      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-t mly-border-gray-200 mly-px-2 mly-py-1.5 mly-text-gray-500">
+        <div className="mly-flex mly-items-center mly-gap-1">
+          <VariableIcon>
+            <ArrowDown className="mly-size-3 mly-stroke-[2.5]" />
+          </VariableIcon>
+          <VariableIcon>
+            <ArrowUp className="mly-size-3 mly-stroke-[2.5]" />
+          </VariableIcon>
+
+          <span className="mly-text-xs mly-text-gray-500">Navigate</span>
+        </div>
+        <VariableIcon>
+          <CornerDownLeft className="mly-size-3 mly-stroke-[2.5]" />
+        </VariableIcon>
+      </div>
     </div>
   );
 });
+
+type VariableIconProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+function VariableIcon(props: VariableIconProps) {
+  const { className, children } = props;
+
+  return (
+    <div
+      className={cn(
+        'mly-flex mly-size-5 mly-items-center mly-justify-center mly-rounded-md mly-border',
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 VariableList.displayName = 'VariableList';
 

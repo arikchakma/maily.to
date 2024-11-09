@@ -7,11 +7,10 @@ import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { TooltipProvider } from '../ui/tooltip';
 import { useForState } from './use-for-state';
 import { Divider } from '../ui/divider';
-import { Braces } from 'lucide-react';
+import { Braces, CornerDownLeft } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/editor/utils/classname';
 import { ShowPopover } from '../show-popover';
-import { useMemo } from 'react';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -118,7 +117,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
                 className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
               />
               <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                <Braces className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+                <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
               </div>
             </label>
           </form>

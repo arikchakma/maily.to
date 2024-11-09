@@ -5,9 +5,11 @@ import { Node } from '@tiptap/core';
 import { v4 as uuid } from 'uuid';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
+export const DEFAULT_COLUMNS_GAP = 8;
+
 interface ColumnsAttributes {
-  width: string;
   showIfKey: string;
+  gap: number;
 }
 
 declare module '@tiptap/core' {
@@ -43,6 +45,21 @@ export const Columns = Node.create({
 
           return {
             'data-show-if-key': attributes.showIfKey,
+          };
+        },
+      },
+      gap: {
+        default: DEFAULT_COLUMNS_GAP,
+        parseHTML: (element) => {
+          return Number(element.style.gap) || DEFAULT_COLUMNS_GAP;
+        },
+        renderHTML(attributes) {
+          if (!attributes.gap) {
+            return {};
+          }
+
+          return {
+            style: `gap: ${attributes.gap}px`,
           };
         },
       },

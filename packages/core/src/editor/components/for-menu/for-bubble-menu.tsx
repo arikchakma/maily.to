@@ -11,12 +11,15 @@ import { Braces } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { cn } from '@/editor/utils/classname';
 import { ShowPopover } from '../show-popover';
+import { useMemo } from 'react';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
   if (!editor) {
     return null;
   }
+
+  const state = useForState(editor);
 
   const getReferenceClientRect = useCallback(() => {
     const renderContainer = getRenderContainer(editor!, 'for');
@@ -51,8 +54,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'forBubbleMenu',
   };
 
-  const state = useForState(editor);
-
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
@@ -61,7 +62,10 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className={cn(
+        'mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md',
+        state?.isSectionActive && '-mly-translate-y-10'
+      )}
     >
       <TooltipProvider>
         <span className="mly-flex mly-items-center mly-px-1.5 mly-text-sm mly-leading-none">

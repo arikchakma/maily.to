@@ -21,10 +21,11 @@ export function ShowPopover(props: ShowPopoverProps) {
       <PopoverTrigger
         className={cn(
           'mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm hover:mly-bg-soft-gray data-[state=open]:mly-bg-soft-gray',
-          showIfKey && 'mly-bg-soft-gray'
+          showIfKey &&
+            'mly-bg-rose-100 mly-text-rose-800 hover:mly-bg-rose-100 data-[state=open]:mly-bg-rose-100'
         )}
       >
-        <Eye className="mly-h-4 mly-w-4 mly-stroke-[2.5] mly-text-midnight-gray" />
+        <Eye className="mly-h-4 mly-w-4 mly-stroke-[2.5]" />
       </PopoverTrigger>
       <PopoverContent
         className="mly-flex mly-w-max mly-rounded-lg !mly-p-0.5"

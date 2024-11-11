@@ -2,6 +2,7 @@ import { Braces, ChevronUp, CornerDownLeft, Eye } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { useRef, useState } from 'react';
 import { cn } from '../utils/classname';
+import { useEffect } from 'react';
 
 type ShowPopoverProps = {
   showIfKey?: string;
@@ -17,7 +18,15 @@ export function ShowPopover(props: ShowPopoverProps) {
   const isValidWhenKey = showIfKey !== undefined && showIfKey !== '';
 
   return (
-    <Popover>
+    <Popover
+      onOpenChange={(open) => {
+        if (open) {
+          return;
+        }
+
+        setIsUpdatingKey(false);
+      }}
+    >
       <PopoverTrigger
         className={cn(
           'mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm hover:mly-bg-soft-gray data-[state=open]:mly-bg-soft-gray',

@@ -11,7 +11,9 @@ import {
 import { ShowPopover } from '../show-popover';
 import { ColumnsWidthConfig } from './columns-width-config';
 import { Select } from '../ui/select';
-import { Space } from 'lucide-react';
+import { Space, Trash } from 'lucide-react';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { deleteNode } from '@/editor/utils/delete-node';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -79,6 +81,16 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
             });
           }}
           tooltip="Columns Gap"
+        />
+
+        <Divider />
+
+        <BubbleMenuButton
+          icon={Trash}
+          tooltip="Delete Columns"
+          command={() => {
+            deleteNode(editor, 'columns');
+          }}
         />
 
         <Divider />

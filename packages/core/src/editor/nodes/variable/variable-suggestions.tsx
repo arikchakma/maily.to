@@ -44,7 +44,7 @@ export const VariableList = forwardRef((props: any, ref) => {
 
   return (
     <div className="mly-z-50 mly-h-auto mly-min-w-[240px] mly-overflow-hidden mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
-      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-b mly-border-gray-200 mly-bg-soft-gray/40 mly-px-2 mly-py-1.5 mly-text-gray-500">
+      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-b mly-border-gray-200 mly-bg-soft-gray/40 mly-px-1 mly-py-1.5 mly-text-gray-500">
         <span className="mly-text-xs mly-uppercase">Variables</span>
         <VariableIcon>
           <Braces className="mly-size-3 mly-stroke-[2.5]" />
@@ -73,7 +73,7 @@ export const VariableList = forwardRef((props: any, ref) => {
         )}
       </div>
 
-      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-t mly-border-gray-200 mly-px-2 mly-py-1.5 mly-text-gray-500">
+      <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-t mly-border-gray-200 mly-px-1 mly-py-1.5 mly-text-gray-500">
         <div className="mly-flex mly-items-center mly-gap-1">
           <VariableIcon>
             <ArrowDown className="mly-size-3 mly-stroke-[2.5]" />

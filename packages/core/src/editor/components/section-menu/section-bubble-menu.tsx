@@ -12,6 +12,7 @@ import {
   BoxSelect,
   ChevronUp,
   Scan,
+  Trash,
 } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
@@ -31,6 +32,7 @@ import { PaddingIcon } from '../icons/padding-icon';
 import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { ShowPopover } from '../show-popover';
+import { deleteNode } from '@/editor/utils/delete-node';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -220,6 +222,16 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
           />
         </div>
+
+        <Divider />
+
+        <BubbleMenuButton
+          icon={Trash}
+          tooltip="Delete Section"
+          command={() => {
+            deleteNode(editor, 'section');
+          }}
+        />
 
         <Divider />
 

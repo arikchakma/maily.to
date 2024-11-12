@@ -19,17 +19,8 @@ type EditorTopbarProps = {
 export function EditorTopbar(props: EditorTopbarProps) {
   const { templateId, showSaveButton, className } = props;
 
-  const isEditorFocused = useEditorContext((s) => s.isEditorFocused);
-
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between gap-1.5',
-        'transition-all duration-200 ease-in-out',
-        isEditorFocused ? 'opacity-30' : 'opacity-100',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between gap-1.5', className)}>
       <div className="flex items-center gap-1.5">
         <ApiConfiguration />
         <PreviewEmail />

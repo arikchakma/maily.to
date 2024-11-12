@@ -71,12 +71,7 @@ export function EditorPreview(props: EditorPreviewProps) {
 
   return (
     <div className={cn('mt-8', className)}>
-      <div
-        className={cn(
-          'transition-all duration-200 ease-in-out',
-          isEditorFocused ? 'opacity-30' : 'opacity-100'
-        )}
-      >
+      <div>
         <Label className="flex items-center font-normal">
           <span className="w-20 shrink-0 font-normal text-gray-600 after:ml-0.5 after:text-red-400 after:content-['*']">
             Subject

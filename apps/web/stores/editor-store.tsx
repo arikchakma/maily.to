@@ -19,6 +19,8 @@ interface EditorProps {
   provider?: string;
   apiKey?: string;
   endpoint?: string;
+
+  isEditorFocused: boolean;
 }
 
 interface EditorState extends EditorProps {
@@ -34,6 +36,8 @@ interface EditorState extends EditorProps {
   setProvider: (provider: string) => void;
   setApiKey: (apiKey: string) => void;
   setEndpoint: (endpoint: string) => void;
+
+  setState: (state: Partial<EditorState>) => void;
 }
 
 export type EditorStore = ReturnType<typeof createEditorStore>;
@@ -64,6 +68,8 @@ const createEditorStore = (initProps?: Partial<EditorProps>) => {
 
     apiKey: undefined,
     endpoint: undefined,
+
+    isEditorFocused: false,
   };
 
   return createStore<EditorState>()((set) => ({
@@ -99,6 +105,10 @@ const createEditorStore = (initProps?: Partial<EditorProps>) => {
     },
     setEndpoint: (endpoint) => {
       set(() => ({ endpoint }));
+    },
+
+    setState: (state) => {
+      set(() => state);
     },
   }));
 };

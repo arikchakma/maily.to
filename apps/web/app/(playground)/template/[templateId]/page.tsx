@@ -17,6 +17,7 @@ import { ApiConfiguration } from '@/components/api-config';
 import { SendTestEmail } from '@/components/send-test-email';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import { EditorTopbar } from '@/components/editor-topbar';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,18 +84,7 @@ export default async function TemplatePage(props: TemplatePageProps) {
       previewText={preview_text || ''}
       subject={title || ''}
     >
-      <div className="flex items-center justify-between gap-1.5">
-        <div className="flex items-center gap-1.5">
-          <ApiConfiguration />
-          <PreviewEmail />
-          <CopyEmailHtml />
-          <SendTestEmail />
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DeleteEmail templateId={templateId} />
-          <UpdateEmail templateId={templateId} />
-        </div>
-      </div>
+      <EditorTopbar templateId={templateId} />
       <EditorPreview
         config={{
           autofocus: 'end',

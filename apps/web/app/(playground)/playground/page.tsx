@@ -9,6 +9,7 @@ import { CopyEmailHtml } from '@/components/copy-email-html';
 import { EditorPreview } from '@/components/editor-preview';
 import { ApiConfiguration } from '@/components/api-config';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { EditorTopbar } from '@/components/editor-topbar';
 
 export const metadata: Metadata = {
   title: 'Playground | Maily',
@@ -76,12 +77,7 @@ export default async function Playground() {
           </NextLink>
         </div>
       </header>
-      <div className="mt-6 flex items-center gap-1.5">
-        <ApiConfiguration />
-        <PreviewEmail />
-        <CopyEmailHtml />
-        <SendTestEmail />
-      </div>
+      <EditorTopbar className="mt-6" />
       <EditorPreview />
     </main>
   );

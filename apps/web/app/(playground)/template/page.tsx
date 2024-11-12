@@ -12,6 +12,7 @@ import {
 } from '@/utils/constants';
 import { ApiConfiguration } from '@/components/api-config';
 import { SendTestEmail } from '@/components/send-test-email';
+import { EditorTopbar } from '@/components/editor-topbar';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,15 +36,7 @@ export default function TemplatePage() {
 
   return (
     <EditorProvider apiKey={apiKey} endpoint={endpoint} provider={provider}>
-      <div className="flex items-center justify-between gap-1.5">
-        <div className="flex items-center gap-1.5">
-          <ApiConfiguration />
-          <PreviewEmail />
-          <CopyEmailHtml />
-          <SendTestEmail />
-        </div>
-        <SaveEmail />
-      </div>
+      <EditorTopbar showSaveButton={true} />
       <EditorPreview
         config={{
           autofocus: 'end',

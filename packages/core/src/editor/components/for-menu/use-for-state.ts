@@ -8,6 +8,8 @@ export const useForState = (editor: Editor) => {
       return {
         each: ctx.editor.getAttributes('for')?.each,
         currentShowIfKey: ctx.editor.getAttributes('for')?.showIfKey || '',
+
+        isSectionActive: ctx.editor.isActive('section'),
       };
     },
     equalityFn: deepEql,

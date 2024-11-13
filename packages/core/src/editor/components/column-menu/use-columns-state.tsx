@@ -17,6 +17,8 @@ export const useColumnsState = (editor: Editor) => {
 
         columnsCount: getColumnCount(ctx.editor),
         columnWidths: getColumnWidths(ctx.editor).map((c) => c.width),
+
+        currentColumnsGap: ctx.editor.getAttributes('columns')?.gap || 0,
       };
     },
     equalityFn: deepEql,

@@ -4,6 +4,7 @@ import {
   Repeat2,
   MoveVertical,
   RectangleHorizontal,
+  Minus,
 } from 'lucide-react';
 
 export const columns: BlockItem = {
@@ -60,5 +61,16 @@ export const spacer: BlockItem = {
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setSpacer({ height: 'sm' }).run();
+  },
+};
+
+export const divider: BlockItem = {
+  title: 'Divider',
+  description: 'Add a horizontal divider.',
+  searchTerms: ['divider', 'line'],
+  icon: <Minus className="mly-h-4 mly-w-4" />,
+  command: ({ editor, range }) => {
+    // @ts-ignore
+    editor.chain().focus().deleteRange(range).setHorizontalRule().run();
   },
 };

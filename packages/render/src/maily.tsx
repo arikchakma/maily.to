@@ -202,6 +202,7 @@ export const DEFAULT_SECTION_PADDING_BOTTOM = 5;
 export const DEFAULT_SECTION_PADDING_LEFT = 5;
 
 export const DEFAULT_COLUMNS_WIDTH = '100%';
+export const DEFAULT_COLUMNS_GAP = 8;
 
 export const DEFAULT_COLUMN_BACKGROUND_COLOR = 'transparent';
 export const DEFAULT_COLUMN_BORDER_RADIUS = 0;
@@ -450,7 +451,7 @@ export class Maily {
           />
           <style
             dangerouslySetInnerHTML={{
-              __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}`,
+              __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
             }}
           />
 
@@ -1344,7 +1345,7 @@ export class Maily {
       return <></>;
     }
 
-    const [newNode, totalWidth] = this.adjustAutoWidthColumns(node);
+    const [newNode, totalWidth] = this.adjustColumnsContent(node);
 
     return (
       <Row
@@ -1354,6 +1355,7 @@ export class Maily {
           padding: 0,
           width: `${totalWidth}%`,
         }}
+        className="tab-row-full"
       >
         {this.getMappedContent(newNode, {
           ...options,
@@ -1363,7 +1365,7 @@ export class Maily {
     );
   }
 
-  private adjustAutoWidthColumns(node: JSONContent): [JSONContent, number] {
+  private adjustColumnsContent(node: JSONContent): [JSONContent, number] {
     const { content = [] } = node;
     const totalWidth = 100;
     const columnsWithWidth = content.filter(
@@ -1382,6 +1384,8 @@ export class Maily {
     const remainingWidth = totalWidth - totalWidthUsed;
     const measuredWidth = remainingWidth / autoWidthColumns.length;
 
+    const gap = node.attrs?.gap || DEFAULT_COLUMNS_GAP;
+
     return [
       {
         ...node,
@@ -1389,6 +1393,8 @@ export class Maily {
           const isAutoWidthColumn =
             c.type === 'column' &&
             (c.attrs?.width === 'auto' || !c.attrs?.width);
+          const isFirstColumn = index === 0;
+          const isLastColumn = index === content.length - 1;
 
           return {
             ...c,
@@ -1396,9 +1402,12 @@ export class Maily {
               ...c.attrs,
               width: isAutoWidthColumn ? measuredWidth : c.attrs?.width,
 
-              isFirstColumn: index === 0,
-              isLastColumn: index === content.length - 1,
+              isFirstColumn,
+              isLastColumn,
               index,
+
+              paddingLeft: isFirstColumn ? 0 : gap / 2,
+              paddingRight: isLastColumn ? 0 : gap / 2,
             },
           };
         }),
@@ -1414,8 +1423,8 @@ export class Maily {
     const {
       width,
       verticalAlign = 'top',
-      isFirstColumn,
-      isLastColumn,
+      paddingLeft = 0,
+      paddingRight = 0,
     } = attrs || {};
 
     return (
@@ -1426,13 +1435,15 @@ export class Maily {
           margin: 0,
           verticalAlign,
         }}
+        className="tab-col-full"
       >
         <Section
           style={{
             margin: 0,
-            paddingRight: isLastColumn ? 0 : '4px',
-            paddingLeft: isFirstColumn ? 0 : '4px',
+            paddingLeft,
+            paddingRight,
           }}
+          className="tab-pad"
         >
           {this.getMappedContent(node, {
             ...options,

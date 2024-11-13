@@ -124,7 +124,7 @@ export function ContentMenu(props: ContentMenuProps) {
       onNodeChange={handleNodeChange}
     >
       <TooltipProvider>
-        <div className="mly-flex mly-items-center mly-gap-0.5">
+        <div className="mly-flex mly-items-center mly-gap-0.5 mly-pr-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
               <BaseButton

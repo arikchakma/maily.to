@@ -1,4 +1,4 @@
-import { ArrowUpRight, Link, LucideIcon } from 'lucide-react';
+import { ArrowUpRight, CornerDownLeft, Link, LucideIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
@@ -78,7 +78,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
               className="mly-h-7 mly-w-48 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
             />
             <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-              <ArrowUpRight className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+              <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
             </div>
           </label>
         </form>

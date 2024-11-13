@@ -1,6 +1,6 @@
 import { button, linkCard } from '@/blocks/button';
 import { image, logo } from '@/blocks/image';
-import { columns, forLoop, section, spacer } from '@/blocks/layout';
+import { columns, divider, forLoop, section, spacer } from '@/blocks/layout';
 import { bulletList, orderedList } from '@/blocks/list';
 import { BlockItem } from '@/blocks/types';
 import {
@@ -26,6 +26,7 @@ export const DEFAULT_SLASH_COMMANDS: BlockItem[] = [
   columns,
   section,
   forLoop,
+  divider,
   spacer,
   button,
   linkCard,

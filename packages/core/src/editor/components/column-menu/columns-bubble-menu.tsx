@@ -25,7 +25,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      if (isTextSelected(editor) || editor.isActive('section')) {
+      if (isTextSelected(editor) || editor.isActive('section') || editor.isActive('for')) {
         return false;
       }
 

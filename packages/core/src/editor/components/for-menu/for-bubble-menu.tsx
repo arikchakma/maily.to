@@ -33,11 +33,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      if (
-        isTextSelected(editor) ||
-        editor.isActive('section') ||
-        editor.isActive('columns')
-      ) {
+      if (isTextSelected(editor)) {
         return false;
       }
 

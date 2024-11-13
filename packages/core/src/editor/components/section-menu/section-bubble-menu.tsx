@@ -53,7 +53,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      if (isTextSelected(editor)) {
+      if (isTextSelected(editor) || editor.isActive('for')) {
         return false;
       }
 

@@ -7,8 +7,7 @@ import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import {
-  DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
-  DEFAULT_VARIABLE_SUGGESTION_CHAR,
+  DEFAULT_TRIGGER_SUGGESTION_CHAR,
   MailyContextType,
   MailyProvider,
 } from './provider';
@@ -60,8 +59,7 @@ export function Editor(props: EditorProps) {
     contentJson,
     variables,
     blocks = DEFAULT_SLASH_COMMANDS,
-    variableSuggestionChar = DEFAULT_VARIABLE_SUGGESTION_CHAR,
-    payloadValueSuggestionChar = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
+    triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
   } = props;
 
   let formattedContent: any = null;
@@ -117,8 +115,7 @@ export function Editor(props: EditorProps) {
       ...defaultExtensions({
         variables,
         blocks,
-        variableSuggestionChar,
-        payloadValueSuggestionChar,
+        triggerSuggestionCharacter,
       }),
       ...(extensions || []),
     ],
@@ -134,8 +131,7 @@ export function Editor(props: EditorProps) {
     <MailyProvider
       variables={variables}
       blocks={blocks}
-      variableSuggestionChar={variableSuggestionChar}
-      payloadValueSuggestionChar={payloadValueSuggestionChar}
+      triggerSuggestionCharacter={triggerSuggestionCharacter}
     >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}

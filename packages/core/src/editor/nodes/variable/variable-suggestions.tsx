@@ -1,4 +1,4 @@
-import { DEFAULT_VARIABLE_SUGGESTION_CHAR, Variables } from '@/editor/provider';
+import { DEFAULT_TRIGGER_SUGGESTION_CHAR, Variables } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
@@ -11,13 +11,16 @@ export const VariableList = forwardRef((props: any, ref) => {
 
   const selectItem = (index: number) => {
     const item = props.items[index];
-
-    if (item) {
-      props.command({ id: item });
+    if (!item) {
+      return;
     }
+
+    props.command({ id: item });
   };
 
-  useEffect(() => setSelectedIndex(0), [props.items]);
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [props.items]);
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -116,17 +119,30 @@ VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
   variables: Variables = [],
-  char: string = DEFAULT_VARIABLE_SUGGESTION_CHAR
+  char: string = DEFAULT_TRIGGER_SUGGESTION_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
-  const defaultVariables = variables.map((variable) => variable.name);
+  const defaultVariables = variables
+    .filter((v) => !v.iterable)
+    .map((variable) => variable.name);
 
   return {
     char,
-    items: ({ query }) => {
-      return defaultVariables
-        .concat(query.length > 0 ? [query] : [])
-        .filter((item) => item.toLowerCase().startsWith(query.toLowerCase()))
-        .slice(0, 5);
+    items: ({ query, editor }) => {
+      const queryLower = query.toLowerCase();
+      const eachKey = editor.getAttributes('for')?.each || '';
+
+      const associatedVariableKeys =
+        variables.find((v) => v.name === eachKey)?.keys || [];
+      const filteredVariableKeys = defaultVariables.filter((name) =>
+        name.toLowerCase().startsWith(queryLower)
+      );
+
+      const combinedKeys = [...associatedVariableKeys, ...filteredVariableKeys];
+      if (query.length > 0 && !filteredVariableKeys.includes(query)) {
+        combinedKeys.push(query);
+      }
+
+      return combinedKeys.slice(0, 5);
     },
 
     render: () => {

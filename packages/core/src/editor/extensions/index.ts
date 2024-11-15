@@ -23,9 +23,6 @@ import { Columns } from '../nodes/columns/columns';
 import { Column } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
 import { ForExtension } from '../nodes/for/for';
-import { PayloadValueExtension } from '../nodes/for/payload-value';
-import { getPlayloadValueSuggestions } from '../nodes/for/payload-value-view';
-import { ShowExtension } from '../nodes/show/show';
 import { ButtonExtension } from '../nodes/button/button';
 import { VariableExtension } from '../nodes/variable/variable';
 import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
@@ -35,12 +32,7 @@ import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const {
-    variables,
-    blocks,
-    variableSuggestionChar,
-    payloadValueSuggestionChar,
-  } = props;
+  const { variables, blocks, triggerSuggestionCharacter } = props;
 
   return [
     Document.extend({
@@ -107,10 +99,6 @@ export function extensions(props: ExtensionsProps) {
     Focus,
     SectionExtension,
     ForExtension,
-    PayloadValueExtension.configure({
-      suggestion: getPlayloadValueSuggestions([], payloadValueSuggestionChar),
-    }),
-    ShowExtension,
     Dropcursor.configure({
       color: '#555',
       width: 3,
@@ -118,7 +106,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables, variableSuggestionChar),
+      suggestion: getVariableSuggestions(variables, triggerSuggestionCharacter),
     }),
   ];
 }

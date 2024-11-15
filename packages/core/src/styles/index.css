@@ -1,6 +1,9 @@
 :root {
   --placeholder-color: #adb5bd;
   --bg-color: #ffffff;
+
+  --variable-icon-size: 12px;
+  --variable-icon-gap: 4px;
 }
 
 .mly-editor .mly-prose p:where([class~='text-sm']) {
@@ -194,6 +197,24 @@
     margin-top: 0;
   }
 
+  h1 {
+    --variable-icon-size: 28px;
+  }
+
+  h2 {
+    --variable-icon-size: 24px;
+  }
+
+  h3 {
+    --variable-icon-size: 20px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    --variable-icon-gap: 8px;
+  }
+
   .is-editor-empty:first-child:not(
       [data-type='columns'],
       [data-type='section'],
@@ -202,7 +223,6 @@
       ol
     )::before {
     content: attr(data-placeholder);
-    /* text-wrap: nowrap; */
     float: left;
     color: var(--placeholder-color);
     pointer-events: none;
@@ -217,7 +237,6 @@
       li
     )::before {
     content: attr(data-placeholder);
-    /* text-wrap: nowrap; */
     float: left;
     color: var(--placeholder-color);
     pointer-events: none;

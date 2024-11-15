@@ -13,12 +13,19 @@ import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
 
 export function VariableView(props: NodeViewProps) {
-  const { node, selected, updateAttributes } = props;
+  const { node, selected, updateAttributes, editor } = props;
   const { id, fallback, showIfKey = '' } = node.attrs;
 
   const { variables = [] } = useMailyContext();
+
+  const eachKey = editor.getAttributes('for')?.each || '';
+  const isIterableVariableKey = (
+    variables.find((variable) => variable.name === eachKey)?.keys ?? []
+  ).includes(id);
+
   const isRequired =
-    variables.find((variable) => variable.name === id)?.required ?? true;
+    !isIterableVariableKey &&
+    (variables.find((variable) => variable.name === id)?.required ?? true);
 
   return (
     <NodeViewWrapper

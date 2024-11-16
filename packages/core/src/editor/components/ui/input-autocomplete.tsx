@@ -77,18 +77,20 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
       {filteredAutoCompleteOptions.length > 0 && (
         <div className="mly-absolute mly-left-0 mly-top-8 mly-z-10 mly-w-full mly-rounded-lg mly-bg-white mly-p-0.5 mly-shadow-md">
           {filteredAutoCompleteOptions.map((option, index) => (
-            <div
+            <button
+              type="button"
               key={option}
-              className="mly-rounded-md mly-px-2 mly-py-1 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none aria-selected:mly-bg-soft-gray"
+              className="mly-w-full mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none aria-selected:mly-bg-soft-gray"
               onClick={() => {
                 onValueChange(option);
                 inputRef.current?.focus();
                 onSelectOption?.(option);
               }}
+              onMouseEnter={() => setSelectedIndex(index)}
               aria-selected={selectedIndex === index}
             >
               {option}
-            </div>
+            </button>
           ))}
         </div>
       )}

@@ -64,17 +64,22 @@ import { text, heading1 } from '@maily-to/core/blocks';
 
 By default, the variables are required. You can make them optional by setting the `required` property to `false`. So it will show a placeholder if the variable is not provided.
 
-For auto-suggestions of the variables in the editor when you type `@` and pass the variables as an array of objects to the `variables` prop.
+For auto-suggestions of the variables in the editor when you type `@` and pass the variables as an array of objects to the `variables` prop. The `iterable` property is used to indicate that the variable is an array of objects and can be used in `For` loop. The `keys` property is used to show the keys of the object in the auto-suggestions.
 
 ```tsx
 // (Omitted repeated imports)
 <Editor
-  variableSuggestionChar="@"
+  triggerSuggestionCharacter="@"
   variables={[
     {
       name: 'currentDate',
       required: false,
     },
+    {
+      name: 'notifications',
+      iterable: true,
+      keys: ['id', 'title'],
+    }
   ]}
 />
 ```

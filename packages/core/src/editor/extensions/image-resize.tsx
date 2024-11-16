@@ -102,9 +102,8 @@ function ResizableImageTemplate(props: NodeViewProps) {
 
   const hasImageSrc = !!attrs.src;
 
-  // load the image using new Image() to avoid CORS issues
-  // then if the image is loaded, set the width and height
-  // and update the node attributes and stop loading
+  // load the image using new Image() to avoid layout shift
+  // then if the image is loaded, set the status to loaded
   useEffect(() => {
     if (!src) {
       return;

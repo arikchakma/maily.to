@@ -7,15 +7,9 @@ export const image: BlockItem = {
   searchTerms: ['image'],
   icon: <ImageIcon className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
-    const imageUrl = prompt('Image URL: ') || '';
-
-    if (!imageUrl) {
-      return;
-    }
-
     editor.chain().focus().deleteRange(range).run();
     // @ts-ignore
-    editor.chain().focus().setImage({ src: imageUrl }).run();
+    editor.chain().focus().setImage({ src: '' }).run();
   },
 };
 

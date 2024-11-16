@@ -104,7 +104,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           )}
         </div>
 
-        {state.isImageActive && (
+        {state.isImageActive && state.imageSrc && (
           <>
             <Divider />
 

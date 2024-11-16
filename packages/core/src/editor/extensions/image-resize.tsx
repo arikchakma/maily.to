@@ -8,6 +8,7 @@ import TipTapImage from '@tiptap/extension-image';
 import { useEvent } from '../utils/use-event';
 import { useEffect } from 'react';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../nodes/section/section';
+import { ImageOffIcon } from 'lucide-react';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
@@ -96,15 +97,21 @@ function ResizableImageTemplate(props: NodeViewProps) {
   let { alignment = 'center', width, height } = node.attrs || {};
   const { externalLink, showIfKey, ...attrs } = node.attrs || {};
 
+  const hasImageSrc = !!attrs.src;
+
   return (
     <NodeViewWrapper
       as="div"
       draggable
       data-drag-handle
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        ...resizingStyle,
+        ...(hasImageSrc
+          ? {
+              width: `${width}px`,
+              height: `${height}px`,
+              ...resizingStyle,
+            }
+          : {}),
         overflow: 'hidden',
         position: 'relative',
         // Weird! Basically tiptap/prose wraps this in a span and the line height causes an annoying buffer.
@@ -117,37 +124,48 @@ function ResizableImageTemplate(props: NodeViewProps) {
         }[alignment as string] || {}),
       }}
     >
-      <img
-        {...attrs}
-        ref={imgRef}
-        style={{
-          ...resizingStyle,
-          cursor: 'default',
-          marginBottom: 0,
-        }}
-      />
-      {selected && (
+      {!hasImageSrc && (
+        <div className="mly-flex mly-items-center mly-gap-2 mly-rounded-lg mly-bg-soft-gray mly-p-4 mly-text-sm mly-font-medium mly-text-gray-500 hover:mly-bg-soft-gray/60">
+          <ImageOffIcon className="mly-size-4 mly-stroke-[2.5]" />
+          <span>No image selected</span>
+        </div>
+      )}
+
+      {hasImageSrc && (
         <>
-          {/* Don't use a simple border as it pushes other content around. */}
-          {[
-            { left: 0, top: 0, height: '100%', width: '1px' },
-            { right: 0, top: 0, height: '100%', width: '1px' },
-            { top: 0, left: 0, width: '100%', height: '1px' },
-            { bottom: 0, left: 0, width: '100%', height: '1px' },
-          ].map((style, i) => (
-            <div
-              key={i}
-              className="mly-bg-rose-500"
-              style={{
-                position: 'absolute',
-                ...style,
-              }}
-            />
-          ))}
-          {dragCornerButton('nw')}
-          {dragCornerButton('ne')}
-          {dragCornerButton('sw')}
-          {dragCornerButton('se')}
+          <img
+            {...attrs}
+            ref={imgRef}
+            style={{
+              ...resizingStyle,
+              cursor: 'default',
+              marginBottom: 0,
+            }}
+          />
+          {selected && (
+            <>
+              {/* Don't use a simple border as it pushes other content around. */}
+              {[
+                { left: 0, top: 0, height: '100%', width: '1px' },
+                { right: 0, top: 0, height: '100%', width: '1px' },
+                { top: 0, left: 0, width: '100%', height: '1px' },
+                { bottom: 0, left: 0, width: '100%', height: '1px' },
+              ].map((style, i) => (
+                <div
+                  key={i}
+                  className="mly-bg-rose-500"
+                  style={{
+                    position: 'absolute',
+                    ...style,
+                  }}
+                />
+              ))}
+              {dragCornerButton('nw')}
+              {dragCornerButton('ne')}
+              {dragCornerButton('sw')}
+              {dragCornerButton('se')}
+            </>
+          )}
         </>
       )}
     </NodeViewWrapper>

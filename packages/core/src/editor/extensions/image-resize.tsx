@@ -1,21 +1,24 @@
+import TipTapImage from '@tiptap/extension-image';
 import {
-  NodeViewWrapper,
   type NodeViewProps,
+  NodeViewWrapper,
   ReactNodeViewRenderer,
 } from '@tiptap/react';
-import { type CSSProperties, useRef, useState } from 'react';
-import TipTapImage from '@tiptap/extension-image';
-import { useEvent } from '../utils/use-event';
-import { useEffect } from 'react';
+import { Ban, ImageOffIcon, Loader2 } from 'lucide-react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../nodes/section/section';
-import { ImageOffIcon } from 'lucide-react';
+import { cn } from '../utils/classname';
+import { useEvent } from '../utils/use-event';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
 
+type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
+
 function ResizableImageTemplate(props: NodeViewProps) {
   const { node, updateAttributes, selected } = props;
 
+  const [status, setStatus] = useState<ImageStatus>('idle');
   const imgRef = useRef<HTMLImageElement>(null);
 
   const [resizingStyle, setResizingStyle] = useState<
@@ -94,10 +97,35 @@ function ResizableImageTemplate(props: NodeViewProps) {
     );
   }
 
-  let { alignment = 'center', width, height } = node.attrs || {};
+  let { alignment = 'center', width, height, src } = node.attrs || {};
   const { externalLink, showIfKey, ...attrs } = node.attrs || {};
 
   const hasImageSrc = !!attrs.src;
+
+  // load the image using new Image() to avoid CORS issues
+  // then if the image is loaded, set the width and height
+  // and update the node attributes and stop loading
+  useEffect(() => {
+    if (!src) {
+      return;
+    }
+
+    setStatus('loading');
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      setStatus('loaded');
+    };
+    img.onerror = () => {
+      setStatus('error');
+    };
+
+    return () => {
+      img.src = '';
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [src]);
 
   return (
     <NodeViewWrapper
@@ -105,7 +133,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
       draggable
       data-drag-handle
       style={{
-        ...(hasImageSrc
+        ...(hasImageSrc && status === 'loaded'
           ? {
               width: `${width}px`,
               height: `${height}px`,
@@ -124,14 +152,13 @@ function ResizableImageTemplate(props: NodeViewProps) {
         }[alignment as string] || {}),
       }}
     >
-      {!hasImageSrc && (
-        <div className="mly-flex mly-items-center mly-gap-2 mly-rounded-lg mly-bg-soft-gray mly-p-4 mly-text-sm mly-font-medium mly-text-gray-500 hover:mly-bg-soft-gray/60">
-          <ImageOffIcon className="mly-size-4 mly-stroke-[2.5]" />
-          <span>No image selected</span>
-        </div>
+      {!hasImageSrc && <ImageStatusLabel status="idle" />}
+      {hasImageSrc && status === 'loading' && (
+        <ImageStatusLabel status="loading" />
       )}
+      {hasImageSrc && status === 'error' && <ImageStatusLabel status="error" />}
 
-      {hasImageSrc && (
+      {hasImageSrc && status === 'loaded' && (
         <>
           <img
             {...attrs}
@@ -142,6 +169,7 @@ function ResizableImageTemplate(props: NodeViewProps) {
               marginBottom: 0,
             }}
           />
+
           {selected && (
             <>
               {/* Don't use a simple border as it pushes other content around. */}
@@ -238,3 +266,41 @@ export const ResizableImageExtension = TipTapImage.extend({
     return ReactNodeViewRenderer(ResizableImageTemplate);
   },
 });
+
+type ImageStatusLabelProps = {
+  status: ImageStatus;
+};
+
+function ImageStatusLabel(props: ImageStatusLabelProps) {
+  const { status } = props;
+  return (
+    <div
+      className={cn(
+        'mly-flex mly-items-center mly-gap-2 mly-rounded-lg mly-bg-soft-gray mly-p-4 mly-text-sm mly-font-medium',
+        {
+          'mly-text-gray-500 hover:mly-bg-soft-gray/60': status === 'loading',
+          'mly-text-red-500 hover:mly-bg-soft-gray/60': status === 'error',
+        }
+      )}
+    >
+      {status === 'idle' && (
+        <>
+          <ImageOffIcon className="mly-size-4 mly-stroke-[2.5]" />
+          <span>No image selected</span>
+        </>
+      )}
+      {status === 'loading' && (
+        <>
+          <Loader2 className="mly-size-4 mly-animate-spin mly-stroke-[2.5]" />
+          <span>Loading image...</span>
+        </>
+      )}
+      {status === 'error' && (
+        <>
+          <Ban className="mly-size-4 mly-stroke-[2.5]" />
+          <span>Error loading image</span>
+        </>
+      )}
+    </div>
+  );
+}

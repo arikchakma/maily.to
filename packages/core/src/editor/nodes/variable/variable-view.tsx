@@ -18,14 +18,8 @@ export function VariableView(props: NodeViewProps) {
 
   const { variables = [] } = useMailyContext();
 
-  const eachKey = editor.getAttributes('for')?.each || '';
-  const isIterableVariableKey = (
-    variables.find((variable) => variable.name === eachKey)?.keys ?? []
-  ).includes(id);
-
   const isRequired =
-    !isIterableVariableKey &&
-    (variables.find((variable) => variable.name === id)?.required ?? true);
+    variables.find((variable) => variable.name === id)?.required ?? true;
 
   return (
     <NodeViewWrapper
@@ -64,7 +58,7 @@ export function VariableView(props: NodeViewProps) {
                   Variable
                 </span>
                 <input
-                  value={id}
+                  value={id ?? ''}
                   onChange={(e) => {
                     updateAttributes({
                       id: e.target.value,
@@ -82,7 +76,7 @@ export function VariableView(props: NodeViewProps) {
                   Default
                 </span>
                 <input
-                  value={fallback}
+                  value={fallback ?? ''}
                   onChange={(e) => {
                     updateAttributes({
                       fallback: e.target.value,

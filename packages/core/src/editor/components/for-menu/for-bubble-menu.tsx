@@ -1,16 +1,17 @@
-import { BubbleMenu } from '@tiptap/react';
-import { useCallback } from 'react';
-import { getRenderContainer } from '../../utils/get-render-container';
-import { sticky } from 'tippy.js';
-import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
+import { useMailyContext } from '@/editor/provider';
+import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
+import { BubbleMenu } from '@tiptap/react';
+import { Braces } from 'lucide-react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { sticky } from 'tippy.js';
+import { getRenderContainer } from '../../utils/get-render-container';
+import { ShowPopover } from '../show-popover';
+import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
+import { Divider } from '../ui/divider';
+import { InputAutocomplete } from '../ui/input-autocomplete';
 import { TooltipProvider } from '../ui/tooltip';
 import { useForState } from './use-for-state';
-import { Divider } from '../ui/divider';
-import { Braces, CornerDownLeft } from 'lucide-react';
-import { useState, useRef } from 'react';
-import { cn } from '@/editor/utils/classname';
-import { ShowPopover } from '../show-popover';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -53,10 +54,19 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'forBubbleMenu',
   };
 
+  const { variables = [] } = useMailyContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
   const isValidEachKey = state?.each !== undefined && state?.each !== '';
+
+  // NOTE: in future we will use editor extension storage instead of context
+  // so that we can get access wherever we have the editor access
+  const autoCompleteOptions = useMemo(() => {
+    return variables
+      ?.filter((variable) => variable.iterable)
+      .map((variable) => variable.name);
+  }, [variables]);
 
   return (
     <BubbleMenu
@@ -97,26 +107,21 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               }
             }}
           >
-            <label className="mly-relative">
-              <input
-                value={state?.each || ''}
-                onChange={(e) => {
-                  editor.commands.updateFor({
-                    each: e.target.value,
-                  });
-                }}
-                onBlur={() => {
-                  setIsUpdatingKey(false);
-                }}
-                ref={inputRef}
-                type="text"
-                placeholder="e.g. items"
-                className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-              />
-              <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
-              </div>
-            </label>
+            <InputAutocomplete
+              value={state?.each || ''}
+              onValueChange={(value) => {
+                editor.commands.updateFor({
+                  each: value,
+                });
+              }}
+              onBlur={() => {
+                setIsUpdatingKey(false);
+              }}
+              onSelectOption={() => {
+                setIsUpdatingKey(false);
+              }}
+              autoCompleteOptions={autoCompleteOptions}
+            />
           </form>
         )}
 

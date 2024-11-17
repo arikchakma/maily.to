@@ -250,7 +250,8 @@
     color: oklch(
       from var(--bg-color)
         clamp(0.05, max(min(var(--diff) * infinity, 1), 0), 0.95) c h
-    );
+    ) !important;
+    opacity: 0.6;
   }
 
   [data-type='columns'] {

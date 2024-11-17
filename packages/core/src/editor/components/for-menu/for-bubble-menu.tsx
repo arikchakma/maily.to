@@ -59,9 +59,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
   const isValidEachKey = state?.each !== undefined && state?.each !== '';
-
-  // NOTE: in future we will use editor extension storage instead of context
-  // so that we can get access wherever we have the editor access
   const autoCompleteOptions = useMemo(() => {
     return variables
       ?.filter((variable) => variable.iterable)

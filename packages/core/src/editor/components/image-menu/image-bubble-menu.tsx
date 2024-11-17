@@ -1,4 +1,3 @@
-import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo';
 import { BubbleMenu } from '@tiptap/react';
 import { ArrowUpRight, ImageDown } from 'lucide-react';
 import { AlignmentSwitch } from '../alignment-switch';
@@ -10,6 +9,8 @@ import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
 import { ShowPopover } from '../show-popover';
+import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
+import { sticky } from 'tippy.js';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -26,8 +27,12 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       return editor.isActive('logo') || editor.isActive('image');
     },
     tippyOptions: {
+      popperOptions: {
+        modifiers: [{ name: 'flip', enabled: false }],
+      },
+      plugins: [sticky],
+      sticky: 'popper',
       maxWidth: '100%',
-      moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
   };
 
@@ -37,7 +42,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly-flex mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
-        {state.isLogoActive && (
+        {state.isLogoActive && state.imageSrc && (
           <>
             <Select
               label="Size"

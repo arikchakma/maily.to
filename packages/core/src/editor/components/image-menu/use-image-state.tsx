@@ -1,4 +1,4 @@
-import { DEFAULT_LOGO_SIZE } from '@/editor/nodes/logo';
+import { DEFAULT_LOGO_SIZE } from '@/editor/nodes/logo/logo';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 

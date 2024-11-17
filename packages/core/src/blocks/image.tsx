@@ -7,9 +7,8 @@ export const image: BlockItem = {
   searchTerms: ['image'],
   icon: <ImageIcon className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
-    editor.chain().focus().deleteRange(range).run();
     // @ts-ignore
-    editor.chain().focus().setImage({ src: '' }).run();
+    editor.chain().focus().deleteRange(range).setImage({ src: '' }).run();
   },
 };
 
@@ -19,14 +18,7 @@ export const logo: BlockItem = {
   searchTerms: ['image', 'logo'],
   icon: <ImageIcon className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
-    const logoUrl = prompt('Logo URL: ') || '';
-
-    if (!logoUrl) {
-      return;
-    }
-
-    editor.chain().focus().deleteRange(range).run();
     // @ts-ignore
-    editor.chain().focus().setLogoImage({ src: logoUrl }).run();
+    editor.chain().focus().deleteRange(range).setLogoImage({ src: '' }).run();
   },
 };

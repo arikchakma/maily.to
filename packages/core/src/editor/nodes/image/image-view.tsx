@@ -1,21 +1,15 @@
-import TipTapImage from '@tiptap/extension-image';
-import {
-  type NodeViewProps,
-  NodeViewWrapper,
-  ReactNodeViewRenderer,
-} from '@tiptap/react';
+import { cn } from '@/editor/utils/classname';
+import { useEvent } from '@/editor/utils/use-event';
+import { type NodeViewProps, NodeViewWrapper } from '@tiptap/react';
 import { Ban, ImageOffIcon, Loader2 } from 'lucide-react';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
-import { DEFAULT_SECTION_SHOW_IF_KEY } from '../nodes/section/section';
-import { cn } from '../utils/classname';
-import { useEvent } from '../utils/use-event';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
 
-type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
+export type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
-function ResizableImageTemplate(props: NodeViewProps) {
+export function ImageView(props: NodeViewProps) {
   const { node, updateAttributes, selected } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
@@ -199,78 +193,11 @@ function ResizableImageTemplate(props: NodeViewProps) {
   );
 }
 
-export const ResizableImageExtension = TipTapImage.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      width: {
-        default: 'auto',
-        parseHTML: (element) => {
-          const width = element.style.width;
-          return width ? { width } : null;
-        },
-        renderHTML: ({ width }) => ({ style: `width: ${width}` }),
-      },
-      height: {
-        default: 'auto',
-        parseHTML: (element) => {
-          const height = element.style.height;
-          return height ? { height } : null;
-        },
-        renderHTML: ({ height }) => ({ style: `height: ${height}` }),
-      },
-      alignment: {
-        default: 'center',
-        renderHTML: ({ alignment }) => ({ 'data-alignment': alignment }),
-        parseHTML: (element) =>
-          element.getAttribute('data-alignment') || 'center',
-      },
-      externalLink: {
-        default: null,
-        renderHTML: ({ externalLink }) => {
-          if (!externalLink) {
-            return {};
-          }
-          return {
-            'data-external-link': externalLink,
-          };
-        },
-        parseHTML: (element) => {
-          const externalLink = element.getAttribute('data-external-link');
-          return externalLink ? { externalLink } : null;
-        },
-      },
-
-      showIfKey: {
-        default: DEFAULT_SECTION_SHOW_IF_KEY,
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('data-show-if-key') ||
-            DEFAULT_SECTION_SHOW_IF_KEY
-          );
-        },
-        renderHTML(attributes) {
-          if (!attributes.showIfKey) {
-            return {};
-          }
-
-          return {
-            'data-show-if-key': attributes.showIfKey,
-          };
-        },
-      },
-    };
-  },
-  addNodeView() {
-    return ReactNodeViewRenderer(ResizableImageTemplate);
-  },
-});
-
 type ImageStatusLabelProps = {
   status: ImageStatus;
 };
 
-function ImageStatusLabel(props: ImageStatusLabelProps) {
+export function ImageStatusLabel(props: ImageStatusLabelProps) {
   const { status } = props;
   return (
     <div

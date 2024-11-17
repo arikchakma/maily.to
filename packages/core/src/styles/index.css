@@ -56,7 +56,8 @@
   margin: 0;
 }
 
-.mly-editor .mly-prose img {
+.mly-editor .mly-prose img,
+.mly-editor .mly-prose .node-logo {
   margin-top: 0;
   margin-bottom: 32px;
 }
@@ -95,7 +96,8 @@
   margin-top: -20px;
 }
 
-.mly-editor .mly-prose img + .spacer {
+.mly-editor .mly-prose img + .spacer,
+.mly-editor .mly-prose .node-logo + .spacer {
   margin-top: -32px;
 }
 

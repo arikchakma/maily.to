@@ -1,26 +1,25 @@
 'use client';
 
-import { Editor as TiptapEditor, Extension, FocusPosition } from '@tiptap/core';
+import { Extension, FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
+import { useRef } from 'react';
+import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
+import { ContentMenu } from './components/content-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
+import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
+import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
+import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
+import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
-  DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
-  DEFAULT_VARIABLE_SUGGESTION_CHAR,
+  DEFAULT_TRIGGER_SUGGESTION_CHAR,
   MailyContextType,
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
-import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
-import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
-import { useRef } from 'react';
-import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
-import { ContentMenu } from './components/content-menu';
-import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
-import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
-import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -60,8 +59,7 @@ export function Editor(props: EditorProps) {
     contentJson,
     variables,
     blocks = DEFAULT_SLASH_COMMANDS,
-    variableSuggestionChar = DEFAULT_VARIABLE_SUGGESTION_CHAR,
-    payloadValueSuggestionChar = DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
+    triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
   } = props;
 
   let formattedContent: any = null;
@@ -117,8 +115,7 @@ export function Editor(props: EditorProps) {
       ...defaultExtensions({
         variables,
         blocks,
-        variableSuggestionChar,
-        payloadValueSuggestionChar,
+        triggerSuggestionCharacter,
       }),
       ...(extensions || []),
     ],
@@ -134,8 +131,7 @@ export function Editor(props: EditorProps) {
     <MailyProvider
       variables={variables}
       blocks={blocks}
-      variableSuggestionChar={variableSuggestionChar}
-      payloadValueSuggestionChar={payloadValueSuggestionChar}
+      triggerSuggestionCharacter={triggerSuggestionCharacter}
     >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}

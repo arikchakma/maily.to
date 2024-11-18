@@ -14,33 +14,25 @@ import Dropcursor from '@tiptap/extension-dropcursor';
 
 import { HorizontalRule } from './horizontal-rule';
 import { Footer } from '../nodes/footer';
-import { TiptapLogoExtension } from '../nodes/logo';
 import { Spacer } from '../nodes/spacer';
-import { ResizableImageExtension } from './image-resize';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
 import { Columns } from '../nodes/columns/columns';
 import { Column } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
 import { ForExtension } from '../nodes/for/for';
-import { PayloadValueExtension } from '../nodes/for/payload-value';
-import { getPlayloadValueSuggestions } from '../nodes/for/payload-value-view';
-import { ShowExtension } from '../nodes/show/show';
 import { ButtonExtension } from '../nodes/button/button';
 import { VariableExtension } from '../nodes/variable/variable';
 import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
 import { SlashCommand } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
+import { LogoExtension } from '../nodes/logo/logo';
+import { ImageExtension } from '../nodes/image/image';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const {
-    variables,
-    blocks,
-    variableSuggestionChar,
-    payloadValueSuggestionChar,
-  } = props;
+  const { variables, blocks, triggerSuggestionCharacter } = props;
 
   return [
     Document.extend({
@@ -69,7 +61,7 @@ export function extensions(props: ExtensionsProps) {
       document: false,
     }),
     Underline,
-    TiptapLogoExtension,
+    LogoExtension,
     Color.configure({ types: [TextStyle.name, ListItem.name] }),
     TextStyle.configure(),
     TextAlign.configure({ types: [Paragraph.name, Heading.name, Footer.name] }),
@@ -102,15 +94,11 @@ export function extensions(props: ExtensionsProps) {
       },
       openOnClick: false,
     }),
-    ResizableImageExtension,
+    ImageExtension,
     LinkCardExtension,
     Focus,
     SectionExtension,
     ForExtension,
-    PayloadValueExtension.configure({
-      suggestion: getPlayloadValueSuggestions([], payloadValueSuggestionChar),
-    }),
-    ShowExtension,
     Dropcursor.configure({
       color: '#555',
       width: 3,
@@ -118,7 +106,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables, variableSuggestionChar),
+      suggestion: getVariableSuggestions(variables, triggerSuggestionCharacter),
     }),
   ];
 }

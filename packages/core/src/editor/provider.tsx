@@ -8,21 +8,22 @@ export type Variables = Array<{
   name: string;
   // Default is true
   required?: boolean;
+
+  // Default is false
+  iterable?: boolean;
+  keys?: Array<string>;
 }>;
 
-export const DEFAULT_VARIABLE_SUGGESTION_CHAR = '@';
-export const DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR = '#';
+export const DEFAULT_TRIGGER_SUGGESTION_CHAR = '@';
 
 export type MailyContextType = {
-  variableSuggestionChar?: string;
-  payloadValueSuggestionChar?: string;
+  triggerSuggestionCharacter?: string;
   variables?: Variables;
   blocks?: BlockItem[];
 };
 
 export const MailyContext = createContext<MailyContextType>({
-  variableSuggestionChar: DEFAULT_VARIABLE_SUGGESTION_CHAR,
-  payloadValueSuggestionChar: DEFAULT_PAYLOAD_VALUE_SUGGESTION_CHAR,
+  triggerSuggestionCharacter: DEFAULT_TRIGGER_SUGGESTION_CHAR,
   variables: [],
   blocks: DEFAULT_SLASH_COMMANDS,
 });
@@ -32,12 +33,8 @@ type MailyProviderProps = PropsWithChildren<MailyContextType>;
 export function MailyProvider(props: MailyProviderProps) {
   const { children, ...defaultValues } = props;
 
-  if (defaultValues.variableSuggestionChar === '') {
-    throw new Error('variableSuggestionChar cannot be an empty string');
-  }
-
-  if (defaultValues.payloadValueSuggestionChar === '') {
-    throw new Error('payloadValueSuggestionChar cannot be an empty string');
+  if (defaultValues.triggerSuggestionCharacter === '') {
+    throw new Error('triggerSuggestionCharacter cannot be an empty string');
   }
 
   return (

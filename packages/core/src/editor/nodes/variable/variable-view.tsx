@@ -10,13 +10,14 @@ import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
-import { AlertTriangle, Pencil } from 'lucide-react';
+import { AlertTriangle, Braces, Pencil } from 'lucide-react';
 
 export function VariableView(props: NodeViewProps) {
-  const { node, selected, updateAttributes } = props;
+  const { node, selected, updateAttributes, editor } = props;
   const { id, fallback, showIfKey = '' } = node.attrs;
 
   const { variables = [] } = useMailyContext();
+
   const isRequired =
     variables.find((variable) => variable.name === id)?.required ?? true;
 
@@ -33,11 +34,12 @@ export function VariableView(props: NodeViewProps) {
         <PopoverTrigger>
           <span
             tabIndex={-1}
-            className="mly-inline-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-border-rose-200 mly-bg-rose-50 mly-px-2 mly-py-1 mly-leading-none mly-text-rose-800"
+            className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-px-1.5 mly-py-0.5 mly-leading-none"
           >
+            <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
             {id}
             {isRequired && !fallback && (
-              <AlertTriangle className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
+              <AlertTriangle className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5]" />
             )}
           </span>
         </PopoverTrigger>
@@ -56,7 +58,7 @@ export function VariableView(props: NodeViewProps) {
                   Variable
                 </span>
                 <input
-                  value={id}
+                  value={id ?? ''}
                   onChange={(e) => {
                     updateAttributes({
                       id: e.target.value,
@@ -74,7 +76,7 @@ export function VariableView(props: NodeViewProps) {
                   Default
                 </span>
                 <input
-                  value={fallback}
+                  value={fallback ?? ''}
                   onChange={(e) => {
                     updateAttributes({
                       fallback: e.target.value,

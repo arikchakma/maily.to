@@ -324,6 +324,10 @@ export class Maily {
   }
 
   setPayloadValue(key: string, value: PayloadValue) {
+    if (!this.shouldReplaceVariableValues) {
+      this.shouldReplaceVariableValues = true;
+    }
+
     this.payloadValues.set(key, value);
   }
 
@@ -597,8 +601,8 @@ export class Maily {
   // `renderMark` will call the method of the corresponding mark type
   private renderMark(node: JSONContent): JSX.Element {
     // It will wrap the text with the corresponding mark type
-    const text = node.text || <>&nbsp;</>;
-    const marks = node.marks || [];
+    const text = node?.text || <>&nbsp;</>;
+    const marks = node?.marks || [];
 
     return marks.reduce(
       (acc, mark) => {
@@ -750,10 +754,11 @@ export class Maily {
   }
 
   private variable(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { payloadValue } = options || {};
     const { id: variable, fallback } = node.attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
-    if (!shouldShow) {
+    if (!shouldShow || !variable) {
       return <></>;
     }
 
@@ -766,7 +771,19 @@ export class Maily {
     // Otherwise, just return the formatted variable
     if (this.shouldReplaceVariableValues) {
       formattedVariable =
-        this.variableValues.get(variable) || fallback || formattedVariable;
+        (typeof payloadValue === 'object'
+          ? payloadValue[variable]
+          : payloadValue) ??
+        this.variableValues.get(variable) ??
+        fallback ??
+        formattedVariable;
+    }
+
+    if (node?.marks) {
+      return this.renderMark({
+        text: formattedVariable,
+        marks: node.marks,
+      });
     }
 
     return <>{formattedVariable}</>;
@@ -1483,41 +1500,6 @@ export class Maily {
               })}
             </Fragment>
           );
-        })}
-      </>
-    );
-  }
-
-  private payloadValue(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const { id: key } = node.attrs || {};
-    const { payloadValue } = options || {};
-    if (payloadValue === undefined || !key) {
-      return <></>;
-    }
-
-    const value =
-      typeof payloadValue === 'object' ? payloadValue[key] : payloadValue;
-    return <>{value}</>;
-  }
-
-  private show(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const { attrs } = node;
-    const { when = '' } = attrs || {};
-
-    let { payloadValue } = options || {};
-    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
-
-    const value = this.payloadValues.get(when) ?? payloadValue[when];
-
-    if (!value) {
-      return <></>;
-    }
-
-    return (
-      <>
-        {this.getMappedContent(node, {
-          ...options,
-          parent: node,
         })}
       </>
     );

@@ -80,7 +80,7 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
             <button
               type="button"
               key={option}
-              className="mly-w-full mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none aria-selected:mly-bg-soft-gray"
+              className="mly-w-full mly-truncate mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none aria-selected:mly-bg-soft-gray"
               onClick={() => {
                 onValueChange(option);
                 inputRef.current?.focus();

@@ -59,13 +59,9 @@ export function App() {
 
   const [transformer] = useState(() => new Transformer());
 
-  const handleCodeChange = (newCode: string) => {
+  const handleCodeChange = async (newCode: string) => {
     setCode(newCode);
-    console.log('-'.repeat(20));
-    console.log('NEW CHANGES');
-    console.log(transformer.transform(newCode));
-    console.log('-'.repeat(20));
-    setOutput(JSON.stringify(transformer.transform(newCode), null, 2));
+    setOutput(JSON.stringify(await transformer.transform(newCode), null, 2));
   };
 
   useEffect(() => {

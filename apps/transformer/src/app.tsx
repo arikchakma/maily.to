@@ -61,6 +61,10 @@ export function App() {
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
+    console.log('-'.repeat(20));
+    console.log('NEW CHANGES');
+    console.log(transformer.transform(newCode));
+    console.log('-'.repeat(20));
     setOutput(JSON.stringify(transformer.transform(newCode), null, 2));
   };
 

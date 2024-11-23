@@ -1,0 +1,60 @@
+{
+  "name": "@maily-to/transformer",
+  "version": "0.0.1",
+  "private": false,
+  "description": "A transformer that converts a React component to a Maily JSON object.",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:watch": "vitest",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/transformer"
+  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "keywords": [
+    "maily.to",
+    "react",
+    "email"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "typescript": "^5.6.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "acorn": "^8.14.0",
+    "acorn-jsx": "^5.3.2"
+  }
+}

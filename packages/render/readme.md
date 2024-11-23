@@ -24,8 +24,6 @@ Install `@maily-to/render` from your command line.
 pnpm add @maily-to/render
 ```
 
-<br>
-
 ## Getting started
 
 Convert React components into a HTML string.

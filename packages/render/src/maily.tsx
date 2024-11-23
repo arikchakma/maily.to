@@ -1499,9 +1499,9 @@ export class Maily {
     }
 
     // if(this.isForList(node)) {
-      
+
     // }
-    
+
     return (
       <>
         {values.map((value) => {

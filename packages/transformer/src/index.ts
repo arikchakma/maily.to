@@ -1,2 +1,2 @@
-export * from './transformer';
+export * from './parser';
 export * from './types';

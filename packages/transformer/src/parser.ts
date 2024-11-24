@@ -17,7 +17,7 @@ import type {
   Options,
 } from './types';
 
-export class Transformer {
+export class Parser {
   protected jsx: typeof AcornParser;
 
   constructor() {
@@ -61,13 +61,13 @@ export class Transformer {
    * @param content - The JSX content to transform.
    * @returns The root ParsedNode object containing the transformed JSX tree.
    */
-  public async transform(content: string): Promise<ParsedNode> {
+  public async parse(content: string): Promise<ParsedNode> {
     content = this.clean(content);
     const ast = this.ast(content);
 
     const children: ParsedNode[] = [];
     for (const node of ast.body) {
-      children.push(this.transformNode(node));
+      children.push(this.parseNode(node));
     }
 
     return {
@@ -76,7 +76,7 @@ export class Transformer {
     };
   }
 
-  private transformNode(node: unknown, options?: Options) {
+  private parseNode(node: unknown, options?: Options) {
     // @ts-ignore
     if (node?.type in this) {
       // @ts-ignore
@@ -87,23 +87,21 @@ export class Transformer {
   }
 
   private ExpressionStatement(node: ExpressionStatement) {
-    return this.transformNode(node.expression);
+    return this.parseNode(node.expression);
   }
 
   private JSXElement(node: JSXElement) {
     const element = node;
     const attributes: Record<string, any> = {};
     for (const attr of element?.openingElement?.attributes) {
-      attributes[this.transformNode(attr.name)] = this.transformNode(
-        attr.value
-      );
+      attributes[this.parseNode(attr.name)] = this.parseNode(attr.value);
     }
 
     const children: ParsedNode[] = [];
     const isSingleChildElement = element.children.length === 1;
     element.children.forEach((child, index) => {
       children.push(
-        this.transformNode(
+        this.parseNode(
           child,
           child.type === 'JSXText'
             ? {
@@ -132,13 +130,13 @@ export class Transformer {
   }
 
   private JSXExpressionContainer(node: JSXExpressionContainer) {
-    return this.transformNode(node.expression);
+    return this.parseNode(node.expression);
   }
 
   private JSXAttribute(node: JSXAttribute) {
     return {
       name: node.name.name,
-      value: this.transformNode(node.value),
+      value: this.parseNode(node.value),
     };
   }
 
@@ -149,7 +147,7 @@ export class Transformer {
   private ObjectExpression(node: ObjectExpression) {
     const object: Record<string, any> = {};
     for (const prop of node.properties as Property[]) {
-      object[this.transformNode(prop.key)] = this.transformNode(prop.value);
+      object[this.parseNode(prop.key)] = this.parseNode(prop.value);
     }
 
     return object;
@@ -157,8 +155,8 @@ export class Transformer {
 
   private Property(node: Property) {
     return {
-      name: this.transformNode(node.key),
-      value: this.transformNode(node.value),
+      name: this.parseNode(node.key),
+      value: this.parseNode(node.value),
     };
   }
 

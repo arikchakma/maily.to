@@ -17,7 +17,7 @@
       ],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "transformer#build": {
+    "web-transformer#build": {
       "dependsOn": ["^build"],
       "env": [],
       "outputs": [".dist/**"]

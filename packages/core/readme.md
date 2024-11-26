@@ -14,7 +14,7 @@
 ## Installation
 
 ```bash
-pnpm add @maily.to/core
+pnpm add @maily-to/core
 
 # for types
 pnpm add -D @tiptap/core

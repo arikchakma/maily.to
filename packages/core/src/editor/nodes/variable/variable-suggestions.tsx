@@ -70,7 +70,7 @@ export const VariableList = forwardRef((props: any, ref) => {
             </button>
           ))
         ) : (
-          <div className="mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray">
+          <div className="mly-flex mly-h-7 mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-[13px] mly-text-gray-900 hover:mly-bg-soft-gray">
             No result
           </div>
         )}

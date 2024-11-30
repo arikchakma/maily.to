@@ -86,7 +86,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
+    appendTo: appendTo?.current || document.body,
     pluginKey: 'textMenu',
     shouldShow: ({ editor, state, from, to, view }) => {
       if (!view || editor.view.dragging) {
@@ -122,6 +122,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
           },
         ],
       },
+      appendTo: appendTo?.current || document.body,
       maxWidth: '100%',
     },
   };

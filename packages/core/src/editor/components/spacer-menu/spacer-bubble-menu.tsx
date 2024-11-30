@@ -26,9 +26,10 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
+    appendTo: appendTo?.current || document.body,
     shouldShow: ({ editor }) => editor.isActive('spacer'),
     tippyOptions: {
+      appendTo: appendTo?.current || document.body,
       maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
     },

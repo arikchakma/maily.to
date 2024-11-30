@@ -19,14 +19,11 @@ import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { Divider } from '../ui/divider';
 import { BubbleMenuButton } from '../bubble-menu-button';
-import { GridLines } from '../icons/grid-lines';
-import { EdgeSpacingControl } from '../ui/edge-spacing-controls';
 import { TooltipProvider } from '../ui/tooltip';
 import { AlignmentSwitch } from '../alignment-switch';
 import { BaseButton } from '../base-button';
 import { BorderColor } from '../icons/border-color';
 import { Select } from '../ui/select';
-import { allowedButtonBorderRadius } from '@/editor/nodes/button/button';
 import { MarginIcon } from '../icons/margin-icon';
 import { PaddingIcon } from '../icons/padding-icon';
 import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
@@ -51,7 +48,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
+    appendTo: appendTo?.current || document.body,
     shouldShow: ({ editor }) => {
       if (isTextSelected(editor) || editor.isActive('for')) {
         return false;
@@ -65,7 +62,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: () => appendTo?.current,
+      appendTo: appendTo?.current || document.body,
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',

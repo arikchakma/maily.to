@@ -146,14 +146,15 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <TextBubbleMenu editor={editor} />
+          <ImageBubbleMenu editor={editor} />
+          <SpacerBubbleMenu editor={editor} />
           <EditorContent editor={editor} />
-          <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <SectionBubbleMenu editor={editor} />
+          <ColumnsBubbleMenu editor={editor} />
           <ContentMenu editor={editor} />
-          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ForBubbleMenu editor={editor} />
         </div>
       </div>
     </MailyProvider>

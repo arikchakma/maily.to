@@ -3,11 +3,19 @@ import { cn } from '@/editor/utils/classname';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import { ArrowDown, ArrowUp, Braces, CornerDownLeft } from 'lucide-react';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
 export const VariableList = forwardRef((props: any, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const selectItem = (index: number) => {
     const item = props.items[index];
@@ -18,13 +26,42 @@ export const VariableList = forwardRef((props: any, ref) => {
     props.command({ id: item });
   };
 
+  const scrollSelectedIntoView = (index: number) => {
+    const container = scrollContainerRef.current;
+    const selectedItem = itemRefs.current[index];
+
+    if (!container || !selectedItem) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = selectedItem.getBoundingClientRect();
+
+    if (itemRect.bottom > containerRect.bottom) {
+      // Scroll down if item is below viewport
+      container.scrollTop += itemRect.bottom - containerRect.bottom;
+    } else if (itemRect.top < containerRect.top) {
+      // Scroll up if item is above viewport
+      container.scrollTop += itemRect.top - containerRect.top;
+    }
+  };
+
   useEffect(() => {
     setSelectedIndex(0);
+    // Reset scroll position when items change
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    // Reset item refs array
+    itemRefs.current = props.items.map(() => null);
   }, [props.items]);
+
+  useEffect(() => {
+    scrollSelectedIntoView(selectedIndex);
+  }, [selectedIndex]);
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
       if (event.key === 'ArrowUp') {
+        event.preventDefault();
         setSelectedIndex(
           (selectedIndex + props.items.length - 1) % props.items.length
         );
@@ -32,6 +69,7 @@ export const VariableList = forwardRef((props: any, ref) => {
       }
 
       if (event.key === 'ArrowDown') {
+        event.preventDefault();
         setSelectedIndex((selectedIndex + 1) % props.items.length);
         return true;
       }
@@ -46,7 +84,7 @@ export const VariableList = forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="mly-z-50 mly-h-auto mly-min-w-[240px] mly-overflow-hidden mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
+    <div className="mly-z-50 mly-w-64 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
       <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-b mly-border-gray-200 mly-bg-soft-gray/40 mly-px-1 mly-py-1.5 mly-text-gray-500">
         <span className="mly-text-xs mly-uppercase">Variables</span>
         <VariableIcon>
@@ -54,26 +92,32 @@ export const VariableList = forwardRef((props: any, ref) => {
         </VariableIcon>
       </div>
 
-      <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
-        {props?.items?.length ? (
-          props?.items?.map((item: string, index: number) => (
-            <button
-              key={index}
-              onClick={() => selectItem(index)}
-              className={cn(
-                'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
-                index === selectedIndex ? 'mly-bg-soft-gray' : 'mly-bg-white'
-              )}
-            >
-              <Braces className="mly-size-3 mly-stroke-[2.5] mly-text-rose-600" />
-              {item}
-            </button>
-          ))
-        ) : (
-          <div className="mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray">
-            No result
-          </div>
-        )}
+      <div
+        ref={scrollContainerRef}
+        className="mly-scrollbar-thin mly-scrollbar-track-transparent mly-scrollbar-thumb-gray-200 mly-max-h-64 mly-overflow-y-auto"
+      >
+        <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
+          {props?.items?.length ? (
+            props?.items?.map((item: string, index: number) => (
+              <button
+                key={index}
+                ref={(el) => (itemRefs.current[index] = el)}
+                onClick={() => selectItem(index)}
+                className={cn(
+                  'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
+                  index === selectedIndex ? 'mly-bg-soft-gray' : 'mly-bg-white'
+                )}
+              >
+                <Braces className="mly-size-3 mly-stroke-[2.5] mly-text-rose-600" />
+                {item}
+              </button>
+            ))
+          ) : (
+            <div className="mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900">
+              No result
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-t mly-border-gray-200 mly-px-1 mly-py-1.5 mly-text-gray-500">
@@ -84,7 +128,6 @@ export const VariableList = forwardRef((props: any, ref) => {
           <VariableIcon>
             <ArrowUp className="mly-size-3 mly-stroke-[2.5]" />
           </VariableIcon>
-
           <span className="mly-text-xs mly-text-gray-500">Navigate</span>
         </div>
         <VariableIcon>
@@ -94,6 +137,8 @@ export const VariableList = forwardRef((props: any, ref) => {
     </div>
   );
 });
+
+VariableList.displayName = 'VariableList';
 
 type VariableIconProps = {
   className?: string;
@@ -142,7 +187,7 @@ export function getVariableSuggestions(
         combinedKeys.push(query);
       }
 
-      return combinedKeys.slice(0, 5);
+      return combinedKeys;
     },
 
     render: () => {
@@ -186,7 +231,6 @@ export function getVariableSuggestions(
         onKeyDown(props) {
           if (props.event.key === 'Escape') {
             popup?.[0].hide();
-
             return true;
           }
 

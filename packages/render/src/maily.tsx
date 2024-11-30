@@ -417,6 +417,23 @@ export class Maily {
     return reactEmailRenderAsync(markup, options);
   }
 
+  async renderMarkup(): Promise<string> {
+    const markup = this.markup();
+    const jsxToString = (await import('react-element-to-jsx-string')).default;
+    let markupString = jsxToString(markup, {
+      filterProps: ['key'],
+    });
+
+    // clean up the markup
+    // remove <React.Fragment> and </React.Fragment>
+    // remove the empty line between elements
+    markupString = markupString
+      .replace(/<React.Fragment>/g, '')
+      .replace(/<\/React.Fragment>/g, '');
+
+    return markupString;
+  }
+
   /**
    * `markup` will render the JSON content into React Email markup.
    * and return the raw React Tree.
@@ -820,7 +837,7 @@ export class Maily {
     );
 
     return (
-      <Container>
+      <Container id="maily-ordered-list">
         <ol
           style={{
             marginTop: '0px',
@@ -853,6 +870,7 @@ export class Maily {
         style={{
           maxWidth: '100%',
         }}
+        id="maily-bullet-list"
       >
         <ul
           style={{
@@ -925,6 +943,7 @@ export class Maily {
           maxWidth: '100%',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
+        id="maily-button"
       >
         <Button
           href={href}
@@ -997,6 +1016,7 @@ export class Maily {
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
+        id="maily-logo"
       >
         <Column align={alignment}>
           <Img
@@ -1057,6 +1077,7 @@ export class Maily {
 
     return (
       <Row
+        id="maily-image"
         style={{
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
@@ -1342,6 +1363,7 @@ export class Maily {
           marginBottom,
           marginLeft,
         }}
+        id="maily-section"
       >
         <Column
           align={align}
@@ -1386,6 +1408,7 @@ export class Maily {
           width: `${totalWidth}%`,
         }}
         className="tab-row-full"
+        id="maily-columns"
       >
         {this.getMappedContent(newNode, {
           ...options,
@@ -1466,6 +1489,7 @@ export class Maily {
           verticalAlign,
         }}
         className="tab-col-full"
+        id="maily-column"
       >
         <Section
           style={{
@@ -1497,10 +1521,6 @@ export class Maily {
     if (!Array.isArray(values)) {
       throw new Error(`Payload value for each "${each}" is not an array`);
     }
-
-    // if(this.isForList(node)) {
-
-    // }
 
     return (
       <>

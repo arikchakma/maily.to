@@ -23,11 +23,13 @@ import { cn } from './utils/classname';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
+export type MailyEditor = TiptapEditor;
+
 export type EditorProps = {
   contentHtml?: string;
   contentJson?: JSONContent;
-  onUpdate?: (editor: TiptapEditor) => void;
-  onCreate?: (editor: TiptapEditor) => void;
+  onUpdate?: (editor: MailyEditor) => void;
+  onCreate?: (editor: MailyEditor) => void;
   extensions?: Extension[];
   config?: {
     hasMenuBar?: boolean;
@@ -140,7 +142,7 @@ export function Editor(props: EditorProps) {
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
-            'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
+            'mly-mt-4 mly-rounded mly-border mly-border-gray-200 mly-bg-white mly-p-4',
             bodyClassName
           )}
         >

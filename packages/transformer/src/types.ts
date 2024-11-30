@@ -71,7 +71,7 @@ export type JSXNode =
 export interface ParsedNode {
   type: string;
   attributes?: Record<string, any>;
-  children?: ParsedNode[];
+  children: ParsedNode[];
   text?: string;
   [key: string]: any;
 }

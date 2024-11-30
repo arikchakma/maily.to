@@ -56,7 +56,8 @@
   },
   "dependencies": {
     "@react-email/components": "^0.0.25",
-    "@react-email/render": "^1.0.1"
+    "@react-email/render": "^1.0.1",
+    "react-element-to-jsx-string": "^15.0.0"
   },
   "peerDependencies": {
     "react": "^18.3.1"

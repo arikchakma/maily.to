@@ -146,7 +146,6 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <TextBubbleMenu editor={editor} />
           <ImageBubbleMenu editor={editor} />
           <SpacerBubbleMenu editor={editor} />

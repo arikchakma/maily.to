@@ -13,6 +13,8 @@ import {
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
 export const VariableList = forwardRef((props: any, ref) => {
+  const { items = [] } = props;
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -30,17 +32,20 @@ export const VariableList = forwardRef((props: any, ref) => {
     const container = scrollContainerRef.current;
     const selectedItem = itemRefs.current[index];
 
-    if (!container || !selectedItem) return;
+    if (!container || !selectedItem) {
+      return;
+    }
 
     const containerRect = container.getBoundingClientRect();
     const itemRect = selectedItem.getBoundingClientRect();
 
+    const padding = 4;
     if (itemRect.bottom > containerRect.bottom) {
       // Scroll down if item is below viewport
-      container.scrollTop += itemRect.bottom - containerRect.bottom;
+      container.scrollTop += itemRect.bottom - containerRect.bottom + padding;
     } else if (itemRect.top < containerRect.top) {
       // Scroll up if item is above viewport
-      container.scrollTop += itemRect.top - containerRect.top;
+      container.scrollTop += itemRect.top - containerRect.top - padding;
     }
   };
 
@@ -62,15 +67,13 @@ export const VariableList = forwardRef((props: any, ref) => {
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
       if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setSelectedIndex(
-          (selectedIndex + props.items.length - 1) % props.items.length
-        );
+        setSelectedIndex((selectedIndex + items.length - 1) % items.length);
         return true;
       }
 
       if (event.key === 'ArrowDown') {
         event.preventDefault();
-        setSelectedIndex((selectedIndex + 1) % props.items.length);
+        setSelectedIndex((selectedIndex + 1) % items.length);
         return true;
       }
 
@@ -94,11 +97,11 @@ export const VariableList = forwardRef((props: any, ref) => {
 
       <div
         ref={scrollContainerRef}
-        className="mly-scrollbar-thin mly-scrollbar-track-transparent mly-scrollbar-thumb-gray-200 mly-max-h-64 mly-overflow-y-auto"
+        className="mly-max-h-52 mly-overflow-y-auto mly-scrollbar-thin mly-scrollbar-track-transparent mly-scrollbar-thumb-gray-200"
       >
         <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
-          {props?.items?.length ? (
-            props?.items?.map((item: string, index: number) => (
+          {items?.length ? (
+            items?.map((item: string, index: number) => (
               <button
                 key={index}
                 ref={(el) => (itemRefs.current[index] = el)}

@@ -32,7 +32,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    appendTo: appendTo?.current || document.body,
     shouldShow: ({ editor }) => {
       if (isTextSelected(editor)) {
         return false;
@@ -46,7 +45,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: appendTo?.current || document.body,
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',

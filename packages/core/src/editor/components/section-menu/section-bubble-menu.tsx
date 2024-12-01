@@ -1,19 +1,9 @@
-import { BubbleMenu, isTextSelection } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react';
 import { useCallback } from 'react';
 import { getRenderContainer } from '../../utils/get-render-container';
 import { sticky } from 'tippy.js';
 import { useSectionState } from './use-section-state';
-import { NumberInput } from '../ui/number-input';
-import {
-  AlignCenter,
-  AlignLeft,
-  AlignRight,
-  Box,
-  BoxSelect,
-  ChevronUp,
-  Scan,
-  Trash,
-} from 'lucide-react';
+import { ChevronUp, Trash } from 'lucide-react';
 import { ColorPicker } from '../ui/color-picker';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
@@ -48,7 +38,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    appendTo: appendTo?.current || document.body,
     shouldShow: ({ editor }) => {
       if (isTextSelected(editor) || editor.isActive('for')) {
         return false;
@@ -62,7 +51,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: appendTo?.current || document.body,
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',

@@ -22,7 +22,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    appendTo: appendTo?.current || document.body,
     shouldShow: ({ editor }) => {
       return editor.isActive('logo') || editor.isActive('image');
     },
@@ -30,7 +29,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       popperOptions: {
         modifiers: [{ name: 'flip', enabled: false }],
       },
-      appendTo: appendTo?.current || document.body,
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: '100%',

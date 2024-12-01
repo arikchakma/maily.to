@@ -1498,6 +1498,7 @@ export class Maily {
             paddingRight,
           }}
           className="tab-pad"
+          id="maily-col-section"
         >
           {this.getMappedContent(node, {
             ...options,

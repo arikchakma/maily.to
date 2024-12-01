@@ -20,6 +20,8 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
+import { RefObject } from 'react';
+import { useMemo } from 'react';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -41,6 +43,13 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
+
+  /*
+   * By default, bubble menus will be rendered inside the editor.
+   * If you want to render them outside the editor, you can pass a ref to the container element.
+   * it will be helpful when you have overflow hidden in the editor.
+   */
+  bubbleMenuAppendTo?: RefObject<any>;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -62,6 +71,8 @@ export function Editor(props: EditorProps) {
     variables,
     blocks = DEFAULT_SLASH_COMMANDS,
     triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
+
+    bubbleMenuAppendTo,
   } = props;
 
   let formattedContent: any = null;
@@ -125,6 +136,10 @@ export function Editor(props: EditorProps) {
     autofocus,
   });
 
+  const appendTo = useMemo(() => {
+    return bubbleMenuAppendTo || menuContainerRef;
+  }, [bubbleMenuAppendTo, menuContainerRef]);
+
   if (!editor) {
     return null;
   }
@@ -146,14 +161,15 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <TextBubbleMenu editor={editor} />
-          <ImageBubbleMenu editor={editor} />
-          <SpacerBubbleMenu editor={editor} />
           <EditorContent editor={editor} />
-          <SectionBubbleMenu editor={editor} />
-          <ColumnsBubbleMenu editor={editor} />
+
           <ContentMenu editor={editor} />
-          <ForBubbleMenu editor={editor} />
+          <TextBubbleMenu editor={editor} appendTo={appendTo} />
+          <ImageBubbleMenu editor={editor} appendTo={appendTo} />
+          <SpacerBubbleMenu editor={editor} appendTo={appendTo} />
+          <SectionBubbleMenu editor={editor} appendTo={appendTo} />
+          <ColumnsBubbleMenu editor={editor} appendTo={appendTo} />
+          <ForBubbleMenu editor={editor} appendTo={appendTo} />
         </div>
       </div>
     </MailyProvider>

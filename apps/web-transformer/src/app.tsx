@@ -8,97 +8,104 @@ import 'prismjs/themes/prism.css';
 import { Parser, Transformer } from '@maily-to/transformer';
 import { Editor as Maily, type MailyEditor } from '@maily-to/core';
 import { renderMarkup } from '@maily-to/render';
+import { useRef } from 'react';
 
 const defaultCode = `<Container
-	style={{
-		marginLeft: "auto",
-		marginRight: "auto",
-		maxWidth: "600px",
-		minWidth: "300px",
-		padding: "0.5rem",
-		width: "100%",
-	}}
+  style={{
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: "600px",
+    minWidth: "300px",
+    padding: "0.5rem",
+    width: "100%",
+  }}
 >
-	<Row
-		className="tab-row-full"
-		style={{
-			margin: 0,
-			padding: 0,
-			width: "100%",
-		}}
-		width="100%"
-	>
-		<Column
-			className="tab-col-full"
-			style={{
-				margin: 0,
-				verticalAlign: "top",
-				width: "50%",
-			}}
-			width="50%"
-		>
-			<Section
-				className="tab-pad"
-				style={{
-					margin: 0,
-					paddingLeft: 0,
-					paddingRight: 4,
-				}}
-			>
-				<Text
-					style={{
-						MozOsxFontSmoothing: "grayscale",
-						WebkitFontSmoothing: "antialiased",
-						color: "#374151",
-						fontSize: "15px",
-						marginBottom: "0px",
-						marginTop: "0px",
-						textAlign: "left",
-					}}
-				>
-					Arik Chakma How are you?
-				</Text>
-			</Section>
-		</Column>
-		<Column
-			className="tab-col-full"
-			style={{
-				margin: 0,
-				verticalAlign: "top",
-				width: "50%",
-			}}
-			width="50%"
-		>
-			<Section
-				className="tab-pad"
-				style={{
-					margin: 0,
-					paddingLeft: 4,
-					paddingRight: 0,
-				}}
-			>
-				<Text
-					style={{
-						MozOsxFontSmoothing: "grayscale",
-						WebkitFontSmoothing: "antialiased",
-						color: "#374151",
-						fontSize: "15px",
-						marginBottom: "0px",
-						marginTop: "0px",
-						textAlign: "left",
-					}}
-				>
-					Welcome To the Section
-				</Text>
-			</Section>
-		</Column>
-	</Row>
+  <Row
+    className="tab-row-full"
+    id="maily-columns"
+    style={{
+      margin: 0,
+      padding: 0,
+      width: "100%",
+    }}
+    width="100%"
+  >
+    <Column
+      className="tab-col-full"
+      id="maily-column"
+      style={{
+        margin: 0,
+        verticalAlign: "top",
+        width: "50%",
+      }}
+      width="50%"
+    >
+      <Section
+        className="tab-pad"
+        style={{
+          margin: 0,
+          paddingLeft: 0,
+          paddingRight: 4,
+        }}
+      >
+        <Text
+          style={{
+            MozOsxFontSmoothing: "grayscale",
+            WebkitFontSmoothing: "antialiased",
+            color: "#374151",
+            fontSize: "15px",
+            marginBottom: "0px",
+            marginTop: "0px",
+            textAlign: "left",
+          }}
+        >
+          First Column
+        </Text>
+      </Section>
+    </Column>
+
+    <Column
+      className="tab-col-full"
+      id="maily-column"
+      style={{
+        margin: 0,
+        verticalAlign: "top",
+        width: "50%",
+      }}
+      width="50%"
+    >
+      <Section
+        className="tab-pad"
+        style={{
+          margin: 0,
+          paddingLeft: 4,
+          paddingRight: 0,
+        }}
+      >
+        <Text
+          style={{
+            MozOsxFontSmoothing: "grayscale",
+            WebkitFontSmoothing: "antialiased",
+            color: "#374151",
+            fontSize: "15px",
+            marginBottom: "0px",
+            marginTop: "0px",
+            textAlign: "left",
+          }}
+        >
+          Second Column
+        </Text>
+      </Section>
+    </Column>
+  </Row>
 </Container>`;
 
 export function App() {
   const [code, setCode] = useState('');
 
   const [editor, setEditor] = useState<MailyEditor>();
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [defaultContent, setDefaultContent] = useState<any>();
   const [parsedOutput, setParsedOutput] = useState('');
@@ -180,7 +187,7 @@ export function App() {
             </button>
           </div>
 
-          <div className="relative grow">
+          <div className="relative grow" ref={containerRef}>
             <div className="absolute inset-0 overflow-y-scroll">
               {parentTab === 'jsx' && (
                 <Editor
@@ -203,9 +210,11 @@ export function App() {
                   config={{
                     hasMenuBar: false,
                     bodyClassName: '!mt-0 font-sans border-none',
+                    contentClassName: 'mx-auto',
                   }}
                   onCreate={handleMailyChange}
                   onUpdate={handleMailyChange}
+                  bubbleMenuAppendTo={containerRef}
                 />
               )}
             </div>
@@ -268,7 +277,7 @@ export function App() {
                   jsxOutput}
                 {activeTab === 'maily' && parentTab === 'jsx' && (
                   <Maily
-                    contentJson={defaultContent}
+                    // contentJson={defaultContent}
                     onCreate={setEditor}
                     onUpdate={setEditor}
                     config={{

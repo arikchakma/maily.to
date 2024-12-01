@@ -71,7 +71,7 @@ export class Transformer {
         borderColor: attrs?.borderColor || 'transparent',
         borderRadius: attrs?.borderRadius || 0,
 
-        backgroundColor: attrs?.background || 'transparent',
+        backgroundColor: attrs?.backgroundColor || 'transparent',
       },
       content: node.children.map((child) => this.transformNode(child)),
     };
@@ -142,23 +142,31 @@ export class Transformer {
   }
 
   private isColumnsNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
     return (
       node?.type === 'row' &&
-      node?.attributes?.className?.includes('tab-row-full')
+      (attrs?.className?.includes('tab-row-full') ||
+        attrs?.id === 'maily-columns')
     );
   }
 
   private isColumnNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+
     return (
       node?.type === 'column' &&
-      node?.attributes?.className?.includes('tab-col-full')
+      (attrs?.className?.includes('tab-col-full') ||
+        attrs?.id === 'maily-column')
     );
   }
 
   private isColumnSection(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+
     return (
       node?.type === 'section' &&
-      node?.attributes?.className?.includes('tab-pad')
+      (attrs?.className?.includes('tab-pad') ||
+        attrs?.id === 'maily-col-section')
     );
   }
 
@@ -176,10 +184,56 @@ export class Transformer {
     };
   }
 
+  private isSectionNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+    return node?.type === 'row' && attrs?.id === 'maily-section';
+  }
+
+  private section(node: ParsedNode): JSONContent {
+    const firstColumnNode = node?.children[0];
+    const attrs = firstColumnNode?.attributes || {};
+
+    const style = firstColumnNode?.attributes?.style || {};
+    const padding = style?.paddingTop || 0;
+    const margin = style?.marginTop || 0;
+    const align = attrs?.align || 'left';
+
+    return {
+      type: 'section',
+      attrs: {
+        align,
+
+        paddingTop: padding,
+        paddingRight: padding,
+        paddingBottom: padding,
+        paddingLeft: padding,
+
+        marginTop: margin,
+        marginRight: margin,
+        marginBottom: margin,
+        marginLeft: margin,
+
+        borderWidth: style?.borderWidth || 0,
+        borderColor: style?.borderColor || 'transparent',
+        borderRadius: style?.borderRadius || 0,
+
+        backgroundColor: style?.backgroundColor || 'transparent',
+      },
+      content: firstColumnNode?.children.map((child) =>
+        this.transformNode(child)
+      ),
+    };
+  }
+
   private row(node: ParsedNode): JSONContent {
     const isColumnsNode = this.isColumnsNode(node);
     if (isColumnsNode) {
       return this.columns(node);
+    }
+
+    const isSectionNode = this.isSectionNode(node);
+    if (isSectionNode) {
+      return this.section(node);
     }
 
     return {

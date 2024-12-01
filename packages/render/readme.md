@@ -106,6 +106,35 @@ maily.setPayloadValue('items', ['Alice', 'Bob', 'Charlie']);
 const html = await maily.render();
 ```
 
+### React Email Markup
+
+You can use the `Maily` class to transform JSON content into React Email Markup.
+
+```ts
+// (Omitted repeated imports)
+
+const maily = new Maily({
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      attrs: { textAlign: 'left' },
+      content: [
+        {
+          type: 'variable',
+          attrs: {
+            id: 'currentDate',
+            fallback: 'now',
+          },
+        },
+      ],
+    },
+  ],
+});
+
+const markup = await maily.renderMarkup();
+```
+
 ## Contributions
 
 Feel free to submit pull requests, create issues, or spread the word.

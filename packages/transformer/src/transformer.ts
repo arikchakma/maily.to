@@ -24,6 +24,15 @@ const spacers: Record<AllowedSpacers, string> = {
   xl: '64px',
 };
 
+const allowedLogoSizes = ['sm', 'md', 'lg'] as const;
+type AllowedLogoSizes = (typeof allowedLogoSizes)[number];
+
+const logoSizes: Record<AllowedLogoSizes, string> = {
+  sm: '40px',
+  md: '48px',
+  lg: '64px',
+};
+
 export class Transformer {
   protected parser: Parser;
 
@@ -62,10 +71,12 @@ export class Transformer {
   private container(node: ParsedNode): JSONContent {
     if (this.isSpacerNode(node)) {
       return this.spacer(node);
-    }
-
-    if (this.isButtonNode(node)) {
+    } else if (this.isButtonNode(node)) {
       return this.button(node);
+    } else if (this.isBulletListNode(node)) {
+      return this.bulletList(node);
+    } else if (this.isOrderedListNode(node)) {
+      return this.orderedList(node);
     }
 
     const attrs = node?.attributes || {};
@@ -184,6 +195,11 @@ export class Transformer {
   }
 
   private img(node: ParsedNode): JSONContent {
+    const isMailyImage = this.isImageNode(node);
+    const isMailyLogo = this.isLogoNode(node);
+    if (isMailyImage || isMailyLogo) {
+      return this.image(node);
+    }
     const attrs = node?.attributes || {};
 
     return {
@@ -192,6 +208,38 @@ export class Transformer {
         ...(attrs?.width && { width: attrs.width }),
         ...(attrs?.height && { height: attrs.height }),
         src: attrs?.src || '',
+      },
+    };
+  }
+
+  private image(node: ParsedNode): JSONContent {
+    const containerNode = node.children[0];
+    const align = containerNode?.attributes?.align || 'left';
+
+    const imgNode = containerNode.children[0];
+
+    const attrs = imgNode?.attributes || {};
+    const style = attrs?.style || {};
+
+    const width =
+      style?.maxWidth === '100%' ? null : parseFloat(style?.maxWidth || '0');
+    const height =
+      style?.maxHeight === '100%' ? null : parseFloat(style?.maxHeight || '0');
+
+    const type = this.isImageNode(node) ? 'image' : 'logo';
+    const size = Object.keys(logoSizes).find(
+      (key) => style?.width === logoSizes[key as AllowedLogoSizes]
+    );
+
+    return {
+      type,
+      attrs: {
+        alignment: align,
+        ...(width && { width }),
+        ...(height && { height }),
+        ...(type === 'logo' && { size }),
+        src: attrs?.src || '',
+        alt: attrs?.alt || '',
       },
     };
   }
@@ -315,6 +363,14 @@ export class Transformer {
     };
   }
 
+  private isImageNode(node: ParsedNode): boolean {
+    return node?.type === 'row' && node?.attributes?.id === 'maily-image';
+  }
+
+  private isLogoNode(node: ParsedNode): boolean {
+    return node?.type === 'row' && node?.attributes?.id === 'maily-logo';
+  }
+
   private row(node: ParsedNode): JSONContent {
     const isColumnsNode = this.isColumnsNode(node);
     if (isColumnsNode) {
@@ -324,6 +380,12 @@ export class Transformer {
     const isSectionNode = this.isSectionNode(node);
     if (isSectionNode) {
       return this.section(node);
+    }
+
+    const isImageNode = this.isImageNode(node);
+    const isLogoNode = this.isLogoNode(node);
+    if (isImageNode || isLogoNode) {
+      return this.img(node);
     }
 
     return {
@@ -353,4 +415,114 @@ export class Transformer {
       type: 'column',
     };
   }
+
+  private blockquote(node: ParsedNode): JSONContent {
+    return {
+      type: 'blockquote',
+      content: node.children.map((child) => this.transformNode(child)),
+    };
+  }
+
+  private code(node: ParsedNode): JSONContent {
+    const codeTextNode = node.children[0];
+
+    return {
+      type: 'text',
+      marks: [{ type: 'code' }],
+      text: codeTextNode?.text || '',
+    };
+  }
+
+  private isBulletListNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+    return node?.type === 'container' && attrs?.id === 'maily-bullet-list';
+  }
+
+  private isOrderedListNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+    return node?.type === 'container' && attrs?.id === 'maily-ordered-list';
+  }
+
+  private bulletList(node: ParsedNode): JSONContent {
+    console.log('Node: ', node);
+    const bulletList = node.children[0];
+    return {
+      type: 'bulletList',
+      content: bulletList.children.map((child) => this.transformNode(child)),
+    };
+  }
+
+  private orderedList(node: ParsedNode): JSONContent {
+    const orderedList = node.children[0];
+    return {
+      type: 'orderedList',
+      content: orderedList.children.map((child) => this.transformNode(child)),
+    };
+  }
+
+  private li(node: ParsedNode): JSONContent {
+    return {
+      type: 'listItem',
+      content: node.children.map((child) => this.transformNode(child)),
+    };
+  }
 }
+
+// {
+//   "type": "doc",
+//   "content": [
+//     {
+//       "type": "bulletList",
+//       "content": [
+//         {
+//           "type": "listItem",
+//           "attrs": {
+//             "color": null
+//           },
+//           "content": [
+//             {
+//               "type": "paragraph",
+//               "attrs": {
+//                 "textAlign": "left"
+//               },
+//               "content": [
+//                 {
+//                   "type": "text",
+//                   "text": "First Node"
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ]
+//     },
+//     {
+//       "type": "orderedList",
+//       "attrs": {
+//         "start": 1
+//       },
+//       "content": [
+//         {
+//           "type": "listItem",
+//           "attrs": {
+//             "color": null
+//           },
+//           "content": [
+//             {
+//               "type": "paragraph",
+//               "attrs": {
+//                 "textAlign": "left"
+//               },
+//               "content": [
+//                 {
+//                   "type": "text",
+//                   "text": "Number List"
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ]
+//     }
+//   ]
+// }

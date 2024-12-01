@@ -978,6 +978,7 @@ export class Maily {
 
     return (
       <Container
+        id="maily-spacer"
         style={{
           height: spacers[height as AllowedSpacers] || height,
         }}
@@ -1116,6 +1117,7 @@ export class Maily {
 
     return (
       <Text
+        id="maily-footer"
         style={{
           fontSize: this.config.theme?.fontSize?.footer?.size,
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,

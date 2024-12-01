@@ -14,6 +14,16 @@ export type JSONContent = {
   [key: string]: any;
 };
 
+const allowedSpacers = ['sm', 'md', 'lg', 'xl'] as const;
+export type AllowedSpacers = (typeof allowedSpacers)[number];
+
+const spacers: Record<AllowedSpacers, string> = {
+  sm: '8px',
+  md: '16px',
+  lg: '32px',
+  xl: '64px',
+};
+
 export class Transformer {
   protected parser: Parser;
 
@@ -50,6 +60,14 @@ export class Transformer {
   }
 
   private container(node: ParsedNode): JSONContent {
+    if (this.isSpacerNode(node)) {
+      return this.spacer(node);
+    }
+
+    if (this.isButtonNode(node)) {
+      return this.button(node);
+    }
+
     const attrs = node?.attributes || {};
     const padding = attrs?.paddingTop || 0;
     const margin = attrs?.marginTop || 0;
@@ -77,6 +95,62 @@ export class Transformer {
     };
   }
 
+  private isSpacerNode(node: ParsedNode) {
+    const attrs = node?.attributes || {};
+    return node?.type === 'container' && attrs?.id === 'maily-spacer';
+  }
+
+  private spacer(node: ParsedNode): JSONContent {
+    const attrs = node?.attributes || {};
+    const height = attrs?.style?.height || '8px';
+
+    const heightKey = Object.keys(spacers).find((key) =>
+      height.includes(spacers[key as AllowedSpacers])
+    );
+
+    return {
+      type: 'spacer',
+      attrs: {
+        height: heightKey,
+      },
+    };
+  }
+
+  private isButtonNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+    return node?.type === 'container' && attrs?.id === 'maily-button';
+  }
+
+  private button(node: ParsedNode): JSONContent {
+    const attrs = node?.attributes || {};
+    const style = attrs?.style || {};
+    const textAlign = style?.textAlign || 'left';
+
+    const buttonContainer = node.children[0];
+    const buttonStyle = buttonContainer?.attributes?.style || {};
+
+    const textNode = buttonContainer.children[0];
+
+    return {
+      type: 'button',
+      attrs: {
+        text: textNode?.text || '',
+        url: buttonContainer?.attributes?.href || '',
+
+        alignment: textAlign,
+
+        color: buttonStyle?.color || '#000000',
+
+        borderWidth: buttonStyle?.borderWidth || 0,
+        borderColor: buttonStyle?.borderColor || 'transparent',
+        borderRadius: buttonStyle?.borderRadius || 0,
+        borderStyle: buttonStyle?.borderStyle || 'solid',
+
+        backgroundColor: buttonStyle?.backgroundColor || 'transparent',
+      },
+    };
+  }
+
   private heading(node: ParsedNode): JSONContent {
     const attrs = node?.attributes || {};
     const level = parseInt(attrs?.as?.replace('h', '') || 1);
@@ -95,6 +169,18 @@ export class Transformer {
       type: 'text',
       text: node?.text || '',
     };
+  }
+
+  private footer(node: ParsedNode): JSONContent {
+    return {
+      type: 'footer',
+      content: node.children.map((child) => this.transformNode(child)),
+    };
+  }
+
+  private isFooterNode(node: ParsedNode): boolean {
+    const attrs = node?.attributes || {};
+    return node?.type === 'paragraph' && attrs?.id === 'maily-footer';
   }
 
   private img(node: ParsedNode): JSONContent {
@@ -117,6 +203,10 @@ export class Transformer {
   }
 
   private paragraph(node: ParsedNode): JSONContent {
+    if (this.isFooterNode(node)) {
+      return this.footer(node);
+    }
+
     return {
       type: 'paragraph',
       content: node.children.map((child) => this.transformNode(child)),

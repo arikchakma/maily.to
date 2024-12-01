@@ -277,7 +277,7 @@ export function App() {
                   jsxOutput}
                 {activeTab === 'maily' && parentTab === 'jsx' && (
                   <Maily
-                    // contentJson={defaultContent}
+                    contentJson={defaultContent}
                     onCreate={setEditor}
                     onUpdate={setEditor}
                     config={{

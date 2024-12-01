@@ -160,6 +160,17 @@ export class Transformer {
 
     const textNode = buttonContainer.children[0];
 
+    const borderRadius = buttonStyle?.borderRadius || '0px';
+    const radius =
+      borderRadius === '0px'
+        ? 'sharp'
+        : borderRadius === '6px'
+          ? 'smooth'
+          : 'round';
+
+    const backgroundColor = buttonStyle?.backgroundColor || 'transparent';
+    const variant = backgroundColor === 'transparent' ? 'outline' : 'filled';
+
     return {
       type: 'button',
       attrs: {
@@ -172,8 +183,10 @@ export class Transformer {
 
         borderWidth: buttonStyle?.borderWidth || 0,
         borderColor: buttonStyle?.borderColor || 'transparent',
-        borderRadius: buttonStyle?.borderRadius || 0,
         borderStyle: buttonStyle?.borderStyle || 'solid',
+
+        borderRadius: radius,
+        variant,
 
         backgroundColor: buttonStyle?.backgroundColor || 'transparent',
       },

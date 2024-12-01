@@ -42,13 +42,27 @@ export class Transformer {
 
   public async transform(content: string): Promise<JSONContent> {
     const ast = await this.parser.parse(content);
-    const firstContainer = ast.children[0];
-    // ignore the first container as it's the base root
-    // of Maily React markup
-    return this.transformNode({
-      type: 'root',
-      children: firstContainer.children,
-    });
+    const body = this.findBodyNode(ast);
+    if (!body) {
+      throw new Error('Not a valid Maily markup');
+    }
+
+    return this.transformNode(body);
+  }
+
+  private findBodyNode(node: ParsedNode): ParsedNode | null {
+    if (node.type === 'body') {
+      return node;
+    }
+
+    for (const child of node?.children || []) {
+      const bodyNode = this.findBodyNode(child);
+      if (bodyNode) {
+        return bodyNode;
+      }
+    }
+
+    return null;
   }
 
   private transformNode(node: ParsedNode): JSONContent {
@@ -61,10 +75,14 @@ export class Transformer {
     throw new Error(`Node type "${type}" is not supported`);
   }
 
-  private root(node: ParsedNode): JSONContent {
+  private body(node: ParsedNode): JSONContent {
+    // ignore the first container as it's the base root
+    // of Maily React markup
+    const container = node.children[0];
+
     return {
       type: 'doc',
-      content: node.children.map((child) => this.transformNode(child)),
+      content: container.children.map((child) => this.transformNode(child)),
     };
   }
 

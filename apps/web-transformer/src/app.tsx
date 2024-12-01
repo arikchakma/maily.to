@@ -10,95 +10,40 @@ import { Editor as Maily, type MailyEditor } from '@maily-to/core';
 import { renderMarkup } from '@maily-to/render';
 import { useRef } from 'react';
 
-const defaultCode = `<Container
-  style={{
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "600px",
-    minWidth: "300px",
-    padding: "0.5rem",
-    width: "100%",
-  }}
->
-  <Row
-    className="tab-row-full"
-    id="maily-columns"
+const defaultCode = `<Html>
+  <Head>
+  </Head>
+  <Body
     style={{
       margin: 0,
-      padding: 0,
-      width: "100%",
     }}
-    width="100%"
   >
-    <Column
-      className="tab-col-full"
-      id="maily-column"
+    <Container
       style={{
-        margin: 0,
-        verticalAlign: "top",
-        width: "50%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "600px",
+        minWidth: "300px",
+        padding: "0.5rem",
+        width: "100%",
       }}
-      width="50%"
     >
-      <Section
-        className="tab-pad"
+      <Text
         style={{
-          margin: 0,
-          paddingLeft: 0,
-          paddingRight: 4,
+          MozOsxFontSmoothing: "grayscale",
+          WebkitFontSmoothing: "antialiased",
+          color: "#374151",
+          fontSize: "15px",
+          marginBottom: "20px",
+          marginTop: "0px",
+          textAlign: "left",
         }}
       >
-        <Text
-          style={{
-            MozOsxFontSmoothing: "grayscale",
-            WebkitFontSmoothing: "antialiased",
-            color: "#374151",
-            fontSize: "15px",
-            marginBottom: "0px",
-            marginTop: "0px",
-            textAlign: "left",
-          }}
-        >
-          First Column
-        </Text>
-      </Section>
-    </Column>
-
-    <Column
-      className="tab-col-full"
-      id="maily-column"
-      style={{
-        margin: 0,
-        verticalAlign: "top",
-        width: "50%",
-      }}
-      width="50%"
-    >
-      <Section
-        className="tab-pad"
-        style={{
-          margin: 0,
-          paddingLeft: 4,
-          paddingRight: 0,
-        }}
-      >
-        <Text
-          style={{
-            MozOsxFontSmoothing: "grayscale",
-            WebkitFontSmoothing: "antialiased",
-            color: "#374151",
-            fontSize: "15px",
-            marginBottom: "0px",
-            marginTop: "0px",
-            textAlign: "left",
-          }}
-        >
-          Second Column
-        </Text>
-      </Section>
-    </Column>
-  </Row>
-</Container>`;
+        This is just a normal paragraph
+      </Text>
+    </Container>
+  </Body>
+</Html>`;
 
 export function App() {
   const [code, setCode] = useState('');

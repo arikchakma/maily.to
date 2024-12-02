@@ -114,7 +114,7 @@ export function ImageView(props: NodeViewProps) {
       // update the dimensions to ensure that the image is not stretched
       const { naturalWidth, naturalHeight } = img;
       const wrapper = wrapperRef?.current;
-      if (!wrapper) {
+      if (!wrapper || width) {
         return;
       }
 

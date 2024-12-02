@@ -13,6 +13,8 @@ export function ImageView(props: NodeViewProps) {
   const { node, updateAttributes, selected } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
   const [resizingStyle, setResizingStyle] = useState<
@@ -108,6 +110,25 @@ export function ImageView(props: NodeViewProps) {
     img.src = src;
     img.onload = () => {
       setStatus('loaded');
+      // for some reason Apple Mail doesn't respect the width and height attributes
+      // update the dimensions to ensure that the image is not stretched
+      const { naturalWidth, naturalHeight } = img;
+      const wrapper = wrapperRef?.current;
+      if (!wrapper) {
+        return;
+      }
+
+      const wrapperWidth = wrapper.offsetWidth;
+      const aspectRatio = naturalWidth / naturalHeight;
+      const calculatedHeight = Math.min(
+        wrapperWidth / aspectRatio,
+        naturalHeight
+      );
+
+      updateAttributes({
+        width: Math.min(wrapperWidth, naturalWidth),
+        height: Math.min(calculatedHeight, naturalHeight),
+      });
     };
     img.onerror = () => {
       setStatus('error');
@@ -144,6 +165,7 @@ export function ImageView(props: NodeViewProps) {
           right: { marginLeft: 'auto' },
         }[alignment as string] || {}),
       }}
+      ref={wrapperRef}
     >
       {!hasImageSrc && <ImageStatusLabel status="idle" />}
       {hasImageSrc && status === 'loading' && (

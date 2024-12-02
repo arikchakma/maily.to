@@ -1034,6 +1034,7 @@ export class Maily {
           border: 'none',
           textDecoration: 'none',
         }}
+        height="auto"
         width={wi}
         title={title || alt || 'Image'}
       />

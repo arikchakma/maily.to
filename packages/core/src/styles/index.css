@@ -170,18 +170,6 @@
   }
 }
 
-.mly-editor {
-  select:not([size]) {
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtY2hldnJvbi1kb3duIj48cGF0aCBkPSJtNiA5IDYgNiA2LTYiLz48L3N2Zz4=);
-    background-position: right 8px center;
-    background-repeat: no-repeat;
-    background-size: 0.75em 0.75em;
-    padding-right: 24px;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
-
 .ProseMirror {
   position: relative;
   word-wrap: break-word;

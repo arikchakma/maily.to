@@ -1,13 +1,14 @@
 'use client';
 
+import { MailyEditor } from '@maily-to/core';
+import { JSONContent } from '@tiptap/core';
 import type { PropsWithChildren } from 'react';
 import { createContext, useContext, useRef } from 'react';
-import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 import { createStore } from 'zustand';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 interface EditorProps {
-  editor?: TiptapEditor;
+  editor?: MailyEditor;
   json: JSONContent;
   previewText: string;
 
@@ -24,7 +25,7 @@ interface EditorProps {
 }
 
 interface EditorState extends EditorProps {
-  setEditor: (editor: TiptapEditor | undefined) => void;
+  setEditor: (editor: MailyEditor | undefined) => void;
   setJson: (json: JSONContent) => void;
   setPreviewText: (previewText: string) => void;
 

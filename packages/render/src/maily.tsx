@@ -417,6 +417,23 @@ export class Maily {
     return reactEmailRenderAsync(markup, options);
   }
 
+  async renderMarkup(): Promise<string> {
+    const markup = this.markup();
+    const jsxToString = (await import('react-element-to-jsx-string')).default;
+    let markupString = jsxToString(markup, {
+      filterProps: ['key'],
+    });
+
+    // clean up the markup
+    // remove <React.Fragment> and </React.Fragment>
+    // remove the empty line between elements
+    markupString = markupString
+      .replace(/<React.Fragment>/g, '')
+      .replace(/<\/React.Fragment>/g, '');
+
+    return markupString;
+  }
+
   /**
    * `markup` will render the JSON content into React Email markup.
    * and return the raw React Tree.
@@ -762,22 +779,11 @@ export class Maily {
       return <></>;
     }
 
-    let formattedVariable = this.variableFormatter({
+    const formattedVariable = this.getVariableValue(
       variable,
       fallback,
-    });
-
-    // If `shouldReplaceVariableValues` is true, replace the variable values
-    // Otherwise, just return the formatted variable
-    if (this.shouldReplaceVariableValues) {
-      formattedVariable =
-        (typeof payloadValue === 'object'
-          ? payloadValue[variable]
-          : payloadValue) ??
-        this.variableValues.get(variable) ??
-        fallback ??
-        formattedVariable;
-    }
+      payloadValue
+    );
 
     if (node?.marks) {
       return this.renderMark({
@@ -787,6 +793,30 @@ export class Maily {
     }
 
     return <>{formattedVariable}</>;
+  }
+
+  private getVariableValue(
+    variable: string,
+    fallback: string | undefined = undefined,
+    payloadValue: PayloadValue | undefined = undefined
+  ): string {
+    let formattedVariable = this.variableFormatter({
+      variable,
+      fallback,
+    });
+
+    // If `shouldReplaceVariableValues` is true, replace the variable values
+    // Otherwise, just return the formatted variable
+    if (this.shouldReplaceVariableValues) {
+      if (typeof payloadValue === 'object' && variable in payloadValue) {
+        formattedVariable = payloadValue[variable];
+      } else {
+        formattedVariable =
+          this.variableValues.get(variable) ?? fallback ?? formattedVariable;
+      }
+    }
+
+    return formattedVariable;
   }
 
   private horizontalRule(_: JSONContent, __?: NodeOptions): JSX.Element {
@@ -807,7 +837,7 @@ export class Maily {
     );
 
     return (
-      <Container>
+      <Container id="maily-ordered-list">
         <ol
           style={{
             marginTop: '0px',
@@ -840,6 +870,7 @@ export class Maily {
         style={{
           maxWidth: '100%',
         }}
+        id="maily-bullet-list"
       >
         <ul
           style={{
@@ -912,6 +943,7 @@ export class Maily {
           maxWidth: '100%',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
+        id="maily-button"
       >
         <Button
           href={href}
@@ -946,6 +978,7 @@ export class Maily {
 
     return (
       <Container
+        id="maily-spacer"
         style={{
           height: spacers[height as AllowedSpacers] || height,
         }}
@@ -984,6 +1017,7 @@ export class Maily {
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
+        id="maily-logo"
       >
         <Column align={alignment}>
           <Img
@@ -1042,6 +1076,7 @@ export class Maily {
 
     return (
       <Row
+        id="maily-image"
         style={{
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
@@ -1080,6 +1115,7 @@ export class Maily {
 
     return (
       <Text
+        id="maily-footer"
         style={{
           fontSize: this.config.theme?.fontSize?.footer?.size,
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
@@ -1327,6 +1363,7 @@ export class Maily {
           marginBottom,
           marginLeft,
         }}
+        id="maily-section"
       >
         <Column
           align={align}
@@ -1371,6 +1408,7 @@ export class Maily {
           width: `${totalWidth}%`,
         }}
         className="tab-row-full"
+        id="maily-columns"
       >
         {this.getMappedContent(newNode, {
           ...options,
@@ -1451,6 +1489,7 @@ export class Maily {
           verticalAlign,
         }}
         className="tab-col-full"
+        id="maily-column"
       >
         <Section
           style={{
@@ -1459,6 +1498,7 @@ export class Maily {
             paddingRight,
           }}
           className="tab-pad"
+          id="maily-col-section"
         >
           {this.getMappedContent(node, {
             ...options,
@@ -1478,10 +1518,7 @@ export class Maily {
       return <></>;
     }
 
-    let { payloadValue } = options || {};
-    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
-
-    const values = this.payloadValues.get(each) ?? payloadValue[each] ?? [];
+    const values = this.getPayloadValue(each, options) || [];
     if (!Array.isArray(values)) {
       throw new Error(`Payload value for each "${each}" is not an array`);
     }
@@ -1503,14 +1540,31 @@ export class Maily {
     );
   }
 
+  private isForList(node: JSONContent): JSONContent | null {
+    const content = node?.content || [];
+    if (content.length !== 1) {
+      return null;
+    }
+
+    const firstNode = content[0];
+    return firstNode?.type === 'bulletList' || firstNode?.type === 'orderedList'
+      ? firstNode
+      : null;
+  }
+
+  private getPayloadValue(key: string, options?: NodeOptions): any {
+    let { payloadValue } = options || {};
+    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
+
+    return this.payloadValues.get(key) ?? payloadValue?.[key];
+  }
+
   private shouldShow(node: JSONContent, options?: NodeOptions): boolean {
     const showIfKey = node?.attrs?.showIfKey ?? '';
     if (!showIfKey) {
       return true;
     }
 
-    let { payloadValue } = options || {};
-    payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
-    return !!(this.payloadValues.get(showIfKey) ?? payloadValue[showIfKey]);
+    return !!this.getPayloadValue(showIfKey, options);
   }
 }

@@ -54,7 +54,7 @@ export function ShowPopover(props: ShowPopoverProps) {
         {!isUpdatingKey && (
           <button
             className={cn(
-              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-gray-200 mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
               !isValidWhenKey &&
                 'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
             )}

@@ -32,7 +32,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       if (isTextSelected(editor)) {
         return false;
@@ -46,7 +45,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: () => appendTo?.current,
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',
@@ -68,7 +67,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <span className="mly-flex mly-items-center mly-px-1.5 mly-text-sm mly-leading-none">
@@ -77,7 +76,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         {!isUpdatingKey && (
           <button
             className={cn(
-              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-gray-200 mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
               !isValidEachKey &&
                 'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
             )}

@@ -23,7 +23,6 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       if (
         isTextSelected(editor) ||
@@ -41,7 +40,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: () => appendTo?.current,
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',
@@ -52,7 +51,7 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <ColumnsBubbleMenuContent editor={editor} />
     </BubbleMenu>

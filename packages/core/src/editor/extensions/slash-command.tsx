@@ -10,25 +10,14 @@ import { Editor, Extension, Range } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import {
-  DivideIcon,
-  EraserIcon,
-  FootprintsIcon,
   Heading1,
   Heading2,
   Heading3,
   ImageIcon,
   List,
   ListOrdered,
-  Megaphone,
-  MousePointer,
   MoveVertical,
   Text,
-  TextQuote,
-  ArrowUpRightSquare,
-  ColumnsIcon,
-  SectionIcon,
-  Repeat2,
-  EyeIcon,
 } from 'lucide-react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 

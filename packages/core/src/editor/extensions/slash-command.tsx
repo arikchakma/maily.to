@@ -245,15 +245,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
         .run();
     },
   },
-  {
-    title: 'Button',
-    description: 'Add a call to action button to email.',
-    searchTerms: ['link', 'button', 'cta'],
-    icon: <MousePointer className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setButton().run();
-    },
-  },
+  // {
+  //   title: 'Button',
+  //   description: 'Add a call to action button to email.',
+  //   searchTerms: ['link', 'button', 'cta'],
+  //   icon: <MousePointer className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setButton().run();
+  //   },
+  // },
   // {
   //   title: 'Link Card',
   //   description: 'Add a link card to email.',
@@ -263,15 +263,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   //     editor.chain().focus().deleteRange(range).setLinkCard().run();
   //   },
   // },
-  {
-    title: 'Hard Break',
-    description: 'Add a break between lines.',
-    searchTerms: ['break', 'line'],
-    icon: <DivideIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setHardBreak().run();
-    },
-  },
+  // {
+  //   title: 'Hard Break',
+  //   description: 'Add a break between lines.',
+  //   searchTerms: ['break', 'line'],
+  //   icon: <DivideIcon className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setHardBreak().run();
+  //   },
+  // },
   // {
   //   title: 'Blockquote',
   //   description: 'Add blockquote.',
@@ -281,24 +281,24 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   //     editor.chain().focus().deleteRange(range).toggleBlockquote().run();
   //   },
   // },
-  {
-    title: 'Footer',
-    description: 'Add a footer text to email.',
-    searchTerms: ['footer', 'text'],
-    icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().deleteRange(range).setFooter().run();
-    },
-  },
-  {
-    title: 'Clear Line',
-    description: 'Clear the current line.',
-    searchTerms: ['clear', 'line'],
-    icon: <EraserIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      editor.chain().focus().selectParentNode().deleteSelection().run();
-    },
-  },
+  // {
+  //   title: 'Footer',
+  //   description: 'Add a footer text to email.',
+  //   searchTerms: ['footer', 'text'],
+  //   icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().deleteRange(range).setFooter().run();
+  //   },
+  // },
+  // {
+  //   title: 'Clear Line',
+  //   description: 'Clear the current line.',
+  //   searchTerms: ['clear', 'line'],
+  //   icon: <EraserIcon className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     editor.chain().focus().selectParentNode().deleteSelection().run();
+  //   },
+  // },
 ];
 
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {

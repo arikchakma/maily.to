@@ -427,12 +427,16 @@ export class Transformer {
   private columnsColumn(node: ParsedNode): JSONContent {
     const firstChild = node.children[0];
     const isColumnSection = this.isColumnSection(firstChild);
+    const width = parseFloat(node?.attributes?.width || '100%');
 
     return {
       type: 'column',
       content: isColumnSection
         ? firstChild.children.map((child) => this.transformNode(child))
         : node.children.map((child) => this.transformNode(child)),
+      attrs: {
+        width,
+      },
     };
   }
 
@@ -498,62 +502,3 @@ export class Transformer {
     };
   }
 }
-
-// {
-//   "type": "doc",
-//   "content": [
-//     {
-//       "type": "bulletList",
-//       "content": [
-//         {
-//           "type": "listItem",
-//           "attrs": {
-//             "color": null
-//           },
-//           "content": [
-//             {
-//               "type": "paragraph",
-//               "attrs": {
-//                 "textAlign": "left"
-//               },
-//               "content": [
-//                 {
-//                   "type": "text",
-//                   "text": "First Node"
-//                 }
-//               ]
-//             }
-//           ]
-//         }
-//       ]
-//     },
-//     {
-//       "type": "orderedList",
-//       "attrs": {
-//         "start": 1
-//       },
-//       "content": [
-//         {
-//           "type": "listItem",
-//           "attrs": {
-//             "color": null
-//           },
-//           "content": [
-//             {
-//               "type": "paragraph",
-//               "attrs": {
-//                 "textAlign": "left"
-//               },
-//               "content": [
-//                 {
-//                   "type": "text",
-//                   "text": "Number List"
-//                 }
-//               ]
-//             }
-//           ]
-//         }
-//       ]
-//     }
-//   ]
-// }

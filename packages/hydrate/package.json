@@ -1,8 +1,8 @@
 {
-  "name": "@maily-to/transformer",
+  "name": "@maily-to/hydrate",
   "version": "0.0.1",
   "private": false,
-  "description": "A transformer that converts a React component to a Maily JSON object.",
+  "description": "Hydrate React Email to Maily JSON",
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -35,12 +35,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arikchakma/maily.to.git",
-    "directory": "packages/transformer"
+    "directory": "packages/hydrate"
   },
   "author": "Arik Chakma <arikchangma@gmail.com>",
   "keywords": [
     "maily.to",
+    "hydrate maily",
     "react",
+    "react email",
     "email"
   ],
   "engines": {

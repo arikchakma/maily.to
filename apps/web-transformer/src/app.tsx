@@ -5,7 +5,7 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-jsx';
 import 'prismjs/themes/prism.css';
 
-import { Parser, Transformer } from '@maily-to/transformer';
+import { Parser, hydrate } from '@maily-to/hydrate';
 import { Editor as Maily, type MailyEditor } from '@maily-to/core';
 import { renderMarkup } from '@maily-to/render';
 import { useRef } from 'react';
@@ -66,11 +66,9 @@ export function App() {
   const handleCodeChange = async (newCode: string) => {
     setCode(newCode);
     const parser = new Parser();
-    const transformer = new Transformer();
-
     setParsedOutput(JSON.stringify(await parser.parse(newCode), null, 2));
 
-    const mailyJSON = await transformer.transform(newCode);
+    const mailyJSON = await hydrate(newCode);
     setMailyJSONOutput(JSON.stringify(mailyJSON, null, 2));
 
     setDefaultContent(mailyJSON);

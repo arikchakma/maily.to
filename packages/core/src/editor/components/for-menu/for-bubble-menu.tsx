@@ -1,7 +1,7 @@
 import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
-import { BubbleMenu } from '@tiptap/react';
+import { BubbleMenu, findChildren } from '@tiptap/react';
 import { Braces } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { sticky } from 'tippy.js';
@@ -12,6 +12,7 @@ import { Divider } from '../ui/divider';
 import { InputAutocomplete } from '../ui/input-autocomplete';
 import { TooltipProvider } from '../ui/tooltip';
 import { useForState } from './use-for-state';
+import { getClosestNodeByName } from '@/editor/utils/columns';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -34,7 +35,16 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      if (isTextSelected(editor)) {
+      const activeForNode = getClosestNodeByName(editor, 'for');
+      const sectionNodeChildren = activeForNode
+        ? findChildren(activeForNode?.node, (node) => {
+            return node.type.name === 'section';
+          })?.[0]
+        : null;
+      const hasActiveSectionNodeChildren =
+        sectionNodeChildren && editor.isActive('section');
+
+      if (isTextSelected(editor) || hasActiveSectionNodeChildren) {
         return false;
       }
 

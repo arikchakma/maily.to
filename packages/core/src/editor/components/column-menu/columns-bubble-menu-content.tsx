@@ -72,8 +72,8 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
             { value: '0', label: 'None' },
             { value: '4', label: 'Small' },
             { value: '8', label: 'Medium' },
-            { value: '12', label: 'Large' },
-            { value: '16', label: 'Extra Large' },
+            { value: '16', label: 'Large' },
+            { value: '24', label: 'Extra Large' },
           ]}
           onValueChange={(value) => {
             editor.commands.updateColumns({

@@ -20,7 +20,7 @@ export function ColumnsWidthConfig(props: ColumnsWidthConfigProps) {
 
   return (
     <Popover>
-      <PopoverTrigger className="mly-flex mly-size-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-text-sm hover:mly-bg-soft-gray data-[state=open]:mly-bg-soft-gray">
+      <PopoverTrigger className="mly-flex mly-size-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray">
         <SlidersVertical className="mly-h-3 mly-w-3 mly-stroke-[2.5]" />
       </PopoverTrigger>
       <PopoverContent

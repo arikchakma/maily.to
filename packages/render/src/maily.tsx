@@ -1041,7 +1041,6 @@ export class Maily {
       alt,
       title,
       width = 'auto',
-      height = 'auto',
       alignment = 'center',
       externalLink = '',
     } = attrs || {};
@@ -1056,22 +1055,21 @@ export class Maily {
       options
     );
 
-    const wi = width === 'auto' ? '100%' : `${Number(width)}px`;
-    const hei = height === 'auto' ? '100%' : `${Number(height)}px`;
+    const wi = width === 'auto' ? 'auto' : Number(width);
 
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
         src={src}
         style={{
-          height: '100%',
+          height: 'auto',
           width: '100%',
-          maxWidth: wi,
-          maxHeight: hei,
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
         }}
+        height="auto"
+        width={wi}
         title={title || alt || 'Image'}
       />
     );

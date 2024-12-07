@@ -87,7 +87,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         {!isUpdatingKey && (
           <button
             className={cn(
-              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+              'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
               !isValidEachKey &&
                 'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
             )}
@@ -98,8 +98,8 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               }, 0);
             }}
           >
-            <Braces className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-rose-600" />
-            <span>{state?.each}</span>
+            <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
+            <span className="mly-min-w-0 mly-truncate">{state?.each}</span>
           </button>
         )}
         {isUpdatingKey && (

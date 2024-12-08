@@ -156,21 +156,21 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
       editor.chain().focus().setImage({ src: imageUrl }).run();
     },
   },
-  {
-    title: 'Logo',
-    description: 'Add your brand logo',
-    searchTerms: ['image', 'logo'],
-    icon: <ImageIcon className="mly-h-4 mly-w-4" />,
-    command: ({ editor, range }: CommandProps) => {
-      const logoUrl = prompt('Logo URL: ') || '';
+  // {
+  //   title: 'Logo',
+  //   description: 'Add your brand logo',
+  //   searchTerms: ['image', 'logo'],
+  //   icon: <ImageIcon className="mly-h-4 mly-w-4" />,
+  //   command: ({ editor, range }: CommandProps) => {
+  //     const logoUrl = prompt('Logo URL: ') || '';
 
-      if (!logoUrl) {
-        return;
-      }
-      editor.chain().focus().deleteRange(range).run();
-      editor.chain().focus().setLogoImage({ src: logoUrl }).run();
-    },
-  },
+  //     if (!logoUrl) {
+  //       return;
+  //     }
+  //     editor.chain().focus().deleteRange(range).run();
+  //     editor.chain().focus().setLogoImage({ src: logoUrl }).run();
+  //   },
+  // },
   // {
   //   title: 'Columns',
   //   description: 'Add columns to email.',

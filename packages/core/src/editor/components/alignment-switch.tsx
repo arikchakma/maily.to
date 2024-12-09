@@ -1,6 +1,6 @@
 import { AlignCenter, AlignLeft, AlignRight } from 'lucide-react';
-import { AllowedLogoAlignment } from '../nodes/logo';
 import { BubbleMenuButton } from './bubble-menu-button';
+import { AllowedLogoAlignment } from '../nodes/logo/logo';
 
 type AlignmentSwitchProps = {
   alignment: AllowedLogoAlignment;

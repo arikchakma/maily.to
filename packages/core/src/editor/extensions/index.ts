@@ -17,8 +17,8 @@ import { Footer } from '../nodes/footer';
 import { Spacer } from '../nodes/spacer';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
-import { Columns } from '../nodes/columns/columns';
-import { Column } from '../nodes/columns/column';
+import { ColumnsExtension } from '../nodes/columns/columns';
+import { ColumnExtension } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
 import { ForExtension } from '../nodes/for/for';
 import { ButtonExtension } from '../nodes/button/button';
@@ -38,8 +38,8 @@ export function extensions(props: ExtensionsProps) {
     Document.extend({
       content: '(block|columns)+',
     }),
-    Columns,
-    Column,
+    ColumnsExtension,
+    ColumnExtension,
     StarterKit.configure({
       heading: {
         levels: [1, 2, 3],

@@ -1021,7 +1021,9 @@ export class Maily {
       options
     );
 
-    const wi = width === 'auto' ? 'auto' : Number(width);
+    // Handle width value
+    const imageWidth = width === 'auto' ? 'auto' : Number(width);
+    const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
     const mainImage = (
       <Img
@@ -1029,13 +1031,13 @@ export class Maily {
         src={src}
         style={{
           height: 'auto',
-          width: '100%',
+          width: widthStyle, // Use the calculated width
+          maxWidth: '100%', // Ensure image doesn't overflow container
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
+          display: 'block', // Prevent unwanted spacing
         }}
-        height="auto"
-        width={wi}
         title={title || alt || 'Image'}
       />
     );

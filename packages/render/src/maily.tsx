@@ -1021,7 +1021,8 @@ export class Maily {
       options
     );
 
-    const wi = width === 'auto' ? 'auto' : Number(width);
+    const imageWidth = width === 'auto' ? 'auto' : Number(width);
+    const widthWithPx = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
     const mainImage = (
       <Img
@@ -1035,7 +1036,7 @@ export class Maily {
           textDecoration: 'none',
         }}
         height="auto"
-        width={wi}
+        width={imageWidth}
         title={title || alt || 'Image'}
       />
     );
@@ -1047,7 +1048,7 @@ export class Maily {
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
-        <Column align={alignment}>
+        <Column align={alignment} width={widthWithPx}>
           {externalLink ? (
             <a
               href={externalLink}

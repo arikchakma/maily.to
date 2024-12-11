@@ -1021,9 +1021,8 @@ export class Maily {
       options
     );
 
-    // Handle width value
     const imageWidth = width === 'auto' ? 'auto' : Number(width);
-    const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
+    const widthWithPx = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
     const mainImage = (
       <Img
@@ -1031,13 +1030,13 @@ export class Maily {
         src={src}
         style={{
           height: 'auto',
-          width: widthStyle, // Use the calculated width
-          maxWidth: '100%', // Ensure image doesn't overflow container
+          width: '100%',
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
-          display: 'block', // Prevent unwanted spacing
         }}
+        height="auto"
+        width={imageWidth}
         title={title || alt || 'Image'}
       />
     );
@@ -1049,7 +1048,7 @@ export class Maily {
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
       >
-        <Column align={alignment}>
+        <Column align={alignment} width={widthWithPx}>
           {externalLink ? (
             <a
               href={externalLink}

@@ -43,17 +43,25 @@ export function extensions(props: ExtensionsProps) {
     StarterKit.configure({
       heading: {
         levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: 'mly-relative'
+        }
       },
       code: {
         HTMLAttributes: {
           class:
-            'mly-px-1 mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
+            'mly-px-1 mly-relative mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
         },
       },
       blockquote: {
         HTMLAttributes: {
           class:
-            'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4',
+            'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4 mly-relative',
+        },
+      },
+      paragraph: {
+        HTMLAttributes: {
+          class: 'mly-relative',
         },
       },
       horizontalRule: false,

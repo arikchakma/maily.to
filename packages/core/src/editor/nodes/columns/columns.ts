@@ -109,6 +109,7 @@ export const ColumnsExtension = Node.create({
       'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
+        class: 'mly-relative',
       }),
       0,
     ];

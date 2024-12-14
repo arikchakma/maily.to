@@ -160,8 +160,14 @@
   height: 16px;
 }
 
-.ProseMirror-selectednode {
-  outline: 3px solid #555;
+.ProseMirror-selectednode::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 6px;
+  background: rgba(35, 131, 226, 0.14);
+  margin: -2px;
 }
 
 .mly-prose {

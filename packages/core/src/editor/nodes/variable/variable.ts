@@ -205,6 +205,8 @@ export const VariableExtension = Node.create<VariableOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(VariableView);
+    return ReactNodeViewRenderer(VariableView, {
+      className: 'mly-relative',
+    });
   },
 });

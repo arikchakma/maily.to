@@ -135,6 +135,8 @@ export const LogoExtension = TiptapImage.extend({
     ];
   },
   addNodeView() {
-    return ReactNodeViewRenderer(LogoView);
+    return ReactNodeViewRenderer(LogoView, {
+      className: 'mly-relative',
+    });
   },
 });

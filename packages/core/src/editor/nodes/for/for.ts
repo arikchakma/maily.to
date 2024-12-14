@@ -107,6 +107,7 @@ export const ForExtension = Node.create({
   addNodeView() {
     return ReactNodeViewRenderer(ForView, {
       contentDOMElementTag: 'div',
+      className: 'mly-relative',
     });
   },
 });

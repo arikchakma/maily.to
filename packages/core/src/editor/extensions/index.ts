@@ -44,8 +44,8 @@ export function extensions(props: ExtensionsProps) {
       heading: {
         levels: [1, 2, 3],
         HTMLAttributes: {
-          class: 'mly-relative'
-        }
+          class: 'mly-relative',
+        },
       },
       code: {
         HTMLAttributes: {
@@ -60,6 +60,16 @@ export function extensions(props: ExtensionsProps) {
         },
       },
       paragraph: {
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
+      },
+      bulletList: {
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
+      },
+      orderedList: {
         HTMLAttributes: {
           class: 'mly-relative',
         },

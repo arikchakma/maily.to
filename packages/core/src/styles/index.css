@@ -163,11 +163,10 @@
 .ProseMirror-selectednode::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -2px;
   pointer-events: none;
   border-radius: 6px;
   background: rgba(35, 131, 226, 0.14);
-  margin: -2px;
 }
 
 .mly-prose {

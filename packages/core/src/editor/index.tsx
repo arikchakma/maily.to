@@ -60,6 +60,7 @@ export function Editor(props: EditorProps) {
     variables,
     blocks = DEFAULT_SLASH_COMMANDS,
     triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
+    allowNewVariables,
   } = props;
 
   let formattedContent: any = null;
@@ -116,6 +117,7 @@ export function Editor(props: EditorProps) {
         variables,
         blocks,
         triggerSuggestionCharacter,
+        allowNewVariables,
       }),
       ...(extensions || []),
     ],

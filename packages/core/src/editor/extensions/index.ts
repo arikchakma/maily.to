@@ -32,7 +32,8 @@ import { ImageExtension } from '../nodes/image/image';
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const { variables, blocks, triggerSuggestionCharacter } = props;
+  const { variables, blocks, triggerSuggestionCharacter, allowNewVariables } =
+    props;
 
   return [
     Document.extend({
@@ -106,7 +107,11 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables, triggerSuggestionCharacter),
+      suggestion: getVariableSuggestions(
+        variables,
+        triggerSuggestionCharacter,
+        allowNewVariables
+      ),
     }),
   ];
 }

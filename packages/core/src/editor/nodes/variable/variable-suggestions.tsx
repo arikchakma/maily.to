@@ -167,7 +167,8 @@ VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
   variables: Variables = [],
-  char: string = DEFAULT_TRIGGER_SUGGESTION_CHAR
+  char: string = DEFAULT_TRIGGER_SUGGESTION_CHAR,
+  allowNewVariables = true
 ): Omit<SuggestionOptions, 'editor'> {
   const defaultVariables = variables
     .filter((v) => !v.iterable)
@@ -186,7 +187,11 @@ export function getVariableSuggestions(
       );
 
       const combinedKeys = [...associatedVariableKeys, ...filteredVariableKeys];
-      if (query.length > 0 && !filteredVariableKeys.includes(query)) {
+      if (
+        query.length > 0 &&
+        !filteredVariableKeys.includes(query) &&
+        allowNewVariables
+      ) {
         combinedKeys.push(query);
       }
 

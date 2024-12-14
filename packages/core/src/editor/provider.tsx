@@ -19,6 +19,7 @@ export const DEFAULT_TRIGGER_SUGGESTION_CHAR = '@';
 export type MailyContextType = {
   triggerSuggestionCharacter?: string;
   variables?: Variables;
+  allowNewVariables?: boolean;
   blocks?: BlockItem[];
 };
 
@@ -26,6 +27,7 @@ export const MailyContext = createContext<MailyContextType>({
   triggerSuggestionCharacter: DEFAULT_TRIGGER_SUGGESTION_CHAR,
   variables: [],
   blocks: DEFAULT_SLASH_COMMANDS,
+  allowNewVariables: true,
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;

@@ -99,7 +99,9 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           >
             <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-            <span className="mly-min-w-0 mly-truncate">{state?.each}</span>
+            <span className="mly-min-w-0 mly-truncate mly-text-left">
+              {state?.each}
+            </span>
           </button>
         )}
         {isUpdatingKey && (

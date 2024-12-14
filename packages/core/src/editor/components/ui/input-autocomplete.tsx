@@ -1,3 +1,4 @@
+import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { CornerDownLeft } from 'lucide-react';
 import { useRef, HTMLAttributes, useMemo, useState } from 'react';
@@ -24,16 +25,17 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const { allowNewVariables } = useMailyContext();
   const filteredAutoCompleteOptions = useMemo(() => {
     const filteredOptions = autoCompleteOptions
       .filter((option) => option.toLowerCase().startsWith(value.toLowerCase()))
       .slice(0, 4);
-    if (value.length > 0 && !filteredOptions.includes(value)) {
+    if (value.length > 0 && !filteredOptions.includes(value) && allowNewVariables) {
       filteredOptions.push(value);
     }
 
     return filteredOptions;
-  }, [autoCompleteOptions, value]);
+  }, [autoCompleteOptions, value, allowNewVariables]);
 
   return (
     <div className={cn('mly-relative', className)}>

@@ -71,7 +71,7 @@ export function extensions(props: ExtensionsProps) {
         if (node.type.name === 'heading') {
           return `Heading ${node.attrs.level}`;
         } else if (
-          ['columns', 'column', 'section', 'for', 'show'].includes(
+          ['columns', 'column', 'section', 'for', 'show', 'blockquote'].includes(
             node.type.name
           )
         ) {

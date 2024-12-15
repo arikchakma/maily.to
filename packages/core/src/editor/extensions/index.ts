@@ -91,6 +91,7 @@ export function extensions(props: ExtensionsProps) {
       HTMLAttributes: {
         target: '_blank',
         rel: 'noopener noreferrer nofollow',
+        class: 'mly-no-underline',
       },
       openOnClick: false,
     }),

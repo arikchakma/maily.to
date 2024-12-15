@@ -167,8 +167,19 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
         <LinkInputPopover
           defaultValue={state?.linkUrl ?? ''}
           onValueChange={(value) => {
-            if (!value) {
-              editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+            const defaultValueWithoutProtocol = value.replace(
+              /https?:\/\//,
+              ''
+            );
+
+            if (!defaultValueWithoutProtocol) {
+              editor
+                ?.chain()
+                .focus()
+                .extendMarkRange('link')
+                .unsetLink()
+                .unsetUnderline()
+                .run();
               return;
             }
 
@@ -176,6 +187,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
               ?.chain()
               .extendMarkRange('link')
               .setLink({ href: value })
+              .setUnderline()
               .run()!;
           }}
           tooltip="External URL"

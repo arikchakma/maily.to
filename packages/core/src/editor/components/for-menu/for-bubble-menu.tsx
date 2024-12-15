@@ -64,16 +64,19 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'forBubbleMenu',
   };
 
-  const { variables = [] } = useMailyContext();
+  const { variables = [], allowNewVariables } = useMailyContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
-  const isValidEachKey = state?.each !== undefined && state?.each !== '';
   const autoCompleteOptions = useMemo(() => {
     return variables
       ?.filter((variable) => variable.iterable)
       .map((variable) => variable.name);
   }, [variables]);
+
+  const isValidEachKey =
+    state?.each &&
+    (autoCompleteOptions.includes(state?.each) || !allowNewVariables);
 
   return (
     <BubbleMenu
@@ -123,13 +126,14 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
                   each: value,
                 });
               }}
-              onBlur={() => {
+              onOutsideClick={() => {
                 setIsUpdatingKey(false);
               }}
               onSelectOption={() => {
                 setIsUpdatingKey(false);
               }}
               autoCompleteOptions={autoCompleteOptions}
+              ref={inputRef}
             />
           </form>
         )}
@@ -142,6 +146,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               showIfKey: value,
             });
           }}
+          editor={editor}
         />
       </TooltipProvider>
     </BubbleMenu>

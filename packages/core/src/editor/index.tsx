@@ -60,7 +60,7 @@ export function Editor(props: EditorProps) {
     variables,
     blocks = DEFAULT_SLASH_COMMANDS,
     triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
-    allowNewVariables,
+    allowNewVariables = true,
   } = props;
 
   let formattedContent: any = null;
@@ -134,6 +134,7 @@ export function Editor(props: EditorProps) {
       variables={variables}
       blocks={blocks}
       triggerSuggestionCharacter={triggerSuggestionCharacter}
+      allowNewVariables={allowNewVariables}
     >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}

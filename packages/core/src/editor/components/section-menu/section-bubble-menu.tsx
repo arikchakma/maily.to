@@ -239,6 +239,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
               showIfKey: value,
             });
           }}
+          editor={editor}
         />
 
         {state.isColumnsActive && (

@@ -99,6 +99,7 @@ export function VariableView(props: NodeViewProps) {
                     showIfKey: value,
                   });
                 }}
+                editor={editor}
               />
             </div>
           </TooltipProvider>

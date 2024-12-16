@@ -14,7 +14,7 @@ export type Variable = {
 
 export type VariableFunctionOptions = {
   query: string;
-  target: 'variable' | 'for' | 'show' | TNode;
+  from: 'variable' | 'for';
   editor: Editor;
 };
 

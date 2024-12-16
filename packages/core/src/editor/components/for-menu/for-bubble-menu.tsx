@@ -74,8 +74,10 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     return processVariables(variables, {
       query: eachKey || '',
       editor,
-      target: 'for',
-    }).map((variable) => variable.name);
+      from: 'for',
+    })
+      .map((variable) => variable.name)
+      .slice(0, 5);
   }, [variables, eachKey]);
 
   const isValidEachKey = eachKey || autoCompleteOptions.includes(eachKey);

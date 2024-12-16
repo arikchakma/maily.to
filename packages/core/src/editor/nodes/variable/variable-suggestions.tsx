@@ -186,7 +186,7 @@ export function getVariableSuggestions(
       return processVariables(variables, {
         query,
         editor,
-        target: 'variable',
+        from: 'variable',
       }).map((variable) => variable.name);
     },
 

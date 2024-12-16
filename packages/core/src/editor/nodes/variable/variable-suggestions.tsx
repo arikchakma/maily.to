@@ -183,15 +183,10 @@ export function getVariableSuggestions(
   return {
     char,
     items: ({ query, editor }) => {
-      const each = editor.getAttributes('for')?.each || '';
-
       return processVariables(variables, {
         query,
         editor,
-        block: {
-          name: 'variable',
-          each,
-        },
+        target: 'variable',
       }).map((variable) => variable.name);
     },
 

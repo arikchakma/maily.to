@@ -24,10 +24,7 @@ export function VariableView(props: NodeViewProps) {
   const isRequired = useMemo(() => {
     const variable = processVariables(variables, {
       query: '',
-      block: {
-        name: 'variable',
-        each: eachKey,
-      },
+      target: node,
       editor,
     }).find((variable) => variable.name === id);
 

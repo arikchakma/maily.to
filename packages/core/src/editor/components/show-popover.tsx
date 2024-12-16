@@ -30,10 +30,7 @@ function _ShowPopover(props: ShowPopoverProps) {
   const autoCompleteOptions = useMemo(() => {
     return processVariables(variables, {
       query: showIfKey || '',
-      block: {
-        name: 'show',
-        each: eachKey,
-      },
+      target: 'show',
       editor,
     }).map((variable) => variable.name);
   }, [variables, eachKey, showIfKey]);

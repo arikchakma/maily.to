@@ -4,6 +4,7 @@ import { BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { Editor } from '@tiptap/core';
+import { Node as TNode } from '@tiptap/pm/model';
 
 export type Variable = {
   name: string;
@@ -13,10 +14,7 @@ export type Variable = {
 
 export type VariableFunctionOptions = {
   query: string;
-  block: {
-    name: 'variable' | 'for' | 'show';
-    each?: string;
-  };
+  target: 'variable' | 'for' | 'show' | TNode;
   editor: Editor;
 };
 

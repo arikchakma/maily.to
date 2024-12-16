@@ -81,6 +81,8 @@ export const LinkCardExtension = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(LinkCardComponent);
+    return ReactNodeViewRenderer(LinkCardComponent, {
+      className: 'mly-relative',
+    });
   },
 });

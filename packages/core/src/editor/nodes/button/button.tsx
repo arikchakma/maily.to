@@ -1,9 +1,9 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ButtonView } from './button-view';
-import { AllowedLogoAlignment } from '@/editor/nodes/logo';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
+import { AllowedLogoAlignment } from '../logo/logo';
 
 export const DEFAULT_BUTTON_ALIGNMENT: AllowedLogoAlignment = 'left';
 export const DEFAULT_BUTTON_VARIANT: AllowedButtonVariant = 'filled';
@@ -190,6 +190,7 @@ export const ButtonExtension = Node.create({
   addNodeView() {
     return ReactNodeViewRenderer(ButtonView, {
       contentDOMElementTag: 'div',
+      className: 'mly-relative',
     });
   },
 });

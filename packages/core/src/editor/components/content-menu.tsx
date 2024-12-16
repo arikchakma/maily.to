@@ -150,6 +150,7 @@ export function ContentMenu(props: ContentMenuProps) {
                     onClick={(e) => {
                       e.preventDefault();
                       setMenuOpen(true);
+                      editor.commands.setNodeSelection(currentNodePos);
                     }}
                     type="button"
                   >

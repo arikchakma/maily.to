@@ -66,6 +66,8 @@ export const ImageExtension = TiptapImage.extend({
     };
   },
   addNodeView() {
-    return ReactNodeViewRenderer(ImageView);
+    return ReactNodeViewRenderer(ImageView, {
+      className: 'mly-relative',
+    });
   },
 });

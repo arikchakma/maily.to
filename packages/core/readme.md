@@ -62,27 +62,57 @@ import { text, heading1 } from '@maily-to/core/blocks';
 
 ### Variables
 
-By default, the variables are required. You can make them optional by setting the `required` property to `false`. So it will show a placeholder if the variable is not provided.
+By default, variables are required. You can make them optional by setting the `required` property to `false`. When a variable is optional and not provided, a placeholder will be displayed in its place.
 
-For auto-suggestions of the variables in the editor when you type `@` and pass the variables as an array of objects to the `variables` prop. The `iterable` property is used to indicate that the variable is an array of objects and can be used in `For` loop. The `keys` property is used to show the keys of the object in the auto-suggestions.
+You can pass variables to the editor in two ways:
 
-```tsx
-// (Omitted repeated imports)
-<Editor
-  triggerSuggestionCharacter="@"
-  variables={[
-    {
-      name: 'currentDate',
-      required: false,
-    },
-    {
-      name: 'notifications',
-      iterable: true,
-      keys: ['id', 'title'],
-    }
-  ]}
-/>
-```
+1. As an Array of Objects:
+
+   For auto-suggestions of variables in the editor when you type `@`, pass the variables as an array of objects to the `variables` prop.
+
+   ```tsx
+   // (Omitted repeated imports)
+   <Editor
+     triggerSuggestionCharacter="@"
+     variables={[
+       {
+         name: 'currentDate',
+         required: false,
+       },
+     ]}
+   />
+   ```
+
+2. As a Function:
+
+   If the variables are dynamic and need to be generated based on the editor's state or other inputs, you can provide a function to the `variables` prop.
+
+   ```tsx
+   // (Omitted repeated imports)
+   <Editor
+     triggerSuggestionCharacter="@"
+     variables={({ query, from, editor }) => {
+       // magic goes here
+       // query: the text after the trigger character
+       // from: the context from where the variables are requested (for, variable)
+       // editor: the editor instance
+       if (from === 'for') {
+         // return variables for the For block `each` key
+         return [
+           { name: 'notifications' },
+           { name: 'comments' },
+         ];
+       }
+
+       return [
+         { name: 'currentDate' },
+         { name: 'currentTime', required: false },
+       ];
+     }}
+   />
+   ```
+
+> Keep it in mind that if you pass an array of variable object Maily will take care of the filtering based on the query. But if you pass a function you have to take care of the filtering.
 
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
 

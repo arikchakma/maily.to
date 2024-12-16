@@ -1398,8 +1398,9 @@ export class Maily {
     );
 
     const remainingWidth = totalWidth - totalWidthUsed;
-    const measuredWidth = remainingWidth / autoWidthColumns.length;
+    const measuredWidth = Math.round(remainingWidth / autoWidthColumns.length);
 
+    const columnCount = content.filter((c) => c.type === 'column').length;
     const gap = node.attrs?.gap || DEFAULT_COLUMNS_GAP;
 
     return [
@@ -1410,7 +1411,37 @@ export class Maily {
             c.type === 'column' &&
             (c.attrs?.width === 'auto' || !c.attrs?.width);
           const isFirstColumn = index === 0;
+          const isMiddleColumn = index > 0 && index < columnCount - 1;
           const isLastColumn = index === content.length - 1;
+
+          let paddingLeft = 0;
+          let paddingRight = 0;
+
+          // For 2 columns, apply a simple gap logic
+          if (columnCount < 3) {
+            paddingLeft = isFirstColumn ? 0 : gap / 2;
+            paddingRight = isLastColumn ? 0 : gap / 2;
+          } else {
+            // For more than 2 columns, apply more gap in the first and last columns
+            // and less gap in the middle columns to make it look more balanced
+            // because the first and last columns have more space to fill
+            const leftAndRightPadding = (gap / 2) * 1.5;
+            const middleColumnPadding = leftAndRightPadding / 2;
+
+            paddingLeft = isFirstColumn
+              ? 0
+              : isMiddleColumn
+                ? middleColumnPadding
+                : leftAndRightPadding;
+            paddingRight = isLastColumn
+              ? 0
+              : isMiddleColumn
+                ? middleColumnPadding
+                : leftAndRightPadding;
+          }
+
+          paddingLeft = Math.round(paddingLeft * 100) / 100;
+          paddingRight = Math.round(paddingRight * 100) / 100;
 
           return {
             ...c,
@@ -1422,8 +1453,8 @@ export class Maily {
               isLastColumn,
               index,
 
-              paddingLeft: isFirstColumn ? 0 : gap / 2,
-              paddingRight: isLastColumn ? 0 : gap / 2,
+              paddingLeft,
+              paddingRight,
             },
           };
         }),

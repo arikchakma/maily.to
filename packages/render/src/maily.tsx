@@ -256,6 +256,7 @@ export class Maily {
   private linkValues: LinkValues = new Map();
   private openTrackingPixel: string | undefined;
   private payloadValues: PayloadValues = new Map();
+  private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -602,7 +603,12 @@ export class Maily {
   private renderMark(node: JSONContent): JSX.Element {
     // It will wrap the text with the corresponding mark type
     const text = node?.text || <>&nbsp;</>;
-    const marks = node?.marks || [];
+    let marks = node?.marks || [];
+    // sort the marks by uderline, bold, italic, textStyle, link
+    // so that the text will be wrapped in the correct order
+    marks.sort((a, b) => {
+      return this.marksOrder.indexOf(a.type) - this.marksOrder.indexOf(b.type);
+    });
 
     return marks.reduce(
       (acc, mark) => {
@@ -709,7 +715,7 @@ export class Maily {
         rel={rel}
         style={{
           fontWeight: 500,
-          textDecoration: 'underline',
+          textDecoration: 'none',
           color: this.config.theme?.colors?.heading,
         }}
         target={target}

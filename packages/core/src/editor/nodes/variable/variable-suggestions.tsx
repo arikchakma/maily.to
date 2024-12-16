@@ -4,6 +4,7 @@ import {
   Variables,
 } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import {
@@ -182,29 +183,15 @@ export function getVariableSuggestions(
   return {
     char,
     items: ({ query, editor }) => {
-      const queryLower = query.toLowerCase();
-      const eachKey = editor.getAttributes('for')?.each || '';
+      const each = editor.getAttributes('for')?.each || '';
 
-      let filteredVariables: string[] = [];
-      if (Array.isArray(variables)) {
-        filteredVariables = variables
-          .map((variable) => variable.name)
-          .filter((name) => name.toLowerCase().startsWith(queryLower));
-
-        if (query.length > 0 && !filteredVariables.includes(query)) {
-          filteredVariables.push(query);
-        }
-
-        return filteredVariables;
-      }
-
-      return variables({
+      return processVariables(variables, {
         query,
+        editor,
         block: {
           name: 'variable',
-          each: eachKey,
+          each,
         },
-        editor,
       }).map((variable) => variable.name);
     },
 

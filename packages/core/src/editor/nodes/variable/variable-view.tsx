@@ -8,6 +8,7 @@ import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { useMailyContext, Variable } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { processVariables } from '@/editor/utils/variable';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
@@ -21,19 +22,14 @@ export function VariableView(props: NodeViewProps) {
   const eachKey = editor?.getAttributes('for')?.each || '';
 
   const isRequired = useMemo(() => {
-    let variable: Variable | undefined;
-    if (Array.isArray(variables)) {
-      variable = variables.find((variable) => variable.name === id);
-    } else {
-      variable = variables({
-        query: '',
-        block: {
-          name: 'variable',
-          each: eachKey,
-        },
-        editor,
-      }).find((variable) => variable.name === id);
-    }
+    const variable = processVariables(variables, {
+      query: '',
+      block: {
+        name: 'variable',
+        each: eachKey,
+      },
+      editor,
+    }).find((variable) => variable.name === id);
 
     return variable?.required ?? true;
   }, [variables, id, editor, eachKey]);

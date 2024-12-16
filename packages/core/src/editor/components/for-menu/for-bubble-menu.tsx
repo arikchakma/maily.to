@@ -13,6 +13,7 @@ import { InputAutocomplete } from '../ui/input-autocomplete';
 import { TooltipProvider } from '../ui/tooltip';
 import { useForState } from './use-for-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
+import { processVariables } from '@/editor/utils/variable';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -70,29 +71,16 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
 
   const eachKey = state?.each || '';
   const autoCompleteOptions = useMemo(() => {
-    if (Array.isArray(variables)) {
-      const eachKeyLowerCase = eachKey?.toLowerCase();
-      const filteredVariables = variables
-        .map((variable) => variable.name)
-        .filter((option) => option.toLowerCase().startsWith(eachKeyLowerCase));
-
-      if (eachKey.length > 0 && !filteredVariables.includes(eachKey)) {
-        filteredVariables.push(eachKey);
-      }
-
-      return filteredVariables;
-    }
-
-    return variables({
+    return processVariables(variables, {
       query: eachKey || '',
+      editor,
       block: {
         name: 'for',
       },
-      editor,
     }).map((variable) => variable.name);
-  }, [variables, eachKey, eachKey]);
+  }, [variables, eachKey]);
 
-  const isValidEachKey = eachKey || autoCompleteOptions.includes(state?.each);
+  const isValidEachKey = eachKey || autoCompleteOptions.includes(eachKey);
 
   return (
     <BubbleMenu

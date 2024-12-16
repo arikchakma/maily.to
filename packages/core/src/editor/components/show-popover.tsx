@@ -10,6 +10,7 @@ import { ForExtension } from '../nodes/for/for';
 import { memo } from 'react';
 import { getClosestNodeByName } from '../utils/columns';
 import { Editor } from '@tiptap/core';
+import { processVariables } from '../utils/variable';
 
 type ShowPopoverProps = {
   showIfKey?: string;
@@ -27,22 +28,7 @@ function _ShowPopover(props: ShowPopoverProps) {
 
   const eachKey = editor?.getAttributes('for')?.each || '';
   const autoCompleteOptions = useMemo(() => {
-    if (Array.isArray(variables)) {
-      const showIfKeyLowerCase = showIfKey?.toLowerCase();
-      const filteredVariables = variables
-        .map((variable) => variable.name)
-        .filter((option) =>
-          option.toLowerCase().startsWith(showIfKeyLowerCase)
-        );
-
-      if (showIfKey?.length > 0 && !filteredVariables.includes(showIfKey)) {
-        filteredVariables.push(showIfKey);
-      }
-
-      return filteredVariables;
-    }
-
-    return variables({
+    return processVariables(variables, {
       query: showIfKey || '',
       block: {
         name: 'show',

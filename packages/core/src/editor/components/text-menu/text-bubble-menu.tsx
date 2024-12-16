@@ -20,6 +20,10 @@ import { LinkInputPopover } from '../ui/link-input-popover';
 import { Divider } from '../ui/divider';
 import { AlignmentSwitch } from '../alignment-switch';
 import { SVGIcon } from '../icons/grid-lines';
+import { SectionExtension } from '@/editor/nodes/section/section';
+import { ColumnExtension } from '@/editor/nodes/columns/column';
+import { ColumnsExtension } from '@/editor/nodes/columns/columns';
+import { ForExtension } from '@/editor/nodes/for/for';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -88,7 +92,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     pluginKey: 'textMenu',
-    shouldShow: ({ editor, state, from, to, view }) => {
+    shouldShow: ({ editor, from, view }) => {
       if (!view || editor.view.dragging) {
         return false;
       }
@@ -101,7 +105,17 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
         return false;
       }
 
-      return isTextSelected(editor);
+      const nestedNodes = [
+        ForExtension.name,
+        SectionExtension.name,
+        ColumnsExtension.name,
+        ColumnExtension.name,
+      ];
+
+      const isNestedNodeSelected =
+        nestedNodes.some((name) => editor.isActive(name)) &&
+        node?.classList?.contains('ProseMirror-selectednode');
+      return isTextSelected(editor) && !isNestedNodeSelected;
     },
     tippyOptions: {
       popperOptions: {

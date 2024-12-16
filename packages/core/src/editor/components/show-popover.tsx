@@ -19,26 +19,40 @@ type ShowPopoverProps = {
 };
 
 function _ShowPopover(props: ShowPopoverProps) {
-  const { showIfKey, onShowIfKeyValueChange, editor } = props;
+  const { showIfKey = '', onShowIfKeyValueChange, editor } = props;
 
-  const { variables = [], allowNewVariables } = useMailyContext();
+  const { variables = [] } = useMailyContext();
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const eachKey = editor?.getAttributes('for')?.each || '';
   const autoCompleteOptions = useMemo(() => {
-    const nonIterableVariables = variables
-      ?.filter((variable) => !variable.iterable)
-      .map((variable) => variable.name);
+    if (Array.isArray(variables)) {
+      const showIfKeyLowerCase = showIfKey?.toLowerCase();
+      const filteredVariables = variables
+        .map((variable) => variable.name)
+        .filter((option) =>
+          option.toLowerCase().startsWith(showIfKeyLowerCase)
+        );
 
-    const associatedVariableKeys =
-      variables.find((v) => v.name === eachKey)?.keys || [];
+      if (showIfKey?.length > 0 && !filteredVariables.includes(showIfKey)) {
+        filteredVariables.push(showIfKey);
+      }
 
-    return [...associatedVariableKeys, ...nonIterableVariables];
-  }, [variables, eachKey]);
+      return filteredVariables;
+    }
 
-  const isValidWhenKey =
-    showIfKey && (autoCompleteOptions.includes(showIfKey) || allowNewVariables);
+    return variables({
+      query: showIfKey || '',
+      block: {
+        name: 'show',
+        each: eachKey,
+      },
+      editor,
+    }).map((variable) => variable.name);
+  }, [variables, eachKey, showIfKey]);
+
+  const isValidWhenKey = showIfKey || autoCompleteOptions.includes(showIfKey);
 
   return (
     <Popover

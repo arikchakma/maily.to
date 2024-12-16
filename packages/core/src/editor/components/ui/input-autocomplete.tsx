@@ -31,22 +31,6 @@ export const InputAutocomplete = forwardRef<
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const { allowNewVariables = true } = useMailyContext();
-  const filteredAutoCompleteOptions = useMemo(() => {
-    const filteredOptions = autoCompleteOptions
-      .filter((option) => option.toLowerCase().startsWith(value.toLowerCase()))
-      .slice(0, 4);
-    if (
-      value.length > 0 &&
-      !filteredOptions.includes(value) &&
-      allowNewVariables
-    ) {
-      filteredOptions.push(value);
-    }
-
-    return filteredOptions;
-  }, [autoCompleteOptions, value, allowNewVariables]);
-
   useOutsideClick(containerRef, () => {
     onOutsideClick?.();
   });
@@ -69,7 +53,7 @@ export const InputAutocomplete = forwardRef<
             if (e.key === 'ArrowDown') {
               e.preventDefault();
               setSelectedIndex((prev) =>
-                Math.min(prev + 1, filteredAutoCompleteOptions.length - 1)
+                Math.min(prev + 1, autoCompleteOptions.length - 1)
               );
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
@@ -77,7 +61,7 @@ export const InputAutocomplete = forwardRef<
             } else if (e.key === 'Enter') {
               e.preventDefault();
 
-              const _value = filteredAutoCompleteOptions[selectedIndex];
+              const _value = autoCompleteOptions[selectedIndex];
               onValueChange(_value);
               onSelectOption?.(_value);
             }
@@ -88,9 +72,9 @@ export const InputAutocomplete = forwardRef<
         </div>
       </label>
 
-      {filteredAutoCompleteOptions.length > 0 && (
+      {autoCompleteOptions.length > 0 && (
         <div className="mly-absolute mly-left-0 mly-top-8 mly-z-10 mly-w-full mly-rounded-lg mly-bg-white mly-p-0.5 mly-shadow-md">
-          {filteredAutoCompleteOptions.map((option, index) => (
+          {autoCompleteOptions.map((option, index) => (
             <button
               type="button"
               key={option}

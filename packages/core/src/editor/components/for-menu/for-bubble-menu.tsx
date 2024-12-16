@@ -64,19 +64,35 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'forBubbleMenu',
   };
 
-  const { variables = [], allowNewVariables } = useMailyContext();
+  const { variables = [] } = useMailyContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
+  const eachKey = state?.each || '';
   const autoCompleteOptions = useMemo(() => {
-    return variables
-      ?.filter((variable) => variable.iterable)
-      .map((variable) => variable.name);
-  }, [variables]);
+    if (Array.isArray(variables)) {
+      const eachKeyLowerCase = eachKey?.toLowerCase();
+      const filteredVariables = variables
+        .map((variable) => variable.name)
+        .filter((option) => option.toLowerCase().startsWith(eachKeyLowerCase));
 
-  const isValidEachKey =
-    state?.each &&
-    (autoCompleteOptions.includes(state?.each) || !allowNewVariables);
+      if (eachKey.length > 0 && !filteredVariables.includes(eachKey)) {
+        filteredVariables.push(eachKey);
+      }
+
+      return filteredVariables;
+    }
+
+    return variables({
+      query: eachKey || '',
+      block: {
+        name: 'for',
+      },
+      editor,
+    }).map((variable) => variable.name);
+  }, [variables, eachKey, eachKey]);
+
+  const isValidEachKey = eachKey || autoCompleteOptions.includes(state?.each);
 
   return (
     <BubbleMenu

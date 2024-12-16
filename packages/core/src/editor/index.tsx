@@ -15,7 +15,8 @@ import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
-  DEFAULT_TRIGGER_SUGGESTION_CHAR,
+  DEFAULT_VARIABLE_TRIGGER_CHAR,
+  DEFAULT_VARIABLES,
   MailyContextType,
   MailyProvider,
 } from './provider';
@@ -57,10 +58,9 @@ export function Editor(props: EditorProps) {
     extensions,
     contentHtml,
     contentJson,
-    variables,
+    variables = DEFAULT_VARIABLES,
     blocks = DEFAULT_SLASH_COMMANDS,
-    triggerSuggestionCharacter = DEFAULT_TRIGGER_SUGGESTION_CHAR,
-    allowNewVariables = true,
+    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
   } = props;
 
   let formattedContent: any = null;
@@ -116,8 +116,7 @@ export function Editor(props: EditorProps) {
       ...defaultExtensions({
         variables,
         blocks,
-        triggerSuggestionCharacter,
-        allowNewVariables,
+        variableTriggerCharacter,
       }),
       ...(extensions || []),
     ],
@@ -133,8 +132,7 @@ export function Editor(props: EditorProps) {
     <MailyProvider
       variables={variables}
       blocks={blocks}
-      triggerSuggestionCharacter={triggerSuggestionCharacter}
-      allowNewVariables={allowNewVariables}
+      variableTriggerCharacter={variableTriggerCharacter}
     >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}

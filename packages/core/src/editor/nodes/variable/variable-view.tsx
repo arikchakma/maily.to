@@ -6,20 +6,37 @@ import {
 import { ShowPopover } from '@/editor/components/show-popover';
 import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import { useMailyContext } from '@/editor/provider';
+import { useMailyContext, Variable } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
+import { useMemo } from 'react';
 
 export function VariableView(props: NodeViewProps) {
   const { node, selected, updateAttributes, editor } = props;
   const { id, fallback, showIfKey = '' } = node.attrs;
 
   const { variables = [] } = useMailyContext();
+  const eachKey = editor?.getAttributes('for')?.each || '';
 
-  const isRequired =
-    variables.find((variable) => variable.name === id)?.required ?? true;
+  const isRequired = useMemo(() => {
+    let variable: Variable | undefined;
+    if (Array.isArray(variables)) {
+      variable = variables.find((variable) => variable.name === id);
+    } else {
+      variable = variables({
+        query: '',
+        block: {
+          name: 'variable',
+          each: eachKey,
+        },
+        editor,
+      }).find((variable) => variable.name === id);
+    }
+
+    return variable?.required ?? true;
+  }, [variables, id, editor, eachKey]);
 
   return (
     <NodeViewWrapper

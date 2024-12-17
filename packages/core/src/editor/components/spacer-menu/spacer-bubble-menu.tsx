@@ -56,6 +56,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
         onShowIfKeyValueChange={(value) => {
           editor.commands.setSpacerShowIfKey(value);
         }}
+        editor={editor}
       />
     </BubbleMenu>
   );

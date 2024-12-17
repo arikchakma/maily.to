@@ -13,6 +13,7 @@ import { InputAutocomplete } from '../ui/input-autocomplete';
 import { TooltipProvider } from '../ui/tooltip';
 import { useForState } from './use-for-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
+import { processVariables } from '@/editor/utils/variable';
 
 export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -68,12 +69,18 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
-  const isValidEachKey = state?.each !== undefined && state?.each !== '';
+  const eachKey = state?.each || '';
   const autoCompleteOptions = useMemo(() => {
-    return variables
-      ?.filter((variable) => variable.iterable)
-      .map((variable) => variable.name);
-  }, [variables]);
+    return processVariables(variables, {
+      query: eachKey || '',
+      editor,
+      from: 'for',
+    })
+      .map((variable) => variable.name)
+      .slice(0, 5);
+  }, [variables, eachKey]);
+
+  const isValidEachKey = eachKey || autoCompleteOptions.includes(eachKey);
 
   return (
     <BubbleMenu
@@ -99,7 +106,9 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           >
             <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-            <span className="mly-min-w-0 mly-truncate">{state?.each}</span>
+            <span className="mly-min-w-0 mly-truncate mly-text-left">
+              {state?.each}
+            </span>
           </button>
         )}
         {isUpdatingKey && (
@@ -121,13 +130,14 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
                   each: value,
                 });
               }}
-              onBlur={() => {
+              onOutsideClick={() => {
                 setIsUpdatingKey(false);
               }}
               onSelectOption={() => {
                 setIsUpdatingKey(false);
               }}
               autoCompleteOptions={autoCompleteOptions}
+              ref={inputRef}
             />
           </form>
         )}
@@ -140,6 +150,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               showIfKey: value,
             });
           }}
+          editor={editor}
         />
       </TooltipProvider>
     </BubbleMenu>

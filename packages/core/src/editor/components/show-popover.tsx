@@ -3,19 +3,41 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { useRef, useState } from 'react';
 import { cn } from '../utils/classname';
 import { useEffect } from 'react';
+import { InputAutocomplete } from './ui/input-autocomplete';
+import { useMailyContext } from '../provider';
+import { useMemo } from 'react';
+import { ForExtension } from '../nodes/for/for';
+import { memo } from 'react';
+import { getClosestNodeByName } from '../utils/columns';
+import { Editor } from '@tiptap/core';
+import { processVariables } from '../utils/variable';
 
 type ShowPopoverProps = {
   showIfKey?: string;
   onShowIfKeyValueChange?: (when: string) => void;
+
+  editor: Editor;
 };
 
-export function ShowPopover(props: ShowPopoverProps) {
-  const { showIfKey, onShowIfKeyValueChange } = props;
+function _ShowPopover(props: ShowPopoverProps) {
+  const { showIfKey = '', onShowIfKeyValueChange, editor } = props;
 
+  const { variables = [] } = useMailyContext();
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isValidWhenKey = showIfKey !== undefined && showIfKey !== '';
+  const eachKey = editor?.getAttributes('for')?.each || '';
+  const autoCompleteOptions = useMemo(() => {
+    return processVariables(variables, {
+      query: showIfKey || '',
+      from: 'variable',
+      editor,
+    })
+      .map((variable) => variable.name)
+      .slice(0, 5);
+  }, [variables, eachKey, showIfKey]);
+
+  const isValidWhenKey = showIfKey || autoCompleteOptions.includes(showIfKey);
 
   return (
     <Popover
@@ -81,27 +103,25 @@ export function ShowPopover(props: ShowPopoverProps) {
               }
             }}
           >
-            <label className="mly-relative">
-              <input
-                value={showIfKey || ''}
-                onChange={(e) => {
-                  onShowIfKeyValueChange?.(e.target.value);
-                }}
-                onBlur={() => {
-                  setIsUpdatingKey(false);
-                }}
-                ref={inputRef}
-                type="text"
-                placeholder="e.g. key"
-                className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-              />
-              <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
-              </div>
-            </label>
+            <InputAutocomplete
+              value={showIfKey || ''}
+              onValueChange={(value) => {
+                onShowIfKeyValueChange?.(value);
+              }}
+              onOutsideClick={() => {
+                setIsUpdatingKey(false);
+              }}
+              onSelectOption={() => {
+                setIsUpdatingKey(false);
+              }}
+              autoCompleteOptions={autoCompleteOptions}
+              ref={inputRef}
+            />
           </form>
         )}
       </PopoverContent>
     </Popover>
   );
 }
+
+export const ShowPopover = memo(_ShowPopover);

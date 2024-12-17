@@ -26,7 +26,6 @@ function _ShowPopover(props: ShowPopoverProps) {
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const eachKey = editor?.getAttributes('for')?.each || '';
   const autoCompleteOptions = useMemo(() => {
     return processVariables(variables, {
       query: showIfKey || '',
@@ -35,7 +34,7 @@ function _ShowPopover(props: ShowPopoverProps) {
     })
       .map((variable) => variable.name)
       .slice(0, 5);
-  }, [variables, eachKey, showIfKey]);
+  }, [variables, showIfKey, editor]);
 
   const isValidWhenKey = showIfKey || autoCompleteOptions.includes(showIfKey);
 

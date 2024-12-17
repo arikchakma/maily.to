@@ -73,7 +73,7 @@ You can pass variables to the editor in two ways:
    ```tsx
    // (Omitted repeated imports)
    <Editor
-     triggerSuggestionCharacter="@"
+     variableTriggerCharacter="@"
      variables={[
        {
          name: 'currentDate',
@@ -90,7 +90,7 @@ You can pass variables to the editor in two ways:
    ```tsx
    // (Omitted repeated imports)
    <Editor
-     triggerSuggestionCharacter="@"
+     variableTriggerCharacter="@"
      variables={({ query, from, editor }) => {
        // magic goes here
        // query: the text after the trigger character

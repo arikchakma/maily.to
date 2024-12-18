@@ -12,6 +12,8 @@ type InputAutocompleteProps = HTMLAttributes<HTMLInputElement> & {
   onSelectOption?: (option: string) => void;
 
   onOutsideClick?: () => void;
+  triggerChar?: string;
+  placeholder?: string;
 };
 
 export const InputAutocomplete = forwardRef<
@@ -25,6 +27,7 @@ export const InputAutocomplete = forwardRef<
     onOutsideClick,
     onSelectOption,
     autoCompleteOptions = [],
+    triggerChar = '',
     ...inputProps
   } = props;
 
@@ -35,10 +38,20 @@ export const InputAutocomplete = forwardRef<
     onOutsideClick?.();
   });
 
+  const isTriggeringVariable = value.startsWith(triggerChar);
+  console.log('-'.repeat(20));
+  console.log('Is Triggering Variable: ', isTriggeringVariable);
+  console.log('Value: ', value);
+  console.log('Trigger Char: ', triggerChar);
+  console.log(autoCompleteOptions);
+  console.log('-'.repeat(20));
+
   return (
-    <div className={cn('mly-relative', className)} ref={containerRef}>
+    <div className={cn('mly-relative')} ref={containerRef}>
       <label className="mly-relative">
         <input
+          placeholder="e.g. items"
+          type="text"
           {...inputProps}
           ref={ref}
           value={value}
@@ -46,9 +59,10 @@ export const InputAutocomplete = forwardRef<
             setSelectedIndex(0);
             onValueChange(e.target.value);
           }}
-          type="text"
-          placeholder="e.g. items"
-          className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+          className={cn(
+            'mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none',
+            className
+          )}
           onKeyDown={(e) => {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
@@ -72,7 +86,7 @@ export const InputAutocomplete = forwardRef<
         </div>
       </label>
 
-      {autoCompleteOptions.length > 0 && (
+      {autoCompleteOptions.length > 0 && isTriggeringVariable && (
         <div className="mly-absolute mly-left-0 mly-top-8 mly-z-10 mly-w-full mly-rounded-lg mly-bg-white mly-p-0.5 mly-shadow-md">
           {autoCompleteOptions.map((option, index) => (
             <button

@@ -8,6 +8,16 @@ import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
+import {
+  DEFAULT_VARIABLE_TRIGGER_CHAR,
+  useMailyContext,
+} from '@/editor/provider';
+import { InputAutocomplete } from './input-autocomplete';
+import { processVariables } from '@/editor/utils/variable';
+import { useMemo } from 'react';
+import { Editor } from '@tiptap/core';
+
+const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
 type LinkInputPopoverProps = {
   defaultValue?: string;
@@ -15,6 +25,8 @@ type LinkInputPopoverProps = {
 
   icon?: LucideIcon;
   tooltip?: string;
+
+  editor: Editor;
 };
 
 export function LinkInputPopover(props: LinkInputPopoverProps) {
@@ -23,13 +35,37 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     onValueChange,
     tooltip,
     icon: Icon = Link,
+    editor,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
   const [protocol, setProtocol] = useState('https://');
 
   const linkInputRef = useRef<HTMLInputElement>(null);
-  const defaultUrlWithoutProtocol = defaultValue.replace(/https?:\/\//, '');
+  const defaultUrlWithoutProtocol = defaultValue.replace(
+    LINK_PROTOCOL_REGEX,
+    ''
+  );
+
+  const {
+    variables = [],
+    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
+  } = useMailyContext();
+
+  const autoCompleteOptions = useMemo(() => {
+    const withoutTrigger = defaultUrlWithoutProtocol.replace(
+      new RegExp(variableTriggerCharacter, 'g'),
+      ''
+    );
+
+    return processVariables(variables, {
+      query: withoutTrigger || '',
+      from: 'variable',
+      editor,
+    })
+      .map((variable) => variable.name)
+      .slice(0, 5);
+  }, [variables, defaultUrlWithoutProtocol, editor]);
 
   const popoverButton = (
     <PopoverTrigger asChild>
@@ -48,7 +84,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
   const normalizeProtocol = (value: string, p: string = protocol) => {
     // remove protocol if it's already there
     // and add the new one
-    value = value.replace(/https?:\/\//, '');
+    value = value.replace(LINK_PROTOCOL_REGEX, '');
     return p + value;
   };
 
@@ -114,24 +150,24 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                 </span>
               </div>
 
-              <input
+              <InputAutocomplete
                 value={defaultUrlWithoutProtocol}
-                onChange={(e) => {
-                  let value = normalizeProtocol(e.target.value);
-                  onValueChange?.(value);
+                onValueChange={(value) => {
+                  let newValue = normalizeProtocol(value);
+                  onValueChange?.(newValue);
                 }}
+                autoCompleteOptions={autoCompleteOptions}
                 ref={linkInputRef}
-                type="text"
-                className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
                 placeholder="maily.to/"
-              />
-            </div>
-
-            <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-1.5 mly-flex mly-items-center">
-              <CornerDownLeft
-                className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray"
-                aria-hidden="true"
-                role="img"
+                className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
+                triggerChar={variableTriggerCharacter}
+                onSelectOption={(value) => {
+                  let newValue = normalizeProtocol(value).replace(
+                    new RegExp(variableTriggerCharacter, 'g'),
+                    ''
+                  );
+                  onValueChange?.(newValue);
+                }}
               />
             </div>
           </label>

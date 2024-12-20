@@ -156,6 +156,7 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Update External Link"
+                  editor={editor}
                 />
               </div>
 

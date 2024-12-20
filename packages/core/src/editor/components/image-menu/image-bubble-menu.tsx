@@ -93,6 +93,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             }}
             tooltip="Source URL"
             icon={ImageDown}
+            editor={editor}
           />
 
           {state.isImageActive && (
@@ -105,6 +106,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   .run();
               }}
               tooltip="External URL"
+              editor={editor}
             />
           )}
         </div>

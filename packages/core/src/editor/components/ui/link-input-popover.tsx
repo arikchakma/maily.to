@@ -27,6 +27,8 @@ type LinkInputPopoverProps = {
   tooltip?: string;
 
   editor: Editor;
+  isVariable?: boolean;
+  onIsVariableChange?: (value: boolean) => void;
 };
 
 export function LinkInputPopover(props: LinkInputPopoverProps) {
@@ -36,6 +38,9 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     tooltip,
     icon: Icon = Link,
     editor,
+
+    isVariable,
+    onIsVariableChange,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -162,11 +167,9 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                 className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
                 triggerChar={variableTriggerCharacter}
                 onSelectOption={(value) => {
-                  let newValue = normalizeProtocol(value).replace(
-                    new RegExp(variableTriggerCharacter, 'g'),
-                    ''
-                  );
-                  onValueChange?.(newValue);
+                  const isVariable = autoCompleteOptions.includes(value);
+                  onIsVariableChange(isVariable);
+                  onValueChange?.(value);
                 }}
               />
             </div>

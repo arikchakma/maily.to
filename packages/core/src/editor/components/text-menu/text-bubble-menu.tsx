@@ -205,6 +205,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
               .run()!;
           }}
           tooltip="External URL"
+          editor={editor}
         />
 
         <Divider />

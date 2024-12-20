@@ -114,21 +114,13 @@ export const VariableExtension = Node.create<VariableOptions>({
           };
         },
       },
-      showIfKey: {
-        default: DEFAULT_SECTION_SHOW_IF_KEY,
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('data-show-if-key') ||
-            DEFAULT_SECTION_SHOW_IF_KEY
-          );
-        },
-        renderHTML(attributes) {
-          if (!attributes.showIfKey) {
-            return {};
-          }
 
+      required: {
+        default: true,
+        parseHTML: (element) => element.hasAttribute('data-required'),
+        renderHTML: (attributes) => {
           return {
-            'data-show-if-key': attributes.showIfKey,
+            'data-required': attributes?.required ?? true,
           };
         },
       },

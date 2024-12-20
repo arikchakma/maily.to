@@ -149,6 +149,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               })
               .run();
           }}
+          editor={editor}
         />
       </TooltipProvider>
     </BubbleMenu>

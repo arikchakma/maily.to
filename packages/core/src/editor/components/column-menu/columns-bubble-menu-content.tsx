@@ -102,6 +102,7 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
               showIfKey: value,
             });
           }}
+          editor={editor}
         />
       </div>
     </TooltipProvider>

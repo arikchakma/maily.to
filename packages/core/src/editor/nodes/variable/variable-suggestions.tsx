@@ -1,8 +1,19 @@
-import { DEFAULT_TRIGGER_SUGGESTION_CHAR, Variables } from '@/editor/provider';
+import {
+  DEFAULT_VARIABLE_TRIGGER_CHAR,
+  DEFAULT_VARIABLES,
+  Variables,
+} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
-import { ArrowDown, ArrowUp, Braces, CornerDownLeft } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  Braces,
+  CornerDownLeft,
+  Variable,
+} from 'lucide-react';
 import {
   forwardRef,
   useEffect,
@@ -166,31 +177,17 @@ function VariableIcon(props: VariableIconProps) {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: Variables = [],
-  char: string = DEFAULT_TRIGGER_SUGGESTION_CHAR
+  variables: Variables = DEFAULT_VARIABLES,
+  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
-  const defaultVariables = variables
-    .filter((v) => !v.iterable)
-    .map((variable) => variable.name);
-
   return {
     char,
     items: ({ query, editor }) => {
-      const queryLower = query.toLowerCase();
-      const eachKey = editor.getAttributes('for')?.each || '';
-
-      const associatedVariableKeys =
-        variables.find((v) => v.name === eachKey)?.keys || [];
-      const filteredVariableKeys = defaultVariables.filter((name) =>
-        name.toLowerCase().startsWith(queryLower)
-      );
-
-      const combinedKeys = [...associatedVariableKeys, ...filteredVariableKeys];
-      if (query.length > 0 && !filteredVariableKeys.includes(query)) {
-        combinedKeys.push(query);
-      }
-
-      return combinedKeys;
+      return processVariables(variables, {
+        query,
+        editor,
+        from: 'variable',
+      }).map((variable) => variable.name);
     },
 
     render: () => {

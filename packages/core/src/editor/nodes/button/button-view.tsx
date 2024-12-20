@@ -191,6 +191,7 @@ export function ButtonView(props: NodeViewProps) {
                     showIfKey: value,
                   });
                 }}
+                editor={editor}
               />
             </div>
           </TooltipProvider>

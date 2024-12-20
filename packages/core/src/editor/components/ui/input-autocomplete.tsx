@@ -1,6 +1,8 @@
+import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { useOutsideClick } from '@/editor/utils/use-outside-click';
 import { CornerDownLeft } from 'lucide-react';
-import { useRef, HTMLAttributes, useMemo, useState } from 'react';
+import { forwardRef, HTMLAttributes, useMemo, useState, useRef } from 'react';
 
 type InputAutocompleteProps = HTMLAttributes<HTMLInputElement> & {
   value: string;
@@ -8,45 +10,42 @@ type InputAutocompleteProps = HTMLAttributes<HTMLInputElement> & {
 
   autoCompleteOptions?: string[];
   onSelectOption?: (option: string) => void;
+
+  onOutsideClick?: () => void;
 };
 
-export function InputAutocomplete(props: InputAutocompleteProps) {
+export const InputAutocomplete = forwardRef<
+  HTMLInputElement,
+  InputAutocompleteProps
+>((props, ref) => {
   const {
     value = '',
     onValueChange,
     className,
-    onBlur: onInputBlur,
+    onOutsideClick,
     onSelectOption,
     autoCompleteOptions = [],
     ...inputProps
   } = props;
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredAutoCompleteOptions = useMemo(() => {
-    const filteredOptions = autoCompleteOptions
-      .filter((option) => option.toLowerCase().startsWith(value.toLowerCase()))
-      .slice(0, 4);
-    if (value.length > 0 && !filteredOptions.includes(value)) {
-      filteredOptions.push(value);
-    }
-
-    return filteredOptions;
-  }, [autoCompleteOptions, value]);
+  useOutsideClick(containerRef, () => {
+    onOutsideClick?.();
+  });
 
   return (
-    <div className={cn('mly-relative', className)}>
+    <div className={cn('mly-relative', className)} ref={containerRef}>
       <label className="mly-relative">
         <input
           {...inputProps}
+          ref={ref}
           value={value}
           onChange={(e) => {
             setSelectedIndex(0);
             onValueChange(e.target.value);
           }}
-          onBlur={onInputBlur}
-          ref={inputRef}
           type="text"
           placeholder="e.g. items"
           className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
@@ -54,7 +53,7 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
               setSelectedIndex((prev) =>
-                Math.min(prev + 1, filteredAutoCompleteOptions.length - 1)
+                Math.min(prev + 1, autoCompleteOptions.length - 1)
               );
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
@@ -62,9 +61,8 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
             } else if (e.key === 'Enter') {
               e.preventDefault();
 
-              const _value = filteredAutoCompleteOptions[selectedIndex];
+              const _value = autoCompleteOptions[selectedIndex];
               onValueChange(_value);
-              inputRef.current?.focus();
               onSelectOption?.(_value);
             }
           }}
@@ -74,16 +72,15 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
         </div>
       </label>
 
-      {filteredAutoCompleteOptions.length > 0 && (
+      {autoCompleteOptions.length > 0 && (
         <div className="mly-absolute mly-left-0 mly-top-8 mly-z-10 mly-w-full mly-rounded-lg mly-bg-white mly-p-0.5 mly-shadow-md">
-          {filteredAutoCompleteOptions.map((option, index) => (
+          {autoCompleteOptions.map((option, index) => (
             <button
               type="button"
               key={option}
               className="mly-w-full mly-truncate mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray aria-selected:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
               onClick={() => {
                 onValueChange(option);
-                inputRef.current?.focus();
                 onSelectOption?.(option);
               }}
               onMouseEnter={() => setSelectedIndex(index)}
@@ -96,4 +93,6 @@ export function InputAutocomplete(props: InputAutocompleteProps) {
       )}
     </div>
   );
-}
+});
+
+InputAutocomplete.displayName = 'InputAutocomplete';

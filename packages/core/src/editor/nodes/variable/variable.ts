@@ -4,7 +4,6 @@ import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import { VariableView } from './variable-view';
-import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 export type VariableOptions = {
   HTMLAttributes: Record<string, any>;
@@ -111,24 +110,6 @@ export const VariableExtension = Node.create<VariableOptions>({
 
           return {
             'data-fallback': attributes.fallback,
-          };
-        },
-      },
-      showIfKey: {
-        default: DEFAULT_SECTION_SHOW_IF_KEY,
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('data-show-if-key') ||
-            DEFAULT_SECTION_SHOW_IF_KEY
-          );
-        },
-        renderHTML(attributes) {
-          if (!attributes.showIfKey) {
-            return {};
-          }
-
-          return {
-            'data-show-if-key': attributes.showIfKey,
           };
         },
       },

@@ -1,4 +1,5 @@
 import {
+  BracesIcon,
   ChevronDownIcon,
   CornerDownLeft,
   Link,
@@ -21,14 +22,13 @@ const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
 type LinkInputPopoverProps = {
   defaultValue?: string;
-  onValueChange?: (value: string) => void;
+  isVariable?: boolean;
+  onValueChange?: (value: string, isVariable?: boolean) => void;
 
   icon?: LucideIcon;
   tooltip?: string;
 
   editor: Editor;
-  isVariable?: boolean;
-  onIsVariableChange?: (value: boolean) => void;
 };
 
 export function LinkInputPopover(props: LinkInputPopoverProps) {
@@ -40,17 +40,19 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     editor,
 
     isVariable,
-    onIsVariableChange,
   } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [protocol, setProtocol] = useState('https://');
-
-  const linkInputRef = useRef<HTMLInputElement>(null);
+  const defaultProtocol = defaultValue.match(LINK_PROTOCOL_REGEX)?.[0];
   const defaultUrlWithoutProtocol = defaultValue.replace(
     LINK_PROTOCOL_REGEX,
     ''
   );
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [protocol, setProtocol] = useState(defaultProtocol || 'https://');
+  const [isEditing, setIsEditing] = useState(!isVariable);
+
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   const {
     variables = [],
@@ -89,7 +91,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
   const normalizeProtocol = (value: string, p: string = protocol) => {
     // remove protocol if it's already there
     // and add the new one
-    value = value.replace(LINK_PROTOCOL_REGEX, '');
+    value = value?.replace(LINK_PROTOCOL_REGEX, '');
     return p + value;
   };
 
@@ -124,37 +126,55 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
             setIsOpen(false);
           }}
         >
-          <label className="relative">
-            <div className="mly-isolate mly-flex mly-rounded-lg">
-              <div className="mly-relative">
-                <select
-                  className="hover:text-accent-foreground mly-peer mly-inline-flex mly-h-full mly-appearance-none mly-items-center mly-rounded-none mly-rounded-s-lg mly-border mly-border-gray-300 mly-bg-gray-50 mly-pe-8 mly-ps-3 mly-text-sm mly-text-gray-700 mly-transition-shadow hover:mly-bg-gray-100 focus:mly-z-10 focus-visible:mly-outline-none disabled:mly-pointer-events-none disabled:mly-cursor-not-allowed disabled:mly-opacity-50"
-                  aria-label="Protocol"
-                  value={protocol}
-                  onChange={(e) => {
-                    const protocol = e.target.value;
+          <div className="mly-isolate mly-flex mly-rounded-lg">
+            <div className="mly-relative">
+              <select
+                className="hover:text-accent-foreground mly-peer mly-inline-flex mly-h-full mly-appearance-none mly-items-center mly-rounded-none mly-rounded-s-lg mly-border mly-border-gray-300 mly-bg-gray-50 mly-pe-8 mly-ps-3 mly-text-sm mly-text-gray-700 mly-transition-shadow hover:mly-bg-gray-100 focus:mly-z-10 focus-visible:mly-outline-none disabled:mly-pointer-events-none disabled:mly-cursor-not-allowed disabled:mly-opacity-50"
+                aria-label="Protocol"
+                value={protocol}
+                onChange={(e) => {
+                  const protocol = e.target.value;
 
-                    setProtocol(protocol);
-                    const newValue = normalizeProtocol(
-                      linkInputRef.current?.value || '',
-                      protocol
-                    );
-                    onValueChange?.(newValue);
+                  setProtocol(protocol);
+                  const newValue = normalizeProtocol(
+                    linkInputRef.current?.value || '',
+                    protocol
+                  );
+                  onValueChange?.(newValue);
+                }}
+              >
+                <option value="https://">https://</option>
+                <option value="http://">http://</option>
+              </select>
+              <span className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-0 mly-z-10 mly-flex mly-h-full mly-w-9 mly-items-center mly-justify-center mly-text-gray-600 peer-disabled:mly-opacity-50">
+                <ChevronDownIcon
+                  size={16}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                  role="img"
+                />
+              </span>
+            </div>
+
+            {!isEditing && (
+              <div className="mly-flex mly-h-8 mly-items-center mly-rounded-r-lg mly-border mly-border-l-0 mly-border-gray-300 mly-bg-white mly-px-0.5">
+                <button
+                  className="mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setTimeout(() => {
+                      linkInputRef.current?.focus();
+                    }, 0);
                   }}
                 >
-                  <option value="https://">https://</option>
-                  <option value="http://">http://</option>
-                </select>
-                <span className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-0 mly-z-10 mly-flex mly-h-full mly-w-9 mly-items-center mly-justify-center mly-text-gray-600 peer-disabled:mly-opacity-50">
-                  <ChevronDownIcon
-                    size={16}
-                    strokeWidth={2}
-                    aria-hidden="true"
-                    role="img"
-                  />
-                </span>
+                  <BracesIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
+                  <span className="mly-min-w-0 mly-truncate mly-text-left">
+                    {defaultUrlWithoutProtocol}
+                  </span>
+                </button>
               </div>
-
+            )}
+            {isEditing && (
               <InputAutocomplete
                 value={defaultUrlWithoutProtocol}
                 onValueChange={(value) => {
@@ -167,13 +187,20 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                 className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
                 triggerChar={variableTriggerCharacter}
                 onSelectOption={(value) => {
-                  const isVariable = autoCompleteOptions.includes(value);
-                  onIsVariableChange(isVariable);
-                  onValueChange?.(value);
+                  const isVariable =
+                    autoCompleteOptions.includes(value) ?? false;
+                  if (isVariable) {
+                    setIsEditing(false);
+                  } else {
+                    value = normalizeProtocol(value);
+                  }
+
+                  onValueChange?.(value, isVariable);
+                  setIsOpen(false);
                 }}
               />
-            </div>
-          </label>
+            )}
+          </div>
         </form>
       </PopoverContent>
     </Popover>

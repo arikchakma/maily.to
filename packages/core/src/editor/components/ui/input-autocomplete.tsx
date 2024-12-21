@@ -39,12 +39,6 @@ export const InputAutocomplete = forwardRef<
   });
 
   const isTriggeringVariable = value.startsWith(triggerChar);
-  console.log('-'.repeat(20));
-  console.log('Is Triggering Variable: ', isTriggeringVariable);
-  console.log('Value: ', value);
-  console.log('Trigger Char: ', triggerChar);
-  console.log(autoCompleteOptions);
-  console.log('-'.repeat(20));
 
   return (
     <div className={cn('mly-relative')} ref={containerRef}>
@@ -75,8 +69,7 @@ export const InputAutocomplete = forwardRef<
             } else if (e.key === 'Enter') {
               e.preventDefault();
 
-              const _value = autoCompleteOptions[selectedIndex];
-              onValueChange(_value);
+              const _value = autoCompleteOptions[selectedIndex] || value;
               onSelectOption?.(_value);
             }
           }}
@@ -94,7 +87,6 @@ export const InputAutocomplete = forwardRef<
               key={option}
               className="mly-w-full mly-truncate mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray aria-selected:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
               onClick={() => {
-                onValueChange(option);
                 onSelectOption?.(option);
               }}
               onMouseEnter={() => setSelectedIndex(index)}

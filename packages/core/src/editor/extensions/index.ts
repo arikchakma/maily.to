@@ -1,6 +1,5 @@
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
-import TiptapLink from '@tiptap/extension-link';
 import ListItem from '@tiptap/extension-list-item';
 import Paragraph from '@tiptap/extension-paragraph';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -28,6 +27,7 @@ import { SlashCommand } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
+import { LinkExtension } from '../nodes/link';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
@@ -110,7 +110,7 @@ export function extensions(props: ExtensionsProps) {
     SlashCommand.configure({
       suggestion: getSlashCommandSuggestions(blocks),
     }),
-    TiptapLink.configure({
+    LinkExtension.configure({
       HTMLAttributes: {
         target: '_blank',
         rel: 'noopener noreferrer nofollow',

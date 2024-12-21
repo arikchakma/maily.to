@@ -113,6 +113,16 @@ export const VariableExtension = Node.create<VariableOptions>({
           };
         },
       },
+
+      required: {
+        default: true,
+        parseHTML: (element) => element.hasAttribute('data-required'),
+        renderHTML: (attributes) => {
+          return {
+            'data-required': attributes?.required ?? true,
+          };
+        },
+      },
     };
   },
 

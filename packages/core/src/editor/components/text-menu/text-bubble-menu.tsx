@@ -180,7 +180,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
         <LinkInputPopover
           defaultValue={state?.linkUrl ?? ''}
-          onValueChange={(value) => {
+          onValueChange={(value, isVariable) => {
             const defaultValueWithoutProtocol = value.replace(
               /https?:\/\//,
               ''
@@ -201,10 +201,13 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
               ?.chain()
               .extendMarkRange('link')
               .setLink({ href: value })
+              .setIsUrlVariable(isVariable ?? false)
               .setUnderline()
               .run()!;
           }}
           tooltip="External URL"
+          editor={editor}
+          isVariable={state.isUrlVariable}
         />
 
         <Divider />

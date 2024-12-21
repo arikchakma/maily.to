@@ -5,30 +5,14 @@ import {
 } from '@/editor/components/popover';
 import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import { useMailyContext, Variable } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
-import { processVariables } from '@/editor/utils/variable';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
-import { useMemo } from 'react';
 
 export function VariableView(props: NodeViewProps) {
   const { node, selected, updateAttributes, editor } = props;
-  const { id, fallback } = node.attrs;
-
-  const { variables = [] } = useMailyContext();
-  const eachKey = editor?.getAttributes('for')?.each || '';
-
-  const isRequired = useMemo(() => {
-    const variable = processVariables(variables, {
-      query: '',
-      from: 'variable',
-      editor,
-    }).find((variable) => variable.name === id);
-
-    return variable?.required ?? true;
-  }, [variables, id, editor, eachKey]);
+  const { id, fallback, required } = node.attrs;
 
   return (
     <NodeViewWrapper
@@ -47,7 +31,7 @@ export function VariableView(props: NodeViewProps) {
           >
             <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
             {id}
-            {isRequired && !fallback && (
+            {required && !fallback && (
               <AlertTriangle className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5]" />
             )}
           </span>

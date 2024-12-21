@@ -19,11 +19,13 @@ import {
   allowedButtonVariant,
 } from './button';
 import { ShowPopover } from '@/editor/components/show-popover';
+import { ButtonLabelInput } from './button-label-input';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
   const {
     text,
+    isTextVariable,
     alignment,
     variant,
     borderRadius: _radius,
@@ -31,6 +33,7 @@ export function ButtonView(props: NodeViewProps) {
     textColor,
     url: externalLink,
     showIfKey = '',
+    isUrlVariable,
   } = node.attrs;
 
   return (
@@ -85,20 +88,17 @@ export function ButtonView(props: NodeViewProps) {
         >
           <TooltipProvider>
             <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
-              <label className="mly-relative">
-                <input
-                  value={text}
-                  onChange={(e) => {
-                    updateAttributes({
-                      text: e.target.value,
-                    });
-                  }}
-                  className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-                />
-                <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                  <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
-                </div>
-              </label>
+              <ButtonLabelInput
+                value={text}
+                onValueChange={(value, isVariable) => {
+                  updateAttributes({
+                    text: value,
+                    isTextVariable: isVariable ?? false,
+                  });
+                }}
+                isVariable={isTextVariable}
+                editor={editor}
+              />
 
               <Divider />
 
@@ -150,12 +150,15 @@ export function ButtonView(props: NodeViewProps) {
 
                 <LinkInputPopover
                   defaultValue={externalLink || ''}
-                  onValueChange={(value) => {
+                  onValueChange={(value, isVariable) => {
                     updateAttributes({
                       url: value,
+                      isUrlVariable: isVariable ?? false,
                     });
                   }}
                   tooltip="Update External Link"
+                  editor={editor}
+                  isVariable={isUrlVariable}
                 />
               </div>
 

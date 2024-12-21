@@ -1,7 +1,7 @@
 import { cn } from '@/editor/utils/classname';
 import { useEvent } from '@/editor/utils/use-event';
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/react';
-import { Ban, ImageOffIcon, Loader2 } from 'lucide-react';
+import { Ban, BracesIcon, ImageOffIcon, Loader2 } from 'lucide-react';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 
 const MIN_WIDTH = 20;
@@ -94,7 +94,13 @@ export function ImageView(props: NodeViewProps) {
   }
 
   let { alignment = 'center', width, height, src } = node.attrs || {};
-  const { externalLink, showIfKey, ...attrs } = node.attrs || {};
+  const {
+    externalLink,
+    isExternalLinkVariable,
+    isSrcVariable,
+    showIfKey,
+    ...attrs
+  } = node.attrs || {};
 
   const hasImageSrc = !!attrs.src;
 
@@ -168,12 +174,16 @@ export function ImageView(props: NodeViewProps) {
       ref={wrapperRef}
     >
       {!hasImageSrc && <ImageStatusLabel status="idle" />}
-      {hasImageSrc && status === 'loading' && (
+      {hasImageSrc && isSrcVariable && <ImageStatusLabel status="variable" />}
+
+      {hasImageSrc && status === 'loading' && !isSrcVariable && (
         <ImageStatusLabel status="loading" />
       )}
-      {hasImageSrc && status === 'error' && <ImageStatusLabel status="error" />}
+      {hasImageSrc && status === 'error' && !isSrcVariable && (
+        <ImageStatusLabel status="error" />
+      )}
 
-      {hasImageSrc && status === 'loaded' && (
+      {hasImageSrc && status === 'loaded' && !isSrcVariable && (
         <>
           <img
             {...attrs}
@@ -216,7 +226,7 @@ export function ImageView(props: NodeViewProps) {
 }
 
 type ImageStatusLabelProps = {
-  status: ImageStatus;
+  status: ImageStatus | 'variable';
 };
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
@@ -247,6 +257,12 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
         <>
           <Ban className="mly-size-4 mly-stroke-[2.5]" />
           <span>Error loading image</span>
+        </>
+      )}
+      {status === 'variable' && (
+        <>
+          <BracesIcon className="mly-size-4 mly-stroke-[2.5]" />
+          <span>Variable Image URL</span>
         </>
       )}
     </div>

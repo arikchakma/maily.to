@@ -13,6 +13,7 @@ export function LogoView(props: NodeViewProps) {
   let {
     alignment = 'center',
     src: logoSrc,
+    isSrcVariable,
     size = 'sm',
   } = (node.attrs || {}) as LogoAttributes;
 
@@ -58,12 +59,15 @@ export function LogoView(props: NodeViewProps) {
       }}
     >
       {!hasImageSrc && <ImageStatusLabel status="idle" />}
-      {hasImageSrc && status === 'loading' && (
+      {hasImageSrc && isSrcVariable && <ImageStatusLabel status="variable" />}
+      {hasImageSrc && status === 'loading' && !isSrcVariable && (
         <ImageStatusLabel status="loading" />
       )}
-      {hasImageSrc && status === 'error' && <ImageStatusLabel status="error" />}
+      {hasImageSrc && status === 'error' && !isSrcVariable && (
+        <ImageStatusLabel status="error" />
+      )}
 
-      {hasImageSrc && status === 'loaded' && (
+      {hasImageSrc && status === 'loaded' && !isSrcVariable && (
         <img
           src={logoSrc}
           alt="Logo"

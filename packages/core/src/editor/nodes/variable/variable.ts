@@ -4,7 +4,6 @@ import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import { VariableView } from './variable-view';
-import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 export type VariableOptions = {
   HTMLAttributes: Record<string, any>;

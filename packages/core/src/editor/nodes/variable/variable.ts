@@ -119,14 +119,14 @@ export const VariableExtension = Node.create<VariableOptions>({
   parseHTML() {
     return [
       {
-        tag: `span[data-type="${this.name}"]`,
+        tag: `div[data-type="${this.name}"]`,
       },
     ];
   },
 
   renderHTML({ node, HTMLAttributes }) {
     return [
-      'span',
+      'div',
       mergeAttributes(
         { 'data-type': this.name },
         this.options.HTMLAttributes,
@@ -187,7 +187,8 @@ export const VariableExtension = Node.create<VariableOptions>({
 
   addNodeView() {
     return ReactNodeViewRenderer(VariableView, {
-      className: 'mly-relative',
+      className: 'mly-relative mly-inline-block',
+      as: 'div',
     });
   },
 });

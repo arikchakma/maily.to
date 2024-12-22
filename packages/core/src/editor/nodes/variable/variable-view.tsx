@@ -5,33 +5,20 @@ import {
 } from '@/editor/components/popover';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import {
-  useMailyContext,
-  RenderVariableFunction,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
+  RenderVariableFunction,
+  useMailyContext,
 } from '@/editor/provider';
-import { processVariables } from '@/editor/utils/variable';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
-import { useMemo } from 'react';
 
 export function VariableView(props: NodeViewProps) {
   const { node, updateAttributes, editor } = props;
-  const { id, fallback } = node.attrs;
+  const { id, fallback, required } = node.attrs;
 
-  const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
+  const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
     useMailyContext();
-  const eachKey = editor?.getAttributes('for')?.each || '';
-
-  const isRequired = useMemo(() => {
-    const variable = processVariables(variables, {
-      query: '',
-      from: 'variable',
-      editor,
-    }).find((variable) => variable.name === id);
-
-    return variable?.required ?? true;
-  }, [variables, id, editor, eachKey]);
 
   return (
     <NodeViewWrapper
@@ -41,7 +28,7 @@ export function VariableView(props: NodeViewProps) {
       <Popover>
         <PopoverTrigger>
           {renderVariable({
-            variable: { name: id, required: isRequired },
+            variable: { name: id, required: required },
             fallback,
             editor,
           })}

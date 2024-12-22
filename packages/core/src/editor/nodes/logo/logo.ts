@@ -23,6 +23,7 @@ export interface LogoAttributes {
   alignment?: AllowedLogoAlignment;
 
   showIfKey: string;
+  isSrcVariable?: boolean;
 }
 
 declare module '@tiptap/core' {
@@ -105,6 +106,25 @@ export const LogoExtension = TiptapImage.extend({
 
           return {
             'data-show-if-key': attributes.showIfKey,
+          };
+        },
+      },
+
+      // Later we will remove this attribute
+      // and use the `src` attribute instead when implement
+      // the URL variable feature
+      isSrcVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-src-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isSrcVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-src-variable': 'true',
           };
         },
       },

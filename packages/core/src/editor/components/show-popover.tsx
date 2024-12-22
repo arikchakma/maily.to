@@ -31,9 +31,7 @@ function _ShowPopover(props: ShowPopoverProps) {
       query: showIfKey || '',
       from: 'variable',
       editor,
-    })
-      .map((variable) => variable.name)
-      .slice(0, 5);
+    }).map((variable) => variable.name);
   }, [variables, showIfKey, editor]);
 
   const isValidWhenKey = showIfKey || autoCompleteOptions.includes(showIfKey);
@@ -110,7 +108,8 @@ function _ShowPopover(props: ShowPopoverProps) {
               onOutsideClick={() => {
                 setIsUpdatingKey(false);
               }}
-              onSelectOption={() => {
+              onSelectOption={(value) => {
+                onShowIfKeyValueChange?.(value);
                 setIsUpdatingKey(false);
               }}
               autoCompleteOptions={autoCompleteOptions}

@@ -131,7 +131,10 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               onOutsideClick={() => {
                 setIsUpdatingKey(false);
               }}
-              onSelectOption={() => {
+              onSelectOption={(value) => {
+                editor.commands.updateFor({
+                  each: value,
+                });
                 setIsUpdatingKey(false);
               }}
               autoCompleteOptions={autoCompleteOptions}

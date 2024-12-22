@@ -58,6 +58,22 @@ export const ButtonExtension = Node.create({
           };
         },
       },
+      isTextVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-text-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isTextVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-text-variable': 'true',
+          };
+        },
+      },
+
       url: {
         default: '',
         parseHTML: (element) => {
@@ -69,6 +85,25 @@ export const ButtonExtension = Node.create({
           };
         },
       },
+      // Later we will remove this attribute
+      // and use the `url` attribute instead when implement
+      // the URL variable feature
+      isUrlVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-url-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isUrlVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-url-variable': 'true',
+          };
+        },
+      },
+
       alignment: {
         default: DEFAULT_BUTTON_ALIGNMENT,
         parseHTML: (element) => {

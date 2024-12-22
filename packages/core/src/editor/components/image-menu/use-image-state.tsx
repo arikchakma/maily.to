@@ -5,27 +5,32 @@ import deepEql from 'fast-deep-equal';
 export const useImageState = (editor: Editor) => {
   const states = useEditorState({
     editor,
-    selector: (ctx) => {
+    selector: ({ editor }) => {
       return {
-        width: ctx.editor.getAttributes('image').width,
-        height: ctx.editor.getAttributes('image').height,
-        isImageActive: ctx.editor.isActive('image'),
-        isLogoActive: ctx.editor.isActive('logo'),
+        width: editor.getAttributes('image').width,
+        height: editor.getAttributes('image').height,
+        isImageActive: editor.isActive('image'),
+        isLogoActive: editor.isActive('logo'),
         alignment:
-          ctx.editor.getAttributes('image')?.alignment ||
-          ctx.editor.getAttributes('logo')?.alignment,
+          editor.getAttributes('image')?.alignment ||
+          editor.getAttributes('logo')?.alignment,
 
-        logoSize: ctx.editor.getAttributes('logo')?.size || DEFAULT_LOGO_SIZE,
+        logoSize: editor.getAttributes('logo')?.size || DEFAULT_LOGO_SIZE,
         imageSrc:
-          ctx.editor.getAttributes('image')?.src ||
-          ctx.editor.getAttributes('logo')?.src ||
+          editor.getAttributes('image')?.src ||
+          editor.getAttributes('logo')?.src ||
           '',
-        imageExternalLink:
-          ctx.editor.getAttributes('image')?.externalLink || '',
+        isSrcVariable:
+          editor.getAttributes('image')?.isSrcVariable ??
+          editor.getAttributes('logo')?.isSrcVariable ??
+          false,
+        imageExternalLink: editor.getAttributes('image')?.externalLink || '',
+        isExternalLinkVariable:
+          editor.getAttributes('image')?.isExternalLinkVariable,
 
         currentShowIfKey:
-          ctx.editor.getAttributes('image')?.showIfKey ||
-          ctx.editor.getAttributes('logo')?.showIfKey ||
+          editor.getAttributes('image')?.showIfKey ||
+          editor.getAttributes('logo')?.showIfKey ||
           '',
       };
     },

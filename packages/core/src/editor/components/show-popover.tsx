@@ -108,7 +108,8 @@ function _ShowPopover(props: ShowPopoverProps) {
               onOutsideClick={() => {
                 setIsUpdatingKey(false);
               }}
-              onSelectOption={() => {
+              onSelectOption={(value) => {
+                onShowIfKeyValueChange?.(value);
                 setIsUpdatingKey(false);
               }}
               autoCompleteOptions={autoCompleteOptions}

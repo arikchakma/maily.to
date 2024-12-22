@@ -16,6 +16,8 @@ type InputAutocompleteProps = HTMLAttributes<HTMLInputElement> & {
   onSelectOption?: (option: string) => void;
 
   onOutsideClick?: () => void;
+  triggerChar?: string;
+  placeholder?: string;
 };
 
 export const InputAutocomplete = forwardRef<
@@ -29,6 +31,7 @@ export const InputAutocomplete = forwardRef<
     onOutsideClick,
     onSelectOption,
     autoCompleteOptions = [],
+    triggerChar = '',
     ...inputProps
   } = props;
 
@@ -39,21 +42,26 @@ export const InputAutocomplete = forwardRef<
     onOutsideClick?.();
   });
 
+  const isTriggeringVariable = value.startsWith(triggerChar);
+
   return (
-    <div className={cn('mly-relative', className)} ref={containerRef}>
+    <div className={cn('mly-relative')} ref={containerRef}>
       <label className="mly-relative">
         <input
+          placeholder="e.g. items"
+          type="text"
           {...inputProps}
           ref={ref}
           value={value}
           onChange={(e) => {
             onValueChange(e.target.value);
           }}
-          type="text"
-          placeholder="e.g. items"
-          className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+          className={cn(
+            'mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none',
+            className
+          )}
           onKeyDown={(e) => {
-            if (!popoverRef.current) {
+            if (!popoverRef.current || !isTriggeringVariable) {
               return;
             }
             const { moveUp, moveDown, select } = popoverRef.current;
@@ -75,7 +83,7 @@ export const InputAutocomplete = forwardRef<
         </div>
       </label>
 
-      {autoCompleteOptions.length > 0 && (
+      {isTriggeringVariable && (
         <div className="mly-absolute mly-left-0 mly-top-8">
           <VariablePopover
             items={autoCompleteOptions.map((option) => {
@@ -84,7 +92,6 @@ export const InputAutocomplete = forwardRef<
               };
             })}
             onSelectItem={(item) => {
-              onValueChange(item.name);
               onSelectOption?.(item.name);
             }}
             ref={popoverRef}

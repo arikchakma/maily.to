@@ -1,6 +1,7 @@
 import {
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
+  Variable as VariableType,
   Variables,
 } from '@/editor/provider';
 import { processVariables } from '@/editor/utils/variable';
@@ -11,7 +12,12 @@ import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { VariablePopover, VariablePopoverRef } from './variable-popover';
 import { useRef } from 'react';
 
-export const VariableList = forwardRef((props: any, ref) => {
+type VariableListProps = {
+  command: (params: { id: string; required: boolean }) => void;
+  items: VariableType[];
+};
+
+export const VariableList = forwardRef((props: VariableListProps, ref) => {
   const { items = [] } = props;
 
   const popoverRef = useRef<VariablePopoverRef>(null);
@@ -46,12 +52,12 @@ export const VariableList = forwardRef((props: any, ref) => {
 
   return (
     <VariablePopover
-      items={items.map((item: string) => ({
-        name: item,
-        required: false,
-      }))}
+      items={items}
       onSelectItem={(value) => {
-        props.command({ id: value });
+        props.command({
+          id: value.name,
+          required: value.required ?? true,
+        });
       }}
       ref={popoverRef}
     />
@@ -71,7 +77,7 @@ export function getVariableSuggestions(
         query,
         editor,
         from: 'variable',
-      }).map((variable) => variable.name);
+      });
     },
 
     render: () => {

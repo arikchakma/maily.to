@@ -69,9 +69,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
       query: withoutTrigger || '',
       from: 'variable',
       editor,
-    })
-      .map((variable) => variable.name)
-      .slice(0, 5);
+    }).map((variable) => variable.name);
   }, [variables, defaultUrlWithoutProtocol, editor]);
 
   const popoverButton = (

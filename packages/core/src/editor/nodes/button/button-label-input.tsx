@@ -39,9 +39,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
       query: withoutTrigger || '',
       from: 'variable',
       editor,
-    })
-      .map((variable) => variable.name)
-      .slice(0, 5);
+    }).map((variable) => variable.name);
   }, [variables, value, editor]);
 
   return (

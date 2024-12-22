@@ -1,3 +1,7 @@
+import {
+  VariablePopover,
+  VariablePopoverRef,
+} from '@/editor/nodes/variable/variable-popover';
 import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { useOutsideClick } from '@/editor/utils/use-outside-click';
@@ -32,7 +36,7 @@ export const InputAutocomplete = forwardRef<
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const popoverRef = useRef<VariablePopoverRef>(null);
 
   useOutsideClick(containerRef, () => {
     onOutsideClick?.();
@@ -50,7 +54,6 @@ export const InputAutocomplete = forwardRef<
           ref={ref}
           value={value}
           onChange={(e) => {
-            setSelectedIndex(0);
             onValueChange(e.target.value);
           }}
           className={cn(
@@ -58,19 +61,20 @@ export const InputAutocomplete = forwardRef<
             className
           )}
           onKeyDown={(e) => {
+            if (!popoverRef.current || !isTriggeringVariable) {
+              return;
+            }
+            const { moveUp, moveDown, select } = popoverRef.current;
+
             if (e.key === 'ArrowDown') {
               e.preventDefault();
-              setSelectedIndex((prev) =>
-                Math.min(prev + 1, autoCompleteOptions.length - 1)
-              );
+              moveDown();
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
-              setSelectedIndex((prev) => Math.max(prev - 1, 0));
-            } else if (e.key === 'Enter' && isTriggeringVariable) {
+              moveUp();
+            } else if (e.key === 'Enter') {
               e.preventDefault();
-
-              const _value = autoCompleteOptions[selectedIndex] || value;
-              onSelectOption?.(_value);
+              select();
             }
           }}
         />
@@ -79,22 +83,19 @@ export const InputAutocomplete = forwardRef<
         </div>
       </label>
 
-      {autoCompleteOptions.length > 0 && isTriggeringVariable && (
-        <div className="mly-absolute mly-left-0 mly-top-8 mly-z-10 mly-w-full mly-rounded-lg mly-bg-white mly-p-0.5 mly-shadow-md">
-          {autoCompleteOptions.map((option, index) => (
-            <button
-              type="button"
-              key={option}
-              className="mly-w-full mly-truncate mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-midnight-gray aria-selected:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-              onClick={() => {
-                onSelectOption?.(option);
-              }}
-              onMouseEnter={() => setSelectedIndex(index)}
-              aria-selected={selectedIndex === index}
-            >
-              {option}
-            </button>
-          ))}
+      {isTriggeringVariable && (
+        <div className="mly-absolute mly-left-0 mly-top-8">
+          <VariablePopover
+            items={autoCompleteOptions.map((option) => {
+              return {
+                name: option,
+              };
+            })}
+            onSelectItem={(item) => {
+              onSelectOption?.(item.name);
+            }}
+            ref={popoverRef}
+          />
         </div>
       )}
     </div>

@@ -66,7 +66,7 @@ export const InputAutocomplete = forwardRef<
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
               setSelectedIndex((prev) => Math.max(prev - 1, 0));
-            } else if (e.key === 'Enter') {
+            } else if (e.key === 'Enter' && isTriggeringVariable) {
               e.preventDefault();
 
               const _value = autoCompleteOptions[selectedIndex] || value;

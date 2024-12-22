@@ -214,6 +214,8 @@ export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
 export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
+export const LINK_PROTOCOL_REGEX = /https?:\/\//;
+
 export interface RenderOptions {
   /**
    * The options object allows you to customize the output of the rendered
@@ -600,7 +602,7 @@ export class Maily {
   }
 
   // `renderMark` will call the method of the corresponding mark type
-  private renderMark(node: JSONContent): JSX.Element {
+  private renderMark(node: JSONContent, options?: NodeOptions): JSX.Element {
     // It will wrap the text with the corresponding mark type
     const text = node?.text || <>&nbsp;</>;
     let marks = node?.marks || [];
@@ -654,10 +656,10 @@ export class Maily {
     );
   }
 
-  private text(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private text(node: JSONContent, options?: NodeOptions): JSX.Element {
     const text = node.text || '&nbsp';
     if (node.marks) {
-      return this.renderMark(node);
+      return this.renderMark(node, options);
     }
 
     return <>{text}</>;
@@ -694,19 +696,23 @@ export class Maily {
     );
   }
 
-  private link(mark: MarkType, text: JSX.Element): JSX.Element {
+  private link(
+    mark: MarkType,
+    text: JSX.Element,
+    options?: NodeOptions
+  ): JSX.Element {
     const { attrs } = mark;
+
     let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
+    const isUrlVariable = attrs?.isUrlVariable ?? false;
 
-    // If the href value is provided, use it to replace the link
-    // Otherwise, use the original link
-    if (
-      typeof this.linkValues === 'object' ||
-      typeof this.variableValues === 'object'
-    ) {
-      href = this.linkValues.get(href) || this.variableValues.get(href) || href;
+    if (isUrlVariable) {
+      const linkWithoutProtocol = this.removeLinkProtocol(href);
+      href = this.variableUrlValue(linkWithoutProtocol, options);
+    } else {
+      href = this.linkValues.get(href) || href;
     }
 
     return (
@@ -722,6 +728,23 @@ export class Maily {
       >
         {text}
       </Link>
+    );
+  }
+
+  private removeLinkProtocol(href: string) {
+    return href.replace(LINK_PROTOCOL_REGEX, '');
+  }
+
+  private variableUrlValue(href: string, options?: NodeOptions) {
+    const { payloadValue } = options || {};
+    const linkWithoutProtocol = this.removeLinkProtocol(href);
+
+    return (
+      (typeof payloadValue === 'object'
+        ? payloadValue[linkWithoutProtocol]
+        : payloadValue) ??
+      this.variableValues.get(linkWithoutProtocol) ??
+      href
     );
   }
 
@@ -786,10 +809,13 @@ export class Maily {
     }
 
     if (node?.marks) {
-      return this.renderMark({
-        text: formattedVariable,
-        marks: node.marks,
-      });
+      return this.renderMark(
+        {
+          text: formattedVariable,
+          marks: node.marks,
+        },
+        options
+      );
     }
 
     return <>{formattedVariable}</>;
@@ -881,8 +907,10 @@ export class Maily {
   private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const {
-      text,
+      text: _text,
+      isTextVariable,
       url,
+      isUrlVariable,
       variant,
       buttonColor,
       textColor,
@@ -908,8 +936,10 @@ export class Maily {
       options
     );
 
-    const href =
-      this.linkValues.get(url) || this.variableValues.get(url) || url;
+    const href = isUrlVariable
+      ? this.variableUrlValue(url, options)
+      : this.linkValues.get(url) || url;
+    const text = isTextVariable ? this.variableUrlValue(_text, options) : _text;
 
     return (
       <Container
@@ -965,8 +995,9 @@ export class Maily {
 
   private logo(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       src,
+      isSrcVariable,
       alt,
       title,
       size,
@@ -978,6 +1009,8 @@ export class Maily {
     if (!shouldShow) {
       return <></>;
     }
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
 
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
@@ -1008,13 +1041,15 @@ export class Maily {
 
   private image(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       src,
+      isSrcVariable,
       alt,
       title,
       width = 'auto',
       alignment = 'center',
       externalLink = '',
+      isExternalLinkVariable,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -1026,6 +1061,11 @@ export class Maily {
       node,
       options
     );
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
+    externalLink = isExternalLinkVariable
+      ? this.variableUrlValue(externalLink, options)
+      : externalLink;
 
     // Handle width value
     const imageWidth = width === 'auto' ? 'auto' : Number(width);

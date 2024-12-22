@@ -1,6 +1,7 @@
 import {
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
+  Variable as VariableType,
   Variables,
 } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
@@ -23,7 +24,12 @@ import {
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
-export const VariableList = forwardRef((props: any, ref) => {
+type VariableListProps = {
+  command: (params: { id: string; required: boolean }) => void;
+  items: VariableType[];
+};
+
+export const VariableList = forwardRef((props: VariableListProps, ref) => {
   const { items = [] } = props;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -36,7 +42,7 @@ export const VariableList = forwardRef((props: any, ref) => {
       return;
     }
 
-    props.command({ id: item });
+    props.command({ id: item.name, required: item?.required ?? true });
   };
 
   const scrollSelectedIntoView = (index: number) => {
@@ -112,7 +118,7 @@ export const VariableList = forwardRef((props: any, ref) => {
       >
         <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
           {items?.length ? (
-            items?.map((item: string, index: number) => (
+            items?.map((item, index: number) => (
               <button
                 key={index}
                 ref={(el) => (itemRefs.current[index] = el)}
@@ -123,7 +129,7 @@ export const VariableList = forwardRef((props: any, ref) => {
                 )}
               >
                 <Braces className="mly-size-3 mly-stroke-[2.5] mly-text-rose-600" />
-                {item}
+                {item.name}
               </button>
             ))
           ) : (
@@ -187,7 +193,7 @@ export function getVariableSuggestions(
         query,
         editor,
         from: 'variable',
-      }).map((variable) => variable.name);
+      });
     },
 
     render: () => {

@@ -102,7 +102,7 @@ export const VariablePopover = forwardRef<
               <button
                 key={index}
                 ref={(el) => (itemRefs.current[index] = el)}
-                onClick={() => onSelectItem(index)}
+                onClick={() => onSelectItem(item)}
                 className={cn(
                   'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
                   index === selectedIndex ? 'mly-bg-soft-gray' : 'mly-bg-white'

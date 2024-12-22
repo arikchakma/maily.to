@@ -3,38 +3,35 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/editor/components/popover';
-import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import { cn } from '@/editor/utils/classname';
+import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
+  RenderVariableFunction,
+  useMailyContext,
+} from '@/editor/provider';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
 
 export function VariableView(props: NodeViewProps) {
-  const { node, selected, updateAttributes, editor } = props;
+  const { node, updateAttributes, editor } = props;
   const { id, fallback, required } = node.attrs;
+
+  const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
+    useMailyContext();
 
   return (
     <NodeViewWrapper
-      className={cn(
-        'react-component',
-        selected && 'ProseMirror-selectednode',
-        'mly-inline-block mly-leading-none'
-      )}
+      className="react-component mly-inline-block mly-leading-none"
       draggable="false"
     >
       <Popover>
         <PopoverTrigger>
-          <span
-            tabIndex={-1}
-            className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-px-1.5 mly-py-0.5 mly-leading-none"
-          >
-            <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-            {id}
-            {required && !fallback && (
-              <AlertTriangle className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5]" />
-            )}
-          </span>
+          {renderVariable({
+            variable: { name: id, required: required },
+            fallback,
+            editor,
+          })}
         </PopoverTrigger>
         <PopoverContent
           align="start"
@@ -46,24 +43,6 @@ export function VariableView(props: NodeViewProps) {
         >
           <TooltipProvider>
             <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
-              <label className="mly-relative">
-                <span className="mly-inline-block mly-px-2 mly-text-xs mly-text-midnight-gray">
-                  Variable
-                </span>
-                <input
-                  value={id ?? ''}
-                  onChange={(e) => {
-                    updateAttributes({
-                      id: e.target.value,
-                    });
-                  }}
-                  placeholder="ie. name..."
-                  className="mly-h-7 mly-w-36 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none"
-                />
-              </label>
-
-              <Divider className="mly-mx-1.5" />
-
               <label className="mly-relative">
                 <span className="mly-inline-block mly-px-2 mly-pl-1 mly-text-xs mly-text-midnight-gray">
                   Default
@@ -89,3 +68,21 @@ export function VariableView(props: NodeViewProps) {
     </NodeViewWrapper>
   );
 }
+
+export const DefaultRenderVariable: RenderVariableFunction = (props) => {
+  const { variable, fallback } = props;
+  const { name, required } = variable;
+
+  return (
+    <span
+      tabIndex={-1}
+      className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-px-1.5 mly-py-0.5 mly-leading-none"
+    >
+      <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
+      {name}
+      {required && !fallback && (
+        <AlertTriangle className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5]" />
+      )}
+    </span>
+  );
+};

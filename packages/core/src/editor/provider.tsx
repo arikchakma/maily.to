@@ -14,7 +14,7 @@ export type Variable = {
 
 export type VariableFunctionOptions = {
   query: string;
-  from: 'variable' | 'for';
+  from: 'content-variable' | 'bubble-variable' | 'for-variable';
   editor: Editor;
 };
 

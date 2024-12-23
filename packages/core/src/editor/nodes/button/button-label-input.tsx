@@ -37,7 +37,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
 
     return processVariables(variables, {
       query: withoutTrigger || '',
-      from: 'variable',
+      from: 'bubble-variable',
       editor,
     }).map((variable) => variable.name);
   }, [variables, value, editor]);

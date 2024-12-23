@@ -29,7 +29,7 @@ function _ShowPopover(props: ShowPopoverProps) {
   const autoCompleteOptions = useMemo(() => {
     return processVariables(variables, {
       query: showIfKey || '',
-      from: 'variable',
+      from: 'bubble-variable',
       editor,
     }).map((variable) => variable.name);
   }, [variables, showIfKey, editor]);

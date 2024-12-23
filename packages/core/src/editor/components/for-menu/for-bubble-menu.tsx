@@ -74,7 +74,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     return processVariables(variables, {
       query: eachKey || '',
       editor,
-      from: 'for',
+      from: 'for-variable',
     }).map((variable) => variable.name);
   }, [variables, eachKey, editor]);
 

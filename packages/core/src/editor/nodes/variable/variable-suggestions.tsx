@@ -76,7 +76,7 @@ export function getVariableSuggestions(
       return processVariables(variables, {
         query,
         editor,
-        from: 'variable',
+        from: 'content-variable',
       });
     },
 

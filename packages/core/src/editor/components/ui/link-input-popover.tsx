@@ -67,7 +67,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
 
     return processVariables(variables, {
       query: withoutTrigger || '',
-      from: 'variable',
+      from: 'bubble-variable',
       editor,
     }).map((variable) => variable.name);
   }, [variables, defaultUrlWithoutProtocol, editor]);

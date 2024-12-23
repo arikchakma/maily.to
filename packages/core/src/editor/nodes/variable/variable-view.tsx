@@ -3,6 +3,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/editor/components/popover';
+import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import {
   DEFAULT_RENDER_VARIABLE_FUNCTION,
@@ -43,6 +44,24 @@ export function VariableView(props: NodeViewProps) {
         >
           <TooltipProvider>
             <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
+              <label className="mly-relative">
+                <span className="mly-inline-block mly-px-2 mly-text-xs mly-text-midnight-gray">
+                  Variable
+                </span>
+                <input
+                  value={id ?? ''}
+                  onChange={(e) => {
+                    updateAttributes({
+                      id: e.target.value,
+                    });
+                  }}
+                  placeholder="ie. name..."
+                  className="mly-h-7 mly-w-36 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+                />
+              </label>
+
+              <Divider className="mly-mx-1.5" />
+
               <label className="mly-relative">
                 <span className="mly-inline-block mly-px-2 mly-pl-1 mly-text-xs mly-text-midnight-gray">
                   Default

@@ -24,6 +24,8 @@ import { SectionExtension } from '@/editor/nodes/section/section';
 import { ColumnExtension } from '@/editor/nodes/columns/column';
 import { ColumnsExtension } from '@/editor/nodes/columns/columns';
 import { ForExtension } from '@/editor/nodes/for/for';
+import { TurnIntoBlock } from './turn-into-block';
+import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -141,6 +143,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   };
 
   const state = useTextMenuState(editor);
+  const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
 
   return (
     <BubbleMenu
@@ -148,6 +151,10 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
+        <TurnIntoBlock options={turnIntoBlockOptions} />
+
+        <Divider />
+
         {items.map((item, index) => (
           <BubbleMenuButton key={index} {...item} />
         ))}

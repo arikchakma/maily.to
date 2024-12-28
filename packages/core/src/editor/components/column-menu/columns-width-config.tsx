@@ -1,6 +1,7 @@
 import { Columns2, SlidersVertical, Columns3 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { cn } from '@/editor/utils/classname';
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
 
 type ColumnsWidthConfigProps = {
   columnsCount: number;
@@ -78,6 +79,7 @@ export function ColumnsWidthConfig(props: ColumnsWidthConfigProps) {
 
                 <label className="mly-relative">
                   <input
+                    {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
                     placeholder="auto"
                     min={1}
                     max={90}

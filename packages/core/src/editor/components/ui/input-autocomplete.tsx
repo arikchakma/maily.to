@@ -4,6 +4,7 @@ import {
 } from '@/editor/nodes/variable/variable-popover';
 import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
 import { useOutsideClick } from '@/editor/utils/use-outside-click';
 import { CornerDownLeft } from 'lucide-react';
 import { forwardRef, HTMLAttributes, useMemo, useState, useRef } from 'react';
@@ -48,6 +49,7 @@ export const InputAutocomplete = forwardRef<
     <div className={cn('mly-relative')} ref={containerRef}>
       <label className="mly-relative">
         <input
+          {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
           placeholder="e.g. items"
           type="text"
           {...inputProps}

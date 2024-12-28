@@ -163,6 +163,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           >
             <InputAutocomplete
+              placeholder="iterable.variable"
               value={state?.each || ''}
               onValueChange={(value) => {
                 editor.commands.updateFor({

@@ -25,9 +25,15 @@ export type VariablesFunction = (
 export type Variables = Array<Variable> | VariablesFunction;
 
 export type RenderVariableOptions = {
-  variable: Variable;
+  variable: Variable &
+    Partial<{
+      // should only be be used for bubble variables
+      // otherwise use the required attribute in the variable object
+      isValidKey?: boolean;
+    }>;
   fallback?: string;
   editor: Editor;
+  from: 'content-variable' | 'bubble-variable' | 'button-variable';
 };
 
 export type RenderVariableFunction = (

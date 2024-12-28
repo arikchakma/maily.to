@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { cn } from '../utils/classname';
 import { useEffect } from 'react';
 import { InputAutocomplete } from './ui/input-autocomplete';
-import { useMailyContext } from '../provider';
+import { DEFAULT_RENDER_VARIABLE_FUNCTION, useMailyContext } from '../provider';
 import { useMemo } from 'react';
 import { ForExtension } from '../nodes/for/for';
 import { memo } from 'react';
@@ -22,7 +22,8 @@ type ShowPopoverProps = {
 function _ShowPopover(props: ShowPopoverProps) {
   const { showIfKey = '', onShowIfKeyValueChange, editor } = props;
 
-  const { variables = [] } = useMailyContext();
+  const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
+    useMailyContext();
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -72,11 +73,6 @@ function _ShowPopover(props: ShowPopoverProps) {
         </span>
         {!isUpdatingKey && (
           <button
-            className={cn(
-              'mly-flex mly-h-7 mly-min-w-28 mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
-              !isValidWhenKey &&
-                'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
-            )}
             onClick={() => {
               setIsUpdatingKey(true);
               setTimeout(() => {
@@ -84,8 +80,15 @@ function _ShowPopover(props: ShowPopoverProps) {
               }, 0);
             }}
           >
-            <Braces className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-rose-600" />
-            <span>{showIfKey}</span>
+            {renderVariable({
+              variable: {
+                name: showIfKey,
+                isValidKey: !!isValidWhenKey,
+              },
+              fallback: '',
+              from: 'bubble-variable',
+              editor,
+            })}
           </button>
         )}
         {isUpdatingKey && (

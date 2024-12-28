@@ -10,6 +10,7 @@ import {
   RenderVariableFunction,
   useMailyContext,
 } from '@/editor/provider';
+import { cn } from '@/editor/utils/classname';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
@@ -32,6 +33,7 @@ export function VariableView(props: NodeViewProps) {
             variable: { name: id, required: required },
             fallback,
             editor,
+            from: 'content-variable',
           })}
         </PopoverTrigger>
         <PopoverContent
@@ -89,8 +91,32 @@ export function VariableView(props: NodeViewProps) {
 }
 
 export const DefaultRenderVariable: RenderVariableFunction = (props) => {
-  const { variable, fallback } = props;
-  const { name, required } = variable;
+  const { variable, fallback, from } = props;
+  const { name, required, isValidKey } = variable;
+
+  if (from === 'button-variable') {
+    return (
+      <div className="mly-inline-grid mly-h-7 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-[var(--button-var-border-color)] mly-px-2 mly-font-mono mly-text-sm">
+        <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
+        <span className="mly-min-w-0 mly-truncate mly-text-left">{name}</span>
+      </div>
+    );
+  }
+
+  if (from === 'bubble-variable') {
+    return (
+      <div
+        className={cn(
+          'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+          !isValidKey &&
+            'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
+        )}
+      >
+        <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
+        <span className="mly-min-w-0 mly-truncate mly-text-left">{name}</span>
+      </div>
+    );
+  }
 
   return (
     <span

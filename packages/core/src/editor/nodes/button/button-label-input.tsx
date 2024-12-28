@@ -1,5 +1,6 @@
 import { InputAutocomplete } from '@/editor/components/ui/input-autocomplete';
 import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   useMailyContext,
 } from '@/editor/provider';
@@ -27,6 +28,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
   const {
     variables = [],
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
+    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
   } = useMailyContext();
 
   const autoCompleteOptions = useMemo(() => {
@@ -46,7 +48,6 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
     <div className="mly-isolate mly-flex mly-rounded-lg">
       {!isEditing && (
         <button
-          className="mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray"
           onClick={() => {
             setIsEditing(true);
             setTimeout(() => {
@@ -54,10 +55,15 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
             }, 0);
           }}
         >
-          <BracesIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-          <span className="mly-min-w-0 mly-truncate mly-text-left">
-            {value}
-          </span>
+          {renderVariable({
+            variable: {
+              name: value,
+              isValidKey: true,
+            },
+            fallback: '',
+            from: 'bubble-variable',
+            editor,
+          })}
         </button>
       )}
 

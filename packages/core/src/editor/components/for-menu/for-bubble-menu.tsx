@@ -1,4 +1,7 @@
-import { useMailyContext } from '@/editor/provider';
+import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
+  useMailyContext,
+} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { BubbleMenu, findChildren } from '@tiptap/react';
@@ -65,7 +68,8 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'forBubbleMenu',
   };
 
-  const { variables = [] } = useMailyContext();
+  const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
+    useMailyContext();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
@@ -91,11 +95,6 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         </span>
         {!isUpdatingKey && (
           <button
-            className={cn(
-              'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
-              !isValidEachKey &&
-                'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
-            )}
             onClick={() => {
               setIsUpdatingKey(true);
               setTimeout(() => {
@@ -103,10 +102,15 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               }, 0);
             }}
           >
-            <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-            <span className="mly-min-w-0 mly-truncate mly-text-left">
-              {state?.each}
-            </span>
+            {renderVariable({
+              variable: {
+                name: state?.each,
+                isValidKey: isValidEachKey,
+              },
+              fallback: '',
+              from: 'bubble-variable',
+              editor,
+            })}
           </button>
         )}
         {isUpdatingKey && (

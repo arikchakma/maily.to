@@ -10,6 +10,7 @@ import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
 import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   useMailyContext,
 } from '@/editor/provider';
@@ -57,6 +58,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
   const {
     variables = [],
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
+    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
   } = useMailyContext();
 
   const autoCompleteOptions = useMemo(() => {
@@ -128,7 +130,6 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
             {!isEditing && (
               <div className="mly-flex mly-h-8 mly-items-center mly-rounded-lg mly-border mly-border-gray-300 mly-bg-white mly-px-0.5">
                 <button
-                  className="mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray"
                   onClick={() => {
                     setIsEditing(true);
                     setTimeout(() => {
@@ -136,10 +137,15 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                     }, 0);
                   }}
                 >
-                  <BracesIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-                  <span className="mly-min-w-0 mly-truncate mly-text-left">
-                    {defaultUrlWithoutProtocol}
-                  </span>
+                  {renderVariable({
+                    variable: {
+                      name: defaultUrlWithoutProtocol,
+                      isValidKey: true,
+                    },
+                    fallback: '',
+                    from: 'bubble-variable',
+                    editor,
+                  })}
                 </button>
               </div>
             )}

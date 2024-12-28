@@ -12,7 +12,6 @@ import { Select } from '@/editor/components/ui/select';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { cn } from '@/editor/utils/classname';
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
-import { Pencil } from 'lucide-react';
 import {
   allowedButtonBorderRadius,
   AllowedButtonVariant,
@@ -20,6 +19,9 @@ import {
 } from './button';
 import { ShowPopover } from '@/editor/components/show-popover';
 import { ButtonLabelInput } from './button-label-input';
+import { DEFAULT_RENDER_VARIABLE_FUNCTION } from '@/editor/provider';
+import { useMailyContext } from '@/editor/provider';
+import { CSSProperties } from 'react';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
@@ -35,6 +37,9 @@ export function ButtonView(props: NodeViewProps) {
     showIfKey = '',
     isUrlVariable,
   } = node.attrs;
+
+  const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
+    useMailyContext();
 
   return (
     <NodeViewWrapper
@@ -60,21 +65,33 @@ export function ButtonView(props: NodeViewProps) {
                 }
               )}
               tabIndex={-1}
-              style={{
-                backgroundColor:
-                  variant === 'filled' ? buttonColor : 'transparent',
-                color: textColor,
-                borderWidth: 2,
-                borderStyle: 'solid',
-                borderColor: buttonColor,
-              }}
+              style={
+                {
+                  backgroundColor:
+                    variant === 'filled' ? buttonColor : 'transparent',
+                  color: textColor,
+                  borderWidth: 2,
+                  borderStyle: 'solid',
+                  borderColor: buttonColor,
+                  // decrease the border color opacity to 80%
+                  // so that it's not too prominent
+                  '--button-var-border-color': `${textColor}80`,
+                } as CSSProperties
+              }
               onClick={(e) => {
                 e.preventDefault();
                 const pos = getPos();
                 editor.commands.setNodeSelection(pos);
               }}
             >
-              {text}
+              {isTextVariable
+                ? renderVariable({
+                    variable: { name: text, isValidKey: true },
+                    fallback: text,
+                    from: 'button-variable',
+                    editor,
+                  })
+                : text}
             </button>
           </div>
         </PopoverTrigger>

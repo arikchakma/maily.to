@@ -2,7 +2,12 @@ import { useMailyContext } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { BubbleMenu, findChildren } from '@tiptap/react';
-import { Braces } from 'lucide-react';
+import {
+  Braces,
+  InfoIcon,
+  TriangleAlert,
+  TriangleAlertIcon,
+} from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { sticky } from 'tippy.js';
 import { getRenderContainer } from '../../utils/get-render-container';
@@ -10,7 +15,12 @@ import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
 import { InputAutocomplete } from '../ui/input-autocomplete';
-import { TooltipProvider } from '../ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 import { useForState } from './use-for-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
 import { processVariables } from '@/editor/utils/variable';
@@ -78,7 +88,21 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     }).map((variable) => variable.name);
   }, [variables, eachKey, editor]);
 
-  const isValidEachKey = eachKey || autoCompleteOptions.includes(eachKey);
+  const isValidEachKey = eachKey && eachKey?.startsWith('iterable.');
+  const TooltipIcon = isValidEachKey ? InfoIcon : TriangleAlertIcon;
+  const tooltipContent = isValidEachKey ? (
+    <>
+      Loop over each item in the iterable. Use{' '}
+      <span className="mly-font-mono mly-font-bold">'iterable.'</span> to
+      reference the iterable.
+    </>
+  ) : (
+    <>
+      Variable may not be iterable. Ensure it starts with{' '}
+      <span className="mly-font-mono mly-font-bold">'iterable.'</span> to avoid
+      issues.
+    </>
+  );
 
   return (
     <BubbleMenu
@@ -86,9 +110,26 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
-        <span className="mly-flex mly-items-center mly-px-1.5 mly-text-sm mly-leading-none">
+        <div className="mly-flex mly-items-center mly-gap-1.5 mly-px-1.5 mly-text-sm mly-leading-none">
           For
-        </span>
+          <Tooltip>
+            <TooltipTrigger>
+              <TooltipIcon
+                className={cn(
+                  'mly-size-3 mly-stroke-[2.5] mly-text-gray-500',
+                  !isValidEachKey && 'mly-text-rose-400'
+                )}
+              />
+            </TooltipTrigger>
+            <TooltipContent
+              sideOffset={14}
+              className="mly-max-w-[260px]"
+              align="start"
+            >
+              {tooltipContent}
+            </TooltipContent>
+          </Tooltip>
+        </div>
         {!isUpdatingKey && (
           <button
             className={cn(

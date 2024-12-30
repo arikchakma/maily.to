@@ -140,7 +140,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                   {renderVariable({
                     variable: {
                       name: defaultUrlWithoutProtocol,
-                      isValidKey: true,
+                      valid: true,
                     },
                     fallback: '',
                     from: 'bubble-variable',

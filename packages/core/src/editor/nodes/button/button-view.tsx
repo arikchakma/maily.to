@@ -86,7 +86,7 @@ export function ButtonView(props: NodeViewProps) {
             >
               {isTextVariable
                 ? renderVariable({
-                    variable: { name: text, isValidKey: true },
+                    variable: { name: text, valid: true },
                     fallback: text,
                     from: 'button-variable',
                     editor,

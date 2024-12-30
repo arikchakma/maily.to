@@ -30,7 +30,7 @@ export function VariableView(props: NodeViewProps) {
       <Popover>
         <PopoverTrigger>
           {renderVariable({
-            variable: { name: id, required: required },
+            variable: { name: id, required: required, valid: true },
             fallback,
             editor,
             from: 'content-variable',
@@ -92,7 +92,7 @@ export function VariableView(props: NodeViewProps) {
 
 export const DefaultRenderVariable: RenderVariableFunction = (props) => {
   const { variable, fallback, from } = props;
-  const { name, required, isValidKey } = variable;
+  const { name, required, valid } = variable;
 
   if (from === 'button-variable') {
     return (
@@ -108,7 +108,7 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
       <div
         className={cn(
           'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
-          !isValidKey &&
+          !valid &&
             'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
         )}
       >

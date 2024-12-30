@@ -83,7 +83,7 @@ function _ShowPopover(props: ShowPopoverProps) {
             {renderVariable({
               variable: {
                 name: showIfKey,
-                isValidKey: !!isValidWhenKey,
+                valid: !!isValidWhenKey,
               },
               fallback: '',
               from: 'bubble-variable',

@@ -58,7 +58,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
           {renderVariable({
             variable: {
               name: value,
-              isValidKey: true,
+              valid: true,
             },
             fallback: '',
             from: 'bubble-variable',

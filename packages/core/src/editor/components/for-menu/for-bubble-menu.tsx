@@ -105,7 +105,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             {renderVariable({
               variable: {
                 name: state?.each,
-                isValidKey: isValidEachKey,
+                valid: isValidEachKey,
               },
               fallback: '',
               from: 'bubble-variable',

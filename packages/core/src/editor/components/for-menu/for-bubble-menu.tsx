@@ -88,21 +88,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     }).map((variable) => variable.name);
   }, [variables, eachKey, editor]);
 
-  const isValidEachKey = eachKey && eachKey?.startsWith('iterable.');
-  const TooltipIcon = isValidEachKey ? InfoIcon : TriangleAlertIcon;
-  const tooltipContent = isValidEachKey ? (
-    <>
-      Loop over each item in the iterable. Use{' '}
-      <span className="mly-font-mono mly-font-bold">'iterable.'</span> to
-      reference the iterable.
-    </>
-  ) : (
-    <>
-      Variable may not be iterable. Ensure it starts with{' '}
-      <span className="mly-font-mono mly-font-bold">'iterable.'</span> to avoid
-      issues.
-    </>
-  );
+  const isValidEachKey = eachKey;
 
   return (
     <BubbleMenu
@@ -114,11 +100,8 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
           For
           <Tooltip>
             <TooltipTrigger>
-              <TooltipIcon
-                className={cn(
-                  'mly-size-3 mly-stroke-[2.5] mly-text-gray-500',
-                  !isValidEachKey && 'mly-text-rose-400'
-                )}
+              <InfoIcon
+                className={cn('mly-size-3 mly-stroke-[2.5] mly-text-gray-500')}
               />
             </TooltipTrigger>
             <TooltipContent
@@ -126,7 +109,8 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               className="mly-max-w-[260px]"
               align="start"
             >
-              {tooltipContent}
+              Ensure the selected variable is iterable, such as an array of
+              objects.
             </TooltipContent>
           </Tooltip>
         </div>
@@ -163,7 +147,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           >
             <InputAutocomplete
-              placeholder="iterable.variable"
+              placeholder="ie. payload.items"
               value={state?.each || ''}
               onValueChange={(value) => {
                 editor.commands.updateFor({

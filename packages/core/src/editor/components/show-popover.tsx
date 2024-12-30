@@ -59,9 +59,7 @@ function _ShowPopover(props: ShowPopoverProps) {
             <Eye className="mly-h-4 mly-w-4 mly-stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={8}>
-          Show block conditionally
-        </TooltipContent>
+        <TooltipContent sideOffset={8}>Show block conditionally</TooltipContent>
       </Tooltip>
       <PopoverContent
         className="mly-flex mly-w-max mly-rounded-lg !mly-p-0.5"

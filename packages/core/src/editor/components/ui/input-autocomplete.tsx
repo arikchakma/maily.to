@@ -77,6 +77,7 @@ export const InputAutocomplete = forwardRef<
               select();
             }
           }}
+          spellCheck={false}
         />
         <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
           <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />

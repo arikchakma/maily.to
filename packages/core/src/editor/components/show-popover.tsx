@@ -60,7 +60,7 @@ function _ShowPopover(props: ShowPopoverProps) {
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent sideOffset={8}>
-          Show/Hide block conditionally
+          Show block conditionally
         </TooltipContent>
       </Tooltip>
       <PopoverContent

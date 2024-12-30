@@ -96,7 +96,7 @@ export const VariablePopover = forwardRef<
         ref={scrollContainerRef}
         className="mly-max-h-52 mly-overflow-y-auto mly-scrollbar-thin mly-scrollbar-track-transparent mly-scrollbar-thumb-gray-200"
       >
-        <div className="mly-flex mly-flex-col mly-gap-0.5 mly-p-1">
+        <div className="mly-flex mly-w-fit mly-min-w-full mly-flex-col mly-gap-0.5 mly-p-1">
           {items?.length ? (
             items?.map((item, index: number) => (
               <button
@@ -104,7 +104,7 @@ export const VariablePopover = forwardRef<
                 ref={(el) => (itemRefs.current[index] = el)}
                 onClick={() => onSelectItem(item)}
                 className={cn(
-                  'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
+                  'mly-flex mly-w-fit mly-min-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
                   index === selectedIndex ? 'mly-bg-soft-gray' : 'mly-bg-white'
                 )}
               >

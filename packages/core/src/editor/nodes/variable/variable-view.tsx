@@ -11,6 +11,7 @@ import {
   useMailyContext,
 } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
@@ -51,6 +52,7 @@ export function VariableView(props: NodeViewProps) {
                   Variable
                 </span>
                 <input
+                  {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
                   value={id ?? ''}
                   onChange={(e) => {
                     updateAttributes({
@@ -69,6 +71,7 @@ export function VariableView(props: NodeViewProps) {
                   Default
                 </span>
                 <input
+                  {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
                   value={fallback ?? ''}
                   onChange={(e) => {
                     updateAttributes({

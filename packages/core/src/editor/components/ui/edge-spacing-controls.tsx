@@ -3,6 +3,7 @@ import { useId } from 'react';
 import { Divider } from './divider';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { ChevronUp } from 'lucide-react';
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
 
 type EdgeSpacingControlProps = {
   top?: number;
@@ -87,6 +88,7 @@ function InputWithLabel(props: InputWithLabelProps) {
       )}
     >
       <input
+        {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
         id={id}
         min={0}
         type="number"

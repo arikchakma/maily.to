@@ -10,6 +10,8 @@ export type Variable = {
   name: string;
   // Default is true
   required?: boolean;
+  // default is true
+  valid?: boolean;
 };
 
 export type VariableFunctionOptions = {
@@ -28,6 +30,7 @@ export type RenderVariableOptions = {
   variable: Variable;
   fallback?: string;
   editor: Editor;
+  from: 'content-variable' | 'bubble-variable' | 'button-variable';
 };
 
 export type RenderVariableFunction = (

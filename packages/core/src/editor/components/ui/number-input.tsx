@@ -3,6 +3,7 @@ import { cn } from '@/editor/utils/classname';
 import { type LucideIcon } from 'lucide-react';
 import { SVGIcon } from '../icons/grid-lines';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
 
 type NumberInputProps = {
   value: number;
@@ -26,6 +27,7 @@ export const NumberInput = forwardRef<HTMLLabelElement, NumberInputProps>(
           <Icon className="mly-absolute mly-left-1.5 mly-size-3.5" />
         ) : null}
         <input
+          {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
           min={0}
           {...(max ? { max } : {})}
           type="number"

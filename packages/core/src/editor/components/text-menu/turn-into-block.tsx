@@ -1,11 +1,4 @@
-import {
-  ALargeSmallIcon,
-  FootprintsIcon,
-  Heading1Icon,
-  Heading2Icon,
-  Heading3Icon,
-  PilcrowIcon,
-} from 'lucide-react';
+import { ChevronDownIcon, PilcrowIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import {
   TurnIntoBlockCategory,
@@ -15,7 +8,6 @@ import {
 import { useMemo } from 'react';
 import { BaseButton } from '../base-button';
 import { cn } from '@/editor/utils/classname';
-import { BubbleMenuButton } from '../bubble-menu-button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 type TurnIntoBlockProps = {
@@ -45,10 +37,11 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
         <TooltipTrigger asChild>
           <PopoverTrigger
             className={cn(
-              'mly-flex mly-aspect-square mly-size-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2'
+              'mly-flex mly-aspect-square mly-h-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2'
             )}
           >
             <ActiveIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
+            <ChevronDownIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent sideOffset={8}>Turn into</TooltipContent>

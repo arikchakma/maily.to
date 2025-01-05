@@ -3,11 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Node } from '@tiptap/pm/model';
 import { ReactNode } from 'react';
 import { Editor } from '@tiptap/core';
+import { Props as TippyProps } from 'tippy.js';
 import {
   DragHandlePlugin,
   dragHandlePluginDefaultKey,
-} from 'echo-drag-handle-plugin';
-import { Props as TippyProps } from 'tippy.js';
+} from '../plugins/drag-handle/drag-handle';
 
 export type DragHandleProps = {
   editor: Editor;

@@ -8,6 +8,8 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@maily-to/core": "workspace:*",
+    "@maily-to/render": "workspace:*",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@react-router/express": "^7.1.1",

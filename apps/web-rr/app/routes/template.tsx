@@ -1,6 +1,7 @@
 import type { Route } from './+types/template';
 import { Link, redirect } from 'react-router';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
+import { Editor } from '@maily-to/core';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -47,7 +48,7 @@ export default function TemplatePage(props: Route.ComponentProps) {
 
   return (
     <div className="mx-auto w-full max-w-[700px] p-5">
-      <h1>{template.title}</h1>
+      <Editor contentJson={JSON.parse(template?.content as any)} />
     </div>
   );
 }

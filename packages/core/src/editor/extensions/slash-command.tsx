@@ -10,6 +10,7 @@ import { Editor, Extension, Range } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import {
+  FootprintsIcon,
   Heading1,
   Heading2,
   Heading3,
@@ -270,15 +271,15 @@ const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
   //     editor.chain().focus().deleteRange(range).toggleBlockquote().run();
   //   },
   // },
-  // {
-  //   title: 'Footer',
-  //   description: 'Add a footer text to email.',
-  //   searchTerms: ['footer', 'text'],
-  //   icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
-  //   command: ({ editor, range }: CommandProps) => {
-  //     editor.chain().focus().deleteRange(range).setFooter().run();
-  //   },
-  // },
+  {
+    title: 'Footer',
+    description: 'Add a footer text to email.',
+    searchTerms: ['footer', 'text'],
+    icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
+    command: ({ editor, range }: CommandProps) => {
+      editor.chain().focus().deleteRange(range).setFooter().run();
+    },
+  },
   // {
   //   title: 'Clear Line',
   //   description: 'Clear the current line.',

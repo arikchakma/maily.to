@@ -110,6 +110,7 @@ export function Editor(props: EditorProps) {
       onCreate?.(editor);
     },
     onUpdate: ({ editor }) => {
+      console.log("SADASD")
       onUpdate?.(editor);
     },
     extensions: [

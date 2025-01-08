@@ -43,6 +43,8 @@ export function EditorPreview(props: EditorPreviewProps) {
 
   const [showReplyTo, setShowReplyTo] = useState(false);
 
+  console.log('SSSSS');
+
   return (
     <div className={cn('mt-8', className)}>
       <Label className="flex items-center font-normal">

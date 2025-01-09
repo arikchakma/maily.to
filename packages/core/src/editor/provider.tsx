@@ -3,29 +3,57 @@
 import { BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
+import { Editor } from '@tiptap/core';
+import { DefaultRenderVariable } from './nodes/variable/variable-view';
 
-export type Variables = Array<{
+export type Variable = {
   name: string;
   // Default is true
   required?: boolean;
+  // default is true
+  valid?: boolean;
+};
 
-  // Default is false
-  iterable?: boolean;
-  keys?: Array<string>;
-}>;
+export type VariableFunctionOptions = {
+  query: string;
+  from: 'content-variable' | 'bubble-variable' | 'for-variable';
+  editor: Editor;
+};
 
-export const DEFAULT_TRIGGER_SUGGESTION_CHAR = '@';
+export type VariablesFunction = (
+  opts: VariableFunctionOptions
+) => Array<Variable>;
+
+export type Variables = Array<Variable> | VariablesFunction;
+
+export type RenderVariableOptions = {
+  variable: Variable;
+  fallback?: string;
+  editor: Editor;
+  from: 'content-variable' | 'bubble-variable' | 'button-variable';
+};
+
+export type RenderVariableFunction = (
+  opts: RenderVariableOptions
+) => JSX.Element | null;
+
+export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
+export const DEFAULT_VARIABLES: Variables = [];
+export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
+  DefaultRenderVariable;
 
 export type MailyContextType = {
-  triggerSuggestionCharacter?: string;
+  variableTriggerCharacter?: string;
   variables?: Variables;
   blocks?: BlockItem[];
+  renderVariable?: RenderVariableFunction;
 };
 
 export const MailyContext = createContext<MailyContextType>({
-  triggerSuggestionCharacter: DEFAULT_TRIGGER_SUGGESTION_CHAR,
-  variables: [],
+  variableTriggerCharacter: DEFAULT_VARIABLE_TRIGGER_CHAR,
+  variables: DEFAULT_VARIABLES,
   blocks: DEFAULT_SLASH_COMMANDS,
+  renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;
@@ -33,8 +61,8 @@ type MailyProviderProps = PropsWithChildren<MailyContextType>;
 export function MailyProvider(props: MailyProviderProps) {
   const { children, ...defaultValues } = props;
 
-  if (defaultValues.triggerSuggestionCharacter === '') {
-    throw new Error('triggerSuggestionCharacter cannot be an empty string');
+  if (defaultValues.variableTriggerCharacter === '') {
+    throw new Error('variableTriggerCharacter cannot be an empty string');
   }
 
   return (

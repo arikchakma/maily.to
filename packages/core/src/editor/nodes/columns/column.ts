@@ -31,7 +31,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const Column = Node.create({
+export const ColumnExtension = Node.create({
   name: 'column',
   content: 'block+',
   isolating: true,

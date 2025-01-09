@@ -19,9 +19,13 @@ const components = [
   'List',
   'Quote',
   'Code',
+  'Section',
+  'Columns',
+  'For',
+  'Show',
 ];
 
-const comingSoon = ['Social', 'Video', 'Table', 'Columns', 'Countdown'];
+const comingSoon = ['Social', 'Video', 'Table', 'Countdown'];
 
 export const dynamic = 'force-static';
 

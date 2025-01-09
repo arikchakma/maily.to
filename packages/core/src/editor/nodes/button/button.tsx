@@ -1,9 +1,9 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ButtonView } from './button-view';
-import { AllowedLogoAlignment } from '@/editor/nodes/logo';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
+import { AllowedLogoAlignment } from '../logo/logo';
 
 export const DEFAULT_BUTTON_ALIGNMENT: AllowedLogoAlignment = 'left';
 export const DEFAULT_BUTTON_VARIANT: AllowedButtonVariant = 'filled';
@@ -58,6 +58,22 @@ export const ButtonExtension = Node.create({
           };
         },
       },
+      isTextVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-text-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isTextVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-text-variable': 'true',
+          };
+        },
+      },
+
       url: {
         default: '',
         parseHTML: (element) => {
@@ -69,6 +85,25 @@ export const ButtonExtension = Node.create({
           };
         },
       },
+      // Later we will remove this attribute
+      // and use the `url` attribute instead when implement
+      // the URL variable feature
+      isUrlVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-url-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isUrlVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-url-variable': 'true',
+          };
+        },
+      },
+
       alignment: {
         default: DEFAULT_BUTTON_ALIGNMENT,
         parseHTML: (element) => {
@@ -190,6 +225,7 @@ export const ButtonExtension = Node.create({
   addNodeView() {
     return ReactNodeViewRenderer(ButtonView, {
       contentDOMElementTag: 'div',
+      className: 'mly-relative',
     });
   },
 });

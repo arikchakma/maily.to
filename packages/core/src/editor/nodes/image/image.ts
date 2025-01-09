@@ -29,6 +29,7 @@ export const ImageExtension = TiptapImage.extend({
         parseHTML: (element) =>
           element.getAttribute('data-alignment') || 'center',
       },
+
       externalLink: {
         default: null,
         renderHTML: ({ externalLink }) => {
@@ -42,6 +43,46 @@ export const ImageExtension = TiptapImage.extend({
         parseHTML: (element) => {
           const externalLink = element.getAttribute('data-external-link');
           return externalLink ? { externalLink } : null;
+        },
+      },
+
+      // Later we will remove this attribute
+      // and use the `externalLink` attribute instead
+      // when implement the URL variable feature
+      isExternalLinkVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-is-external-link-variable') === 'true'
+          );
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isExternalLinkVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-external-link-variable': 'true',
+          };
+        },
+      },
+
+      // Later we will remove this attribute
+      // and use the `src` attribute instead when implement
+      // the URL variable feature
+      isSrcVariable: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-is-src-variable') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.isSrcVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-src-variable': 'true',
+          };
         },
       },
 
@@ -66,6 +107,8 @@ export const ImageExtension = TiptapImage.extend({
     };
   },
   addNodeView() {
-    return ReactNodeViewRenderer(ImageView);
+    return ReactNodeViewRenderer(ImageView, {
+      className: 'mly-relative',
+    });
   },
 });

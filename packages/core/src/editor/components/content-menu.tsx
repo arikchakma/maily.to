@@ -6,7 +6,6 @@ import type { NodeSelection } from '@tiptap/pm/state';
 import type { Node } from '@tiptap/pm/model';
 import { Copy, GripVertical, Plus, Trash2 } from 'lucide-react';
 import { BaseButton } from './base-button';
-import { DragHandle } from './drag-handle';
 import {
   Tooltip,
   TooltipContent,
@@ -15,6 +14,7 @@ import {
 } from './ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Divider } from './ui/divider';
+import { DragHandle } from '../plugins/drag-handle/drag-handle';
 
 export type ContentMenuProps = {
   editor: Editor;
@@ -118,23 +118,23 @@ export function ContentMenu(props: ContentMenuProps) {
       pluginKey="ContentMenu"
       editor={editor}
       tippyOptions={{
-        offset: [-2, 0],
+        offset: [2, 0],
         zIndex: 99,
       }}
       onNodeChange={handleNodeChange}
     >
       <TooltipProvider>
-        <div className="mly-flex mly-items-center mly-gap-0.5 mly-pr-1.5">
+        <div className="mly-flex mly-items-center mly-pr-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
               <BaseButton
                 variant="ghost"
                 size="icon"
-                className="!mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                className="!mly-size-5 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
                 onClick={handleAddNewNode}
                 type="button"
               >
-                <Plus className="mly-size-4 mly-shrink-0" />
+                <Plus className="mly-size-3.5 mly-shrink-0" />
               </BaseButton>
             </TooltipTrigger>
             <TooltipContent sideOffset={8}>Add new node</TooltipContent>
@@ -146,19 +146,20 @@ export function ContentMenu(props: ContentMenuProps) {
                   <BaseButton
                     variant="ghost"
                     size="icon"
-                    className="mly-relative mly-z-[1] !mly-size-7 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
+                    className="mly-relative mly-z-[1] !mly-size-5 mly-cursor-grab mly-text-gray-500 hover:mly-text-black"
                     onClick={(e) => {
                       e.preventDefault();
                       setMenuOpen(true);
+                      editor.commands.setNodeSelection(currentNodePos);
                     }}
                     type="button"
                   >
-                    <GripVertical className="mly-size-4 mly-shrink-0" />
+                    <GripVertical className="mly-size-3.5 mly-shrink-0" />
                   </BaseButton>
                 </TooltipTrigger>
                 <TooltipContent sideOffset={8}>Node actions</TooltipContent>
               </Tooltip>
-              <PopoverTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-[28px] mly-w-[28px]" />
+              <PopoverTrigger className="mly-absolute mly-left-0 mly-top-0 mly-z-0 mly-h-5 mly-w-5" />
             </div>
 
             <PopoverContent

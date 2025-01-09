@@ -1,25 +1,26 @@
-import { BubbleMenu } from '@tiptap/react';
-import { useCallback } from 'react';
-import { getRenderContainer } from '../../utils/get-render-container';
-import { sticky } from 'tippy.js';
-import { useSectionState } from './use-section-state';
-import { ChevronUp, Trash } from 'lucide-react';
-import { ColorPicker } from '../ui/color-picker';
-import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
+import { deleteNode } from '@/editor/utils/delete-node';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
-import { Divider } from '../ui/divider';
-import { BubbleMenuButton } from '../bubble-menu-button';
-import { TooltipProvider } from '../ui/tooltip';
+import { BubbleMenu, findChildren } from '@tiptap/react';
+import { ChevronUp, Trash } from 'lucide-react';
+import { useCallback } from 'react';
+import { sticky } from 'tippy.js';
+import { getRenderContainer } from '../../utils/get-render-container';
 import { AlignmentSwitch } from '../alignment-switch';
 import { BaseButton } from '../base-button';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
 import { BorderColor } from '../icons/border-color';
-import { Select } from '../ui/select';
 import { MarginIcon } from '../icons/margin-icon';
 import { PaddingIcon } from '../icons/padding-icon';
-import { ColumnsBubbleMenuContent } from '../column-menu/columns-bubble-menu-content';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { ShowPopover } from '../show-popover';
-import { deleteNode } from '@/editor/utils/delete-node';
+import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
+import { ColorPicker } from '../ui/color-picker';
+import { Divider } from '../ui/divider';
+import { Select } from '../ui/select';
+import { TooltipProvider } from '../ui/tooltip';
+import { useSectionState } from './use-section-state';
+import { getClosestNodeByName } from '@/editor/utils/columns';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -38,8 +39,18 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
+    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      if (isTextSelected(editor) || editor.isActive('for')) {
+      const activeSectionNode = getClosestNodeByName(editor, 'section');
+      const forNodeChildren = activeSectionNode
+        ? findChildren(activeSectionNode?.node, (node) => {
+            return node.type.name === 'for';
+          })?.[0]
+        : null;
+      const hasActiveForNodeChildren =
+        forNodeChildren && editor.isActive('for');
+
+      if (isTextSelected(editor) || hasActiveForNodeChildren) {
         return false;
       }
 
@@ -51,7 +62,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
         modifiers: [{ name: 'flip', enabled: false }],
       },
       getReferenceClientRect,
-      appendTo: appendTo?.current || 'parent',
+      appendTo: () => appendTo?.current,
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: 'auto',
@@ -70,7 +81,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <AlignmentSwitch
@@ -228,6 +239,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
               showIfKey: value,
             });
           }}
+          editor={editor}
         />
 
         {state.isColumnsActive && (

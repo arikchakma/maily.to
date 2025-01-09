@@ -21,7 +21,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const Columns = Node.create({
+export const ColumnsExtension = Node.create({
   name: 'columns',
   group: 'columns',
   content: 'column+',
@@ -109,6 +109,7 @@ export const Columns = Node.create({
       'div',
       mergeAttributes(HTMLAttributes, {
         'data-type': 'columns',
+        class: 'mly-relative',
       }),
       0,
     ];

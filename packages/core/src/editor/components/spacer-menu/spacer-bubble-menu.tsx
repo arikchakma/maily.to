@@ -9,6 +9,7 @@ import {
 import { Divider } from '../ui/divider';
 import { useSpacerState } from './use-spacer-state';
 import { ShowPopover } from '../show-popover';
+import { TooltipProvider } from '../ui/tooltip';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -41,22 +42,25 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
       {...bubbleMenuProps}
       className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
-      {items.map((item, index) => (
-        <BubbleMenuButton
-          key={index}
-          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-          iconClassName="mly-w-3 mly-h-3"
-          nameClassName="mly-text-xs"
-          {...item}
+      <TooltipProvider>
+        {items.map((item, index) => (
+          <BubbleMenuButton
+            key={index}
+            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+            iconClassName="mly-w-3 mly-h-3"
+            nameClassName="mly-text-xs"
+            {...item}
+          />
+        ))}
+        <Divider />
+        <ShowPopover
+          showIfKey={state.currentShowIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor.commands.setSpacerShowIfKey(value);
+          }}
+          editor={editor}
         />
-      ))}
-      <Divider />
-      <ShowPopover
-        showIfKey={state.currentShowIfKey}
-        onShowIfKeyValueChange={(value) => {
-          editor.commands.setSpacerShowIfKey(value);
-        }}
-      />
+      </TooltipProvider>
     </BubbleMenu>
   );
 }

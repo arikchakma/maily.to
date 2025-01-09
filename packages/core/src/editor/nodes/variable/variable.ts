@@ -4,7 +4,6 @@ import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import { VariableView } from './variable-view';
-import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
 export type VariableOptions = {
   HTMLAttributes: Record<string, any>;
@@ -114,21 +113,13 @@ export const VariableExtension = Node.create<VariableOptions>({
           };
         },
       },
-      showIfKey: {
-        default: DEFAULT_SECTION_SHOW_IF_KEY,
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('data-show-if-key') ||
-            DEFAULT_SECTION_SHOW_IF_KEY
-          );
-        },
-        renderHTML(attributes) {
-          if (!attributes.showIfKey) {
-            return {};
-          }
 
+      required: {
+        default: true,
+        parseHTML: (element) => element.hasAttribute('data-required'),
+        renderHTML: (attributes) => {
           return {
-            'data-show-if-key': attributes.showIfKey,
+            'data-required': attributes?.required ?? true,
           };
         },
       },
@@ -138,14 +129,14 @@ export const VariableExtension = Node.create<VariableOptions>({
   parseHTML() {
     return [
       {
-        tag: `span[data-type="${this.name}"]`,
+        tag: `div[data-type="${this.name}"]`,
       },
     ];
   },
 
   renderHTML({ node, HTMLAttributes }) {
     return [
-      'span',
+      'div',
       mergeAttributes(
         { 'data-type': this.name },
         this.options.HTMLAttributes,
@@ -205,6 +196,9 @@ export const VariableExtension = Node.create<VariableOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(VariableView);
+    return ReactNodeViewRenderer(VariableView, {
+      className: 'mly-relative mly-inline-block',
+      as: 'div',
+    });
   },
 });

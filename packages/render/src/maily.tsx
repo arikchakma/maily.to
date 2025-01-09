@@ -214,6 +214,8 @@ export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
 export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
+export const LINK_PROTOCOL_REGEX = /https?:\/\//;
+
 export interface RenderOptions {
   /**
    * The options object allows you to customize the output of the rendered
@@ -256,6 +258,7 @@ export class Maily {
   private linkValues: LinkValues = new Map();
   private openTrackingPixel: string | undefined;
   private payloadValues: PayloadValues = new Map();
+  private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -616,10 +619,15 @@ export class Maily {
   }
 
   // `renderMark` will call the method of the corresponding mark type
-  private renderMark(node: JSONContent): JSX.Element {
+  private renderMark(node: JSONContent, options?: NodeOptions): JSX.Element {
     // It will wrap the text with the corresponding mark type
     const text = node?.text || <>&nbsp;</>;
-    const marks = node?.marks || [];
+    let marks = node?.marks || [];
+    // sort the marks by uderline, bold, italic, textStyle, link
+    // so that the text will be wrapped in the correct order
+    marks.sort((a, b) => {
+      return this.marksOrder.indexOf(a.type) - this.marksOrder.indexOf(b.type);
+    });
 
     return marks.reduce(
       (acc, mark) => {
@@ -665,10 +673,10 @@ export class Maily {
     );
   }
 
-  private text(node: JSONContent, _?: NodeOptions): JSX.Element {
+  private text(node: JSONContent, options?: NodeOptions): JSX.Element {
     const text = node.text || '&nbsp';
     if (node.marks) {
-      return this.renderMark(node);
+      return this.renderMark(node, options);
     }
 
     return <>{text}</>;
@@ -705,19 +713,23 @@ export class Maily {
     );
   }
 
-  private link(mark: MarkType, text: JSX.Element): JSX.Element {
+  private link(
+    mark: MarkType,
+    text: JSX.Element,
+    options?: NodeOptions
+  ): JSX.Element {
     const { attrs } = mark;
+
     let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
+    const isUrlVariable = attrs?.isUrlVariable ?? false;
 
-    // If the href value is provided, use it to replace the link
-    // Otherwise, use the original link
-    if (
-      typeof this.linkValues === 'object' ||
-      typeof this.variableValues === 'object'
-    ) {
-      href = this.linkValues.get(href) || this.variableValues.get(href) || href;
+    if (isUrlVariable) {
+      const linkWithoutProtocol = this.removeLinkProtocol(href);
+      href = this.variableUrlValue(linkWithoutProtocol, options);
+    } else {
+      href = this.linkValues.get(href) || href;
     }
 
     return (
@@ -726,13 +738,30 @@ export class Maily {
         rel={rel}
         style={{
           fontWeight: 500,
-          textDecoration: 'underline',
+          textDecoration: 'none',
           color: this.config.theme?.colors?.heading,
         }}
         target={target}
       >
         {text}
       </Link>
+    );
+  }
+
+  private removeLinkProtocol(href: string) {
+    return href.replace(LINK_PROTOCOL_REGEX, '');
+  }
+
+  private variableUrlValue(href: string, options?: NodeOptions) {
+    const { payloadValue } = options || {};
+    const linkWithoutProtocol = this.removeLinkProtocol(href);
+
+    return (
+      (typeof payloadValue === 'object'
+        ? payloadValue[linkWithoutProtocol]
+        : payloadValue) ??
+      this.variableValues.get(linkWithoutProtocol) ??
+      href
     );
   }
 
@@ -786,10 +815,13 @@ export class Maily {
     );
 
     if (node?.marks) {
-      return this.renderMark({
-        text: formattedVariable,
-        marks: node.marks,
-      });
+      return this.renderMark(
+        {
+          text: formattedVariable,
+          marks: node.marks,
+        },
+        options
+      );
     }
 
     return <>{formattedVariable}</>;
@@ -906,8 +938,10 @@ export class Maily {
   private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const {
-      text,
+      text: _text,
+      isTextVariable,
       url,
+      isUrlVariable,
       variant,
       buttonColor,
       textColor,
@@ -933,8 +967,10 @@ export class Maily {
       options
     );
 
-    const href =
-      this.linkValues.get(url) || this.variableValues.get(url) || url;
+    const href = isUrlVariable
+      ? this.variableUrlValue(url, options)
+      : this.linkValues.get(url) || url;
+    const text = isTextVariable ? this.variableUrlValue(_text, options) : _text;
 
     return (
       <Container
@@ -992,8 +1028,9 @@ export class Maily {
 
   private logo(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       src,
+      isSrcVariable,
       alt,
       title,
       size,
@@ -1005,6 +1042,8 @@ export class Maily {
     if (!shouldShow) {
       return <></>;
     }
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
 
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
@@ -1036,13 +1075,15 @@ export class Maily {
 
   private image(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       src,
+      isSrcVariable,
       alt,
       title,
       width = 'auto',
       alignment = 'center',
       externalLink = '',
+      isExternalLinkVariable,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -1055,21 +1096,27 @@ export class Maily {
       options
     );
 
-    const wi = width === 'auto' ? 'auto' : Number(width);
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
+    externalLink = isExternalLinkVariable
+      ? this.variableUrlValue(externalLink, options)
+      : externalLink;
+
+    // Handle width value
+    const imageWidth = width === 'auto' ? 'auto' : Number(width);
+    const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
         src={src}
         style={{
-          height: 'auto',
-          width: '100%',
+          width: widthStyle, // Use the calculated width
+          maxWidth: '100%', // Ensure image doesn't overflow container
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
+          display: 'block', // Prevent unwanted spacing
         }}
-        height="auto"
-        width={wi}
         title={title || alt || 'Image'}
       />
     );
@@ -1435,8 +1482,9 @@ export class Maily {
     );
 
     const remainingWidth = totalWidth - totalWidthUsed;
-    const measuredWidth = remainingWidth / autoWidthColumns.length;
+    const measuredWidth = Math.round(remainingWidth / autoWidthColumns.length);
 
+    const columnCount = content.filter((c) => c.type === 'column').length;
     const gap = node.attrs?.gap || DEFAULT_COLUMNS_GAP;
 
     return [
@@ -1447,7 +1495,37 @@ export class Maily {
             c.type === 'column' &&
             (c.attrs?.width === 'auto' || !c.attrs?.width);
           const isFirstColumn = index === 0;
+          const isMiddleColumn = index > 0 && index < columnCount - 1;
           const isLastColumn = index === content.length - 1;
+
+          let paddingLeft = 0;
+          let paddingRight = 0;
+
+          // For 2 columns, apply a simple gap logic
+          if (columnCount < 3) {
+            paddingLeft = isFirstColumn ? 0 : gap / 2;
+            paddingRight = isLastColumn ? 0 : gap / 2;
+          } else {
+            // For more than 2 columns, apply more gap in the first and last columns
+            // and less gap in the middle columns to make it look more balanced
+            // because the first and last columns have more space to fill
+            const leftAndRightPadding = (gap / 2) * 1.5;
+            const middleColumnPadding = leftAndRightPadding / 2;
+
+            paddingLeft = isFirstColumn
+              ? 0
+              : isMiddleColumn
+                ? middleColumnPadding
+                : leftAndRightPadding;
+            paddingRight = isLastColumn
+              ? 0
+              : isMiddleColumn
+                ? middleColumnPadding
+                : leftAndRightPadding;
+          }
+
+          paddingLeft = Math.round(paddingLeft * 100) / 100;
+          paddingRight = Math.round(paddingRight * 100) / 100;
 
           return {
             ...c,
@@ -1459,8 +1537,8 @@ export class Maily {
               isLastColumn,
               index,
 
-              paddingLeft: isFirstColumn ? 0 : gap / 2,
-              paddingRight: isLastColumn ? 0 : gap / 2,
+              paddingLeft,
+              paddingRight,
             },
           };
         }),

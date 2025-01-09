@@ -1,3 +1,5 @@
+import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
+
 type ImageSizeProps = {
   value: string;
   onValueChange: (value: string) => void;
@@ -13,6 +15,7 @@ export function ImageSize(props: ImageSizeProps) {
         {dimension === 'width' ? 'W' : 'H'}
       </span>
       <input
+        {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
         className="hide-number-controls mly-h-auto mly-max-w-20 mly-appearance-none mly-border-0 mly-border-none mly-p-1 mly-px-[26px] mly-text-sm mly-uppercase mly-tabular-nums mly-outline-none focus-visible:mly-outline-none"
         type="number"
         value={value}

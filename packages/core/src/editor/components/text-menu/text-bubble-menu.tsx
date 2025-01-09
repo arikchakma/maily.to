@@ -20,6 +20,12 @@ import { LinkInputPopover } from '../ui/link-input-popover';
 import { Divider } from '../ui/divider';
 import { AlignmentSwitch } from '../alignment-switch';
 import { SVGIcon } from '../icons/grid-lines';
+import { SectionExtension } from '@/editor/nodes/section/section';
+import { ColumnExtension } from '@/editor/nodes/columns/column';
+import { ColumnsExtension } from '@/editor/nodes/columns/columns';
+import { ForExtension } from '@/editor/nodes/for/for';
+import { TurnIntoBlock } from './turn-into-block';
+import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -87,7 +93,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     pluginKey: 'textMenu',
-    shouldShow: ({ editor, state, from, to, view }) => {
+    shouldShow: ({ editor, from, view }) => {
       if (!view || editor.view.dragging) {
         return false;
       }
@@ -100,7 +106,17 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
         return false;
       }
 
-      return isTextSelected(editor);
+      const nestedNodes = [
+        ForExtension.name,
+        SectionExtension.name,
+        ColumnsExtension.name,
+        ColumnExtension.name,
+      ];
+
+      const isNestedNodeSelected =
+        nestedNodes.some((name) => editor.isActive(name)) &&
+        node?.classList?.contains('ProseMirror-selectednode');
+      return isTextSelected(editor) && !isNestedNodeSelected;
     },
     tippyOptions: {
       popperOptions: {
@@ -127,6 +143,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   };
 
   const state = useTextMenuState(editor);
+  const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
 
   return (
     <BubbleMenu
@@ -134,6 +151,10 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
+        <TurnIntoBlock options={turnIntoBlockOptions} />
+
+        <Divider />
+
         {items.map((item, index) => (
           <BubbleMenuButton key={index} {...item} />
         ))}
@@ -166,9 +187,20 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
         <LinkInputPopover
           defaultValue={state?.linkUrl ?? ''}
-          onValueChange={(value) => {
-            if (!value) {
-              editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+          onValueChange={(value, isVariable) => {
+            const defaultValueWithoutProtocol = value.replace(
+              /https?:\/\//,
+              ''
+            );
+
+            if (!defaultValueWithoutProtocol) {
+              editor
+                ?.chain()
+                .focus()
+                .extendMarkRange('link')
+                .unsetLink()
+                .unsetUnderline()
+                .run();
               return;
             }
 
@@ -176,9 +208,13 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
               ?.chain()
               .extendMarkRange('link')
               .setLink({ href: value })
+              .setIsUrlVariable(isVariable ?? false)
+              .setUnderline()
               .run()!;
           }}
           tooltip="External URL"
+          editor={editor}
+          isVariable={state.isUrlVariable}
         />
 
         <Divider />

@@ -84,27 +84,46 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
           <LinkInputPopover
             defaultValue={state?.imageSrc ?? ''}
-            onValueChange={(value) => {
+            onValueChange={(value, isVariable) => {
               if (state.isLogoActive) {
-                editor?.chain().setLogoAttributes({ src: value }).run();
+                editor
+                  ?.chain()
+                  .setLogoAttributes({
+                    src: value,
+                    isSrcVariable: isVariable ?? false,
+                  })
+                  .run();
               } else {
-                editor?.chain().updateAttributes('image', { src: value }).run();
+                editor
+                  ?.chain()
+                  .updateAttributes('image', {
+                    src: value,
+                    isSrcVariable: isVariable ?? false,
+                  })
+                  .run();
               }
             }}
             tooltip="Source URL"
             icon={ImageDown}
+            editor={editor}
+            isVariable={state.isSrcVariable}
           />
 
           {state.isImageActive && (
             <LinkInputPopover
               defaultValue={state?.imageExternalLink ?? ''}
-              onValueChange={(value) => {
+              onValueChange={(value, isVariable) => {
                 editor
                   ?.chain()
-                  .updateAttributes('image', { externalLink: value })
+                  .updateAttributes('image', {
+                    externalLink: value,
+                    isExternalLinkVariable: isVariable ?? false,
+                  })
                   .run();
               }}
               tooltip="External URL"
+              editor={editor}
+              isVariable={state.isExternalLinkVariable}
             />
           )}
         </div>
@@ -149,6 +168,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               })
               .run();
           }}
+          editor={editor}
         />
       </TooltipProvider>
     </BubbleMenu>

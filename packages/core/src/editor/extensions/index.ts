@@ -1,6 +1,5 @@
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
-import TiptapLink from '@tiptap/extension-link';
 import ListItem from '@tiptap/extension-list-item';
 import Paragraph from '@tiptap/extension-paragraph';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -17,8 +16,8 @@ import { Footer } from '../nodes/footer';
 import { Spacer } from '../nodes/spacer';
 import { MailyContextType } from '../provider';
 import { LinkCardExtension } from './link-card';
-import { Columns } from '../nodes/columns/columns';
-import { Column } from '../nodes/columns/column';
+import { ColumnsExtension } from '../nodes/columns/columns';
+import { ColumnExtension } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
 import { ForExtension } from '../nodes/for/for';
 import { ButtonExtension } from '../nodes/button/button';
@@ -28,32 +27,51 @@ import { SlashCommand } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
+import { LinkExtension } from '../nodes/link';
 
 type ExtensionsProps = Partial<MailyContextType> & {};
 
 export function extensions(props: ExtensionsProps) {
-  const { variables, blocks, triggerSuggestionCharacter } = props;
+  const { variables, blocks, variableTriggerCharacter } = props;
 
   return [
     Document.extend({
       content: '(block|columns)+',
     }),
-    Columns,
-    Column,
+    ColumnsExtension,
+    ColumnExtension,
     StarterKit.configure({
       heading: {
         levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
       },
       code: {
         HTMLAttributes: {
           class:
-            'mly-px-1 mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
+            'mly-px-1 mly-relative mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
         },
       },
       blockquote: {
         HTMLAttributes: {
           class:
-            'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4',
+            'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4 mly-relative',
+        },
+      },
+      paragraph: {
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
+      },
+      bulletList: {
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
+      },
+      orderedList: {
+        HTMLAttributes: {
+          class: 'mly-relative',
         },
       },
       horizontalRule: false,
@@ -71,9 +89,14 @@ export function extensions(props: ExtensionsProps) {
         if (node.type.name === 'heading') {
           return `Heading ${node.attrs.level}`;
         } else if (
-          ['columns', 'column', 'section', 'for', 'show'].includes(
-            node.type.name
-          )
+          [
+            'columns',
+            'column',
+            'section',
+            'for',
+            'show',
+            'blockquote',
+          ].includes(node.type.name)
         ) {
           return '';
         }
@@ -87,10 +110,11 @@ export function extensions(props: ExtensionsProps) {
     SlashCommand.configure({
       suggestion: getSlashCommandSuggestions(blocks),
     }),
-    TiptapLink.configure({
+    LinkExtension.configure({
       HTMLAttributes: {
         target: '_blank',
         rel: 'noopener noreferrer nofollow',
+        class: 'mly-no-underline',
       },
       openOnClick: false,
     }),
@@ -106,7 +130,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     ButtonExtension,
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables, triggerSuggestionCharacter),
+      suggestion: getVariableSuggestions(variables, variableTriggerCharacter),
     }),
   ];
 }

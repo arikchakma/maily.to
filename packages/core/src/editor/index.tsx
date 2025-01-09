@@ -22,14 +22,18 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
+import { RefObject } from 'react';
+import { useMemo } from 'react';
 
 type ParitialMailContextType = Partial<MailyContextType>;
+
+export type MailyEditor = TiptapEditor;
 
 export type EditorProps = {
   contentHtml?: string;
   contentJson?: JSONContent;
-  onUpdate?: (editor: TiptapEditor) => void;
-  onCreate?: (editor: TiptapEditor) => void;
+  onUpdate?: (editor: MailyEditor) => void;
+  onCreate?: (editor: MailyEditor) => void;
   extensions?: Extension[];
   config?: {
     hasMenuBar?: boolean;
@@ -41,6 +45,13 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
+
+  /*
+   * By default, bubble menus will be rendered inside the editor.
+   * If you want to render them outside the editor, you can pass a ref to the container element.
+   * it will be helpful when you have overflow hidden in the editor.
+   */
+  bubbleMenuAppendTo?: RefObject<any>;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -63,6 +74,8 @@ export function Editor(props: EditorProps) {
     blocks = DEFAULT_SLASH_COMMANDS,
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+
+    bubbleMenuAppendTo,
   } = props;
 
   let formattedContent: any = null;
@@ -126,6 +139,10 @@ export function Editor(props: EditorProps) {
     autofocus,
   });
 
+  const appendTo = useMemo(() => {
+    return bubbleMenuAppendTo || menuContainerRef;
+  }, [bubbleMenuAppendTo, menuContainerRef]);
+
   if (!editor) {
     return null;
   }
@@ -148,14 +165,14 @@ export function Editor(props: EditorProps) {
             bodyClassName
           )}
         >
-          <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <TextBubbleMenu editor={editor} appendTo={appendTo} />
+          <ImageBubbleMenu editor={editor} appendTo={appendTo} />
+          <SpacerBubbleMenu editor={editor} appendTo={appendTo} />
           <EditorContent editor={editor} />
-          <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <SectionBubbleMenu editor={editor} appendTo={appendTo} />
+          <ColumnsBubbleMenu editor={editor} appendTo={appendTo} />
           <ContentMenu editor={editor} />
-          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ForBubbleMenu editor={editor} appendTo={appendTo} />
         </div>
       </div>
     </MailyProvider>

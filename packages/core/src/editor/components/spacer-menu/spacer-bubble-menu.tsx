@@ -27,9 +27,9 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => editor.isActive('spacer'),
     tippyOptions: {
+      appendTo: appendTo?.current || 'parent',
       maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
     },
@@ -40,7 +40,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         {items.map((item, index) => (

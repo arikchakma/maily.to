@@ -3,8 +3,8 @@
 import { BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
-import { Editor } from '@tiptap/core';
 import { DefaultRenderVariable } from './nodes/variable/variable-view';
+import { MailyEditor } from '.';
 
 export type Variable = {
   name: string;
@@ -17,7 +17,7 @@ export type Variable = {
 export type VariableFunctionOptions = {
   query: string;
   from: 'content-variable' | 'bubble-variable' | 'for-variable';
-  editor: Editor;
+  editor: MailyEditor;
 };
 
 export type VariablesFunction = (
@@ -29,7 +29,7 @@ export type Variables = Array<Variable> | VariablesFunction;
 export type RenderVariableOptions = {
   variable: Variable;
   fallback?: string;
-  editor: Editor;
+  editor: MailyEditor;
   from: 'content-variable' | 'bubble-variable' | 'button-variable';
 };
 

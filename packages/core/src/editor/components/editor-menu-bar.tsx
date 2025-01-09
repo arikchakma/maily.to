@@ -147,7 +147,7 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
       {groups.map((group, index) => (
         <div
           key={index}
-          className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-bg-white mly-p-1"
+          className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-p-1"
         >
           {items
             .filter((item) => item.group === group)

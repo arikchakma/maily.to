@@ -92,7 +92,6 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
     pluginKey: 'textMenu',
     shouldShow: ({ editor, from, view }) => {
       if (!view || editor.view.dragging) {
@@ -138,6 +137,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
           },
         ],
       },
+      appendTo: appendTo?.current || 'parent',
       maxWidth: '100%',
     },
   };
@@ -148,7 +148,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <TurnIntoBlock options={turnIntoBlockOptions} />

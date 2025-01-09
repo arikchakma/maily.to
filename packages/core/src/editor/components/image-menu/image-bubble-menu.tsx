@@ -22,7 +22,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
-    ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       return editor.isActive('logo') || editor.isActive('image');
     },
@@ -30,6 +29,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       popperOptions: {
         modifiers: [{ name: 'flip', enabled: false }],
       },
+      appendTo: appendTo?.current || 'parent',
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: '100%',
@@ -39,7 +39,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         {state.isLogoActive && state.imageSrc && (

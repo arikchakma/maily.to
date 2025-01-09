@@ -497,7 +497,7 @@ export class Maily {
           }}
         >
           {preview ? (
-            <Preview id="__react-email-preview">{preview}</Preview>
+            <Preview data-block="email-preview">{preview}</Preview>
           ) : null}
           <Container
             style={{
@@ -869,7 +869,7 @@ export class Maily {
     );
 
     return (
-      <Container id="maily-ordered-list">
+      <Container data-block="ordered-list">
         <ol
           style={{
             marginTop: '0px',
@@ -902,7 +902,7 @@ export class Maily {
         style={{
           maxWidth: '100%',
         }}
-        id="maily-bullet-list"
+        data-block="bullet-list"
       >
         <ul
           style={{
@@ -979,7 +979,7 @@ export class Maily {
           maxWidth: '100%',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
         }}
-        id="maily-button"
+        data-block="button"
       >
         <Button
           href={href}
@@ -1014,7 +1014,7 @@ export class Maily {
 
     return (
       <Container
-        id="maily-spacer"
+      data-block="spacer"
         style={{
           height: spacers[height as AllowedSpacers] || height,
         }}
@@ -1056,7 +1056,7 @@ export class Maily {
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
         }}
-        id="maily-logo"
+        data-block="logo"
       >
         <Column align={alignment}>
           <Img
@@ -1123,7 +1123,7 @@ export class Maily {
 
     return (
       <Row
-        id="maily-image"
+        data-block="image"
         style={{
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '32px',
@@ -1162,7 +1162,7 @@ export class Maily {
 
     return (
       <Text
-        id="maily-footer"
+        data-block="footer"
         style={{
           fontSize: this.config.theme?.fontSize?.footer?.size,
           lineHeight: this.config.theme?.fontSize?.footer?.lineHeight,
@@ -1410,7 +1410,7 @@ export class Maily {
           marginBottom,
           marginLeft,
         }}
-        id="maily-section"
+        data-block="section"
       >
         <Column
           align={align}
@@ -1455,7 +1455,7 @@ export class Maily {
           width: `${totalWidth}%`,
         }}
         className="tab-row-full"
-        id="maily-columns"
+        data-block="columns"
       >
         {this.getMappedContent(newNode, {
           ...options,
@@ -1567,7 +1567,7 @@ export class Maily {
           verticalAlign,
         }}
         className="tab-col-full"
-        id="maily-column"
+        data-block="column"
       >
         <Section
           style={{
@@ -1576,7 +1576,7 @@ export class Maily {
             paddingRight,
           }}
           className="tab-pad"
-          id="maily-col-section"
+          data-block="col-section"
         >
           {this.getMappedContent(node, {
             ...options,

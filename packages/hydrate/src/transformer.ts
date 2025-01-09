@@ -126,7 +126,7 @@ export class Transformer {
 
   private isSpacerNode(node: ParsedNode) {
     const attrs = node?.attributes || {};
-    return node?.type === 'container' && attrs?.id === 'maily-spacer';
+    return node?.type === 'container' && attrs?.['data-block'] === 'spacer';
   }
 
   private spacer(node: ParsedNode): JSONContent {
@@ -147,7 +147,7 @@ export class Transformer {
 
   private isButtonNode(node: ParsedNode): boolean {
     const attrs = node?.attributes || {};
-    return node?.type === 'container' && attrs?.id === 'maily-button';
+    return node?.type === 'container' && attrs?.['data-block'] === 'button';
   }
 
   private button(node: ParsedNode): JSONContent {
@@ -222,7 +222,7 @@ export class Transformer {
 
   private isFooterNode(node: ParsedNode): boolean {
     const attrs = node?.attributes || {};
-    return node?.type === 'paragraph' && attrs?.id === 'maily-footer';
+    return node?.type === 'paragraph' && attrs?.['data-block'] === 'footer';
   }
 
   private img(node: ParsedNode): JSONContent {
@@ -315,7 +315,7 @@ export class Transformer {
     return (
       node?.type === 'row' &&
       (attrs?.className?.includes('tab-row-full') ||
-        attrs?.id === 'maily-columns')
+        attrs?.['data-block'] === 'columns')
     );
   }
 
@@ -325,7 +325,7 @@ export class Transformer {
     return (
       node?.type === 'column' &&
       (attrs?.className?.includes('tab-col-full') ||
-        attrs?.id === 'maily-column')
+        attrs?.['data-block'] === 'column')
     );
   }
 
@@ -335,7 +335,7 @@ export class Transformer {
     return (
       node?.type === 'section' &&
       (attrs?.className?.includes('tab-pad') ||
-        attrs?.id === 'maily-col-section')
+        attrs?.['data-block'] === 'col-section')
     );
   }
 
@@ -355,7 +355,7 @@ export class Transformer {
 
   private isSectionNode(node: ParsedNode): boolean {
     const attrs = node?.attributes || {};
-    return node?.type === 'row' && attrs?.id === 'maily-section';
+    return node?.type === 'row' && attrs?.['data-block'] === 'section';
   }
 
   private section(node: ParsedNode): JSONContent {
@@ -395,11 +395,11 @@ export class Transformer {
   }
 
   private isImageNode(node: ParsedNode): boolean {
-    return node?.type === 'row' && node?.attributes?.id === 'maily-image';
+    return node?.type === 'row' && node?.attributes?.['data-block'] === 'image';
   }
 
   private isLogoNode(node: ParsedNode): boolean {
-    return node?.type === 'row' && node?.attributes?.id === 'maily-logo';
+    return node?.type === 'row' && node?.attributes?.['data-block'] === 'logo';
   }
 
   private row(node: ParsedNode): JSONContent {
@@ -470,12 +470,16 @@ export class Transformer {
 
   private isBulletListNode(node: ParsedNode): boolean {
     const attrs = node?.attributes || {};
-    return node?.type === 'container' && attrs?.id === 'maily-bullet-list';
+    return (
+      node?.type === 'container' && attrs?.['data-block'] === 'bullet-list'
+    );
   }
 
   private isOrderedListNode(node: ParsedNode): boolean {
     const attrs = node?.attributes || {};
-    return node?.type === 'container' && attrs?.id === 'maily-ordered-list';
+    return (
+      node?.type === 'container' && attrs?.['data-block'] === 'ordered-list'
+    );
   }
 
   private bulletList(node: ParsedNode): JSONContent {

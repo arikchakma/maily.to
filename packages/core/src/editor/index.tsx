@@ -22,6 +22,7 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
+import { VariableBubbleMenu } from './components/variable-menu/variable-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -156,6 +157,7 @@ export function Editor(props: EditorProps) {
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
           <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <VariableBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

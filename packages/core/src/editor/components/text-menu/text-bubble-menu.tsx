@@ -144,6 +144,8 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
   const state = useTextMenuState(editor);
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
+  const colors = editor?.storage.color.colors as Set<string>;
+  const suggestedColors = Array?.from(colors)?.reverse();
 
   return (
     <BubbleMenu
@@ -224,11 +226,9 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
           onColorChange={(color) => {
             editor?.chain().setColor(color).run();
           }}
-          onClose={(color) => {
-            editor.storage.color.colors.add(color);
-          }}
+          onClose={(color) => colors.add(color)}
           tooltip="Text Color"
-          suggestedColors={Array.from(editor.storage.color.colors)}
+          suggestedColors={suggestedColors}
         >
           <BaseButton
             variant="ghost"

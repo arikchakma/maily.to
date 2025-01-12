@@ -224,7 +224,11 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
           onColorChange={(color) => {
             editor?.chain().setColor(color).run();
           }}
+          onClose={(color) => {
+            editor.storage.color.colors.add(color);
+          }}
           tooltip="Text Color"
+          suggestedColors={Array.from(editor.storage.color.colors)}
         >
           <BaseButton
             variant="ghost"

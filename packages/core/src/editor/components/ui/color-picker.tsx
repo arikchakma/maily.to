@@ -110,6 +110,11 @@ export function ColorPicker(props: ColorPickerProps) {
 
           {suggestedColors.length > 0 && (
             <div className="mly-mt-4 mly-flex mly-flex-wrap mly-gap-0.5">
+              <div className="mly-mb-1 mly-flex mly-w-full mly-items-center mly-justify-between mly-gap-2 mly-text-xs mly-text-gray-500">
+                <span className="mly-shrink-0">Recently used</span>
+                <div className="mly-h-0.5 mly-w-full mly-rounded mly-bg-gray-200" />
+              </div>
+
               {suggestedColors.map((suggestedColor) => (
                 <BaseButton
                   key={suggestedColor}

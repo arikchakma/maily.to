@@ -145,7 +145,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   const state = useTextMenuState(editor);
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
   const colors = editor?.storage.color.colors as Set<string>;
-  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 10) ?? [];
+  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
 
   return (
     <BubbleMenu

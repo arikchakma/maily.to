@@ -116,6 +116,44 @@ You can pass variables to the editor in two ways:
 
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
 
+### Extensions
+
+Extensions are a way to extend the editor's functionality. You can add custom blocks, marks, or extend the editor's functionality using extensions.
+
+```tsx
+// (Omitted repeated imports)
+import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/core';
+
+<Editor
+  extensions={[
+    MailyKit.configure({
+      // it will disable the default
+      // variable extension
+      variable: false,
+    }),
+    VariableExtension.configure({
+      suggestions: getVariableSuggestions(
+        // use the same variables
+        // you passed to the editor
+        variables,
+        // use the same trigger character
+        // you passed to the editor
+        variableTriggerCharacter
+      ),
+    }).extend({
+      addNodeView() {
+        // now you can replace the default
+        // VariableView with your custom view
+        return ReactNodeViewRenderer(VariableView, {
+          className: 'mly-relative mly-inline-block',
+          as: 'div',
+        });
+      },
+    }),
+  ]}
+/>
+```
+
 ## License
 
 MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)

@@ -628,7 +628,7 @@ export class Maily {
 
   private paragraph(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const alignment = attrs?.textAlign;
+    const alignment = attrs?.textAlign || 'left';
     const { isParentListItem, shouldRemoveBottomMargin } =
       this.getMarginOverrideConditions(node, options);
 

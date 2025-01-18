@@ -109,29 +109,29 @@ export function ColorPicker(props: ColorPickerProps) {
           />
 
           {suggestedColors.length > 0 && (
-            <div className="mly-mt-4 mly-flex mly-flex-wrap mly-gap-0.5">
-              <div className="mly-mb-1 mly-flex mly-w-full mly-items-center mly-justify-between mly-gap-2 mly-text-xs mly-text-gray-500">
-                <span className="mly-shrink-0">Recently used</span>
-                <div className="mly-h-0.5 mly-w-full mly-rounded mly-bg-gray-200" />
-              </div>
+            <div>
+              <div className="-mly-mx-4 mly-my-4 mly-h-px mly-bg-gray-200" />
 
-              {suggestedColors.map((suggestedColor) => (
-                <BaseButton
-                  key={suggestedColor}
-                  variant="ghost"
-                  size="sm"
-                  className="!mly-size-7 mly-shrink-0"
-                  type="button"
-                  onClick={() => handleColorChange(suggestedColor)}
-                >
-                  <div
-                    className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded"
-                    style={{
-                      backgroundColor: suggestedColor,
-                    }}
-                  />
-                </BaseButton>
-              ))}
+              <h2 className="mly-text-xs mly-text-gray-500">Recently used</h2>
+
+              <div className="mly-mt-2 mly-flex mly-flex-wrap mly-gap-0.5">
+                {suggestedColors.map((suggestedColor) => (
+                  <BaseButton
+                    key={suggestedColor}
+                    variant="ghost"
+                    size="sm"
+                    className="!mly-size-7 mly-shrink-0"
+                    type="button"
+                    onClick={() => handleColorChange(suggestedColor)}
+                  >
+                    <div
+                      className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded"
+                      style={{
+                        backgroundColor: suggestedColor,
+                      }}
+                    />
+                  </BaseButton>
+              </div>
             </div>
           )}
         </div>

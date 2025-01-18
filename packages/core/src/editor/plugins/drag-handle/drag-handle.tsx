@@ -7,7 +7,7 @@ import { Props as TippyProps } from 'tippy.js';
 import {
   DragHandlePlugin,
   dragHandlePluginDefaultKey,
-} from '../plugins/drag-handle/drag-handle';
+} from './drag-handle-plugin';
 
 export type DragHandleProps = {
   editor: Editor;

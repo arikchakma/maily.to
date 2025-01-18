@@ -6,7 +6,6 @@ import type { NodeSelection } from '@tiptap/pm/state';
 import type { Node } from '@tiptap/pm/model';
 import { Copy, GripVertical, Plus, Trash2 } from 'lucide-react';
 import { BaseButton } from './base-button';
-import { DragHandle } from './drag-handle';
 import {
   Tooltip,
   TooltipContent,
@@ -15,6 +14,7 @@ import {
 } from './ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Divider } from './ui/divider';
+import { DragHandle } from '../plugins/drag-handle/drag-handle';
 
 export type ContentMenuProps = {
   editor: Editor;

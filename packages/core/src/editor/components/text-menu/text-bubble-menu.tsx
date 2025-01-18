@@ -144,16 +144,18 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
   const state = useTextMenuState(editor);
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
+  const colors = editor?.storage.color.colors as Set<string>;
+  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
 
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <TurnIntoBlock options={turnIntoBlockOptions} />
 
-        <Divider />
+        <Divider className="mly-mx-0" />
 
         {items.map((item, index) => (
           <BubbleMenuButton key={index} {...item} />
@@ -217,14 +219,16 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
           isVariable={state.isUrlVariable}
         />
 
-        <Divider />
+        <Divider className="mly-mx-0" />
 
         <ColorPicker
           color={state.currentTextColor}
           onColorChange={(color) => {
             editor?.chain().setColor(color).run();
           }}
+          onClose={(color) => colors.add(color)}
           tooltip="Text Color"
+          suggestedColors={suggestedColors}
         >
           <BaseButton
             variant="ghost"

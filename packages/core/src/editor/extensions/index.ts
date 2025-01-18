@@ -1,5 +1,4 @@
 import StarterKit from '@tiptap/starter-kit';
-import { Color } from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
 import Paragraph from '@tiptap/extension-paragraph';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -11,6 +10,7 @@ import Document from '@tiptap/extension-document';
 import Focus from '@tiptap/extension-focus';
 import Dropcursor from '@tiptap/extension-dropcursor';
 
+import { Color } from './color';
 import { HorizontalRule } from './horizontal-rule';
 import { Footer } from '../nodes/footer';
 import { Spacer } from '../nodes/spacer';

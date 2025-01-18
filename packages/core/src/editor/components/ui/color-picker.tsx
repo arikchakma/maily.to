@@ -131,6 +131,7 @@ export function ColorPicker(props: ColorPickerProps) {
                       }}
                     />
                   </BaseButton>
+                ))}
               </div>
             </div>
           )}

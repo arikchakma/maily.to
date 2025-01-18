@@ -133,11 +133,12 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
     }),
     VariableExtension.configure({
       suggestions: getVariableSuggestions(
-        // use the same variables
-        // you passed to the editor
+        // --------IMPORTANT--------
+        // use the same values you passed to the editor
+        // we will simplify this in the future
+        // so that you don't have to pass the
+        // values multiple times
         variables,
-        // use the same trigger character
-        // you passed to the editor
         variableTriggerCharacter
       ),
     }).extend({

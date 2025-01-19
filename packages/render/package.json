@@ -55,8 +55,8 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.25",
-    "@react-email/render": "^1.0.1"
+    "@react-email/components": "^0.0.28",
+    "@react-email/render": "^1.0.2"
   },
   "peerDependencies": {
     "react": "^18"

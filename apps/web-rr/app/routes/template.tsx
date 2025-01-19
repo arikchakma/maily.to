@@ -1,12 +1,29 @@
 import type { Route } from './+types/template';
-import { Link, redirect } from 'react-router';
+import { Link, redirect, useFetcher } from 'react-router';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { Editor } from '@maily-to/core';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { PreviewTextInfo } from '~/components/preview-text-info';
-import { X, XIcon } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import {
+  ArrowLeftIcon,
+  ArrowUpRight,
+  ClipboardCopyIcon,
+  CogIcon,
+  EyeIcon,
+  PlusIcon,
+  SaveIcon,
+  SendIcon,
+  SettingsIcon,
+  XIcon,
+} from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '~/components/ui/button';
+import { render } from '@maily-to/render';
+import { EmailEditor } from '~/components/email-editor';
+import type { Editor as TiptapEditor } from '@tiptap/core';
+import { toast } from 'sonner';
+import { useCopyToClipboard } from '~/hooks/use-copy-to-clipboard';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,6 +33,26 @@ export function meta({}: Route.MetaArgs) {
       content: 'Try out Maily, the Open-source editor for crafting emails.',
     },
   ];
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const json = formData.get('json');
+
+  console.log(json);
+
+  if (!json) {
+    return {
+      status: 400,
+      message: 'No JSON provided',
+    };
+  }
+
+  const html = await render(JSON.parse(json.toString()), {
+    pretty: true,
+  });
+  console.log(html);
+  return { html };
 }
 
 export async function loader(args: Route.LoaderArgs) {
@@ -51,105 +88,90 @@ export default function TemplatePage(props: Route.ComponentProps) {
   const { loaderData } = props;
   const { template } = loaderData;
 
-  const [showReplyTo, setShowReplyTo] = useState(false);
+  const fetcher = useFetcher();
+
+  const [subject, setSubject] = useState(template?.title);
+  const [previewText, setPreviewText] = useState(template?.preview_text || '');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [replyTo, setReplyTo] = useState('');
+  const [editor, setEditor] = useState<TiptapEditor | null>(null);
+  const [_, copy] = useCopyToClipboard();
 
   return (
-    <div className="mx-auto w-full max-w-[728px] p-5 px-16">
-      <div>
-        <Label className="flex items-center font-normal">
-          <span className="w-24 shrink-0 font-mono font-normal text-gray-600 after:ml-0.5 after:text-red-400 after:content-['*']">
-            Subject
-          </span>
-          <Input
-            className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-            placeholder="Email Subject"
-            type="text"
-          />
-        </Label>
-        <div className="flex items-center gap-1.5">
-          <Label className="flex grow items-center font-normal">
-            <span className="w-24 shrink-0 font-mono font-normal text-gray-600">
-              From
-            </span>
-            <Input
-              className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-              placeholder="Arik Chakma <hello@maily.to>"
-              type="text"
-            />
-          </Label>
+    <div>
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-4 p-4">
+        <div className="flex items-stretch gap-0.5 rounded-lg border border-gray-200 bg-white p-0.5">
+          <Button className="size-7 px-2" variant="ghost" size="sm">
+            <ArrowLeftIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="sr-only">Back</span>
+          </Button>
 
-          {!showReplyTo && (
-            <button
-              className="inline-block h-full shrink-0 bg-transparent px-1 text-sm text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:text-gray-400 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-gray-400"
-              type="button"
-              onClick={() => {
-                setShowReplyTo(true);
-              }}
-            >
-              Reply-To
-            </button>
-          )}
+          <div className="flex h-7 min-w-40 max-w-52 items-center justify-start rounded-md border px-2 pr-3 text-sm">
+            <span className="truncate">{template?.title}</span>
+          </div>
+
+          <Button className="size-7 px-2" variant="ghost" size="sm">
+            <PlusIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="sr-only">New Email</span>
+          </Button>
+          <Button className="size-7 px-2" variant="ghost" size="sm">
+            <SettingsIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="sr-only">Settings</span>
+          </Button>
         </div>
+        <div className="flex items-stretch gap-0.5 rounded-lg border border-gray-200 bg-white p-0.5">
+          <fetcher.Form
+            method="post"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData();
+              formData.set('json', JSON.stringify(editor?.getJSON()));
 
-        {showReplyTo && (
-          <Label className="flex items-center font-normal">
-            <span className="w-24 shrink-0 font-mono font-normal text-gray-600">
-              Reply-To
-            </span>
-            <div className="align-content-stretch flex grow items-center">
-              <Input
-                className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-                placeholder="noreply@maily.to"
-                type="text"
-              />
-              <button
-                className="flex h-10 shrink-0 items-center bg-transparent px-1 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
-                type="button"
-                onClick={() => {
-                  setShowReplyTo(false);
-                }}
-              >
-                <X className="inline-block size-4" />
-              </button>
-            </div>
-          </Label>
-        )}
+              fetcher.submit(formData, {
+                method: 'post',
+              });
+            }}
+          >
+            <Button
+              className="size-7 px-2"
+              variant="ghost"
+              size="sm"
+              type="submit"
+            >
+              <ClipboardCopyIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+              <span className="sr-only">Copy Email</span>
+            </Button>
+          </fetcher.Form>
 
-        <Label className="flex items-center font-normal">
-          <span className="w-24 shrink-0 font-mono font-normal text-gray-600">
-            To
-          </span>
-          <Input
-            className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-            placeholder="Email Recipient(s)"
-            type="text"
-          />
-        </Label>
-
-        <div className="relative my-6">
-          <Input
-            className="h-auto rounded-none border-x-0 border-gray-300 px-0 py-2.5 pr-5 text-base focus-visible:border-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-            placeholder="Preview Text"
-            type="text"
-          />
-          <span className="absolute right-0 top-0 flex h-full items-center">
-            <PreviewTextInfo />
-          </span>
+          <Button className="size-7 px-2" variant="ghost" size="sm">
+            <EyeIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="sr-only">Preview Email</span>
+          </Button>
+          <Button className="size-7 px-2" variant="ghost" size="sm">
+            <SendIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="sr-only">Send Email</span>
+          </Button>
+          <Button className="h-7 gap-2 px-2 font-normal" size="sm">
+            <SaveIcon className="mly-stroke-[2.5] size-3 shrink-0" />
+            <span className="text-sm">Save Email</span>
+          </Button>
         </div>
       </div>
 
-      <Editor
-        config={{
-          hasMenuBar: false,
-          wrapClassName: 'editor-wrap',
-          bodyClassName: '!mt-0 !border-0 !p-0',
-          contentClassName: 'editor-content',
-          toolbarClassName: 'flex-wrap !items-start',
-          spellCheck: false,
-          autofocus: 'end',
-          immediatelyRender: false,
-        }}
-        contentJson={JSON.parse(template?.content as any)}
+      <EmailEditor
+        template={template}
+        subject={subject}
+        setSubject={setSubject}
+        previewText={previewText}
+        setPreviewText={setPreviewText}
+        from={from}
+        setFrom={setFrom}
+        to={to}
+        setTo={setTo}
+        replyTo={replyTo}
+        setReplyTo={setReplyTo}
+        setEditor={setEditor}
       />
     </div>
   );

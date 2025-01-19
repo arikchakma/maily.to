@@ -227,10 +227,12 @@ export function ImageView(props: NodeViewProps) {
 
 type ImageStatusLabelProps = {
   status: ImageStatus | 'variable';
+  className?: string;
+  style?: CSSProperties;
 };
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
-  const { status } = props;
+  const { status, className, style } = props;
   return (
     <div
       className={cn(
@@ -238,8 +240,10 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
         {
           'mly-text-gray-500 hover:mly-bg-soft-gray/60': status === 'loading',
           'mly-text-red-500 hover:mly-bg-soft-gray/60': status === 'error',
-        }
+        },
+        className
       )}
+      style={style}
     >
       {status === 'idle' && (
         <>

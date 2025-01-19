@@ -1,5 +1,5 @@
 {
-  "name": "web-rr",
+  "name": "@maily-to/web",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
     "@maily-to/render": "workspace:*",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.3",
     "@react-router/express": "^7.1.1",
     "@react-router/node": "^7.1.1",
     "@supabase/ssr": "^0.5.1",

@@ -43,42 +43,27 @@ export function meta(meta: MetaDescriptors) {
           })
         );
       })
-      .map(processMeta)
+      .map(process)
       .filter(Boolean) as JSX.Element[]
   );
 }
 
-function processMeta(meta: MetaDescriptor) {
-  if ('charSet' in meta) {
-    return <meta charSet={meta.charSet} />;
+function process(props: MetaDescriptor) {
+  if ('tagName' in props) {
+    const { tagName, ...attributes } = props;
+    const Comp = tagName;
+    return <Comp key={JSON.stringify(attributes)} {...attributes} />;
   }
 
-  if ('title' in meta) {
-    return <title>{meta.title}</title>;
+  if ('title' in props) {
+    return <title>{props.title}</title>;
   }
 
-  if ('name' in meta && 'content' in meta) {
-    return <meta name={meta.name} content={meta.content} />;
+  if ('charSet' in props) {
+    return <meta charSet={props.charSet} />;
   }
 
-  if ('property' in meta && 'content' in meta) {
-    return <meta property={meta.property} content={meta.content} />;
-  }
-
-  if ('httpEquiv' in meta && 'content' in meta) {
-    return <meta httpEquiv={meta.httpEquiv} content={meta.content} />;
-  }
-
-  if ('tagName' in meta) {
-    const { tagName, ...attributes } = meta;
-    return createElement(tagName, attributes);
-  }
-
-  const tagAttributes = Object.entries(meta).reduce(
-    (acc, [key, value]) => ({ ...acc, [key]: value }),
-    {}
-  );
-  return <meta {...tagAttributes} />;
+  return <meta key={JSON.stringify(props)} {...props} />;
 }
 
 /**

@@ -501,9 +501,7 @@ export class Maily {
     });
 
     const { preview } = this.config;
-    const tags = meta(this.meta).map((m) => (
-      <Fragment key={generateKey()}>{m}</Fragment>
-    ));
+    const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
 
     const markup = (

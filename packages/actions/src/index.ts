@@ -12,7 +12,6 @@ export async function renderEmail(
   }
 
   const content = JSON.parse(json);
-  console.log(content);
 
   const html = await render(content, {
     preview: previewText,

@@ -40,8 +40,6 @@ export async function previewEmailAction(formData: FormData) {
 
   const content = JSON.parse(json);
 
-  console.log(content);
-
   const html = await render(content, {
     preview: previewText,
   });
@@ -123,11 +121,7 @@ export async function sendTestEmailAction(formData: FormData) {
 
   const { subject, json, previewText, from, replyTo, to } = result.data;
 
-  console.log(json);
-
   const content = JSON.parse(json);
-
-  console.log(content);
 
   const html = await render(content, {
     preview: previewText,

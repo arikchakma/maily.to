@@ -48,7 +48,6 @@ function SubmitButton(props: SubmitButtonProps) {
 
 export function PreviewEmail() {
   const { json, previewText } = useEditorContext((s) => {
-        console.log(JSON.stringify(s.json));
     return {
       json: s.json,
       previewText: s.previewText,

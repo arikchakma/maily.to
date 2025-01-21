@@ -438,12 +438,12 @@ export class Maily {
       <Html>
         <Head>
           <Font
-            fallbackFontFamily="sans-serif"
-            fontFamily="Inter"
+            fallbackFontFamily={['Georgia', 'sans-serif']}
+            fontFamily="SF Pro Display"
             fontStyle="normal"
             fontWeight={400}
             webFont={{
-              url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
+              url: 'https://fonts.cdnfonts.com/css/sf-pro-display',
               format: 'woff2',
             }}
           />

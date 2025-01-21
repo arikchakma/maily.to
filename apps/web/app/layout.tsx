@@ -1,13 +1,10 @@
 import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { TopLoader } from '@/components/top-loader';
 import { config } from '@/lib/config';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maily.to'),
@@ -71,7 +68,13 @@ export default function RootLayout(props: RootLayoutProps) {
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <head>
+        <link
+          href="https://fonts.cdnfonts.com/css/sf-pro-display"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
         <TopLoader />
         {children}
         <Toaster richColors />

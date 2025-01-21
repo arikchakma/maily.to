@@ -58,24 +58,6 @@ export default async function Playground() {
 
   return (
     <main className="mx-auto w-full max-w-[calc(36rem+40px)] px-5">
-      <header className="mt-14 border-b pb-6">
-        <p className="sm:text-lg">
-          <Balancer>
-            You can create an account to save email templates as well. It&apos;s
-            free and easy to use.
-          </Balancer>
-        </p>
-
-        <div className="mt-5 flex items-stretch gap-2">
-          <NextLink
-            className="flex items-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
-            href="/login"
-          >
-            <LogIn className="mr-1 inline-block" size={16} />
-            Login / Register
-          </NextLink>
-        </div>
-      </header>
       <div className="mt-6 flex items-center gap-1.5">
         <ApiConfiguration />
         <PreviewEmail />

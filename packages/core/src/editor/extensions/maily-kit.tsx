@@ -1,6 +1,4 @@
 import { AnyExtension, Extension } from '@tiptap/core';
-import { VariableExtension, VariableOptions } from '../nodes/variable/variable';
-import { SlashCommandExtension } from './slash-command/slash-command';
 
 import StarterKit from '@tiptap/starter-kit';
 import ListItem from '@tiptap/extension-list-item';
@@ -27,23 +25,52 @@ import { ButtonExtension } from '../nodes/button/button';
 import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
 import { LinkExtension } from '../nodes/link';
-import { BlockItem } from '@/blocks';
+import { VariableExtension, VariableOptions } from '../nodes/variable/variable';
+import { LinkOptions } from '@tiptap/extension-link';
+import { getVariableSuggestions } from '@/extensions';
 
 export type MailyKitOptions = {
-  variable: Partial<VariableOptions> | false;
-  linkCard: Partial<LinkCardOptions> | false;
+  variable?: Partial<VariableOptions> | false;
+  linkCard?: Partial<LinkCardOptions> | false;
+  for?: Partial<{}> | false;
+  section?: Partial<{}> | false;
+  columns?: Partial<{}> | false;
+  column?: Partial<{}> | false;
+  button?: Partial<{}> | false;
+  spacer?: Partial<{}> | false;
+  logo?: Partial<{}> | false;
+  image?: Partial<{}> | false;
+  link?: Partial<LinkOptions> | false;
 };
 
 export const MailyKit = Extension.create<MailyKitOptions>({
   name: 'maily-kit',
+
+  addOptions() {
+    return {
+      link: {
+        HTMLAttributes: {
+          target: '_blank',
+          rel: 'noopener noreferrer nofollow',
+          class: 'mly-no-underline',
+        },
+        openOnClick: false,
+      },
+      variable: {
+        variables: [
+          {
+            name: 'arik',
+          },
+        ],
+      },
+    };
+  },
 
   addExtensions() {
     const extensions: AnyExtension[] = [
       Document.extend({
         content: '(block|columns)+',
       }),
-      ColumnsExtension,
-      ColumnExtension,
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3],
@@ -83,7 +110,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         document: false,
       }),
       Underline,
-      LogoExtension,
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure(),
       TextAlign.configure({
@@ -111,26 +137,13 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         },
         includeChildren: true,
       }),
-      Spacer,
       Footer,
-      LinkExtension.configure({
-        HTMLAttributes: {
-          target: '_blank',
-          rel: 'noopener noreferrer nofollow',
-          class: 'mly-no-underline',
-        },
-        openOnClick: false,
-      }),
-      ImageExtension,
       Focus,
-      SectionExtension,
-      ForExtension,
       Dropcursor.configure({
         color: '#555',
         width: 3,
         class: 'ProseMirror-dropcursor',
       }),
-      ButtonExtension,
     ];
 
     if (this.options.variable !== false) {
@@ -139,6 +152,42 @@ export const MailyKit = Extension.create<MailyKitOptions>({
 
     if (this.options.linkCard !== false) {
       extensions.push(LinkCardExtension.configure(this.options.linkCard));
+    }
+
+    if (this.options.for !== false) {
+      extensions.push(ForExtension);
+    }
+
+    if (this.options.section !== false) {
+      extensions.push(SectionExtension);
+    }
+
+    if (this.options.columns !== false) {
+      extensions.push(ColumnsExtension);
+    }
+
+    if (this.options.column !== false) {
+      extensions.push(ColumnExtension);
+    }
+
+    if (this.options.button !== false) {
+      extensions.push(ButtonExtension);
+    }
+
+    if (this.options.spacer !== false) {
+      extensions.push(Spacer);
+    }
+
+    if (this.options.logo !== false) {
+      extensions.push(LogoExtension);
+    }
+
+    if (this.options.image !== false) {
+      extensions.push(ImageExtension);
+    }
+
+    if (this.options.link !== false) {
+      extensions.push(LinkExtension.configure(this.options.link));
     }
 
     return extensions;

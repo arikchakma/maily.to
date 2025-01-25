@@ -122,7 +122,7 @@ Extensions are a way to extend the editor's functionality. You can add custom bl
 
 ```tsx
 // (Omitted repeated imports)
-import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/core';
+import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
 
 <Editor
   extensions={[
@@ -153,6 +153,19 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
     }),
   ]}
 />
+```
+
+> IMPORTANT: if you're extending the extensions, and want to use the default variable view then make sure to pass `suggestions` to the `MailyKit.config`. Otherwise, the variable extension will not work. In the future, we will simplify this so that you don't have to pass the values multiple times.
+
+```tsx
+MailyKit.configure({
+  variable: {
+    suggestion: getVariableSuggestions(
+      variables,
+      variableTriggerCharacter
+    ),
+  },
+}),
 ```
 
 ## License

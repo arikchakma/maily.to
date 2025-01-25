@@ -29,4 +29,12 @@ export default defineConfig([
     external: ['react'],
     outDir: 'dist/blocks',
   },
+  {
+    ...packageOptions,
+    entry: {
+      index: 'src/extensions.ts',
+    },
+    external: ['react'],
+    outDir: 'dist/extensions',
+  },
 ]);

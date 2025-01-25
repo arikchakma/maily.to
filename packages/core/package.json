@@ -20,6 +20,11 @@
       "browser": "./dist/blocks/index.mjs",
       "import": "./dist/blocks/index.mjs",
       "require": "./dist/blocks/index.js"
+    },
+    "./extensions": {
+      "browser": "./dist/extensions/index.mjs",
+      "import": "./dist/extensions/index.mjs",
+      "require": "./dist/extensions/index.js"
     }
   },
   "typesVersions": {
@@ -29,6 +34,9 @@
       ],
       "blocks": [
         "dist/blocks/index.d.ts"
+      ],
+      "extensions": [
+        "dist/extensions/index.d.ts"
       ]
     }
   },

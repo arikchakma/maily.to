@@ -5,11 +5,23 @@ interface CommandProps {
   range: Range;
 }
 
+type RenderCommandProps = {
+  editor: Editor;
+  index: number;
+  activeIndex: number;
+  onSelect: () => void;
+};
+
 export type BlockItem = {
   title: string;
-  description: string;
   searchTerms: string[];
-  icon: JSX.Element;
   shouldBeHidden?: (editor: Editor) => boolean;
   command: (options: CommandProps) => void;
-};
+} & (
+  | { icon: JSX.Element; description: string; render?: never }
+  | {
+      render: (options: RenderCommandProps) => JSX.Element;
+      icon?: never;
+      description?: string;
+    }
+);

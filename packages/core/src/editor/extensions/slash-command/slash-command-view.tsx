@@ -14,15 +14,9 @@ import {
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 
-interface CommandItemProps {
-  title: string;
-  description: string;
-  icon: ReactNode;
-}
-
 type CommandListProps = {
-  items: CommandItemProps[];
-  command: (item: CommandItemProps) => void;
+  items: BlockItem[];
+  command: (item: BlockItem) => void;
   editor: Editor;
   range: any;
 };
@@ -30,7 +24,7 @@ type CommandListProps = {
 function CommandList(props: CommandListProps) {
   const { items, command, editor } = props;
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const selectItem = useCallback(
     (index: number) => {
@@ -49,15 +43,15 @@ function CommandList(props: CommandListProps) {
       if (navigationKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === 'ArrowUp') {
-          setSelectedIndex((selectedIndex + items.length - 1) % items.length);
+          setActiveIndex((activeIndex + items.length - 1) % items.length);
           return true;
         }
         if (e.key === 'ArrowDown') {
-          setSelectedIndex((selectedIndex + 1) % items.length);
+          setActiveIndex((activeIndex + 1) % items.length);
           return true;
         }
         if (e.key === 'Enter') {
-          selectItem(selectedIndex);
+          selectItem(activeIndex);
           return true;
         }
         return false;
@@ -67,10 +61,10 @@ function CommandList(props: CommandListProps) {
     return () => {
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [items, selectedIndex, setSelectedIndex, selectItem]);
+  }, [items, activeIndex, setActiveIndex, selectItem]);
 
   useEffect(() => {
-    setSelectedIndex(0);
+    setActiveIndex(0);
   }, [items]);
 
   const commandListContainer = useRef<HTMLDivElement>(null);
@@ -78,12 +72,12 @@ function CommandList(props: CommandListProps) {
   useLayoutEffect(() => {
     const container = commandListContainer?.current;
 
-    const item = container?.children[selectedIndex] as HTMLElement;
+    const item = container?.children[activeIndex] as HTMLElement;
 
     if (item && container) {
       updateScrollView(container, item);
     }
-  }, [selectedIndex]);
+  }, [activeIndex]);
 
   return items.length > 0 ? (
     <div className="mly-z-50 mly-w-72 mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
@@ -92,12 +86,21 @@ function CommandList(props: CommandListProps) {
         ref={commandListContainer}
         className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-p-1"
       >
-        {items.map((item: CommandItemProps, index: number) => {
+        {items.map((item, index) => {
+          if (typeof item.render === 'function') {
+            return item.render({
+              editor,
+              index,
+              activeIndex,
+              onSelect: () => selectItem(index),
+            });
+          }
+
           return (
             <button
               className={cn(
                 'mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
-                index === selectedIndex
+                index === activeIndex
                   ? 'mly-bg-gray-100 mly-text-gray-900'
                   : 'mly-bg-transparent'
               )}
@@ -159,7 +162,8 @@ export function getSlashCommandSuggestions(
 
           return (
             item.title.toLowerCase().includes(search) ||
-            item.description.toLowerCase().includes(search) ||
+            (item?.description &&
+              item?.description.toLowerCase().includes(search)) ||
             (item.searchTerms &&
               item.searchTerms.some((term: string) => term.includes(search)))
           );

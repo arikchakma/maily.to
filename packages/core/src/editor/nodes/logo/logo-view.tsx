@@ -6,7 +6,7 @@ import { LogoAttributes, logoSizes } from './logo';
 import { ImageStatus, ImageStatusLabel } from '../image/image-view';
 
 export function LogoView(props: NodeViewProps) {
-  const { node } = props;
+  const { node, editor } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
 
@@ -48,8 +48,8 @@ export function LogoView(props: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="div"
-      draggable
-      data-drag-handle
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       style={{
         overflow: 'hidden',
         position: 'relative',
@@ -82,6 +82,7 @@ export function LogoView(props: NodeViewProps) {
               right: { marginLeft: 'auto' },
             }[alignment] || {}),
           }}
+          draggable={editor.isEditable}
         />
       )}
     </NodeViewWrapper>

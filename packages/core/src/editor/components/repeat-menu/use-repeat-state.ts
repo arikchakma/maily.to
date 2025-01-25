@@ -1,13 +1,13 @@
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
-export const useForState = (editor: Editor) => {
+export const useRepeatState = (editor: Editor) => {
   const states = useEditorState({
     editor,
     selector: (ctx) => {
       return {
-        each: ctx.editor.getAttributes('for')?.each,
-        currentShowIfKey: ctx.editor.getAttributes('for')?.showIfKey || '',
+        each: ctx.editor.getAttributes('repeat')?.each,
+        currentShowIfKey: ctx.editor.getAttributes('repeat')?.showIfKey || '',
 
         isSectionActive: ctx.editor.isActive('section'),
       };

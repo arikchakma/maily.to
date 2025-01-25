@@ -19,7 +19,7 @@ import { LinkCardExtension } from './link-card';
 import { ColumnsExtension } from '../nodes/columns/columns';
 import { ColumnExtension } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
-import { ForExtension } from '../nodes/for/for';
+import { RepeatExtension } from '../nodes/repeat/repeat';
 import { ButtonExtension } from '../nodes/button/button';
 import { VariableExtension } from '../nodes/variable/variable';
 import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
@@ -93,7 +93,7 @@ export function extensions(props: ExtensionsProps) {
             'columns',
             'column',
             'section',
-            'for',
+            'repeat',
             'show',
             'blockquote',
           ].includes(node.type.name)
@@ -122,7 +122,7 @@ export function extensions(props: ExtensionsProps) {
     LinkCardExtension,
     Focus,
     SectionExtension,
-    ForExtension,
+    RepeatExtension,
     Dropcursor.configure({
       color: '#555',
       width: 3,

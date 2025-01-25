@@ -23,7 +23,7 @@ import { SVGIcon } from '../icons/grid-lines';
 import { SectionExtension } from '@/editor/nodes/section/section';
 import { ColumnExtension } from '@/editor/nodes/columns/column';
 import { ColumnsExtension } from '@/editor/nodes/columns/columns';
-import { ForExtension } from '@/editor/nodes/for/for';
+import { RepeatExtension } from '@/editor/nodes/repeat/repeat';
 import { TurnIntoBlock } from './turn-into-block';
 import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
 
@@ -108,7 +108,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       }
 
       const nestedNodes = [
-        ForExtension.name,
+        RepeatExtension.name,
         SectionExtension.name,
         ColumnsExtension.name,
         ColumnExtension.name,

@@ -21,7 +21,7 @@ const components = [
   'Code',
   'Section',
   'Columns',
-  'For',
+  'Repeat',
   'Show',
 ];
 

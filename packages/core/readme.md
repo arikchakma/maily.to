@@ -96,8 +96,8 @@ You can pass variables to the editor in two ways:
        // query: the text after the trigger character
        // from: the context from where the variables are requested (for, variable)
        // editor: the editor instance
-       if (from === 'for') {
-         // return variables for the For block `each` key
+       if (from === 'repeat-variable') {
+         // return variables for the Repeat block `each` key
          return [
            { name: 'notifications' },
            { name: 'comments' },

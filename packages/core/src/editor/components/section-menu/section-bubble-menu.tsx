@@ -42,15 +42,15 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       const activeSectionNode = getClosestNodeByName(editor, 'section');
-      const forNodeChildren = activeSectionNode
+      const repeatNodeChildren = activeSectionNode
         ? findChildren(activeSectionNode?.node, (node) => {
-            return node.type.name === 'for';
+            return node.type.name === 'repeat';
           })?.[0]
         : null;
-      const hasActiveForNodeChildren =
-        forNodeChildren && editor.isActive('for');
+      const hasActiveRepeatNodeChildren =
+        repeatNodeChildren && editor.isActive('repeat');
 
-      if (isTextSelected(editor) || hasActiveForNodeChildren) {
+      if (isTextSelected(editor) || hasActiveRepeatNodeChildren) {
         return false;
       }
 

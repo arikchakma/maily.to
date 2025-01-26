@@ -632,6 +632,11 @@ export class Maily {
     const { isParentListItem, shouldRemoveBottomMargin } =
       this.getMarginOverrideConditions(node, options);
 
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
     return (
       <Text
         style={{
@@ -759,6 +764,11 @@ export class Maily {
     );
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
+
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
 
     return (
       <Heading

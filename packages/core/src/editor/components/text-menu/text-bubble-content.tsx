@@ -28,6 +28,8 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
   const { editor, showListMenu = true } = props;
 
   const state = useTextMenuState(editor);
+  const colors = editor?.storage.color.colors as Set<string>;
+  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
 
   const items: BubbleMenuItem[] = [
     {
@@ -136,6 +138,7 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
           editor?.chain().setColor(color).run();
         }}
         tooltip="Text Color"
+        suggestedColors={suggestedColors}
       >
         <BaseButton
           variant="ghost"

@@ -28,7 +28,11 @@ export function VariableView(props: NodeViewProps) {
       className="react-component mly-inline-block mly-leading-none"
       draggable="false"
     >
-      <Popover>
+      <Popover
+        onOpenChange={(open) => {
+          editor.storage.variable.popover = open;
+        }}
+      >
         <PopoverTrigger>
           {renderVariable({
             variable: { name: id, required: required, valid: true },

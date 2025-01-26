@@ -14,7 +14,7 @@ export function VariableBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     pluginKey: 'variable-menu',
     shouldShow: ({ editor }) => {
-      return editor.isActive('variable');
+      return editor.isActive('variable') && !editor.storage.variable?.popover;
     },
     tippyOptions: {
       popperOptions: {

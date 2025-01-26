@@ -91,16 +91,18 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   };
 
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
+  const colors = editor?.storage.color.colors as Set<string>;
+  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
 
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-1 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <TurnIntoBlock options={turnIntoBlockOptions} />
 
-        <Divider />
+        <Divider className="mly-mx-0" />
 
         <TextBubbleContent editor={editor} />
       </TooltipProvider>

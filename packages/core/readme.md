@@ -127,21 +127,12 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
 <Editor
   extensions={[
     MailyKit.configure({
-      // it will disable the default
-      // variable extension
-      variable: false,
+      // do disable the link card node
+      linkCard: false,
     }),
-    VariableExtension.configure({
-      suggestions: getVariableSuggestions(
-        // --------IMPORTANT--------
-        // use the same values you passed to the editor
-        // we will simplify this in the future
-        // so that you don't have to pass the
-        // values multiple times
-        variables,
-        variableTriggerCharacter
-      ),
-    }).extend({
+    // it will extend the variable extension
+    // and provide suggestions for variables
+    VariableExtension.extend({
       addNodeView() {
         // now you can replace the default
         // VariableView with your custom view
@@ -150,22 +141,14 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
           as: 'div',
         });
       },
+    }).configure({
+      suggestions: getVariableSuggestions(
+        variables,
+        variableTriggerCharacter
+      ),
     }),
   ]}
 />
-```
-
-> IMPORTANT: if you're extending the extensions, and want to use the default variable view then make sure to pass `suggestions` to the `MailyKit.config`. Otherwise, the variable extension will not work. In the future, we will simplify this so that you don't have to pass the values multiple times.
-
-```tsx
-MailyKit.configure({
-  variable: {
-    suggestion: getVariableSuggestions(
-      variables,
-      variableTriggerCharacter
-    ),
-  },
-}),
 ```
 
 ## License

@@ -25,12 +25,9 @@ import { ButtonExtension } from '../nodes/button/button';
 import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
 import { LinkExtension } from '../nodes/link';
-import { VariableExtension, VariableOptions } from '../nodes/variable/variable';
 import { LinkOptions } from '@tiptap/extension-link';
-import { getVariableSuggestions } from '@/extensions';
 
 export type MailyKitOptions = {
-  variable?: Partial<VariableOptions> | false;
   linkCard?: Partial<LinkCardOptions> | false;
   for?: Partial<{}> | false;
   section?: Partial<{}> | false;
@@ -55,13 +52,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
           class: 'mly-no-underline',
         },
         openOnClick: false,
-      },
-      variable: {
-        variables: [
-          {
-            name: 'arik',
-          },
-        ],
       },
     };
   },
@@ -145,10 +135,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         class: 'ProseMirror-dropcursor',
       }),
     ];
-
-    if (this.options.variable !== false) {
-      extensions.push(VariableExtension.configure(this.options.variable));
-    }
 
     if (this.options.linkCard !== false) {
       extensions.push(LinkCardExtension.configure(this.options.linkCard));

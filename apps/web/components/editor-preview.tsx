@@ -11,7 +11,6 @@ import { Input } from './ui/input';
 import { PreviewTextInfo } from './preview-text-info';
 import { Label } from './ui/label';
 import defaultEditorJSON from '../utils/default-editor-json.json';
-import { MailyKit } from '@maily-to/core/extensions';
 
 interface EditorPreviewProps {
   className?: string;
@@ -202,11 +201,6 @@ export function EditorPreview(props: EditorPreviewProps) {
             setEditor(e);
             setJson(e?.getJSON() || {});
           }}
-          extensions={[
-            MailyKit.configure({
-              linkCard: false,
-            }),
-          ]}
         />
       </div>
     </div>

@@ -151,6 +151,21 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
 />
 ```
 
+Or, you can add your own custom extensions, like shown below:
+
+```tsx
+// (Omitted repeated imports)
+import { CustomExtension } from './extensions/custom-extension';
+
+<Editor
+  extensions={[
+    CustomExtension.configure({
+      // your configuration
+    }),
+  ]}
+/>
+```
+
 ## License
 
 MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)

@@ -117,9 +117,6 @@ export function extensions(props: ExtensionsProps) {
         class: 'mly-no-underline',
       },
       openOnClick: false,
-      shouldAutoLink: (url) => {
-        return url.startsWith('http://') || url.startsWith('https://');
-      },
     }),
     ImageExtension,
     LinkCardExtension,

@@ -18,6 +18,7 @@ import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
 import {
+  DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
@@ -67,6 +68,7 @@ export function Editor(props: EditorProps) {
     variables = DEFAULT_VARIABLES,
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL
   } = props;
 
   let formattedContent: any = null;
@@ -137,6 +139,7 @@ export function Editor(props: EditorProps) {
       variables={variables}
       variableTriggerCharacter={variableTriggerCharacter}
       renderVariable={renderVariable}
+      placeholderUrl={placeholderUrl}
     >
       <div
         className={cn('mly-editor mly-antialiased', wrapClassName)}

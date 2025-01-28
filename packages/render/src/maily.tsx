@@ -15,11 +15,14 @@ import {
   Row,
   Column,
   Section,
+  HtmlProps,
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
 import { deepMerge } from '@antfu/utils';
 import { generateKey } from './utils';
+import type { MetaDescriptors } from './meta';
+import { meta } from './meta';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -216,6 +219,39 @@ export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
 export const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
+export const DEFAULT_META_TAGS: MetaDescriptors = [
+  {
+    name: 'viewport',
+    content: 'width=device-width',
+  },
+  {
+    httpEquiv: 'X-UA-Compatible',
+    content: 'IE=edge',
+  },
+  {
+    name: 'x-apple-disable-message-reformatting',
+  },
+  {
+    // http://www.html-5.com/metatags/format-detection-meta-tag.html
+    // It will prevent iOS from automatically detecting possible phone numbers in a block of text
+    name: 'format-detection',
+    content: 'telephone=no,address=no,email=no,date=no,url=no',
+  },
+  {
+    name: 'color-scheme',
+    content: 'light',
+  },
+  {
+    name: 'supported-color-schemes',
+    content: 'light',
+  },
+];
+
+export const DEFAULT_HTML_PROPS: HtmlProps = {
+  lang: 'en',
+  dir: 'ltr',
+};
+
 export const DEFAULT_BUTTON_PADDING_TOP = 10;
 export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
 export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
@@ -264,6 +300,8 @@ export class Maily {
   private openTrackingPixel: string | undefined;
   private payloadValues: PayloadValues = new Map();
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
+  private meta: MetaDescriptors = DEFAULT_META_TAGS;
+  private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -364,6 +402,27 @@ export class Maily {
     this.shouldReplaceVariableValues = shouldReplace;
   }
 
+  /**
+   * `setMetaTags` will add the meta tags.
+   *
+   * @param meta - The meta tags
+   */
+  setMetaTags(meta: MetaDescriptors) {
+    this.meta.push(...meta);
+  }
+
+  /**
+   * `setHtmlProps` will set the HTML props.
+   *
+   * @param props - The HTML props
+   */
+  setHtmlProps(props: HtmlProps) {
+    this.htmlProps = {
+      ...this.htmlProps,
+      ...props,
+    };
+  }
+
   getAllLinks() {
     const nodes = this.content.content || [];
     const links = new Set<string>();
@@ -447,9 +506,11 @@ export class Maily {
     });
 
     const { preview } = this.config;
+    const tags = meta(this.meta);
+    const htmlProps = this.htmlProps;
 
     const markup = (
-      <Html>
+      <Html {...htmlProps}>
         <Head>
           <Font
             fallbackFontFamily="sans-serif"
@@ -467,17 +528,7 @@ export class Maily {
             }}
           />
 
-          <meta content="width=device-width" name="viewport" />
-          <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
-          <meta name="x-apple-disable-message-reformatting" />
-          <meta
-            // http://www.html-5.com/metatags/format-detection-meta-tag.html
-            // It will prevent iOS from automatically detecting possible phone numbers in a block of text
-            content="telephone=no,address=no,email=no,date=no,url=no"
-            name="format-detection"
-          />
-          <meta content="light" name="color-scheme" />
-          <meta content="light" name="supported-color-schemes" />
+          {tags}
         </Head>
         <Body
           style={{

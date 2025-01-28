@@ -252,6 +252,11 @@ export const DEFAULT_HTML_PROPS: HtmlProps = {
   dir: 'ltr',
 };
 
+export const DEFAULT_BUTTON_PADDING_TOP = 10;
+export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
+export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
+export const DEFAULT_BUTTON_PADDING_LEFT = 32;
+
 export interface RenderOptions {
   /**
    * The options object allows you to customize the output of the rendered
@@ -957,7 +962,7 @@ export class Maily {
 
   private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       text: _text,
       isTextVariable,
       url,
@@ -968,6 +973,11 @@ export class Maily {
       borderRadius,
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
+
+      paddingTop = DEFAULT_BUTTON_PADDING_TOP,
+      paddingRight = DEFAULT_BUTTON_PADDING_RIGHT,
+      paddingBottom = DEFAULT_BUTTON_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_BUTTON_PADDING_LEFT,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -992,6 +1002,9 @@ export class Maily {
       : this.linkValues.get(url) || url;
     const text = isTextVariable ? this.variableUrlValue(_text, options) : _text;
 
+    paddingTop += 2;
+    paddingBottom += 2;
+
     return (
       <Container
         style={{
@@ -1007,13 +1020,13 @@ export class Maily {
             backgroundColor:
               variant === 'filled' ? String(buttonColor) : 'transparent',
             borderColor: String(buttonColor),
-            padding: variant === 'filled' ? '12px 34px' : '10px 34px',
             borderWidth: '2px',
             borderStyle: 'solid',
             textDecoration: 'none',
             fontSize: '14px',
             fontWeight: 500,
             borderRadius: radius,
+            padding: `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`,
           }}
         >
           {text}

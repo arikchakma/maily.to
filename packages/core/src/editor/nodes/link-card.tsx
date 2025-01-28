@@ -14,8 +14,8 @@ export function LinkCardComponent(props: NodeViewProps) {
       className={`react-component ${
         props.selected && 'ProseMirror-selectednode'
       }`}
-      draggable="true"
-      data-drag-handle=""
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
     >
       <Popover open={props.selected}>
         <PopoverTrigger asChild>
@@ -34,6 +34,7 @@ export function LinkCardComponent(props: NodeViewProps) {
                     src={image}
                     alt="link-card"
                     className="mly-no-prose !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg"
+                    draggable={editor.isEditable}
                   />
                 </div>
               )}

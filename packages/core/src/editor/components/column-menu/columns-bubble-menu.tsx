@@ -28,7 +28,8 @@ export function ColumnsBubbleMenu(props: EditorBubbleMenuProps) {
       if (
         isTextSelected(editor) ||
         editor.isActive('section') ||
-        editor.isActive('for')
+        editor.isActive('for') ||
+        !editor.isEditable
       ) {
         return false;
       }

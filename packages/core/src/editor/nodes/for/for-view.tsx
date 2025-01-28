@@ -6,8 +6,8 @@ export function ForView(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      draggable="true"
-      data-drag-handle=""
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       data-type="for"
       className="mly-relative"
     >

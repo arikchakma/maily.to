@@ -16,12 +16,13 @@ import {
   allowedButtonBorderRadius,
   AllowedButtonVariant,
   allowedButtonVariant,
+  ButtonAttributes,
 } from './button';
 import { ShowPopover } from '@/editor/components/show-popover';
 import { ButtonLabelInput } from './button-label-input';
 import { DEFAULT_RENDER_VARIABLE_FUNCTION } from '@/editor/provider';
 import { useMailyContext } from '@/editor/provider';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 
 export function ButtonView(props: NodeViewProps) {
   const { node, editor, getPos, updateAttributes } = props;
@@ -36,10 +37,39 @@ export function ButtonView(props: NodeViewProps) {
     url: externalLink,
     showIfKey = '',
     isUrlVariable,
-  } = node.attrs;
+    paddingTop,
+    paddingRight,
+    paddingBottom,
+    paddingLeft,
+  } = node.attrs as ButtonAttributes;
 
   const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
     useMailyContext();
+
+  const sizes = useMemo(
+    () => ({
+      small: {
+        paddingX: 24,
+        paddingY: 6,
+      },
+      medium: {
+        paddingX: 32,
+        paddingY: 10,
+      },
+      large: {
+        paddingX: 40,
+        paddingY: 14,
+      },
+    }),
+    []
+  );
+
+  const size = useMemo(() => {
+    return Object.entries(sizes).find(
+      ([, { paddingX, paddingY }]) =>
+        paddingRight === paddingX && paddingTop === paddingY
+    )?.[0] as 'small' | 'medium' | 'large';
+  }, [paddingRight, paddingTop, sizes]);
 
   return (
     <NodeViewWrapper
@@ -56,8 +86,7 @@ export function ButtonView(props: NodeViewProps) {
             <button
               className={cn(
                 'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors disabled:mly-pointer-events-none disabled:mly-opacity-50',
-                'mly-h-10 mly-px-4 mly-py-2',
-                'mly-px-[32px] mly-py-[20px] mly-font-semibold mly-no-underline',
+                'mly-font-semibold mly-no-underline',
                 {
                   '!mly-rounded-full': _radius === 'round',
                   '!mly-rounded-md': _radius === 'smooth',
@@ -76,6 +105,11 @@ export function ButtonView(props: NodeViewProps) {
                   // decrease the border color opacity to 80%
                   // so that it's not too prominent
                   '--button-var-border-color': `${textColor}80`,
+
+                  paddingTop,
+                  paddingRight,
+                  paddingBottom,
+                  paddingLeft,
                 } as CSSProperties
               }
               onClick={(e) => {
@@ -154,6 +188,28 @@ export function ButtonView(props: NodeViewProps) {
                   }}
                   tooltip="Style"
                   className="mly-capitalize"
+                />
+
+                <Select
+                  label="Size"
+                  value={size}
+                  options={[
+                    { value: 'small', label: 'Small' },
+                    { value: 'medium', label: 'Medium' },
+                    { value: 'large', label: 'Large' },
+                  ]}
+                  onValueChange={(value) => {
+                    const { paddingX, paddingY } =
+                      sizes[value as 'small' | 'medium' | 'large'];
+
+                    updateAttributes({
+                      paddingTop: paddingY,
+                      paddingRight: paddingX,
+                      paddingBottom: paddingY,
+                      paddingLeft: paddingX,
+                    });
+                  }}
+                  tooltip="Size"
                 />
               </div>
 

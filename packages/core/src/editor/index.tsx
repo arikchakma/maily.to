@@ -1,6 +1,10 @@
 'use client';
 
-import { Extension, FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
+import {
+  AnyExtension,
+  FocusPosition,
+  Editor as TiptapEditor,
+} from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
 import { useRef } from 'react';
@@ -13,8 +17,8 @@ import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu
 import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
+  DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
@@ -22,6 +26,7 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -30,7 +35,7 @@ export type EditorProps = {
   contentJson?: JSONContent;
   onUpdate?: (editor: TiptapEditor) => void;
   onCreate?: (editor: TiptapEditor) => void;
-  extensions?: Extension[];
+  extensions?: AnyExtension[];
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -61,12 +66,12 @@ export function Editor(props: EditorProps) {
     extensions,
     contentHtml,
     contentJson,
-    variables = DEFAULT_VARIABLES,
     blocks = DEFAULT_SLASH_COMMANDS,
+    variables = DEFAULT_VARIABLES,
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
-
     editable = true,
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL
   } = props;
 
   let formattedContent: any = null;
@@ -118,14 +123,12 @@ export function Editor(props: EditorProps) {
     onUpdate: ({ editor }) => {
       onUpdate?.(editor);
     },
-    extensions: [
-      ...defaultExtensions({
-        variables,
-        blocks,
-        variableTriggerCharacter,
-      }),
-      ...(extensions || []),
-    ],
+    extensions: defaultExtensions({
+      variables,
+      variableTriggerCharacter,
+      extensions,
+      blocks,
+    }),
     content: formattedContent,
     autofocus,
     editable,
@@ -138,9 +141,9 @@ export function Editor(props: EditorProps) {
   return (
     <MailyProvider
       variables={variables}
-      blocks={blocks}
       variableTriggerCharacter={variableTriggerCharacter}
       renderVariable={renderVariable}
+      placeholderUrl={placeholderUrl}
     >
       <div
         className={cn(

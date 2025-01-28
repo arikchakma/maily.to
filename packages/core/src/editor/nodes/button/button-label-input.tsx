@@ -1,5 +1,6 @@
 import { InputAutocomplete } from '@/editor/components/ui/input-autocomplete';
 import {
+  DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   useMailyContext,
@@ -29,6 +30,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
     variables = [],
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
   } = useMailyContext();
 
   const autoCompleteOptions = useMemo(() => {
@@ -75,7 +77,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
           }}
           autoCompleteOptions={autoCompleteOptions}
           ref={linkInputRef}
-          placeholder="maily.to/"
+          placeholder={placeholderUrl}
           className="mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none"
           triggerChar={variableTriggerCharacter}
           onSelectOption={(value) => {

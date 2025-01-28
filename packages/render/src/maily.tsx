@@ -691,7 +691,7 @@ export class Maily {
     return (
       <Text
         style={{
-          textAlign: alignment,
+          ...(alignment !== 'left' ? { textAlign: alignment } : {}),
           marginBottom:
             isParentListItem || shouldRemoveBottomMargin ? '0px' : '20px',
           marginTop: '0px',

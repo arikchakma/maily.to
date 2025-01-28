@@ -15,6 +15,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Divider } from './ui/divider';
 import { DragHandle } from '../plugins/drag-handle/drag-handle';
+import { cn } from '../utils/classname';
 
 export type ContentMenuProps = {
   editor: Editor;
@@ -122,6 +123,7 @@ export function ContentMenu(props: ContentMenuProps) {
         zIndex: 99,
       }}
       onNodeChange={handleNodeChange}
+      className={cn(editor.isEditable ? 'mly-visible' : 'mly-hidden')}
     >
       <TooltipProvider>
         <div className="mly-flex mly-items-center mly-pr-1.5">

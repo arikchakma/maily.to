@@ -46,6 +46,8 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
+
+  editable?: boolean;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -68,6 +70,7 @@ export function Editor(props: EditorProps) {
     variables = DEFAULT_VARIABLES,
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+    editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL
   } = props;
 
@@ -128,6 +131,7 @@ export function Editor(props: EditorProps) {
     }),
     content: formattedContent,
     autofocus,
+    editable,
   });
 
   if (!editor) {
@@ -142,7 +146,11 @@ export function Editor(props: EditorProps) {
       placeholderUrl={placeholderUrl}
     >
       <div
-        className={cn('mly-editor mly-antialiased', wrapClassName)}
+        className={cn(
+          'mly-editor mly-antialiased',
+          editor.isEditable ? 'mly-editable' : 'mly-not-editable',
+          wrapClassName
+        )}
         ref={menuContainerRef}
       >
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}

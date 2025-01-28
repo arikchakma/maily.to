@@ -10,7 +10,7 @@ const MAX_WIDTH = 600;
 export type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 export function ImageView(props: NodeViewProps) {
-  const { node, updateAttributes, selected } = props;
+  const { node, updateAttributes, selected, editor } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
 
@@ -150,8 +150,8 @@ export function ImageView(props: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="div"
-      draggable
-      data-drag-handle
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
@@ -193,9 +193,10 @@ export function ImageView(props: NodeViewProps) {
               cursor: 'default',
               marginBottom: 0,
             }}
+            draggable={editor.isEditable}
           />
 
-          {selected && (
+          {selected && editor.isEditable && (
             <>
               {/* Don't use a simple border as it pushes other content around. */}
               {[

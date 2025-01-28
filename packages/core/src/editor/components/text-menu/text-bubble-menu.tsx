@@ -103,7 +103,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       const nodeDOM = view.nodeDOM(from || 0) as HTMLElement;
       const node = nodeDOM || domAtPos;
 
-      if (isCustomNodeSelected(editor, node)) {
+      if (isCustomNodeSelected(editor, node) || !editor.isEditable) {
         return false;
       }
 

@@ -73,14 +73,14 @@ export function ButtonView(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      draggable="true"
-      data-drag-handle=""
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       data-type="button"
       style={{
         textAlign: alignment,
       }}
     >
-      <Popover open={props.selected}>
+      <Popover open={props.selected && editor.isEditable}>
         <PopoverTrigger asChild>
           <div>
             <button
@@ -114,6 +114,10 @@ export function ButtonView(props: NodeViewProps) {
               }
               onClick={(e) => {
                 e.preventDefault();
+                if (!editor.isEditable) {
+                  return;
+                }
+
                 const pos = getPos();
                 editor.commands.setNodeSelection(pos);
               }}

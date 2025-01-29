@@ -1,14 +1,14 @@
 import { NodeViewProps, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import { Repeat2 } from 'lucide-react';
 
-export function ForView(props: NodeViewProps) {
+export function RepeatView(props: NodeViewProps) {
   const { editor, getPos } = props;
 
   return (
     <NodeViewWrapper
+      data-type="repeat"
       draggable={editor.isEditable}
       data-drag-handle={editor.isEditable}
-      data-type="for"
       className="mly-relative"
     >
       <NodeViewContent className="is-editable" />

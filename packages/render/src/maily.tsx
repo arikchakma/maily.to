@@ -585,8 +585,8 @@ export class Maily {
     const isLastColumnElement = parent?.type === 'column' && !next;
     const isFirstColumnElement = parent?.type === 'column' && !prev;
 
-    const isFirstForElement = parent?.type === 'for' && !prev;
-    const isLastForElement = parent?.type === 'for' && !next;
+    const isFirstRepeatElement = parent?.type === 'repeat' && !prev;
+    const isLastRepeatElement = parent?.type === 'repeat' && !next;
 
     const isFirstShowElement = parent?.type === 'show' && !prev;
     const isLastShowElement = parent?.type === 'show' && !next;
@@ -599,8 +599,8 @@ export class Maily {
       isParentListItem,
       isLastColumnElement,
       isFirstColumnElement,
-      isFirstForElement,
-      isLastForElement,
+      isFirstRepeatElement,
+      isLastRepeatElement,
       isFirstShowElement,
       isLastShowElement,
 
@@ -608,13 +608,13 @@ export class Maily {
         isPrevSpacer ||
         isFirstSectionElement ||
         isFirstColumnElement ||
-        isFirstForElement ||
+        isFirstRepeatElement ||
         isFirstShowElement,
       shouldRemoveBottomMargin:
         isNextSpacer ||
         isLastSectionElement ||
         isLastColumnElement ||
-        isLastForElement ||
+        isLastRepeatElement ||
         isLastShowElement,
     };
   }
@@ -1621,7 +1621,7 @@ export class Maily {
     );
   }
 
-  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+  private repeat(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const { each = '' } = attrs || {};
 
@@ -1653,6 +1653,18 @@ export class Maily {
         })}
       </>
     );
+  }
+
+  /**
+   * @deprecated
+   * This for node is an alias for the repeat node
+   * we will remove this in the future
+   * @param node
+   * @param options
+   * @returns JSX.Element
+   */
+  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+    return this.repeat(node, options);
   }
 
   private shouldShow(node: JSONContent, options?: NodeOptions): boolean {

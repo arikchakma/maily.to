@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { InputAutocomplete } from './ui/input-autocomplete';
 import { DEFAULT_RENDER_VARIABLE_FUNCTION, useMailyContext } from '../provider';
 import { useMemo } from 'react';
-import { ForExtension } from '../nodes/for/for';
+import { RepeatExtension } from '../nodes/repeat/foreat';
 import { memo } from 'react';
 import { getClosestNodeByName } from '../utils/columns';
 import { Editor } from '@tiptap/core';

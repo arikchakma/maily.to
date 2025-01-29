@@ -296,7 +296,7 @@
     }
   }
 
-  [data-type='for'] {
+  [data-type='repeat'] {
     [data-node-view-content] > div {
       & > *:first-child {
         margin-top: 0;
@@ -308,7 +308,7 @@
     }
   }
 
-  .node-for.has-focus [data-repeat-indicator] {
+  .node-repeat.has-focus [data-repeat-indicator] {
     opacity: 1;
   }
 

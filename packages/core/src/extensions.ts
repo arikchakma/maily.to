@@ -8,7 +8,7 @@ export * from './editor/nodes/spacer';
 export * from './editor/nodes/columns/columns';
 export * from './editor/nodes/columns/column';
 export * from './editor/nodes/section/section';
-export * from './editor/nodes/for/for';
+export * from './editor/nodes/repeat/repeat';
 export * from './editor/nodes/button/button';
 export * from './editor/nodes/logo/logo';
 export * from './editor/nodes/image/image';

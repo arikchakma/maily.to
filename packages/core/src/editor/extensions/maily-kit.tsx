@@ -20,7 +20,6 @@ import { LinkCardExtension, LinkCardOptions } from './link-card';
 import { ColumnsExtension } from '../nodes/columns/columns';
 import { ColumnExtension } from '../nodes/columns/column';
 import { SectionExtension } from '../nodes/section/section';
-import { ForExtension } from '../nodes/for/for';
 import { ButtonExtension } from '../nodes/button/button';
 import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
@@ -28,10 +27,11 @@ import { LinkExtension } from '../nodes/link';
 import { LinkOptions } from '@tiptap/extension-link';
 import { HeadingExtension } from '../nodes/heading/heading';
 import { ParagraphExtension } from '../nodes/paragraph/paragraph';
+import { RepeatExtension } from '../nodes/repeat/repeat';
 
 export type MailyKitOptions = {
   linkCard?: Partial<LinkCardOptions> | false;
-  for?: Partial<{}> | false;
+  repeat?: Partial<{}> | false;
   section?: Partial<{}> | false;
   columns?: Partial<{}> | false;
   column?: Partial<{}> | false;
@@ -108,7 +108,7 @@ export const MailyKit = Extension.create<MailyKitOptions>({
               'columns',
               'column',
               'section',
-              'for',
+              'repeat',
               'show',
               'blockquote',
             ].includes(node.type.name)
@@ -144,8 +144,8 @@ export const MailyKit = Extension.create<MailyKitOptions>({
       extensions.push(LinkCardExtension.configure(this.options.linkCard));
     }
 
-    if (this.options.for !== false) {
-      extensions.push(ForExtension);
+    if (this.options.repeat !== false) {
+      extensions.push(RepeatExtension);
     }
 
     if (this.options.section !== false) {

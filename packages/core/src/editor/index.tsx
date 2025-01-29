@@ -7,11 +7,11 @@ import {
 } from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
+import { RepeatBubbleMenu } from './components/repeat-menu/repeat-bubble-menu';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
@@ -26,6 +26,7 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
+import { replaceDeprecatedNode } from './utils/replace-deprecated';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
 type ParitialMailContextType = Partial<MailyContextType>;
@@ -74,28 +75,31 @@ export function Editor(props: EditorProps) {
     placeholderUrl = DEFAULT_PLACEHOLDER_URL
   } = props;
 
-  let formattedContent: any = null;
-  if (contentJson) {
-    formattedContent =
-      contentJson?.type === 'doc'
-        ? contentJson
-        : {
-            type: 'doc',
-            content: contentJson,
-          };
-  } else if (contentHtml) {
-    formattedContent = contentHtml;
-  } else {
-    formattedContent = {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: [],
-        },
-      ],
-    };
-  }
+  const formattedContent = useMemo(() => {
+    if (contentJson) {
+      const json =
+        contentJson?.type === 'doc'
+          ? contentJson
+          : ({
+              type: 'doc',
+              content: contentJson,
+            } as JSONContent);
+
+      return replaceDeprecatedNode(json);
+    } else if (contentHtml) {
+      return contentHtml;
+    } else {
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [],
+          },
+        ],
+      };
+    }
+  }, [contentHtml, contentJson]);
 
   const menuContainerRef = useRef(null);
   const editor = useEditor({
@@ -167,7 +171,7 @@ export function Editor(props: EditorProps) {
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
-          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

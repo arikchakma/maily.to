@@ -39,17 +39,17 @@ export const section: BlockItem = {
   },
 };
 
-export const forLoop: BlockItem = {
-  title: 'For',
+export const repeat: BlockItem = {
+  title: 'Repeat',
   description: 'Loop over an array of items.',
-  searchTerms: ['for', 'loop'],
+  searchTerms: ['repeat', 'for', 'loop'],
   icon: <Repeat2 className="mly-h-4 mly-w-4" />,
   shouldBeHidden: (editor) => {
-    return editor.isActive('for');
+    return editor.isActive('repeat');
   },
   command: ({ editor, range }) => {
     // @ts-ignore
-    editor.chain().focus().deleteRange(range).setFor().run();
+    editor.chain().focus().deleteRange(range).setRepeat().run();
   },
 };
 

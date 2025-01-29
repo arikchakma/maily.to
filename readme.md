@@ -47,7 +47,7 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Link Cards
 - Section
 - Columns
-- For Loop
+- Repeat
 - Show If Condition
 
 ## Contributions

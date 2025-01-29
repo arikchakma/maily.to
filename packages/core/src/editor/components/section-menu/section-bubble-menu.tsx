@@ -50,7 +50,11 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
       const hasActiveForNodeChildren =
         forNodeChildren && editor.isActive('for');
 
-      if (isTextSelected(editor) || hasActiveForNodeChildren) {
+      if (
+        isTextSelected(editor) ||
+        hasActiveForNodeChildren ||
+        !editor.isEditable
+      ) {
         return false;
       }
 

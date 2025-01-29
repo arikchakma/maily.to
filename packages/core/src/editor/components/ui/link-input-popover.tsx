@@ -10,6 +10,7 @@ import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
 import {
+  DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   useMailyContext,
@@ -59,6 +60,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     variables = [],
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL
   } = useMailyContext();
 
   const autoCompleteOptions = useMemo(() => {
@@ -189,7 +191,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                   }}
                   autoCompleteOptions={autoCompleteOptions}
                   ref={linkInputRef}
-                  placeholder="maily.to/"
+                  placeholder={placeholderUrl}
                   className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
                   triggerChar={variableTriggerCharacter}
                   onSelectOption={(value) => {

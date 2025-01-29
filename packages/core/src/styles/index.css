@@ -160,7 +160,7 @@
   height: 16px;
 }
 
-.ProseMirror-selectednode::after {
+.mly-editable .ProseMirror-selectednode::after {
   content: '';
   position: absolute;
   inset: -2px;

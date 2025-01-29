@@ -58,7 +58,11 @@ export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
       const hasActiveSectionNodeChildren =
         sectionNodeChildren && editor.isActive('section');
 
-      if (isTextSelected(editor) || hasActiveSectionNodeChildren) {
+      if (
+        isTextSelected(editor) ||
+        hasActiveSectionNodeChildren ||
+        !editor.isEditable
+      ) {
         return false;
       }
 

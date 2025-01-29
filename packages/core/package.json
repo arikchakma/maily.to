@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/core",
-  "version": "0.0.22",
+  "version": "0.0.25",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
   "main": "./dist/index.js",
@@ -20,6 +20,11 @@
       "browser": "./dist/blocks/index.mjs",
       "import": "./dist/blocks/index.mjs",
       "require": "./dist/blocks/index.js"
+    },
+    "./extensions": {
+      "browser": "./dist/extensions/index.mjs",
+      "import": "./dist/extensions/index.mjs",
+      "require": "./dist/extensions/index.js"
     }
   },
   "typesVersions": {
@@ -29,6 +34,9 @@
       ],
       "blocks": [
         "dist/blocks/index.d.ts"
+      ],
+      "extensions": [
+        "dist/extensions/index.d.ts"
       ]
     }
   },

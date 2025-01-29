@@ -6,9 +6,9 @@ export function RepeatView(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper
-      draggable="true"
-      data-drag-handle=""
       data-type="repeat"
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       className="mly-relative"
     >
       <NodeViewContent className="is-editable" />

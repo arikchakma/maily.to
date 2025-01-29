@@ -26,6 +26,8 @@ import { LogoExtension } from '../nodes/logo/logo';
 import { ImageExtension } from '../nodes/image/image';
 import { LinkExtension } from '../nodes/link';
 import { LinkOptions } from '@tiptap/extension-link';
+import { HeadingExtension } from '../nodes/heading/heading';
+import { ParagraphExtension } from '../nodes/paragraph/paragraph';
 
 export type MailyKitOptions = {
   linkCard?: Partial<LinkCardOptions> | false;
@@ -62,12 +64,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         content: '(block|columns)+',
       }),
       StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-          HTMLAttributes: {
-            class: 'mly-relative',
-          },
-        },
         code: {
           HTMLAttributes: {
             class:
@@ -80,11 +76,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
               'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4 mly-relative',
           },
         },
-        paragraph: {
-          HTMLAttributes: {
-            class: 'mly-relative',
-          },
-        },
         bulletList: {
           HTMLAttributes: {
             class: 'mly-relative',
@@ -95,6 +86,8 @@ export const MailyKit = Extension.create<MailyKitOptions>({
             class: 'mly-relative',
           },
         },
+        heading: false,
+        paragraph: false,
         horizontalRule: false,
         dropcursor: false,
         document: false,
@@ -133,6 +126,17 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         color: '#555',
         width: 3,
         class: 'ProseMirror-dropcursor',
+      }),
+      HeadingExtension.configure({
+        levels: [1, 2, 3],
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
+      }),
+      ParagraphExtension.configure({
+        HTMLAttributes: {
+          class: 'mly-relative',
+        },
       }),
     ];
 

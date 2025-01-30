@@ -7,12 +7,11 @@ import {
 import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useRef, forwardRef, useImperativeHandle, ComponentType } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { VariablePopover, VariablePopoverRef } from './variable-popover';
-import { useRef } from 'react';
 
-type VariableListProps = {
+export type VariableListProps = {
   command: (params: { id: string; required: boolean }) => void;
   items: VariableType[];
 };
@@ -68,7 +67,8 @@ VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
   variables: Variables = DEFAULT_VARIABLES,
-  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR
+  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR,
+  variableListComponent: ComponentType<VariableListProps> = VariableList,
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     char,
@@ -86,7 +86,7 @@ export function getVariableSuggestions(
 
       return {
         onStart: (props) => {
-          component = new ReactRenderer(VariableList, {
+          component = new ReactRenderer(variableListComponent, {
             props,
             editor: props.editor,
           });

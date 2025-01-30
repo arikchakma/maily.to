@@ -144,7 +144,8 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
     }).configure({
       suggestions: getVariableSuggestions(
         variables,
-        variableTriggerCharacter
+        variableTriggerCharacter,
+        variableListComponent, // optional custom component for variable list
       ),
     }),
   ]}

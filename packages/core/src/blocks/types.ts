@@ -14,14 +14,9 @@ type RenderCommandProps = {
 
 export type BlockItem = {
   title: string;
+  description?: string;
   searchTerms: string[];
-  shouldBeHidden?: (editor: Editor) => boolean;
   command: (options: CommandProps) => void;
-} & (
-  | { icon: JSX.Element; description: string; render?: never }
-  | {
-      render: (options: RenderCommandProps) => JSX.Element;
-      icon?: never;
-      description?: string;
-    }
-);
+  icon?: JSX.Element;
+  render?: (editor: Editor) => JSX.Element | null;
+};

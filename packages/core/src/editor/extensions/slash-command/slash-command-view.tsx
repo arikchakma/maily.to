@@ -87,15 +87,6 @@ function CommandList(props: CommandListProps) {
         className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-p-1"
       >
         {items.map((item, index) => {
-          if (typeof item.render === 'function') {
-            return item.render({
-              editor,
-              index,
-              activeIndex,
-              onSelect: () => selectItem(index),
-            });
-          }
-
           return (
             <button
               className={cn(
@@ -108,15 +99,21 @@ function CommandList(props: CommandListProps) {
               onClick={() => selectItem(index)}
               type="button"
             >
-              <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
-                {item.icon}
-              </div>
-              <div>
-                <p className="mly-font-medium">{item.title}</p>
-                <p className="mly-text-xs mly-text-gray-400">
-                  {item.description}
-                </p>
-              </div>
+              {typeof item.render === 'function' ? (
+                item.render(editor)
+              ) : (
+                <>
+                  <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <p className="mly-font-medium">{item.title}</p>
+                    <p className="mly-text-xs mly-text-gray-400">
+                      {item.description}
+                    </p>
+                  </div>
+                </>
+              )}
             </button>
           );
         })}
@@ -156,7 +153,8 @@ export function getSlashCommandSuggestions(
         if (typeof query === 'string' && query.length > 0) {
           const search = query.toLowerCase();
 
-          if (item?.shouldBeHidden?.(editor)) {
+          const show = item?.render?.(editor);
+          if (show === null) {
             return false;
           }
 

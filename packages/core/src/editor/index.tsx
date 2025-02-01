@@ -72,7 +72,7 @@ export function Editor(props: EditorProps) {
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
     editable = true,
-    placeholderUrl = DEFAULT_PLACEHOLDER_URL
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -99,7 +99,7 @@ export function Editor(props: EditorProps) {
         ],
       };
     }
-  }, [contentHtml, contentJson]);
+  }, [contentHtml, contentJson, replaceDeprecatedNode]);
 
   const menuContainerRef = useRef(null);
   const editor = useEditor({

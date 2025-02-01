@@ -37,7 +37,7 @@ export type RenderVariableFunction = (
   opts: RenderVariableOptions
 ) => JSX.Element | null;
 
-export const DEFAULT_PLACEHOLDER_URL = 'maily.to/'
+export const DEFAULT_PLACEHOLDER_URL = 'maily.to/';
 
 export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
 export const DEFAULT_VARIABLES: Variables = [];
@@ -45,7 +45,7 @@ export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
   DefaultRenderVariable;
 
 export type MailyContextType = {
-  placeholderUrl?: string
+  placeholderUrl?: string;
   variableTriggerCharacter?: string;
   variables?: Variables;
   blocks?: BlockItem[];

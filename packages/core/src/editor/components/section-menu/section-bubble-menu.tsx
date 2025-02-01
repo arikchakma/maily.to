@@ -21,6 +21,7 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { useSectionState } from './use-section-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
+import { spacing } from '@/editor/utils/spacing';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -141,9 +142,10 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           value={String(state.currentMarginTop)}
           options={[
             { value: '0', label: 'None' },
-            { value: '4', label: 'Small' },
-            { value: '8', label: 'Medium' },
-            { value: '12', label: 'Large' },
+            ...spacing.map((space) => ({
+              label: space.name,
+              value: String(space.value),
+            })),
           ]}
           onValueChange={(_value) => {
             const value = Number(_value);
@@ -167,9 +169,10 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           value={String(state.currentPaddingTop)}
           options={[
             { value: '0', label: 'None' },
-            { value: '4', label: 'Small' },
-            { value: '8', label: 'Medium' },
-            { value: '12', label: 'Large' },
+            ...spacing.map((space) => ({
+              label: space.name,
+              value: String(space.value),
+            })),
           ]}
           onValueChange={(_value) => {
             const value = Number(_value);

@@ -68,7 +68,7 @@ VariableList.displayName = 'VariableList';
 export function getVariableSuggestions(
   variables: Variables = DEFAULT_VARIABLES,
   char: string = DEFAULT_VARIABLE_TRIGGER_CHAR,
-  variableListComponent: ComponentType<VariableListProps> = VariableList,
+  variableListComponent: ComponentType<VariableListProps> = VariableList
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     char,

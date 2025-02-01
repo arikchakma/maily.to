@@ -99,7 +99,10 @@ export interface ThemeOptions {
     linkCardSubTitle: string;
   }>;
   fontSize?: Partial<{
-    paragraph: string;
+    paragraph: {
+      size: string;
+      lineHeight: string;
+    };
     footer: {
       size: string;
       lineHeight: string;
@@ -179,7 +182,10 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardSubTitle: '#6B7280',
   },
   fontSize: {
-    paragraph: '15px',
+    paragraph: {
+      size: '15px',
+      lineHeight: '26.25px',
+    },
     footer: {
       size: '14px',
       lineHeight: '24px',
@@ -693,16 +699,17 @@ export class Maily {
       return <></>;
     }
 
+    const marginBottom = isParentListItem || shouldRemoveBottomMargin ? 0 : 20;
+
     return (
       <Text
         style={{
           ...(alignment !== 'left' ? { textAlign: alignment } : {}),
-          marginBottom:
-            isParentListItem || shouldRemoveBottomMargin ? '0px' : '20px',
-          marginTop: '0px',
-          fontSize: this.config.theme?.fontSize?.paragraph,
-          color: this.config.theme?.colors?.paragraph,
           ...antialiased,
+          fontSize: this.config.theme?.fontSize?.paragraph?.size,
+          lineHeight: this.config.theme?.fontSize?.paragraph?.lineHeight,
+          color: this.config.theme?.colors?.paragraph,
+          margin: `0 0 ${marginBottom}px 0`,
         }}
       >
         {node.content ? (
@@ -833,12 +840,13 @@ export class Maily {
         style={{
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
-          marginBottom: shouldRemoveBottomMargin ? '0' : '12px',
-          marginTop: 0,
           fontSize,
           lineHeight,
           fontWeight,
         }}
+        mb={shouldRemoveBottomMargin ? 0 : 12}
+        mt={0}
+        mx={0}
       >
         {this.getMappedContent(node, {
           ...options,

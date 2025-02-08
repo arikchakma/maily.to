@@ -281,12 +281,21 @@
     height: 0;
   }
 
-  .is-empty:where(.node-htmlCodeBlock)::before,
-  .is-editor-empty:first-child:where(.node-htmlCodeBlock)::before {
+  .is-empty:where(.node-htmlCodeBlock):not([data-active-tab='preview'])::before,
+  .is-editor-empty:first-child:where(.node-htmlCodeBlock):not(
+      [data-active-tab='preview']
+    )::before {
     float: none !important;
     position: absolute;
-    left: 8px;
+    left: 9px;
     top: 8px;
+  }
+
+  .is-empty:where(.node-htmlCodeBlock):not([data-active-tab='code'])::before,
+  .is-editor-empty:first-child:where(.node-htmlCodeBlock):not(
+      [data-active-tab='code']
+    )::before {
+    content: ''
   }
 
   [data-type='columns'] .is-empty::before,

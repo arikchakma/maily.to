@@ -7,7 +7,12 @@ import { getRenderContainer } from '../../utils/get-render-container';
 import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
-import { TooltipProvider } from '../ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 import { useHtmlState } from './use-html-state';
 
 export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
@@ -56,34 +61,44 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
     >
       <TooltipProvider>
         <div className="flex items-center mly-h-7 mly-rounded-md mly-bg-soft-gray mly-px-0.5">
-          <button
-            className={cn(
-              'mly-flex mly-size-6 mly-shrink-0 mly-items-center mly-justify-center mly-rounded',
-              activeTab === 'code' && 'mly-bg-white'
-            )}
-            disabled={activeTab === 'code'}
-            onClick={() => {
-              editor?.commands?.updateHtmlCodeBlock({
-                activeTab: 'code',
-              });
-            }}
-          >
-            <CodeXmlIcon className="mly-size-3 mly-shrink-0 mly-stroke-[2.5]" />
-          </button>
-          <button
-            className={cn(
-              'mly-flex mly-size-6 mly-shrink-0 mly-items-center mly-justify-center mly-rounded',
-              activeTab === 'preview' && 'mly-bg-white'
-            )}
-            disabled={activeTab === 'preview'}
-            onClick={() => {
-              editor?.commands?.updateHtmlCodeBlock({
-                activeTab: 'preview',
-              });
-            }}
-          >
-            <ViewIcon className="mly-size-3 mly-shrink-0 mly-stroke-[2.5]" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className={cn(
+                  'mly-flex mly-size-6 mly-shrink-0 mly-items-center mly-justify-center mly-rounded focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2',
+                  activeTab === 'code' && 'mly-bg-white'
+                )}
+                disabled={activeTab === 'code'}
+                onClick={() => {
+                  editor?.commands?.updateHtmlCodeBlock({
+                    activeTab: 'code',
+                  });
+                }}
+              >
+                <CodeXmlIcon className="mly-size-3 mly-shrink-0 mly-stroke-[2.5]" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent sideOffset={8}>HTML Code</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className={cn(
+                  'mly-flex mly-size-6 mly-shrink-0 mly-items-center mly-justify-center mly-rounded focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2',
+                  activeTab === 'preview' && 'mly-bg-white'
+                )}
+                disabled={activeTab === 'preview'}
+                onClick={() => {
+                  editor?.commands?.updateHtmlCodeBlock({
+                    activeTab: 'preview',
+                  });
+                }}
+              >
+                <ViewIcon className="mly-size-3 mly-shrink-0 mly-stroke-[2.5]" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent sideOffset={8}>Preview</TooltipContent>
+          </Tooltip>
         </div>
         <Divider />
         <ShowPopover

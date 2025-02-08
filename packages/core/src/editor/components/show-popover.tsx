@@ -52,12 +52,12 @@ function _ShowPopover(props: ShowPopoverProps) {
         <TooltipTrigger asChild>
           <PopoverTrigger
             className={cn(
-              'mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2',
+              'mly-flex mly-size-7 mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2',
               showIfKey &&
                 'mly-bg-rose-100 mly-text-rose-800 data-[state=open]:mly-bg-rose-100 hover:mly-bg-rose-100'
             )}
           >
-            <Eye className="mly-h-4 mly-w-4 mly-stroke-[2.5]" />
+            <Eye className="mly-h-3 mly-w-3 mly-stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent sideOffset={8}>Show block conditionally</TooltipContent>

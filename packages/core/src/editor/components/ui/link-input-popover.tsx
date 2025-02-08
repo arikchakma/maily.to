@@ -60,7 +60,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     variables = [],
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
-    placeholderUrl = DEFAULT_PLACEHOLDER_URL
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
   } = useMailyContext();
 
   const autoCompleteOptions = useMemo(() => {

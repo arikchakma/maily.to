@@ -1688,6 +1688,11 @@ export class Maily {
   }
 
   htmlCodeBlock(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
     // the text can be a proper html code block
     // or only the body of the html
     // so we need to wrap it in a proper html tag

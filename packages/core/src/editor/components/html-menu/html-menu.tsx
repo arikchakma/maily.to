@@ -104,7 +104,7 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
         <ShowPopover
           showIfKey={state.currentShowIfKey}
           onShowIfKeyValueChange={(value) => {
-            editor.commands.updateRepeat({
+            editor.commands.updateHtmlCodeBlock({
               showIfKey: value,
             });
           }}

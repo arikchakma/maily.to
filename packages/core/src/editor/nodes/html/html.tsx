@@ -10,6 +10,7 @@ import {
 import html from 'highlight.js/lib/languages/xml';
 import { createLowlight, common } from 'lowlight';
 import { HTMLCodeBlockView } from './html-view';
+import { DEFAULT_SECTION_SHOW_IF_KEY } from '@/extensions';
 
 const lowlight = createLowlight(common);
 lowlight.register('html', html);
@@ -49,6 +50,24 @@ export const HTMLCodeBlockExtension = CodeBlockLowlight.extend({
     return {
       ...this.parent?.(),
       activeTab: 'code',
+      showIfKey: {
+        default: DEFAULT_SECTION_SHOW_IF_KEY,
+        parseHTML: (element) => {
+          return (
+            element.getAttribute('data-show-if-key') ||
+            DEFAULT_SECTION_SHOW_IF_KEY
+          );
+        },
+        renderHTML(attributes) {
+          if (!attributes.showIfKey) {
+            return {};
+          }
+
+          return {
+            'data-show-if-key': attributes.showIfKey,
+          };
+        },
+      },
     };
   },
 

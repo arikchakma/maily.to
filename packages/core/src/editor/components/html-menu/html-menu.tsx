@@ -31,7 +31,6 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      console.log('');
       return editor.isActive('htmlCodeBlock');
     },
     tippyOptions: {

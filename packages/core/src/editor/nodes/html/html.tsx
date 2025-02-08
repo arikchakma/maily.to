@@ -43,7 +43,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const HTMLCodeBlock = CodeBlockLowlight.extend({
+export const HTMLCodeBlockExtension = CodeBlockLowlight.extend({
   name: 'htmlCodeBlock',
 
   addAttributes() {
@@ -74,7 +74,52 @@ export const HTMLCodeBlock = CodeBlockLowlight.extend({
       updateHtmlCodeBlock: (attrs) => updateAttributes(this.name, attrs),
     };
   },
-  
+
+  addKeyboardShortcuts() {
+    return {
+      ...this.parent?.(),
+      'Mod-a': ({ editor }) => {
+        const { selection } = editor.state;
+        const $pos = selection.$anchor;
+
+        // resolve the position to the code block node
+        // and check if the node is a code block
+        const node = $pos.node($pos.depth);
+        if (node.type.name !== this.name) {
+          return false;
+        }
+
+        // find the depth of the code block node
+        // to get the correct start and end position
+        // usually when we are inside a code block
+        // the depth is the same as the code block node
+        let depth = $pos.depth;
+        for (let d = depth; d > 0; d--) {
+          if ($pos.node(d).type.name === this.name) {
+            depth = d;
+            break;
+          }
+        }
+
+        // find the start and end position of the code block
+        // and set the selection to the code block
+        const start = $pos.before(depth) + 1; // +1 to move inside the code block
+        const end = $pos.after(depth) - 1; // -1 to stay inside the code block
+
+        const from = editor.state.doc.resolve(start);
+        const to = editor.state.doc.resolve(end);
+        if (from && to) {
+          const transaction = editor.state.tr.setSelection(
+            TextSelection.between(from, to)
+          );
+          editor.view.dispatch(transaction);
+          return true;
+        }
+
+        return false;
+      },
+    };
+  },
 }).configure({
   lowlight,
 });

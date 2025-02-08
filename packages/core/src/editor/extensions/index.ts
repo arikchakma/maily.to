@@ -5,7 +5,7 @@ import { MailyKit } from './maily-kit';
 import { SlashCommandExtension } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 import { VariableExtension } from '@/extensions';
-import { HTMLCodeBlock } from '../nodes/html/html';
+import { HTMLCodeBlockExtension } from '../nodes/html/html';
 
 type ExtensionsProps = Partial<MailyContextType> & {
   extensions?: AnyExtension[];
@@ -27,7 +27,7 @@ export function extensions(props: ExtensionsProps) {
     VariableExtension.configure({
       suggestion: getVariableSuggestions(variables, variableTriggerCharacter),
     }),
-    HTMLCodeBlock,
+    HTMLCodeBlockExtension,
   ].filter((ext) => {
     return !extensions.some((e) => e.name === ext.name);
   });

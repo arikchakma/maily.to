@@ -271,12 +271,8 @@
     --variable-icon-gap: 8px;
   }
 
-  .is-editor-empty:first-child:not(
-      [data-type='columns'],
-      [data-type='section'],
-      ul,
-      li,
-      ol
+  :where(.is-editor-empty:first-child, .is-empty):not(
+      :where([data-type='columns'], [data-type='section'], ul, li, ol, )
     )::before {
     content: attr(data-placeholder);
     float: left;
@@ -285,18 +281,12 @@
     height: 0;
   }
 
-  .is-empty:not(
-      [data-type='columns'],
-      [data-type='section'],
-      ol,
-      ul,
-      li
-    )::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: var(--placeholder-color);
-    pointer-events: none;
-    height: 0;
+  .is-empty:where(.node-htmlCodeBlock)::before,
+  .is-editor-empty:first-child:where(.node-htmlCodeBlock)::before {
+    float: none !important;
+    position: absolute;
+    left: 8px;
+    top: 8px;
   }
 
   [data-type='columns'] .is-empty::before,

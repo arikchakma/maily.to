@@ -5,12 +5,7 @@ import {
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { BubbleMenu, findChildren } from '@tiptap/react';
-import {
-  Braces,
-  InfoIcon,
-  TriangleAlert,
-  TriangleAlertIcon,
-} from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { sticky } from 'tippy.js';
 import { getRenderContainer } from '../../utils/get-render-container';

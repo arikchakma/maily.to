@@ -1,14 +1,11 @@
-import { Braces, ChevronUp, CornerDownLeft, Eye } from 'lucide-react';
+import { Eye, InfoIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { useRef, useState } from 'react';
 import { cn } from '../utils/classname';
-import { useEffect } from 'react';
 import { InputAutocomplete } from './ui/input-autocomplete';
 import { DEFAULT_RENDER_VARIABLE_FUNCTION, useMailyContext } from '../provider';
 import { useMemo } from 'react';
-import { RepeatExtension } from '../nodes/repeat/foreat';
 import { memo } from 'react';
-import { getClosestNodeByName } from '../utils/columns';
 import { Editor } from '@tiptap/core';
 import { processVariables } from '../utils/variable';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -74,9 +71,24 @@ function _ShowPopover(props: ShowPopoverProps) {
           e.preventDefault();
         }}
       >
-        <span className="mly-flex mly-items-center mly-px-1.5 mly-text-sm mly-leading-none">
+        <div className="mly-flex mly-items-center mly-gap-1.5 mly-px-1.5 mly-text-sm mly-leading-none">
           Show if
-        </span>
+          <Tooltip>
+            <TooltipTrigger>
+              <InfoIcon
+                className={cn('mly-size-3 mly-stroke-[2.5] mly-text-gray-500')}
+              />
+            </TooltipTrigger>
+            <TooltipContent
+              sideOffset={14}
+              className="mly-max-w-[285px]"
+              align="start"
+            >
+              Show the block if the selected variable is true.
+            </TooltipContent>
+          </Tooltip>
+        </div>
+
         {!isUpdatingKey && (
           <button
             onClick={() => {

@@ -5,6 +5,7 @@ import { MailyKit } from './maily-kit';
 import { SlashCommandExtension } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 import { VariableExtension } from '@/extensions';
+import { InlineImageExtension } from '../nodes/inline-image/inline-image';
 
 type ExtensionsProps = Partial<MailyContextType> & {
   extensions?: AnyExtension[];
@@ -26,6 +27,7 @@ export function extensions(props: ExtensionsProps) {
     VariableExtension.configure({
       suggestion: getVariableSuggestions(variables, variableTriggerCharacter),
     }),
+    InlineImageExtension,
   ].filter((ext) => {
     return !extensions.some((e) => e.name === ext.name);
   });

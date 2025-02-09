@@ -53,6 +53,15 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
       },
       isSrcVariable: {
         default: false,
+        renderHTML(attributes) {
+          if (!attributes.isSrcVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-src-variable': 'true',
+          };
+        },
       },
       alt: {
         default: null,
@@ -63,9 +72,27 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
 
       externalLink: {
         default: null,
+        renderHTML(attributes) {
+          if (!attributes.externalLink) {
+            return {};
+          }
+
+          return {
+            'data-external-link': attributes.externalLink,
+          };
+        },
       },
       isExternalLinkVariable: {
         default: false,
+        renderHTML(attributes) {
+          if (!attributes.isExternalLinkVariable) {
+            return {};
+          }
+
+          return {
+            'data-is-external-link-variable': 'true',
+          };
+        },
       },
     };
   },
@@ -81,11 +108,10 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
   renderHTML({ HTMLAttributes }) {
     const attrs = mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
       'data-type': this.name,
-      class: 'mly-inline',
-      style: `--mly-inline-image-height: ${HTMLAttributes.height}px; --mly-inline-image-width: ${HTMLAttributes.width}px; margin:0;`,
+      class: 'mly-inline mly-relative',
+      style: `--mly-inline-image-height: ${HTMLAttributes.height}px; --mly-inline-image-width: ${HTMLAttributes.width}px; margin:0; vertical-align: middle;`,
       draggable: 'false',
       loading: 'lazy',
-      align: 'absmiddle',
     });
 
     return ['img', attrs];
@@ -109,7 +135,7 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
       new Plugin({
         key: new PluginKey('inlineImage'),
         props: {
-          handleDoubleClickOn: (_, pos, node) => {
+          handleClickOn: (_, pos, node) => {
             if (node.type !== this.type) {
               return false;
             }

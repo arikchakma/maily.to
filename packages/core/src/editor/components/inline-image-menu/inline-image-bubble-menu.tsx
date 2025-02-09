@@ -6,6 +6,7 @@ import { TooltipProvider } from '../ui/tooltip';
 import { useInlineImageState } from './use-inline-image-state';
 import { LinkInputPopover } from '../ui/link-input-popover';
 import { ImageDownIcon } from 'lucide-react';
+import { isTextSelected } from '@/editor/utils/is-text-selected';
 
 export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -58,7 +59,7 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
             editor={editor}
             isVariable={state.isSrcVariable}
           />
-          
+
           <LinkInputPopover
             defaultValue={state?.imageExternalLink ?? ''}
             onValueChange={(value, isVariable) => {

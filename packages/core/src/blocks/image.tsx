@@ -1,3 +1,4 @@
+import { NodeSelection, Selection, TextSelection } from '@tiptap/pm/state';
 import type { BlockItem } from './types';
 import { ImageIcon } from 'lucide-react';
 
@@ -34,7 +35,28 @@ export const inlineImage: BlockItem = {
       .chain()
       .focus()
       .deleteRange(range)
-      .setInlineImage({ src: 'https://maily.to/brand/logo.png' })
+      // @ts-ignore
+      .setInlineImage({
+        src: '',
+      })
+      // @ts-ignore
+      .command((props) => {
+        const { tr, state, view, editor } = props;
+        const { from } = range;
+
+        const node = state.doc.nodeAt(from);
+        if (!node) {
+          return false;
+        }
+
+        const selection = TextSelection.create(
+          tr.doc,
+          from,
+          from + node.nodeSize
+        );
+        tr.setSelection(selection);
+        return true;
+      })
       .run();
   },
 };

@@ -223,6 +223,9 @@ export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
 export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
+export const DEFAULT_INLINE_IMAGE_HEIGHT = 20;
+export const DEFAULT_INLINE_IMAGE_WIDTH = 20;
+
 export const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
 export const DEFAULT_META_TAGS: MetaDescriptors = [
@@ -1684,5 +1687,61 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
     return !!(this.payloadValues.get(showIfKey) ?? payloadValue[showIfKey]);
+  }
+
+  private inlineImage(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    let {
+      src,
+      isSrcVariable,
+      alt = '',
+      title = '',
+      height = DEFAULT_INLINE_IMAGE_HEIGHT,
+      width = DEFAULT_INLINE_IMAGE_WIDTH,
+      externalLink = '',
+      isExternalLinkVariable,
+    } = attrs || {};
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
+    externalLink = isExternalLinkVariable
+      ? this.variableUrlValue(externalLink, options)
+      : externalLink;
+
+    const image = (
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        width={width}
+        height={height}
+        style={{
+          display: 'inline',
+          verticalAlign: 'middle',
+          width: `${width}px`,
+          height: `${height}px`,
+          outline: 'none',
+          border: 'none',
+          textDecoration: 'none',
+        }}
+      />
+    );
+
+    if (!externalLink) {
+      return image;
+    }
+
+    return (
+      <a
+        href={externalLink}
+        rel="noopener noreferrer"
+        style={{
+          display: 'inline',
+          textDecoration: 'none',
+        }}
+        target="_blank"
+      >
+        {image}
+      </a>
+    );
   }
 }

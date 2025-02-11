@@ -38,16 +38,6 @@ export interface MarkType {
   attrs?: Record<string, any> | undefined;
 }
 
-const allowedSpacers = ['sm', 'md', 'lg', 'xl'] as const;
-export type AllowedSpacers = (typeof allowedSpacers)[number];
-
-const spacers: Record<AllowedSpacers, string> = {
-  sm: '8px',
-  md: '16px',
-  lg: '32px',
-  xl: '64px',
-};
-
 const antialiased: CSSProperties = {
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
@@ -1055,7 +1045,7 @@ export class Maily {
 
   private spacer(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { height = 'auto' } = attrs || {};
+    const { height } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {
@@ -1065,7 +1055,7 @@ export class Maily {
     return (
       <Container
         style={{
-          height: spacers[height as AllowedSpacers] || height,
+          height: `${height}px`,
         }}
       />
     );

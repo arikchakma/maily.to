@@ -99,7 +99,7 @@ export function Editor(props: EditorProps) {
         ],
       };
     }
-  }, [contentHtml, contentJson]);
+  }, [contentHtml, contentJson, replaceDeprecatedNode]);
 
   const menuContainerRef = useRef(null);
   const editor = useEditor({

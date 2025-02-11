@@ -1,11 +1,8 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from './section/section';
 
-export const allowedSpacerSize = ['sm', 'md', 'lg', 'xl'] as const;
-export type AllowedSpacerSize = (typeof allowedSpacerSize)[number];
-
 export interface SpacerOptions {
-  height: AllowedSpacerSize;
+  height: number;
   showIfKey: string;
   HTMLAttributes: Record<string, any>;
 }
@@ -13,21 +10,15 @@ export interface SpacerOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     spacer: {
-      setSpacer: (options: { height: AllowedSpacerSize }) => ReturnType;
-      setSpacerSize: (height: AllowedSpacerSize) => ReturnType;
+      setSpacer: (options: { height: number }) => ReturnType;
+      setSpacerSize: (height: number) => ReturnType;
       setSpacerShowIfKey: (showIfKey: string) => ReturnType;
       unsetSpacer: () => ReturnType;
     };
   }
 }
 
-const DEFAULT_HEIGHT: AllowedSpacerSize = 'sm';
-
-function getHeightStyle(height: AllowedSpacerSize): string {
-  const heights = { sm: '8px', md: '16px', lg: '32px', xl: '64px' };
-
-  return `width: 100%; height: ${heights[height] || heights[DEFAULT_HEIGHT]}`;
-}
+export const DEFAULT_SPACER_HEIGHT = 8;
 
 export const Spacer = Node.create<SpacerOptions>({
   name: 'spacer',
@@ -38,8 +29,8 @@ export const Spacer = Node.create<SpacerOptions>({
   addAttributes() {
     return {
       height: {
-        default: null,
-        parseHTML: (element) => element.getAttribute('data-height'),
+        default: DEFAULT_SPACER_HEIGHT,
+        parseHTML: (element) => Number(element.getAttribute('data-height')),
         renderHTML: (attributes) => {
           return {
             'data-height': attributes.height,
@@ -83,9 +74,6 @@ export const Spacer = Node.create<SpacerOptions>({
       setSpacerSize:
         (height) =>
         ({ commands }) => {
-          if (!allowedSpacerSize.includes(height)) {
-            throw new Error('Invalid spacer height');
-          }
           return commands.updateAttributes('spacer', { height });
         },
 
@@ -104,7 +92,7 @@ export const Spacer = Node.create<SpacerOptions>({
   },
   renderHTML({ HTMLAttributes, node }) {
     const { height } = node.attrs as SpacerOptions;
-    HTMLAttributes.style = getHeightStyle(height);
+
     return [
       'div',
       mergeAttributes(
@@ -114,8 +102,9 @@ export const Spacer = Node.create<SpacerOptions>({
         this.options.HTMLAttributes,
         HTMLAttributes,
         {
-          class: 'spacer mly-relative mly-z-50',
+          class: 'spacer mly-relative mly-full mly-z-50',
           contenteditable: false,
+          style: `height: ${height}px;--spacer-height: ${height}px;`,
         }
       ),
     ];

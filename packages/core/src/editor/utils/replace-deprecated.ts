@@ -1,4 +1,6 @@
 import { JSONContent } from '@tiptap/core';
+import { spacing } from './spacing';
+import { DEFAULT_SPACER_HEIGHT } from '@/extensions';
 
 /**
  * To replace deprecated node type or attributes
@@ -18,6 +20,23 @@ export function replaceDeprecatedNode(json: JSONContent) {
 
     if (node.type === 'for') {
       node.type = 'repeat';
+    }
+
+    if (node.type === 'spacer') {
+      let height = node.attrs?.height;
+      if (
+        typeof height === 'string' &&
+        ['sm', 'md', 'lg', 'xl'].includes(height)
+      ) {
+        height =
+          spacing.find((s) => s.short === height)?.value ||
+          DEFAULT_SPACER_HEIGHT;
+      }
+
+      node.attrs = {
+        ...node.attrs,
+        height,
+      };
     }
 
     if (node.content) {

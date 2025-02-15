@@ -3,7 +3,7 @@ import { htmlCodeBlock } from '@/blocks/code';
 import { image, inlineImage, logo } from '@/blocks/image';
 import { columns, divider, repeat, section, spacer } from '@/blocks/layout';
 import { bulletList, orderedList } from '@/blocks/list';
-import { BlockItem } from '@/blocks/types';
+import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import {
   blockquote,
   clearLine,
@@ -15,26 +15,34 @@ import {
   text,
 } from '@/blocks/typography';
 
-export const DEFAULT_SLASH_COMMANDS: BlockItem[] = [
-  text,
-  heading1,
-  heading2,
-  heading3,
-  bulletList,
-  orderedList,
-  image,
-  logo,
-  inlineImage,
-  columns,
-  section,
-  repeat,
-  divider,
-  spacer,
-  button,
-  linkCard,
-  hardBreak,
-  blockquote,
-  footer,
-  clearLine,
-  htmlCodeBlock,
+export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
+  {
+    title: 'Blocks',
+    commands: [
+      text,
+      heading1,
+      heading2,
+      heading3,
+      bulletList,
+      orderedList,
+      image,
+      logo,
+      inlineImage,
+      columns,
+      section,
+      repeat,
+      divider,
+      spacer,
+      button,
+      linkCard,
+      hardBreak,
+      blockquote,
+      footer,
+      clearLine,
+    ],
+  },
+  {
+    title: 'Components',
+    commands: [htmlCodeBlock],
+  },
 ];

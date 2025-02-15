@@ -13,3 +13,8 @@ export type BlockItem = {
   icon?: JSX.Element;
   render?: (editor: Editor) => JSX.Element | null;
 };
+
+export type BlockGroupItem = {
+  title: string;
+  commands: BlockItem[];
+};

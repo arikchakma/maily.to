@@ -116,6 +116,27 @@ You can pass variables to the editor in two ways:
 
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
 
+### Slash Commands
+
+To render a custom block, you can pass a `render` function to the block object. The `render` function will receive the editor instance as an argument. You can return `null` if you don't want to render anything based on the editor's state.
+
+```tsx
+// (Omitted repeated imports)
+<Editor
+  blocks={[
+    {
+      title: 'Custom Block',
+      description: 'A custom block',
+      searchTerms: ['custom'],
+      command: () => {},
+      render: (editor) => {
+        return <div>Custom Block</div>;
+      },
+    },
+  ]}
+/>
+```
+
 ## License
 
 MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)

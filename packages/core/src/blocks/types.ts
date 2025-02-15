@@ -5,13 +5,6 @@ interface CommandProps {
   range: Range;
 }
 
-type RenderCommandProps = {
-  editor: Editor;
-  index: number;
-  activeIndex: number;
-  onSelect: () => void;
-};
-
 export type BlockItem = {
   title: string;
   description?: string;

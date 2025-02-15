@@ -29,6 +29,7 @@ import { cn } from './utils/classname';
 import { replaceDeprecatedNode } from './utils/replace-deprecated';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { HTMLBubbleMenu } from './components/html-menu/html-menu';
+import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -100,7 +101,7 @@ export function Editor(props: EditorProps) {
         ],
       };
     }
-  }, [contentHtml, contentJson]);
+  }, [contentHtml, contentJson, replaceDeprecatedNode]);
 
   const menuContainerRef = useRef(null);
   const editor = useEditor({
@@ -174,6 +175,7 @@ export function Editor(props: EditorProps) {
           <ContentMenu editor={editor} />
           <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <HTMLBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <InlineImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

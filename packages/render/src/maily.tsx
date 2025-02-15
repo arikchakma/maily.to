@@ -39,16 +39,6 @@ export interface MarkType {
   attrs?: Record<string, any> | undefined;
 }
 
-const allowedSpacers = ['sm', 'md', 'lg', 'xl'] as const;
-export type AllowedSpacers = (typeof allowedSpacers)[number];
-
-const spacers: Record<AllowedSpacers, string> = {
-  sm: '8px',
-  md: '16px',
-  lg: '32px',
-  xl: '64px',
-};
-
 const antialiased: CSSProperties = {
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
@@ -223,6 +213,9 @@ export const DEFAULT_COLUMN_PADDING_TOP = 0;
 export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
 export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
+
+export const DEFAULT_INLINE_IMAGE_HEIGHT = 20;
+export const DEFAULT_INLINE_IMAGE_WIDTH = 20;
 
 export const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
@@ -1056,7 +1049,7 @@ export class Maily {
 
   private spacer(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { height = 'auto' } = attrs || {};
+    const { height } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {
@@ -1066,7 +1059,7 @@ export class Maily {
     return (
       <Container
         style={{
-          height: spacers[height as AllowedSpacers] || height,
+          height: `${height}px`,
         }}
       />
     );
@@ -1724,6 +1717,62 @@ export class Maily {
           </tr>
         </tbody>
       </table>
+    );
+  }
+
+  private inlineImage(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    let {
+      src,
+      isSrcVariable,
+      alt = '',
+      title = '',
+      height = DEFAULT_INLINE_IMAGE_HEIGHT,
+      width = DEFAULT_INLINE_IMAGE_WIDTH,
+      externalLink = '',
+      isExternalLinkVariable,
+    } = attrs || {};
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
+    externalLink = isExternalLinkVariable
+      ? this.variableUrlValue(externalLink, options)
+      : externalLink;
+
+    const image = (
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        width={width}
+        height={height}
+        style={{
+          display: 'inline',
+          verticalAlign: 'middle',
+          width: `${width}px`,
+          height: `${height}px`,
+          outline: 'none',
+          border: 'none',
+          textDecoration: 'none',
+        }}
+      />
+    );
+
+    if (!externalLink) {
+      return image;
+    }
+
+    return (
+      <a
+        href={externalLink}
+        rel="noopener noreferrer"
+        style={{
+          display: 'inline',
+          textDecoration: 'none',
+        }}
+        target="_blank"
+      >
+        {image}
+      </a>
     );
   }
 }

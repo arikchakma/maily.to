@@ -225,6 +225,13 @@ export function updateColumnWidth(
 
   const { state, dispatch } = editor.view;
   const { tr } = state;
+  const { selection } = state;
+
+  const beforeNodeEnd = columnsNodePos + columnsNode.nodeSize;
+  const selectionRelative = {
+    from: selection.from - columnsNodePos,
+    to: selection.to - columnsNodePos,
+  };
 
   const updatedContent: Node[] = [];
   columnsNode.content.forEach((child, _, i) => {
@@ -242,11 +249,17 @@ export function updateColumnWidth(
   const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
   const transaction = tr.replaceWith(
     columnsNodePos,
-    columnsNodePos + columnsNode.nodeSize,
+    beforeNodeEnd,
     updatedColumnsNode
   );
 
-  dispatch(transaction);
+  const newSelection = TextSelection.create(
+    transaction.doc,
+    columnsNodePos + selectionRelative.from,
+    columnsNodePos + selectionRelative.to
+  );
+
+  dispatch(transaction.setSelection(newSelection));
   return true;
 }
 

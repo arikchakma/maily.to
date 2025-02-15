@@ -1,7 +1,6 @@
 import { BubbleMenu } from '@tiptap/react';
 
 import { BubbleMenuButton } from '../bubble-menu-button';
-import { allowedSpacerSize } from '../../nodes/spacer';
 import {
   BubbleMenuItem,
   EditorBubbleMenuProps,
@@ -10,6 +9,8 @@ import { Divider } from '../ui/divider';
 import { useSpacerState } from './use-spacer-state';
 import { ShowPopover } from '../show-popover';
 import { TooltipProvider } from '../ui/tooltip';
+import { spacing } from '@/editor/utils/spacing';
+import { useMemo } from 'react';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -17,13 +18,20 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
     return null;
   }
 
-  const items: BubbleMenuItem[] = allowedSpacerSize.map((height) => ({
-    name: height,
-    isActive: () => editor?.isActive('spacer', { height })!,
-    command: () => {
-      editor?.chain().focus().setSpacer({ height }).run();
-    },
-  }));
+  const items: BubbleMenuItem[] = useMemo(
+    () =>
+      spacing.map((space) => {
+        const { value: height, short: name } = space;
+        return {
+          name,
+          isActive: () => editor?.isActive('spacer', { height }),
+          command: () => {
+            editor?.chain().focus().setSpacer({ height }).run();
+          },
+        };
+      }),
+    [editor]
+  );
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,

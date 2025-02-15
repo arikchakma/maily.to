@@ -29,7 +29,14 @@ export function VariableView(props: NodeViewProps) {
       draggable="false"
     >
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger
+          onClick={(e) => {
+            if (!editor.isEditable) {
+              e.preventDefault();
+              return;
+            }
+          }}
+        >
           {renderVariable({
             variable: { name: id, required: required, valid: true },
             fallback,

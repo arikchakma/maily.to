@@ -13,6 +13,7 @@ import {
   useState,
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
+import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 
 type CommandListProps = {
   items: BlockItem[];
@@ -145,7 +146,7 @@ function CommandList(props: CommandListProps) {
 }
 
 export function getSlashCommandSuggestions(
-  commands: BlockItem[] = []
+  commands: BlockItem[] = DEFAULT_SLASH_COMMANDS
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {

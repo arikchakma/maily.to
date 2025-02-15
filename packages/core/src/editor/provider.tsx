@@ -16,7 +16,7 @@ export type Variable = {
 
 export type VariableFunctionOptions = {
   query: string;
-  from: 'content-variable' | 'bubble-variable' | 'for-variable';
+  from: 'content-variable' | 'bubble-variable' | 'repeat-variable';
   editor: Editor;
 };
 
@@ -37,12 +37,15 @@ export type RenderVariableFunction = (
   opts: RenderVariableOptions
 ) => JSX.Element | null;
 
+export const DEFAULT_PLACEHOLDER_URL = 'maily.to/';
+
 export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
 export const DEFAULT_VARIABLES: Variables = [];
 export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
   DefaultRenderVariable;
 
 export type MailyContextType = {
+  placeholderUrl?: string;
   variableTriggerCharacter?: string;
   variables?: Variables;
   blocks?: BlockItem[];
@@ -50,6 +53,7 @@ export type MailyContextType = {
 };
 
 export const MailyContext = createContext<MailyContextType>({
+  placeholderUrl: DEFAULT_PLACEHOLDER_URL,
   variableTriggerCharacter: DEFAULT_VARIABLE_TRIGGER_CHAR,
   variables: DEFAULT_VARIABLES,
   blocks: DEFAULT_SLASH_COMMANDS,

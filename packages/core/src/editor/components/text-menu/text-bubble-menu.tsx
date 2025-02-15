@@ -23,9 +23,10 @@ import { SVGIcon } from '../icons/grid-lines';
 import { SectionExtension } from '@/editor/nodes/section/section';
 import { ColumnExtension } from '@/editor/nodes/columns/column';
 import { ColumnsExtension } from '@/editor/nodes/columns/columns';
-import { ForExtension } from '@/editor/nodes/for/for';
+import { RepeatExtension } from '@/editor/nodes/repeat/repeat';
 import { TurnIntoBlock } from './turn-into-block';
 import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
+import { ShowPopover } from '../show-popover';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -103,12 +104,12 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       const nodeDOM = view.nodeDOM(from || 0) as HTMLElement;
       const node = nodeDOM || domAtPos;
 
-      if (isCustomNodeSelected(editor, node)) {
+      if (isCustomNodeSelected(editor, node) || !editor.isEditable) {
         return false;
       }
 
       const nestedNodes = [
-        ForExtension.name,
+        RepeatExtension.name,
         SectionExtension.name,
         ColumnsExtension.name,
         ColumnExtension.name,
@@ -146,6 +147,10 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
   const colors = editor?.storage.color.colors as Set<string>;
   const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
+
+  const showIfKey = state?.isHeadingActive
+    ? state?.headingShowIfKey
+    : state?.paragraphShowIfKey;
 
   return (
     <BubbleMenu
@@ -247,6 +252,23 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
             </div>
           </BaseButton>
         </ColorPicker>
+
+        <Divider className="mly-mx-0" />
+        <ShowPopover
+          showIfKey={showIfKey}
+          onShowIfKeyValueChange={(value) => {
+            editor
+              ?.chain()
+              .updateAttributes(
+                state.isHeadingActive ? 'heading' : 'paragraph',
+                {
+                  showIfKey: value,
+                }
+              )
+              .run();
+          }}
+          editor={editor}
+        />
       </TooltipProvider>
     </BubbleMenu>
   );

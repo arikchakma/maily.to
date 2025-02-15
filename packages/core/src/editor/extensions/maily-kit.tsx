@@ -104,7 +104,7 @@ export const MailyKit = Extension.create<MailyKitOptions>({
           if (node.type.name === 'heading') {
             return `Heading ${node.attrs.level}`;
           } else if (node.type.name === 'htmlCodeBlock') {
-            return 'Write some code';
+            return 'Type your HTML code...';
           } else if (
             [
               'columns',

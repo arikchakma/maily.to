@@ -7,9 +7,9 @@ interface CommandProps {
 
 export type BlockItem = {
   title: string;
-  description: string;
+  description?: string;
   searchTerms: string[];
-  icon: JSX.Element;
-  shouldBeHidden?: (editor: Editor) => boolean;
   command: (options: CommandProps) => void;
+  icon?: JSX.Element;
+  render?: (editor: Editor) => JSX.Element | null;
 };

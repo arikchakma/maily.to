@@ -28,6 +28,7 @@ import {
 import { cn } from './utils/classname';
 import { replaceDeprecatedNode } from './utils/replace-deprecated';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
+import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -172,6 +173,7 @@ export function Editor(props: EditorProps) {
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
           <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <InlineImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

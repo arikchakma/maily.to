@@ -7,6 +7,7 @@ import { ButtonExtension } from '../nodes/button/button';
 import { VariableExtension } from '../nodes/variable/variable';
 import { ImageExtension } from '../nodes/image/image';
 import { LogoExtension } from '../nodes/logo/logo';
+import { InlineImageExtension } from '../nodes/inline-image/inline-image';
 
 export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
   const customNodes = [
@@ -18,6 +19,7 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     LinkCardExtension.name,
     LogoExtension.name,
     ButtonExtension.name,
+    InlineImageExtension.name,
   ];
 
   return customNodes.some((type) => editor.isActive(type));

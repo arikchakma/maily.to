@@ -1,6 +1,5 @@
 import { ColumnExtension } from '@/editor/nodes/columns/column';
 import { ColumnsExtension } from '@/editor/nodes/columns/columns';
-import { ForExtension } from '@/editor/nodes/for/for';
 import { SectionExtension } from '@/editor/nodes/section/section';
 import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
@@ -10,6 +9,7 @@ import { SVGIcon } from '../icons/grid-lines';
 import { Divider } from '../ui/divider';
 import { TooltipProvider } from '../ui/tooltip';
 import { TextBubbleContent } from './text-bubble-content';
+import { RepeatExtension } from '@/editor/nodes/repeat/repeat';
 import { TurnIntoBlock } from './turn-into-block';
 import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
 
@@ -51,12 +51,12 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
       const nodeDOM = view.nodeDOM(from || 0) as HTMLElement;
       const node = nodeDOM || domAtPos;
 
-      if (isCustomNodeSelected(editor, node)) {
+      if (isCustomNodeSelected(editor, node) || !editor.isEditable) {
         return false;
       }
 
       const nestedNodes = [
-        ForExtension.name,
+        RepeatExtension.name,
         SectionExtension.name,
         ColumnsExtension.name,
         ColumnExtension.name,

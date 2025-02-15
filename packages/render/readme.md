@@ -82,7 +82,7 @@ const html = await maily.render();
 
 ### Payloads
 
-Payload values are used for the `For Loop` and `Show If` blocks.
+Payload values are used for the `Repeat` and `Show If` blocks.
 
 ```ts
 // (Omitted repeated imports)
@@ -91,7 +91,7 @@ const maily = new Maily({
   type: 'doc',
   content: [
     {
-      type: 'for',
+      type: 'repeat',
       attrs: { each: 'items', showIfKey: null },
       content: [
         {

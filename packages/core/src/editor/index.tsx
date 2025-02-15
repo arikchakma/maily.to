@@ -1,20 +1,24 @@
 'use client';
 
-import { Extension, FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
+import {
+  AnyExtension,
+  FocusPosition,
+  Editor as TiptapEditor,
+} from '@tiptap/core';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { ForBubbleMenu } from './components/for-menu/for-bubble-menu';
+import { RepeatBubbleMenu } from './components/repeat-menu/repeat-bubble-menu';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
-import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
+  DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
@@ -23,6 +27,10 @@ import {
 } from './provider';
 import { cn } from './utils/classname';
 import { VariableBubbleMenu } from './components/variable-menu/variable-bubble-menu';
+import { replaceDeprecatedNode } from './utils/replace-deprecated';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
+import { HTMLBubbleMenu } from './components/html-menu/html-menu';
+import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -31,7 +39,7 @@ export type EditorProps = {
   contentJson?: JSONContent;
   onUpdate?: (editor: TiptapEditor) => void;
   onCreate?: (editor: TiptapEditor) => void;
-  extensions?: Extension[];
+  extensions?: AnyExtension[];
   config?: {
     hasMenuBar?: boolean;
     spellCheck?: boolean;
@@ -42,6 +50,8 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
+
+  editable?: boolean;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -60,34 +70,39 @@ export function Editor(props: EditorProps) {
     extensions,
     contentHtml,
     contentJson,
-    variables = DEFAULT_VARIABLES,
     blocks = DEFAULT_SLASH_COMMANDS,
+    variables = DEFAULT_VARIABLES,
     variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
+    editable = true,
+    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
   } = props;
 
-  let formattedContent: any = null;
-  if (contentJson) {
-    formattedContent =
-      contentJson?.type === 'doc'
-        ? contentJson
-        : {
-            type: 'doc',
-            content: contentJson,
-          };
-  } else if (contentHtml) {
-    formattedContent = contentHtml;
-  } else {
-    formattedContent = {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-          content: [],
-        },
-      ],
-    };
-  }
+  const formattedContent = useMemo(() => {
+    if (contentJson) {
+      const json =
+        contentJson?.type === 'doc'
+          ? contentJson
+          : ({
+              type: 'doc',
+              content: contentJson,
+            } as JSONContent);
+
+      return replaceDeprecatedNode(json);
+    } else if (contentHtml) {
+      return contentHtml;
+    } else {
+      return {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [],
+          },
+        ],
+      };
+    }
+  }, [contentHtml, contentJson, replaceDeprecatedNode]);
 
   const menuContainerRef = useRef(null);
   const editor = useEditor({
@@ -115,16 +130,15 @@ export function Editor(props: EditorProps) {
     onUpdate: ({ editor }) => {
       onUpdate?.(editor);
     },
-    extensions: [
-      ...defaultExtensions({
-        variables,
-        blocks,
-        variableTriggerCharacter,
-      }),
-      ...(extensions || []),
-    ],
+    extensions: defaultExtensions({
+      variables,
+      variableTriggerCharacter,
+      extensions,
+      blocks,
+    }),
     content: formattedContent,
     autofocus,
+    editable,
   });
 
   if (!editor) {
@@ -134,12 +148,16 @@ export function Editor(props: EditorProps) {
   return (
     <MailyProvider
       variables={variables}
-      blocks={blocks}
       variableTriggerCharacter={variableTriggerCharacter}
       renderVariable={renderVariable}
+      placeholderUrl={placeholderUrl}
     >
       <div
-        className={cn('mly-editor mly-antialiased', wrapClassName)}
+        className={cn(
+          'mly-editor mly-antialiased',
+          editor.isEditable ? 'mly-editable' : 'mly-not-editable',
+          wrapClassName
+        )}
         ref={menuContainerRef}
       >
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
@@ -156,8 +174,10 @@ export function Editor(props: EditorProps) {
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ContentMenu editor={editor} />
-          <ForBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <VariableBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <HTMLBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <InlineImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
     </MailyProvider>

@@ -15,11 +15,15 @@ import {
   Row,
   Column,
   Section,
+  HtmlProps,
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
 import { deepMerge } from '@antfu/utils';
 import { generateKey } from './utils';
+import type { MetaDescriptors } from './meta';
+import { meta } from './meta';
+import { parse } from 'node-html-parser';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -34,16 +38,6 @@ export interface MarkType {
   type: string;
   attrs?: Record<string, any> | undefined;
 }
-
-const allowedSpacers = ['sm', 'md', 'lg', 'xl'] as const;
-export type AllowedSpacers = (typeof allowedSpacers)[number];
-
-const spacers: Record<AllowedSpacers, string> = {
-  sm: '8px',
-  md: '16px',
-  lg: '32px',
-  xl: '64px',
-};
 
 const antialiased: CSSProperties = {
   WebkitFontSmoothing: 'antialiased',
@@ -96,7 +90,10 @@ export interface ThemeOptions {
     linkCardSubTitle: string;
   }>;
   fontSize?: Partial<{
-    paragraph: string;
+    paragraph: {
+      size: string;
+      lineHeight: string;
+    };
     footer: {
       size: string;
       lineHeight: string;
@@ -176,7 +173,10 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardSubTitle: '#6B7280',
   },
   fontSize: {
-    paragraph: '15px',
+    paragraph: {
+      size: '15px',
+      lineHeight: '26.25px',
+    },
     footer: {
       size: '14px',
       lineHeight: '24px',
@@ -214,7 +214,48 @@ export const DEFAULT_COLUMN_PADDING_RIGHT = 0;
 export const DEFAULT_COLUMN_PADDING_BOTTOM = 0;
 export const DEFAULT_COLUMN_PADDING_LEFT = 0;
 
+export const DEFAULT_INLINE_IMAGE_HEIGHT = 20;
+export const DEFAULT_INLINE_IMAGE_WIDTH = 20;
+
 export const LINK_PROTOCOL_REGEX = /https?:\/\//;
+
+export const DEFAULT_META_TAGS: MetaDescriptors = [
+  {
+    name: 'viewport',
+    content: 'width=device-width',
+  },
+  {
+    httpEquiv: 'X-UA-Compatible',
+    content: 'IE=edge',
+  },
+  {
+    name: 'x-apple-disable-message-reformatting',
+  },
+  {
+    // http://www.html-5.com/metatags/format-detection-meta-tag.html
+    // It will prevent iOS from automatically detecting possible phone numbers in a block of text
+    name: 'format-detection',
+    content: 'telephone=no,address=no,email=no,date=no,url=no',
+  },
+  {
+    name: 'color-scheme',
+    content: 'light',
+  },
+  {
+    name: 'supported-color-schemes',
+    content: 'light',
+  },
+];
+
+export const DEFAULT_HTML_PROPS: HtmlProps = {
+  lang: 'en',
+  dir: 'ltr',
+};
+
+export const DEFAULT_BUTTON_PADDING_TOP = 10;
+export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
+export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
+export const DEFAULT_BUTTON_PADDING_LEFT = 32;
 
 export interface RenderOptions {
   /**
@@ -259,6 +300,8 @@ export class Maily {
   private openTrackingPixel: string | undefined;
   private payloadValues: PayloadValues = new Map();
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
+  private meta: MetaDescriptors = DEFAULT_META_TAGS;
+  private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -359,6 +402,27 @@ export class Maily {
     this.shouldReplaceVariableValues = shouldReplace;
   }
 
+  /**
+   * `setMetaTags` will add the meta tags.
+   *
+   * @param meta - The meta tags
+   */
+  setMetaTags(meta: MetaDescriptors) {
+    this.meta.push(...meta);
+  }
+
+  /**
+   * `setHtmlProps` will set the HTML props.
+   *
+   * @param props - The HTML props
+   */
+  setHtmlProps(props: HtmlProps) {
+    this.htmlProps = {
+      ...this.htmlProps,
+      ...props,
+    };
+  }
+
   getAllLinks() {
     const nodes = this.content.content || [];
     const links = new Set<string>();
@@ -442,9 +506,11 @@ export class Maily {
     });
 
     const { preview } = this.config;
+    const tags = meta(this.meta);
+    const htmlProps = this.htmlProps;
 
     const markup = (
-      <Html>
+      <Html {...htmlProps}>
         <Head>
           <Font
             fallbackFontFamily="sans-serif"
@@ -462,17 +528,7 @@ export class Maily {
             }}
           />
 
-          <meta content="width=device-width" name="viewport" />
-          <meta content="IE=edge" httpEquiv="X-UA-Compatible" />
-          <meta name="x-apple-disable-message-reformatting" />
-          <meta
-            // http://www.html-5.com/metatags/format-detection-meta-tag.html
-            // It will prevent iOS from automatically detecting possible phone numbers in a block of text
-            content="telephone=no,address=no,email=no,date=no,url=no"
-            name="format-detection"
-          />
-          <meta content="light" name="color-scheme" />
-          <meta content="light" name="supported-color-schemes" />
+          {tags}
         </Head>
         <Body
           style={{
@@ -529,8 +585,8 @@ export class Maily {
     const isLastColumnElement = parent?.type === 'column' && !next;
     const isFirstColumnElement = parent?.type === 'column' && !prev;
 
-    const isFirstForElement = parent?.type === 'for' && !prev;
-    const isLastForElement = parent?.type === 'for' && !next;
+    const isFirstRepeatElement = parent?.type === 'repeat' && !prev;
+    const isLastRepeatElement = parent?.type === 'repeat' && !next;
 
     const isFirstShowElement = parent?.type === 'show' && !prev;
     const isLastShowElement = parent?.type === 'show' && !next;
@@ -543,8 +599,8 @@ export class Maily {
       isParentListItem,
       isLastColumnElement,
       isFirstColumnElement,
-      isFirstForElement,
-      isLastForElement,
+      isFirstRepeatElement,
+      isLastRepeatElement,
       isFirstShowElement,
       isLastShowElement,
 
@@ -552,13 +608,13 @@ export class Maily {
         isPrevSpacer ||
         isFirstSectionElement ||
         isFirstColumnElement ||
-        isFirstForElement ||
+        isFirstRepeatElement ||
         isFirstShowElement,
       shouldRemoveBottomMargin:
         isNextSpacer ||
         isLastSectionElement ||
         isLastColumnElement ||
-        isLastForElement ||
+        isLastRepeatElement ||
         isLastShowElement,
     };
   }
@@ -632,16 +688,22 @@ export class Maily {
     const { isParentListItem, shouldRemoveBottomMargin } =
       this.getMarginOverrideConditions(node, options);
 
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
+    const marginBottom = isParentListItem || shouldRemoveBottomMargin ? 0 : 20;
+
     return (
       <Text
         style={{
-          textAlign: alignment,
-          marginBottom:
-            isParentListItem || shouldRemoveBottomMargin ? '0px' : '20px',
-          marginTop: '0px',
-          fontSize: this.config.theme?.fontSize?.paragraph,
-          color: this.config.theme?.colors?.paragraph,
+          ...(alignment !== 'left' ? { textAlign: alignment } : {}),
           ...antialiased,
+          fontSize: this.config.theme?.fontSize?.paragraph?.size,
+          lineHeight: this.config.theme?.fontSize?.paragraph?.lineHeight,
+          color: this.config.theme?.colors?.paragraph,
+          margin: `0 0 ${marginBottom}px 0`,
         }}
       >
         {node.content ? (
@@ -760,6 +822,11 @@ export class Maily {
     const { fontSize, lineHeight, fontWeight } =
       headings[level as AllowedHeadings];
 
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
     return (
       <Heading
         // @ts-expect-error - `this` is not assignable to type 'never'
@@ -767,12 +834,13 @@ export class Maily {
         style={{
           textAlign: alignment,
           color: this.config.theme?.colors?.heading,
-          marginBottom: shouldRemoveBottomMargin ? '0' : '12px',
-          marginTop: 0,
           fontSize,
           lineHeight,
           fontWeight,
         }}
+        mb={shouldRemoveBottomMargin ? 0 : 12}
+        mt={0}
+        mx={0}
       >
         {this.getMappedContent(node, {
           ...options,
@@ -906,7 +974,7 @@ export class Maily {
 
   private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const {
+    let {
       text: _text,
       isTextVariable,
       url,
@@ -917,6 +985,11 @@ export class Maily {
       borderRadius,
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
+
+      paddingTop = DEFAULT_BUTTON_PADDING_TOP,
+      paddingRight = DEFAULT_BUTTON_PADDING_RIGHT,
+      paddingBottom = DEFAULT_BUTTON_PADDING_BOTTOM,
+      paddingLeft = DEFAULT_BUTTON_PADDING_LEFT,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -941,6 +1014,9 @@ export class Maily {
       : this.linkValues.get(url) || url;
     const text = isTextVariable ? this.variableUrlValue(_text, options) : _text;
 
+    paddingTop += 2;
+    paddingBottom += 2;
+
     return (
       <Container
         style={{
@@ -956,13 +1032,13 @@ export class Maily {
             backgroundColor:
               variant === 'filled' ? String(buttonColor) : 'transparent',
             borderColor: String(buttonColor),
-            padding: variant === 'filled' ? '12px 34px' : '10px 34px',
             borderWidth: '2px',
             borderStyle: 'solid',
             textDecoration: 'none',
             fontSize: '14px',
             fontWeight: 500,
             borderRadius: radius,
+            padding: `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`,
           }}
         >
           {text}
@@ -973,7 +1049,7 @@ export class Maily {
 
   private spacer(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { height = 'auto' } = attrs || {};
+    const { height } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {
@@ -983,7 +1059,7 @@ export class Maily {
     return (
       <Container
         style={{
-          height: spacers[height as AllowedSpacers] || height,
+          height: `${height}px`,
         }}
       />
     );
@@ -1547,7 +1623,7 @@ export class Maily {
     );
   }
 
-  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+  private repeat(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const { each = '' } = attrs || {};
 
@@ -1581,6 +1657,18 @@ export class Maily {
     );
   }
 
+  /**
+   * @deprecated
+   * This for node is an alias for the repeat node
+   * we will remove this in the future
+   * @param node
+   * @param options
+   * @returns JSX.Element
+   */
+  private for(node: JSONContent, options?: NodeOptions): JSX.Element {
+    return this.repeat(node, options);
+  }
+
   private shouldShow(node: JSONContent, options?: NodeOptions): boolean {
     const showIfKey = node?.attrs?.showIfKey ?? '';
     if (!showIfKey) {
@@ -1590,5 +1678,101 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
     return !!(this.payloadValues.get(showIfKey) ?? payloadValue[showIfKey]);
+  }
+
+  htmlCodeBlock(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
+    // the text can be a proper html code block
+    // or only the body of the html
+    // so we need to wrap it in a proper html tag
+    const text = node.content?.reduce((acc, n) => acc + n?.text, '') || '';
+    const doc = parse(text);
+
+    // remove head if exists
+    const head = doc.querySelector('head');
+    head?.remove();
+
+    const html = doc.toString();
+    return (
+      <table
+        align="left"
+        width="100%"
+        border={0}
+        cellPadding="0"
+        cellSpacing="0"
+        role="presentation"
+      >
+        <tbody>
+          <tr style={{ width: '100%' }}>
+            <td
+              style={{ width: '100%' }}
+              dangerouslySetInnerHTML={{
+                __html: html,
+              }}
+            />
+          </tr>
+        </tbody>
+      </table>
+    );
+  }
+
+  private inlineImage(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const { attrs } = node;
+    let {
+      src,
+      isSrcVariable,
+      alt = '',
+      title = '',
+      height = DEFAULT_INLINE_IMAGE_HEIGHT,
+      width = DEFAULT_INLINE_IMAGE_WIDTH,
+      externalLink = '',
+      isExternalLinkVariable,
+    } = attrs || {};
+
+    src = isSrcVariable ? this.variableUrlValue(src, options) : src;
+    externalLink = isExternalLinkVariable
+      ? this.variableUrlValue(externalLink, options)
+      : externalLink;
+
+    const image = (
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        width={width}
+        height={height}
+        style={{
+          display: 'inline',
+          verticalAlign: 'middle',
+          width: `${width}px`,
+          height: `${height}px`,
+          outline: 'none',
+          border: 'none',
+          textDecoration: 'none',
+        }}
+      />
+    );
+
+    if (!externalLink) {
+      return image;
+    }
+
+    return (
+      <a
+        href={externalLink}
+        rel="noopener noreferrer"
+        style={{
+          display: 'inline',
+          textDecoration: 'none',
+        }}
+        target="_blank"
+      >
+        {image}
+      </a>
+    );
   }
 }

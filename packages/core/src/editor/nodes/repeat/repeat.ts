@@ -1,10 +1,10 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
-import { ForView } from './for-view';
+import { RepeatView } from './repeat-view';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 
-type ForAttributes = {
+type RepeatAttributes = {
   each: string;
   isUpdatingKey: boolean;
   showIfKey: string;
@@ -12,15 +12,15 @@ type ForAttributes = {
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
-    for: {
-      setFor: () => ReturnType;
-      updateFor: (attrs: Partial<ForAttributes>) => ReturnType;
+    repeat: {
+      setRepeat: () => ReturnType;
+      updateRepeat: (attrs: Partial<RepeatAttributes>) => ReturnType;
     };
   }
 }
 
-export const ForExtension = Node.create({
-  name: 'for',
+export const RepeatExtension = Node.create({
+  name: 'repeat',
   group: 'block',
   content: '(block|columns)+',
   draggable: true,
@@ -87,7 +87,7 @@ export const ForExtension = Node.create({
 
   addCommands() {
     return {
-      setFor:
+      setRepeat:
         () =>
         ({ commands }) => {
           return commands.insertContent({
@@ -100,12 +100,12 @@ export const ForExtension = Node.create({
             ],
           });
         },
-      updateFor: (attrs) => updateAttributes(this.name, attrs),
+      updateRepeat: (attrs) => updateAttributes(this.name, attrs),
     };
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(ForView, {
+    return ReactNodeViewRenderer(RepeatView, {
       contentDOMElementTag: 'div',
       className: 'mly-relative',
     });

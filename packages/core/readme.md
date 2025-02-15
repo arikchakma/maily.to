@@ -94,10 +94,10 @@ You can pass variables to the editor in two ways:
      variables={({ query, from, editor }) => {
        // magic goes here
        // query: the text after the trigger character
-       // from: the context from where the variables are requested (for, variable)
+       // from: the context from where the variables are requested (repeat, variable)
        // editor: the editor instance
-       if (from === 'for') {
-         // return variables for the For block `each` key
+       if (from === 'repeat-variable') {
+         // return variables for the Repeat block `each` key
          return [
            { name: 'notifications' },
            { name: 'comments' },
@@ -113,6 +113,78 @@ You can pass variables to the editor in two ways:
    ```
 
 > Keep it in mind that if you pass an array of variable object Maily will take care of the filtering based on the query. But if you pass a function you have to take care of the filtering.
+
+### Slash Commands
+
+To render a custom block, you can pass a `render` function to the block object. The `render` function will receive the editor instance as an argument. You can return `null` if you don't want to render anything based on the editor's state.
+
+```tsx
+// (Omitted repeated imports)
+<Editor
+  blocks={[
+    {
+      title: 'Custom Block',
+      description: 'A custom block',
+      searchTerms: ['custom'],
+      command: () => {},
+      render: (editor) => {
+        return <div>Custom Block</div>;
+      },
+    },
+  ]}
+/>
+```
+
+### Extensions
+
+Extensions are a way to extend the editor's functionality. You can add custom blocks, marks, or extend the editor's functionality using extensions.
+
+```tsx
+// (Omitted repeated imports)
+import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
+
+<Editor
+  extensions={[
+    MailyKit.configure({
+      // do disable the link card node
+      linkCard: false,
+    }),
+    // it will extend the variable extension
+    // and provide suggestions for variables
+    VariableExtension.extend({
+      addNodeView() {
+        // now you can replace the default
+        // VariableView with your custom view
+        return ReactNodeViewRenderer(VariableView, {
+          className: 'mly-relative mly-inline-block',
+          as: 'div',
+        });
+      },
+    }).configure({
+      suggestions: getVariableSuggestions(
+        variables,
+        variableTriggerCharacter,
+        variableListComponent, // optional custom component for variable list
+      ),
+    }),
+  ]}
+/>
+```
+
+Or, you can add your own custom extensions, like shown below:
+
+```tsx
+// (Omitted repeated imports)
+import { CustomExtension } from './extensions/custom-extension';
+
+<Editor
+  extensions={[
+    CustomExtension.configure({
+      // your configuration
+    }),
+  ]}
+/>
+```
 
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
 

@@ -1,17 +1,16 @@
 import { mergeAttributes, Node } from '@tiptap/core';
-import { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { Node as TNode } from '@tiptap/pm/model';
 import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
 import { VariableView } from './variable-view';
+import { Variables } from '@/editor/provider';
 
 export type VariableOptions = {
-  HTMLAttributes: Record<string, any>;
-  renderLabel: (props: {
-    options: VariableOptions;
-    node: ProseMirrorNode;
-  }) => string;
+  renderLabel: (props: { options: VariableOptions; node: TNode }) => string;
   suggestion: Omit<SuggestionOptions, 'editor'>;
+  variables?: Variables;
+  triggerChar?: string;
 };
 
 export type VariableStorage = {
@@ -35,7 +34,8 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
 
   addOptions() {
     return {
-      HTMLAttributes: {},
+      variables: [],
+      triggerChar: '@',
       renderLabel({ options, node }) {
         return `${node.attrs.label ?? node.attrs.id}`;
       },
@@ -147,11 +147,7 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
   renderHTML({ node, HTMLAttributes }) {
     return [
       'div',
-      mergeAttributes(
-        { 'data-type': this.name },
-        this.options.HTMLAttributes,
-        HTMLAttributes
-      ),
+      mergeAttributes({ 'data-type': this.name }, HTMLAttributes),
       this.options.renderLabel({
         options: this.options,
         node,

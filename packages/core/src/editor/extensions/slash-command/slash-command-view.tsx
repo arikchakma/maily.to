@@ -1,6 +1,5 @@
 import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import { cn } from '@/editor/utils/classname';
-import { updateScrollView } from '@/editor/utils/update-scroll-view';
 import { Editor } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
@@ -8,7 +7,6 @@ import {
   forwardRef,
   Fragment,
   KeyboardEvent,
-  ReactNode,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -18,12 +16,14 @@ import {
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
+import { ChevronRightIcon } from 'lucide-react';
 
 type CommandListProps = {
   items: BlockGroupItem[];
   command: (item: BlockItem) => void;
   editor: Editor;
   range: any;
+  query: string;
 };
 
 const CommandList = forwardRef(function CommandList(
@@ -154,10 +154,12 @@ const CommandList = forwardRef(function CommandList(
                 const isActive =
                   groupIndex === selectedGroupIndex &&
                   commandIndex === selectedCommandIndex;
+                const isSubCommand = 'subCommands' in item;
+
                 return (
                   <button
                     className={cn(
-                      'mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
+                      'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
                       isActive
                         ? 'mly-bg-gray-100 mly-text-gray-900'
                         : 'mly-bg-transparent'
@@ -174,12 +176,18 @@ const CommandList = forwardRef(function CommandList(
                         <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
                           {item.icon}
                         </div>
-                        <div>
+                        <div className="mly-grow">
                           <p className="mly-font-medium">{item.title}</p>
                           <p className="mly-text-xs mly-text-gray-400">
                             {item.description}
                           </p>
                         </div>
+
+                        {isSubCommand && (
+                          <span className="mly-block mly-px-1 mly-text-gray-400">
+                            <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
+                          </span>
+                        )}
                       </>
                     )}
                   </button>
@@ -220,31 +228,98 @@ export function getSlashCommandSuggestions(
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      const filteredGroups = groups
+      let newGroups = groups;
+
+      let search = query.toLowerCase();
+      const subCommandIds = newGroups
+        .map((group) => {
+          return (
+            group.commands
+              .filter((item) => 'subCommands' in item)
+              // @ts-ignore
+              .map((item) => item?.id.toLowerCase())
+          );
+        })
+        .flat()
+        .map((id) => `${id}.`);
+
+      const shouldEnterSubCommand = subCommandIds.some((id) =>
+        search.startsWith(id)
+      );
+
+      if (shouldEnterSubCommand) {
+        const subCommandId = subCommandIds.find((id) => search.startsWith(id));
+        const sanitizedSubCommandId = subCommandId?.slice(0, -1);
+
+        const group = newGroups
+          .find((group) => {
+            return group.commands.some(
+              // @ts-ignore
+              (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
+            );
+          })
+          ?.commands.find(
+            // @ts-ignore
+            (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
+          );
+
+        if (!group) {
+          return groups;
+        }
+
+        search = search.replace(subCommandId || '', '');
+        newGroups = [
+          {
+            ...group,
+            commands: group?.subCommands || [],
+          },
+        ];
+      }
+
+      const filteredGroups = newGroups
         .map((group) => {
           return {
             ...group,
-            commands: group.commands.filter((item) => {
-              if (typeof query === 'string' && query.length > 0) {
-                const search = query.toLowerCase();
+            commands: group.commands
+              .filter((item) => {
+                if (typeof query === 'string' && query.length > 0) {
+                  const isSubCommandItem = 'subCommands' in item;
+                  if (!isSubCommandItem) {
+                    const show = item?.render?.(editor);
+                    if (show === null) {
+                      return false;
+                    }
+                  }
 
-                const show = item?.render?.(editor);
-                if (show === null) {
-                  return false;
+                  return (
+                    item.title.toLowerCase().includes(search) ||
+                    (item?.description &&
+                      item?.description.toLowerCase().includes(search)) ||
+                    (item.searchTerms &&
+                      item.searchTerms.some((term: string) =>
+                        term.includes(search)
+                      ))
+                  );
+                }
+                return true;
+              })
+              .map((item) => {
+                const isSubCommandItem = 'subCommands' in item;
+                if (isSubCommandItem) {
+                  // so to make it work with the enter key
+                  // we make it a command
+                  // @ts-ignore
+                  item = {
+                    ...item,
+                    command: (options) => {
+                      const { editor, range } = options;
+                      editor.commands.insertContentAt(range, `/${item.id}.`);
+                    },
+                  };
                 }
 
-                return (
-                  item.title.toLowerCase().includes(search) ||
-                  (item?.description &&
-                    item?.description.toLowerCase().includes(search)) ||
-                  (item.searchTerms &&
-                    item.searchTerms.some((term: string) =>
-                      term.includes(search)
-                    ))
-                );
-              }
-              return true;
-            }),
+                return item;
+              }),
           };
         })
         .filter((group) => group.commands.length > 0);

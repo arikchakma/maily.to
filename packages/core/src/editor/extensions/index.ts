@@ -7,6 +7,7 @@ import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 import { VariableExtension } from '@/extensions';
 import { HTMLCodeBlockExtension } from '../nodes/html/html';
 import { InlineImageExtension } from '../nodes/inline-image/inline-image';
+import { PlaceholderExtension } from './placeholder';
 
 type ExtensionsProps = Partial<MailyContextType> & {
   extensions?: AnyExtension[];
@@ -30,6 +31,7 @@ export function extensions(props: ExtensionsProps) {
     }),
     HTMLCodeBlockExtension,
     InlineImageExtension,
+    PlaceholderExtension,
   ].filter((ext) => {
     return !extensions.some((e) => e.name === ext.name);
   });

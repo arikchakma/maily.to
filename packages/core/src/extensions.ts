@@ -15,3 +15,4 @@ export * from './editor/nodes/image/image';
 export * from './editor/nodes/link';
 export * from './editor/nodes/variable/variable';
 export * from './editor/nodes/variable/variable-suggestions';
+export * from './editor/extensions/placeholder';

@@ -3,7 +3,6 @@ import { AnyExtension, Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import ListItem from '@tiptap/extension-list-item';
 import Paragraph from '@tiptap/extension-paragraph';
-import Placeholder from '@tiptap/extension-placeholder';
 import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Heading from '@tiptap/extension-heading';
@@ -99,29 +98,6 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         types: [Paragraph.name, Heading.name, Footer.name],
       }),
       HorizontalRule,
-      Placeholder.configure({
-        placeholder: ({ node }) => {
-          if (node.type.name === 'heading') {
-            return `Heading ${node.attrs.level}`;
-          } else if (node.type.name === 'htmlCodeBlock') {
-            return 'Type your HTML code...';
-          } else if (
-            [
-              'columns',
-              'column',
-              'section',
-              'repeat',
-              'show',
-              'blockquote',
-            ].includes(node.type.name)
-          ) {
-            return '';
-          }
-
-          return 'Write something or / to see commands';
-        },
-        includeChildren: true,
-      }),
       Footer,
       Focus,
       Dropcursor.configure({

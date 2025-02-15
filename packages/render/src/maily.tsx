@@ -23,6 +23,7 @@ import { deepMerge } from '@antfu/utils';
 import { generateKey } from './utils';
 import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
+import { parse } from 'node-html-parser';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -1677,6 +1678,46 @@ export class Maily {
     let { payloadValue } = options || {};
     payloadValue = typeof payloadValue === 'object' ? payloadValue : {};
     return !!(this.payloadValues.get(showIfKey) ?? payloadValue[showIfKey]);
+  }
+
+  htmlCodeBlock(node: JSONContent, options?: NodeOptions): JSX.Element {
+    const show = this.shouldShow(node, options);
+    if (!show) {
+      return <></>;
+    }
+
+    // the text can be a proper html code block
+    // or only the body of the html
+    // so we need to wrap it in a proper html tag
+    const text = node.content?.reduce((acc, n) => acc + n?.text, '') || '';
+    const doc = parse(text);
+
+    // remove head if exists
+    const head = doc.querySelector('head');
+    head?.remove();
+
+    const html = doc.toString();
+    return (
+      <table
+        align="left"
+        width="100%"
+        border={0}
+        cellPadding="0"
+        cellSpacing="0"
+        role="presentation"
+      >
+        <tbody>
+          <tr style={{ width: '100%' }}>
+            <td
+              style={{ width: '100%' }}
+              dangerouslySetInnerHTML={{
+                __html: html,
+              }}
+            />
+          </tr>
+        </tbody>
+      </table>
+    );
   }
 
   private inlineImage(node: JSONContent, options?: NodeOptions): JSX.Element {

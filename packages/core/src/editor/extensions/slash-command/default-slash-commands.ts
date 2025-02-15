@@ -1,4 +1,5 @@
 import { button, linkCard } from '@/blocks/button';
+import { htmlCodeBlock } from '@/blocks/code';
 import { image, inlineImage, logo } from '@/blocks/image';
 import { columns, divider, repeat, section, spacer } from '@/blocks/layout';
 import { bulletList, orderedList } from '@/blocks/list';
@@ -35,4 +36,5 @@ export const DEFAULT_SLASH_COMMANDS: BlockItem[] = [
   blockquote,
   footer,
   clearLine,
+  htmlCodeBlock,
 ];

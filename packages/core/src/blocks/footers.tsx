@@ -200,7 +200,7 @@ export const footerCompanySignature: BlockItem = {
               attrs: {
                 height: 20,
                 width: 20,
-                src: 'http://localhost:3000/icons/linkedin.png',
+                src: 'https://cdn.usemaily.com/images/icons/linkedin.png',
                 isSrcVariable: false,
                 alt: null,
                 title: null,
@@ -214,7 +214,7 @@ export const footerCompanySignature: BlockItem = {
               attrs: {
                 height: 20,
                 width: 20,
-                src: 'http://localhost:3000/icons/youtube.png',
+                src: 'https://cdn.usemaily.com/images/icons/youtube.png',
                 isSrcVariable: false,
                 alt: null,
                 title: null,
@@ -228,7 +228,7 @@ export const footerCompanySignature: BlockItem = {
               attrs: {
                 height: 20,
                 width: 20,
-                src: 'http://localhost:3000/icons/twitter.png',
+                src: 'https://cdn.usemaily.com/images/icons/twitter.png',
                 isSrcVariable: false,
                 alt: null,
                 title: null,

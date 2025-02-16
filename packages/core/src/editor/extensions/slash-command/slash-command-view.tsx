@@ -322,7 +322,11 @@ export function getSlashCommandSuggestions(
                     ...item,
                     command: (options) => {
                       const { editor, range } = options;
-                      editor.commands.insertContentAt(range, `/${item.id}.`);
+                      editor
+                        .chain()
+                        .focus()
+                        .insertContentAt(range, `/${item.id}.`)
+                        .run();
                     },
                   };
                 }

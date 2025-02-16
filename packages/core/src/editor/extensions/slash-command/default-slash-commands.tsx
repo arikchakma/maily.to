@@ -1,4 +1,4 @@
-import { Heading1 } from 'lucide-react';
+import { FootprintsIcon, Heading1 } from 'lucide-react';
 import { button, linkCard } from '@/blocks/button';
 import { htmlCodeBlock } from '@/blocks/code';
 import { image, inlineImage, logo } from '@/blocks/image';
@@ -20,6 +20,11 @@ import {
   headerLogoWithTextHorizontal,
   headerLogoWithTextVertical,
 } from '@/blocks/headers';
+import {
+  footerCopyrightText,
+  footerCommunityFeedbackCta,
+  footerCompanySignature
+} from '@/blocks/footers';
 
 export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
   {
@@ -61,6 +66,14 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
           headerLogoWithTextHorizontal,
           headerLogoWithCoverImage,
         ],
+      },
+      {
+        id: 'footers',
+        title: 'Footers',
+        description: 'Add pre-designed footers block',
+        searchTerms: ['footers'],
+        icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
+        subCommands: [footerCopyrightText, footerCommunityFeedbackCta, footerCompanySignature],
       },
       htmlCodeBlock,
     ],

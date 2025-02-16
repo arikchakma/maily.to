@@ -114,6 +114,12 @@ export const headerLogoWithCoverImage: BlockItem = {
   searchTerms: ['logo', 'cover', 'image'],
   icon: <LogoWithCoverImageIcon className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
+    const todayFormatted = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+
     editor
       .chain()
       .deleteRange(range)
@@ -185,7 +191,7 @@ export const headerLogoWithCoverImage: BlockItem = {
                       marks: [
                         { type: 'textStyle', attrs: { color: '#929292' } },
                       ],
-                      text: '02, Jan 2025',
+                      text: todayFormatted,
                     },
                   ],
                 },

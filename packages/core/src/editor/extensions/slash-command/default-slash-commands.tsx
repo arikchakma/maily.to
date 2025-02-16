@@ -15,6 +15,11 @@ import {
   heading3,
   text,
 } from '@/blocks/typography';
+import {
+  headerLogoWithCoverImage,
+  headerLogoWithTextHorizontal,
+  headerLogoWithTextVertical,
+} from '@/blocks/headers';
 
 export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
   {
@@ -52,15 +57,9 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
         searchTerms: ['header', 'headers'],
         icon: <Heading1 className="mly-h-4 mly-w-4" />,
         subCommands: [
-          {
-            title: 'Logo with Header',
-            description: 'Header with logo',
-            searchTerms: ['logo', 'header'],
-            icon: <Heading1 className="mly-h-4 mly-w-4" />,
-            command: ({ editor, range }) => {
-              editor.commands.insertContentAt(range, heading1);
-            },
-          },
+          headerLogoWithTextVertical,
+          headerLogoWithTextHorizontal,
+          headerLogoWithCoverImage,
         ],
       },
       htmlCodeBlock,

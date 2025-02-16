@@ -10,7 +10,7 @@ export type BlockItem = {
   description?: string;
   searchTerms: string[];
   icon?: JSX.Element;
-  render?: (editor: Editor) => JSX.Element | null;
+  render?: (editor: Editor) => JSX.Element | null | true;
 } & (
   | {
       command: (options: CommandProps) => void;

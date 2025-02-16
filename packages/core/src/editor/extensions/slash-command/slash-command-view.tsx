@@ -156,6 +156,38 @@ const CommandList = forwardRef(function CommandList(
                   commandIndex === selectedCommandIndex;
                 const isSubCommand = 'subCommands' in item;
 
+                const hasRenderFunction = typeof item.render === 'function';
+                const renderFunctionValue = hasRenderFunction
+                  ? item.render?.(editor)
+                  : null;
+
+                let value = (
+                  <>
+                    <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
+                      {item.icon}
+                    </div>
+                    <div className="mly-grow">
+                      <p className="mly-font-medium">{item.title}</p>
+                      <p className="mly-text-xs mly-text-gray-400">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {isSubCommand && (
+                      <span className="mly-block mly-px-1 mly-text-gray-400">
+                        <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
+                      </span>
+                    )}
+                  </>
+                );
+
+                if (
+                  renderFunctionValue !== null &&
+                  renderFunctionValue !== true
+                ) {
+                  value = renderFunctionValue!;
+                }
+
                 return (
                   <button
                     className={cn(
@@ -169,27 +201,7 @@ const CommandList = forwardRef(function CommandList(
                     type="button"
                     ref={isActive ? activeCommandRef : null}
                   >
-                    {typeof item.render === 'function' ? (
-                      item.render(editor)
-                    ) : (
-                      <>
-                        <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
-                          {item.icon}
-                        </div>
-                        <div className="mly-grow">
-                          <p className="mly-font-medium">{item.title}</p>
-                          <p className="mly-text-xs mly-text-gray-400">
-                            {item.description}
-                          </p>
-                        </div>
-
-                        {isSubCommand && (
-                          <span className="mly-block mly-px-1 mly-text-gray-400">
-                            <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
-                          </span>
-                        )}
-                      </>
-                    )}
+                    {value}
                   </button>
                 );
               })}
@@ -283,12 +295,9 @@ export function getSlashCommandSuggestions(
             commands: group.commands
               .filter((item) => {
                 if (typeof query === 'string' && query.length > 0) {
-                  const isSubCommandItem = 'subCommands' in item;
-                  if (!isSubCommandItem) {
-                    const show = item?.render?.(editor);
-                    if (show === null) {
-                      return false;
-                    }
+                  const show = item?.render?.(editor);
+                  if (show === null) {
+                    return false;
                   }
 
                   return (

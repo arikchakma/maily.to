@@ -58,7 +58,7 @@ export default async function Playground() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[calc(36rem+40px)] px-5">
+    <main className="mx-auto w-full max-w-[calc(600px+40px)] px-5">
       <header className="mt-14 border-b pb-6">
         <p className="sm:text-lg">
           <Balancer>

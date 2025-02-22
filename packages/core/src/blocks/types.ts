@@ -9,7 +9,26 @@ export type BlockItem = {
   title: string;
   description?: string;
   searchTerms: string[];
-  command: (options: CommandProps) => void;
   icon?: JSX.Element;
-  render?: (editor: Editor) => JSX.Element | null;
+  render?: (editor: Editor) => JSX.Element | null | true;
+} & (
+  | {
+      command: (options: CommandProps) => void;
+      id?: never;
+      commands?: never;
+    }
+  | {
+      /**
+       * id to be used for the slash command query
+       * `headers.` will go inside the header subcommand
+       */
+      id: string;
+      command?: never;
+      commands: BlockItem[];
+    }
+);
+
+export type BlockGroupItem = {
+  title: string;
+  commands: BlockItem[];
 };

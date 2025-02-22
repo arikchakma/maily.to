@@ -12,9 +12,6 @@ export const columns: BlockItem = {
   description: 'Add columns to email.',
   searchTerms: ['layout', 'columns'],
   icon: <ColumnsIcon className="mly-h-4 mly-w-4" />,
-  shouldBeHidden: (editor) => {
-    return editor.isActive('columns');
-  },
   command: ({ editor, range }) => {
     // @ts-ignore
     editor
@@ -44,9 +41,6 @@ export const repeat: BlockItem = {
   description: 'Loop over an array of items.',
   searchTerms: ['repeat', 'for', 'loop'],
   icon: <Repeat2 className="mly-h-4 mly-w-4" />,
-  shouldBeHidden: (editor) => {
-    return editor.isActive('repeat');
-  },
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setRepeat().run();

@@ -724,6 +724,19 @@ export class Maily {
       return this.renderMark(node, options);
     }
 
+    // if it's all empty, return an invisible space length
+    // of the text so that it doesn't look empty for inline-images
+    const spaces = text?.match(/\s/g);
+    if (spaces && spaces.length === text.length) {
+      return (
+        <>
+          {spaces.map((_, index) => (
+            <Fragment key={index}>&nbsp;</Fragment>
+          ))}
+        </>
+      );
+    }
+
     return <>{text}</>;
   }
 

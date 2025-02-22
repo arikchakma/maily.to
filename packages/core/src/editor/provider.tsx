@@ -1,6 +1,6 @@
 'use client';
 
-import { BlockItem } from '@/blocks/types';
+import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { Editor } from '@tiptap/core';
@@ -48,7 +48,7 @@ export type MailyContextType = {
   placeholderUrl?: string;
   variableTriggerCharacter?: string;
   variables?: Variables;
-  blocks?: BlockItem[];
+  blocks?: BlockGroupItem[];
   renderVariable?: RenderVariableFunction;
 };
 

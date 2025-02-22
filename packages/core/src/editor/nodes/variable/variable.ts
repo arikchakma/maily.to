@@ -13,14 +13,24 @@ export type VariableOptions = {
   triggerChar?: string;
 };
 
+export type VariableStorage = {
+  popover: boolean;
+};
+
 export const VariablePluginKey = new PluginKey('variable');
 
-export const VariableExtension = Node.create<VariableOptions>({
+export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
   name: 'variable',
   group: 'inline',
   inline: true,
   selectable: true,
   atom: true,
+
+  addStorage() {
+    return {
+      popover: false,
+    };
+  },
 
   addOptions() {
     return {

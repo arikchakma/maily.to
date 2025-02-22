@@ -28,15 +28,12 @@ export function VariableView(props: NodeViewProps) {
       className="react-component mly-inline-block mly-leading-none"
       draggable="false"
     >
-      <Popover>
-        <PopoverTrigger
-          onClick={(e) => {
-            if (!editor.isEditable) {
-              e.preventDefault();
-              return;
-            }
-          }}
-        >
+      <Popover
+        onOpenChange={(open) => {
+          editor.storage.variable.popover = open;
+        }}
+      >
+        <PopoverTrigger>
           {renderVariable({
             variable: { name: id, required: required, valid: true },
             fallback,

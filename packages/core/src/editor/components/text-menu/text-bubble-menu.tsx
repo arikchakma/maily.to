@@ -1,32 +1,17 @@
-import { BubbleMenu, BubbleMenuProps } from '@tiptap/react';
-import {
-  BoldIcon,
-  CodeIcon,
-  ItalicIcon,
-  List,
-  ListOrdered,
-  LucideIcon,
-  StrikethroughIcon,
-  UnderlineIcon,
-} from 'lucide-react';
-import { BubbleMenuButton } from '../bubble-menu-button';
-import { ColorPicker } from '../ui/color-picker';
-import { BaseButton } from '../base-button';
-import { useTextMenuState } from './use-text-menu-state';
-import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
-import { isTextSelected } from '@/editor/utils/is-text-selected';
-import { TooltipProvider } from '../ui/tooltip';
-import { LinkInputPopover } from '../ui/link-input-popover';
-import { Divider } from '../ui/divider';
-import { AlignmentSwitch } from '../alignment-switch';
-import { SVGIcon } from '../icons/grid-lines';
-import { SectionExtension } from '@/editor/nodes/section/section';
 import { ColumnExtension } from '@/editor/nodes/columns/column';
 import { ColumnsExtension } from '@/editor/nodes/columns/columns';
+import { SectionExtension } from '@/editor/nodes/section/section';
+import { isCustomNodeSelected } from '@/editor/utils/is-custom-node-selected';
+import { isTextSelected } from '@/editor/utils/is-text-selected';
+import { BubbleMenu, BubbleMenuProps } from '@tiptap/react';
+import { LucideIcon } from 'lucide-react';
+import { SVGIcon } from '../icons/grid-lines';
+import { Divider } from '../ui/divider';
+import { TooltipProvider } from '../ui/tooltip';
+import { TextBubbleContent } from './text-bubble-content';
 import { RepeatExtension } from '@/editor/nodes/repeat/repeat';
 import { TurnIntoBlock } from './turn-into-block';
 import { useTurnIntoBlockOptions } from './use-turn-into-block-options';
-import { ShowPopover } from '../show-popover';
 
 export interface BubbleMenuItem {
   name?: string;
@@ -53,48 +38,10 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
     return null;
   }
 
-  const items: BubbleMenuItem[] = [
-    {
-      name: 'bold',
-      isActive: () => editor?.isActive('bold')!,
-      command: () => editor?.chain().focus().toggleBold().run()!,
-      icon: BoldIcon,
-      tooltip: 'Bold',
-    },
-    {
-      name: 'italic',
-      isActive: () => editor?.isActive('italic')!,
-      command: () => editor?.chain().focus().toggleItalic().run()!,
-      icon: ItalicIcon,
-      tooltip: 'Italic',
-    },
-    {
-      name: 'underline',
-      isActive: () => editor?.isActive('underline')!,
-      command: () => editor?.chain().focus().toggleUnderline().run()!,
-      icon: UnderlineIcon,
-      tooltip: 'Underline',
-    },
-    {
-      name: 'strike',
-      isActive: () => editor?.isActive('strike')!,
-      command: () => editor?.chain().focus().toggleStrike().run()!,
-      icon: StrikethroughIcon,
-      tooltip: 'Strikethrough',
-    },
-    {
-      name: 'code',
-      isActive: () => editor?.isActive('code')!,
-      command: () => editor?.chain().focus().toggleCode().run()!,
-      icon: CodeIcon,
-      tooltip: 'Code',
-    },
-  ];
-
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
-    pluginKey: 'textMenu',
+    pluginKey: 'text-menu',
     shouldShow: ({ editor, from, view }) => {
       if (!view || editor.view.dragging) {
         return false;
@@ -143,14 +90,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
     },
   };
 
-  const state = useTextMenuState(editor);
   const turnIntoBlockOptions = useTurnIntoBlockOptions(editor);
-  const colors = editor?.storage.color.colors as Set<string>;
-  const suggestedColors = Array?.from(colors)?.reverse()?.slice(0, 6) ?? [];
-
-  const showIfKey = state?.isHeadingActive
-    ? state?.headingShowIfKey
-    : state?.paragraphShowIfKey;
 
   return (
     <BubbleMenu
@@ -162,113 +102,7 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider className="mly-mx-0" />
 
-        {items.map((item, index) => (
-          <BubbleMenuButton key={index} {...item} />
-        ))}
-
-        <AlignmentSwitch
-          alignment={state.textAlign}
-          onAlignmentChange={(alignment) => {
-            editor?.chain().focus().setTextAlign(alignment).run();
-          }}
-        />
-
-        {!state.isListActive && (
-          <>
-            <BubbleMenuButton
-              icon={List}
-              command={() => {
-                editor.chain().focus().toggleBulletList().run();
-              }}
-              tooltip="Bullet List"
-            />
-            <BubbleMenuButton
-              icon={ListOrdered}
-              command={() => {
-                editor.chain().focus().toggleOrderedList().run();
-              }}
-              tooltip="Ordered List"
-            />
-          </>
-        )}
-
-        <LinkInputPopover
-          defaultValue={state?.linkUrl ?? ''}
-          onValueChange={(value, isVariable) => {
-            const defaultValueWithoutProtocol = value.replace(
-              /https?:\/\//,
-              ''
-            );
-
-            if (!defaultValueWithoutProtocol) {
-              editor
-                ?.chain()
-                .focus()
-                .extendMarkRange('link')
-                .unsetLink()
-                .unsetUnderline()
-                .run();
-              return;
-            }
-
-            editor
-              ?.chain()
-              .extendMarkRange('link')
-              .setLink({ href: value })
-              .setIsUrlVariable(isVariable ?? false)
-              .setUnderline()
-              .run()!;
-          }}
-          tooltip="External URL"
-          editor={editor}
-          isVariable={state.isUrlVariable}
-        />
-
-        <Divider className="mly-mx-0" />
-
-        <ColorPicker
-          color={state.currentTextColor}
-          onColorChange={(color) => {
-            editor?.chain().setColor(color).run();
-          }}
-          onClose={(color) => colors.add(color)}
-          tooltip="Text Color"
-          suggestedColors={suggestedColors}
-        >
-          <BaseButton
-            variant="ghost"
-            size="sm"
-            type="button"
-            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-          >
-            <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
-              <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
-                A
-              </span>
-              <div
-                className="mly-h-[2px] mly-w-3"
-                style={{ backgroundColor: state.currentTextColor }}
-              />
-            </div>
-          </BaseButton>
-        </ColorPicker>
-
-        <Divider className="mly-mx-0" />
-        <ShowPopover
-          showIfKey={showIfKey}
-          onShowIfKeyValueChange={(value) => {
-            editor
-              ?.chain()
-              .updateAttributes(
-                state.isHeadingActive ? 'heading' : 'paragraph',
-                {
-                  showIfKey: value,
-                }
-              )
-              .run();
-          }}
-          editor={editor}
-        />
+        <TextBubbleContent editor={editor} />
       </TooltipProvider>
     </BubbleMenu>
   );

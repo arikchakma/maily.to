@@ -154,7 +154,7 @@ const CommandList = forwardRef(function CommandList(
                 const isActive =
                   groupIndex === selectedGroupIndex &&
                   commandIndex === selectedCommandIndex;
-                const isSubCommand = 'subCommands' in item;
+                const isSubCommand = 'commands' in item;
 
                 const hasRenderFunction = typeof item.render === 'function';
                 const renderFunctionValue = hasRenderFunction
@@ -247,7 +247,7 @@ export function getSlashCommandSuggestions(
         .map((group) => {
           return (
             group.commands
-              .filter((item) => 'subCommands' in item)
+              .filter((item) => 'commands' in item)
               // @ts-ignore
               .map((item) => item?.id.toLowerCase())
           );
@@ -283,7 +283,7 @@ export function getSlashCommandSuggestions(
         newGroups = [
           {
             ...group,
-            commands: group?.subCommands || [],
+            commands: group?.commands || [],
           },
         ];
       }
@@ -313,7 +313,7 @@ export function getSlashCommandSuggestions(
                 return true;
               })
               .map((item) => {
-                const isSubCommandItem = 'subCommands' in item;
+                const isSubCommandItem = 'commands' in item;
                 if (isSubCommandItem) {
                   // so to make it work with the enter key
                   // we make it a command

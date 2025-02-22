@@ -31,7 +31,9 @@ export default async function PlaygroundLayout(props: PlaygroundLayoutProps) {
       <TemplateSidebar mails={mails.data || []} />
 
       <div className="grow overflow-y-auto">
-        <div className="mx-auto w-full max-w-[700px] p-5">{children}</div>
+        <div className="mx-auto w-full max-w-[calc(600px+40px)] p-5">
+          {children}
+        </div>
       </div>
     </div>
   );

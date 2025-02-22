@@ -23,7 +23,7 @@ import {
 import {
   footerCopyrightText,
   footerCommunityFeedbackCta,
-  footerCompanySignature
+  footerCompanySignature,
 } from '@/blocks/footers';
 
 export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
@@ -61,7 +61,7 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
         description: 'Add pre-designed headers block',
         searchTerms: ['header', 'headers'],
         icon: <Heading1 className="mly-h-4 mly-w-4" />,
-        subCommands: [
+        commands: [
           headerLogoWithTextVertical,
           headerLogoWithTextHorizontal,
           headerLogoWithCoverImage,
@@ -73,7 +73,11 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
         description: 'Add pre-designed footers block',
         searchTerms: ['footers'],
         icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
-        subCommands: [footerCopyrightText, footerCommunityFeedbackCta, footerCompanySignature],
+        commands: [
+          footerCopyrightText,
+          footerCommunityFeedbackCta,
+          footerCompanySignature,
+        ],
       },
       htmlCodeBlock,
     ],

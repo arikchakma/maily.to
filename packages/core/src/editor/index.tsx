@@ -110,17 +110,6 @@ export function Editor(props: EditorProps) {
         class: cn(`mly-prose mly-w-full`, contentClassName),
         spellCheck: spellCheck ? 'true' : 'false',
       },
-      // handleDOMEvents: {
-      //   keydown: (_view, event) => {
-      //     // prevent default event listeners from firing when slash command is active
-      //     if (['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
-      //       const slashCommand = document.querySelector('#slash-command');
-      //       if (slashCommand) {
-      //         return true;
-      //       }
-      //     }
-      //   },
-      // },
     },
     immediatelyRender,
     onCreate: ({ editor }) => {

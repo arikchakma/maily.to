@@ -15,16 +15,16 @@ export type BlockItem = {
   | {
       command: (options: CommandProps) => void;
       id?: never;
-      subCommands?: never;
+      commands?: never;
     }
   | {
       /**
        * id to be used for the slash command query
        * `headers.` will go inside the header subcommand
        */
-      command?: never;
       id: string;
-      subCommands: BlockItem[];
+      command?: never;
+      commands: BlockItem[];
     }
 );
 

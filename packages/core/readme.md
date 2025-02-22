@@ -47,7 +47,7 @@ function App(props: AppProps) {
 
 ### Slash Commands
 
-Slash commands let you interact with the editor by typing `/` followed by a command name. Commands are now organized into groups. Each group is an object with a `title` and a `commands` array. Every command within that array is a `BlockItem` that can either be a single command or a grouped command (with subcommands).
+Slash commands let you interact with the editor by typing `/` followed by a command name. Commands are now organized into groups. Each group is an object with a `title` and a `commands` array. Every command within that array is a `BlockItem` that can either be a single command or a grouped command (with commands).
 
 #### Basic Example
 
@@ -71,7 +71,7 @@ import { text, heading1 } from '@maily-to/core/blocks';
 
 #### Grouped Command Blocks with Subcommands
 
-Sometimes, you may want a single command to open a list of subcommands. For this, define a command with an `id` and a `subCommands` array. The `id` is used for the slash command query (for example, typing `/headers.` will show its subcommands).
+Sometimes, you may want a single command to open a list of commands. For this, define a command with an `id` and a `commands` array. The `id` is used for the slash command query (for example, typing `/headers.` will show its subcommands).
 
 ```tsx
 // omitting imports
@@ -85,7 +85,7 @@ Sometimes, you may want a single command to open a list of subcommands. For this
           // The id is used to filter commands; e.g. `/headers.` shows these subcommands.
           id: 'headers',
           searchTerms: ['header', 'title'],
-          subCommands: [
+          commands: [
             {
               title: 'Heading 1',
               searchTerms: ['h1', 'heading1'],
@@ -110,6 +110,8 @@ Sometimes, you may want a single command to open a list of subcommands. For this
 ```
 
 In this setup, when the user types `/headers.`, the editor will display the available header subcommands.
+
+> **Note:** Currently it only supports one level of depth for subcommands.
 
 #### Custom Rendered Blocks
 

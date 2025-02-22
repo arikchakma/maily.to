@@ -872,6 +872,32 @@ export class Maily {
       return <></>;
     }
 
+    const formattedVariable = this.getVariableValue(
+      variable,
+      fallback,
+      options
+    );
+
+    if (node?.marks) {
+      return this.renderMark(
+        {
+          text: formattedVariable,
+          marks: node.marks,
+        },
+        options
+      );
+    }
+
+    return <>{formattedVariable}</>;
+  }
+
+  private getVariableValue(
+    variable: string,
+    fallback?: string,
+    options?: NodeOptions
+  ) {
+    const { payloadValue } = options || {};
+
     let formattedVariable = this.variableFormatter({
       variable,
       fallback,
@@ -889,17 +915,7 @@ export class Maily {
         formattedVariable;
     }
 
-    if (node?.marks) {
-      return this.renderMark(
-        {
-          text: formattedVariable,
-          marks: node.marks,
-        },
-        options
-      );
-    }
-
-    return <>{formattedVariable}</>;
+    return formattedVariable;
   }
 
   private horizontalRule(_: JSONContent, __?: NodeOptions): JSX.Element {
@@ -1702,7 +1718,21 @@ export class Maily {
     // the text can be a proper html code block
     // or only the body of the html
     // so we need to wrap it in a proper html tag
-    const text = node.content?.reduce((acc, n) => acc + n?.text, '') || '';
+    const text =
+      node.content?.reduce((acc, n) => {
+        if (n?.type === 'text') {
+          return acc + n?.text;
+        } else if (n?.type === 'variable') {
+          const value = this.getVariableValue(
+            n?.attrs?.id,
+            n?.attrs?.fallback,
+            options
+          );
+          return acc + value;
+        }
+
+        return acc;
+      }, '') || '';
     const doc = parse(text);
 
     // remove head if exists

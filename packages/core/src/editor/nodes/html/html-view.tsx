@@ -14,7 +14,13 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
 
   const html = useMemo(() => {
     const text = node.content.content.reduce((acc, cur) => {
-      return acc + cur.text;
+      if (cur.type.name === 'text') {
+        return acc + cur.text;
+      } else if (cur.type.name === 'variable') {
+        return acc + `{{${cur.attrs.id}}}`;
+      }
+
+      return acc;
     }, '');
 
     const htmlParser = new DOMParser();

@@ -339,6 +339,14 @@ export function getSlashCommandSuggestions(
 
       return filteredGroups;
     },
+    allow: ({ editor }) => {
+      const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');
+      if (isInsideHTMLCodeBlock) {
+        return false;
+      }
+
+      return true;
+    },
     render: () => {
       let component: ReactRenderer<any>;
       let popup: InstanceType<any> | null = null;

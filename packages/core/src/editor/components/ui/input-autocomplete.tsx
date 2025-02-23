@@ -59,7 +59,7 @@ export const InputAutocomplete = forwardRef<
             onValueChange(e.target.value);
           }}
           className={cn(
-            'mly-h-7 mly-w-40 mly-rounded-md mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none',
+            'mly-h-7 mly-w-40 mly-rounded-md mly-bg-white mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none',
             className
           )}
           onKeyDown={(e) => {

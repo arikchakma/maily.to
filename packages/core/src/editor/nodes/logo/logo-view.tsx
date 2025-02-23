@@ -58,13 +58,15 @@ export function LogoView(props: NodeViewProps) {
         display: 'block',
       }}
     >
-      {!hasImageSrc && <ImageStatusLabel status="idle" />}
-      {hasImageSrc && isSrcVariable && <ImageStatusLabel status="variable" />}
+      {!hasImageSrc && <ImageStatusLabel status="idle" minHeight={logoSize} />}
+      {hasImageSrc && isSrcVariable && (
+        <ImageStatusLabel status="variable" minHeight={logoSize} />
+      )}
       {hasImageSrc && status === 'loading' && !isSrcVariable && (
-        <ImageStatusLabel status="loading" />
+        <ImageStatusLabel status="loading" minHeight={logoSize} />
       )}
       {hasImageSrc && status === 'error' && !isSrcVariable && (
-        <ImageStatusLabel status="error" />
+        <ImageStatusLabel status="error" minHeight={logoSize} />
       )}
 
       {hasImageSrc && status === 'loaded' && !isSrcVariable && (

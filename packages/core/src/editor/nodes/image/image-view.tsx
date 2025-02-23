@@ -173,14 +173,16 @@ export function ImageView(props: NodeViewProps) {
       }}
       ref={wrapperRef}
     >
-      {!hasImageSrc && <ImageStatusLabel status="idle" />}
-      {hasImageSrc && isSrcVariable && <ImageStatusLabel status="variable" />}
+      {!hasImageSrc && <ImageStatusLabel status="idle" minHeight={height} />}
+      {hasImageSrc && isSrcVariable && (
+        <ImageStatusLabel status="variable" minHeight={height} />
+      )}
 
       {hasImageSrc && status === 'loading' && !isSrcVariable && (
-        <ImageStatusLabel status="loading" />
+        <ImageStatusLabel status="loading" minHeight={height} />
       )}
       {hasImageSrc && status === 'error' && !isSrcVariable && (
-        <ImageStatusLabel status="error" />
+        <ImageStatusLabel status="error" minHeight={height} />
       )}
 
       {hasImageSrc && status === 'loaded' && !isSrcVariable && (
@@ -228,19 +230,28 @@ export function ImageView(props: NodeViewProps) {
 
 type ImageStatusLabelProps = {
   status: ImageStatus | 'variable';
+  minHeight?: number | string;
 };
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
-  const { status } = props;
+  const { status, minHeight } = props;
+
   return (
     <div
       className={cn(
-        'mly-flex mly-items-center mly-gap-2 mly-rounded-lg mly-bg-soft-gray mly-p-4 mly-text-sm mly-font-medium',
+        'mly-flex mly-items-center mly-justify-center mly-gap-2 mly-rounded-lg mly-bg-soft-gray mly-px-4 mly-py-2 mly-text-sm mly-font-medium',
         {
           'mly-text-gray-500 hover:mly-bg-soft-gray/60': status === 'loading',
           'mly-text-red-500 hover:mly-bg-soft-gray/60': status === 'error',
         }
       )}
+      style={{
+        ...(minHeight
+          ? {
+              minHeight,
+            }
+          : {}),
+      }}
     >
       {status === 'idle' && (
         <>

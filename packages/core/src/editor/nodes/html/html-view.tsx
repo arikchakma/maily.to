@@ -17,7 +17,11 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       if (cur.type.name === 'text') {
         return acc + cur.text;
       } else if (cur.type.name === 'variable') {
-        return acc + `{{${cur.attrs.id}}}`;
+        const { id: variable, fallback } = cur?.attrs || {};
+        const formattedVariable = fallback
+          ? `{{${variable},fallback=${fallback}}}`
+          : `{{${variable}}}`;
+        return acc + formattedVariable;
       }
 
       return acc;

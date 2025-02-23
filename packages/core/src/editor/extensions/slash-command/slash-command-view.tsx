@@ -17,6 +17,12 @@ import {
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { ChevronRightIcon } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/editor/components/ui/tooltip';
 
 type CommandListProps = {
   items: BlockGroupItem[];
@@ -133,105 +139,128 @@ const CommandList = forwardRef(function CommandList(
   ]);
 
   return groups.length > 0 ? (
-    <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
-      <div
-        id="slash-command"
-        ref={commandListContainer}
-        className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth"
-      >
-        {groups.map((group, groupIndex) => (
-          <Fragment key={groupIndex}>
-            <span
-              className={cn(
-                'mly-block mly-border-b mly-border-gray-200 mly-bg-soft-gray mly-p-2 mly-text-xs mly-uppercase mly-text-gray-400',
-                groupIndex > 0 ? 'mly-border-t' : ''
-              )}
-            >
-              {group.title}
+    <TooltipProvider>
+      <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
+        <div
+          id="slash-command"
+          ref={commandListContainer}
+          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth"
+        >
+          {groups.map((group, groupIndex) => (
+            <Fragment key={groupIndex}>
+              <span
+                className={cn(
+                  'mly-block mly-border-b mly-border-gray-200 mly-bg-soft-gray mly-p-2 mly-text-xs mly-uppercase mly-text-gray-400',
+                  groupIndex > 0 ? 'mly-border-t' : ''
+                )}
+              >
+                {group.title}
+              </span>
+              <div className="mly-space-y-0.5 mly-p-1">
+                {group.commands.map((item, commandIndex) => {
+                  const isActive =
+                    groupIndex === selectedGroupIndex &&
+                    commandIndex === selectedCommandIndex;
+                  const isSubCommand = 'commands' in item;
+
+                  const hasRenderFunction = typeof item.render === 'function';
+                  const renderFunctionValue = hasRenderFunction
+                    ? item.render?.(editor)
+                    : null;
+
+                  let value = (
+                    <>
+                      <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
+                        {item.icon}
+                      </div>
+                      <div className="mly-grow">
+                        <p className="mly-font-medium">{item.title}</p>
+                        <p className="mly-text-xs mly-text-gray-400">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      {isSubCommand && (
+                        <span className="mly-block mly-px-1 mly-text-gray-400">
+                          <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
+                        </span>
+                      )}
+                    </>
+                  );
+
+                  if (
+                    renderFunctionValue !== null &&
+                    renderFunctionValue !== true
+                  ) {
+                    value = renderFunctionValue!;
+                  }
+
+                  const shouldOpenTooltip = !!item?.preview && isActive;
+
+                  return (
+                    <Tooltip open={shouldOpenTooltip} key={commandIndex}>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={cn(
+                            'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
+                            isActive
+                              ? 'mly-bg-gray-100 mly-text-gray-900'
+                              : 'mly-bg-transparent'
+                          )}
+                          onClick={() => selectItem(groupIndex, commandIndex)}
+                          type="button"
+                          ref={isActive ? activeCommandRef : null}
+                        >
+                          {value}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="right"
+                        sideOffset={10}
+                        className="mly-w-52 mly-rounded-lg mly-border-none mly-p-1 mly-shadow"
+                      >
+                        <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
+                          <img
+                            src={item?.preview}
+                            alt={item?.title}
+                            className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
+                          />
+                        </figure>
+                        <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
+                          {item.description}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </Fragment>
+          ))}
+        </div>
+        <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
+          <div className="mly-flex mly-items-center">
+            <p className="mly-text-center mly-text-xs mly-text-gray-400">
+              <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+                ↑
+              </kbd>
+              <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+                ↓
+              </kbd>{' '}
+              to navigate
+            </p>
+            <span aria-hidden="true" className="mly-select-none mly-px-1">
+              ·
             </span>
-            <div className="mly-p-1">
-              {group.commands.map((item, commandIndex) => {
-                const isActive =
-                  groupIndex === selectedGroupIndex &&
-                  commandIndex === selectedCommandIndex;
-                const isSubCommand = 'commands' in item;
-
-                const hasRenderFunction = typeof item.render === 'function';
-                const renderFunctionValue = hasRenderFunction
-                  ? item.render?.(editor)
-                  : null;
-
-                let value = (
-                  <>
-                    <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
-                      {item.icon}
-                    </div>
-                    <div className="mly-grow">
-                      <p className="mly-font-medium">{item.title}</p>
-                      <p className="mly-text-xs mly-text-gray-400">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {isSubCommand && (
-                      <span className="mly-block mly-px-1 mly-text-gray-400">
-                        <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
-                      </span>
-                    )}
-                  </>
-                );
-
-                if (
-                  renderFunctionValue !== null &&
-                  renderFunctionValue !== true
-                ) {
-                  value = renderFunctionValue!;
-                }
-
-                return (
-                  <button
-                    className={cn(
-                      'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
-                      isActive
-                        ? 'mly-bg-gray-100 mly-text-gray-900'
-                        : 'mly-bg-transparent'
-                    )}
-                    key={commandIndex}
-                    onClick={() => selectItem(groupIndex, commandIndex)}
-                    type="button"
-                    ref={isActive ? activeCommandRef : null}
-                  >
-                    {value}
-                  </button>
-                );
-              })}
-            </div>
-          </Fragment>
-        ))}
-      </div>
-      <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
-        <div className="mly-flex mly-items-center">
-          <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↑
-            </kbd>
-            <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↓
-            </kbd>{' '}
-            to navigate
-          </p>
-          <span aria-hidden="true" className="mly-select-none mly-px-1">
-            ·
-          </span>
-          <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
-              Enter
-            </kbd>{' '}
-            to select
-          </p>
+            <p className="mly-text-center mly-text-xs mly-text-gray-400">
+              <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
+                Enter
+              </kbd>{' '}
+              to select
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   ) : null;
 });
 

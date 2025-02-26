@@ -48,12 +48,20 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             return node.type.name === 'repeat';
           })?.[0]
         : null;
+      const inlineImageNodeChildren = activeSectionNode
+        ? findChildren(activeSectionNode?.node, (node) => {
+            return node.type.name === 'inlineImage';
+          })?.[0]
+        : null;
       const hasActiveRepeatNodeChildren =
         repeatNodeChildren && editor.isActive('repeat');
+      const hasActiveInlineImageNodeChildren =
+        inlineImageNodeChildren && editor.isActive('inlineImage');
 
       if (
         isTextSelected(editor) ||
         hasActiveRepeatNodeChildren ||
+        hasActiveInlineImageNodeChildren ||
         !editor.isEditable
       ) {
         return false;

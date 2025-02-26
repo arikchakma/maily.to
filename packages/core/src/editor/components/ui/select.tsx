@@ -36,8 +36,8 @@ export function Select(props: SelectProps) {
   const selectId = `mly${useId()}`;
 
   const content = (
-    <div className="relative">
-      <label htmlFor={selectId} className="sr-only">
+    <div className="mly-relative">
+      <label htmlFor={selectId} className="mly-sr-only">
         {label}
       </label>
 

@@ -45,6 +45,7 @@ declare module '@tiptap/core' {
 
 export const HTMLCodeBlockExtension = CodeBlockLowlight.extend({
   name: 'htmlCodeBlock',
+  content: '(text|variable)*',
 
   addAttributes() {
     return {

@@ -11,7 +11,7 @@ export type BlockItem = {
   searchTerms: string[];
   icon?: JSX.Element;
   render?: (editor: Editor) => JSX.Element | null | true;
-  preview?: string;
+  preview?: string | ((editor: Editor) => JSX.Element | null);
 } & (
   | {
       command: (options: CommandProps) => void;

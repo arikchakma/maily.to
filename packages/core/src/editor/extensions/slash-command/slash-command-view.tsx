@@ -219,16 +219,22 @@ const CommandList = forwardRef(function CommandList(
                         sideOffset={10}
                         className="mly-w-52 mly-rounded-lg mly-border-none mly-p-1 mly-shadow"
                       >
-                        <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
-                          <img
-                            src={item?.preview}
-                            alt={item?.title}
-                            className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
-                          />
-                        </figure>
-                        <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
-                          {item.description}
-                        </p>
+                        {typeof item.preview === 'function' ? (
+                          item?.preview(editor)
+                        ) : (
+                          <>
+                            <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
+                              <img
+                                src={item?.preview}
+                                alt={item?.title}
+                                className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
+                              />
+                            </figure>
+                            <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
+                              {item.description}
+                            </p>
+                          </>
+                        )}
                       </TooltipContent>
                     </Tooltip>
                   );

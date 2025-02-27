@@ -246,10 +246,10 @@ const CommandList = forwardRef(function CommandList(
         <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
           <div className="mly-flex mly-items-center">
             <p className="mly-text-center mly-text-xs mly-text-gray-400">
-              <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
                 ↑
               </kbd>
-              <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
+              <kbd className="mly-ml-1 mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
                 ↓
               </kbd>{' '}
               to navigate
@@ -258,7 +258,7 @@ const CommandList = forwardRef(function CommandList(
               ·
             </span>
             <p className="mly-text-center mly-text-xs mly-text-gray-400">
-              <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
+              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-1.5 mly-font-medium">
                 Enter
               </kbd>{' '}
               to select

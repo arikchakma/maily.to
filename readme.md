@@ -63,4 +63,4 @@ Feel free to submit pull requests, create issues, or spread the word. For gettin
 
 ## License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+Non-Commercial Use Only. See `LICENSE` for more information.

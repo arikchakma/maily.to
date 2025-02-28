@@ -94,6 +94,7 @@ export function ImageView(props: NodeViewProps) {
   }
 
   let { alignment = 'center', width, height, src } = node.attrs || {};
+
   const {
     externalLink,
     isExternalLinkVariable,
@@ -120,6 +121,7 @@ export function ImageView(props: NodeViewProps) {
       // update the dimensions to ensure that the image is not stretched
       const { naturalWidth, naturalHeight } = img;
       const wrapper = wrapperRef?.current;
+
       if (!wrapper || width !== 'auto' || !naturalWidth) {
         return;
       }
@@ -155,8 +157,8 @@ export function ImageView(props: NodeViewProps) {
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
-              width: `${width}px`,
-              height: `${height}px`,
+              width: width ? `${width}px` : undefined,
+              height: height ? `${height}px` : undefined,
               ...resizingStyle,
             }
           : {}),

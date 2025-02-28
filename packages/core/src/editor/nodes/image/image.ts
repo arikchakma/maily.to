@@ -9,19 +9,25 @@ export const ImageExtension = TiptapImage.extend({
       ...this.parent?.(),
       width: {
         default: 'auto',
-        parseHTML: (element) => {
-          const width = element.style.width;
-          return width ? { width } : null;
-        },
-        renderHTML: ({ width }) => ({ style: `width: ${width}` }),
+        parseHTML: (element) =>
+          element.getAttribute('width') ||
+          (element.style?.width || element.style?.inlineSize)?.replace(
+            'px',
+            ''
+          ) ||
+          null,
+        renderHTML: ({ width }) => ({ width }),
       },
       height: {
         default: 'auto',
-        parseHTML: (element) => {
-          const height = element.style.height;
-          return height ? { height } : null;
-        },
-        renderHTML: ({ height }) => ({ style: `height: ${height}` }),
+        parseHTML: (element) =>
+          element.getAttribute('height') ||
+          (element.style?.height || element.style?.blockSize)?.replace(
+            'px',
+            ''
+          ) ||
+          null,
+        renderHTML: ({ height }) => ({ height }),
       },
       alignment: {
         default: 'center',

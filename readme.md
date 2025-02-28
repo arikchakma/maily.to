@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/license">
-    <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
+    <img src="https://img.shields.io/badge/License-Non--Commercial-222222.svg" />
   </a>
   <a href="https://buymeacoffee.com/arikchakma">
     	<img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-222222?logo=buy-me-a-coffee" alt="Buy me a coffee" />

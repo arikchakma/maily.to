@@ -22,6 +22,7 @@ import {
   DEFAULT_RENDER_VARIABLE_FUNCTION,
   DEFAULT_VARIABLE_TRIGGER_CHAR,
   DEFAULT_VARIABLES,
+  DEFAULT_VARIABLE_SUGGESTION_POPOVER,
   MailyContextType,
   MailyProvider,
 } from './provider';
@@ -31,6 +32,7 @@ import { replaceDeprecatedNode } from './utils/replace-deprecated';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { HTMLBubbleMenu } from './components/html-menu/html-menu';
 import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
+export type { VariableSuggestionsPopoverType as VariableSuggestionPopoverType } from './nodes/variable/variable-suggestions-popover';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -76,6 +78,7 @@ export function Editor(props: EditorProps) {
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
+    variableSuggestionPopover = DEFAULT_VARIABLE_SUGGESTION_POPOVER,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -140,6 +143,7 @@ export function Editor(props: EditorProps) {
       variableTriggerCharacter={variableTriggerCharacter}
       renderVariable={renderVariable}
       placeholderUrl={placeholderUrl}
+      variableSuggestionPopover={variableSuggestionPopover}
     >
       <div
         className={cn(

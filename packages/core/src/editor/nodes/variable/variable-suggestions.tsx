@@ -3,13 +3,15 @@ import {
   DEFAULT_VARIABLES,
   Variable as VariableType,
   Variables,
+  useMailyContext,
+  DEFAULT_VARIABLE_SUGGESTION_POPOVER,
 } from '@/editor/provider';
 import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
-import { useRef, forwardRef, useImperativeHandle, ComponentType } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-import { VariablePopover, VariablePopoverRef } from './variable-popover';
+import { VariableSuggestionsPopoverRef } from './variable-suggestions-popover';
 
 export type VariableListProps = {
   command: (params: { id: string; required: boolean }) => void;
@@ -19,7 +21,11 @@ export type VariableListProps = {
 export const VariableList = forwardRef((props: VariableListProps, ref) => {
   const { items = [] } = props;
 
-  const popoverRef = useRef<VariablePopoverRef>(null);
+  const popoverRef = useRef<VariableSuggestionsPopoverRef>(null);
+  const {
+    variableSuggestionPopover:
+      VariableSuggestionPopoverComponent = DEFAULT_VARIABLE_SUGGESTION_POPOVER,
+  } = useMailyContext();
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -50,7 +56,7 @@ export const VariableList = forwardRef((props: VariableListProps, ref) => {
   }));
 
   return (
-    <VariablePopover
+    <VariableSuggestionPopoverComponent
       items={items}
       onSelectItem={(value) => {
         props.command({
@@ -67,8 +73,7 @@ VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
   variables: Variables = DEFAULT_VARIABLES,
-  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR,
-  variableListComponent: ComponentType<VariableListProps> = VariableList
+  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     char,
@@ -86,7 +91,7 @@ export function getVariableSuggestions(
 
       return {
         onStart: (props) => {
-          component = new ReactRenderer(variableListComponent, {
+          component = new ReactRenderer(VariableList, {
             props,
             editor: props.editor,
           });

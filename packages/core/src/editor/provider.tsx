@@ -1,10 +1,14 @@
 'use client';
 
-import { BlockGroupItem, BlockItem } from '@/blocks/types';
+import { BlockGroupItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { Editor } from '@tiptap/core';
 import { DefaultRenderVariable } from './nodes/variable/variable-view';
+import {
+  VariableSuggestionsPopover,
+  type VariableSuggestionsPopoverType,
+} from './nodes/variable/variable-suggestions-popover';
 
 export type Variable = {
   name: string;
@@ -43,6 +47,7 @@ export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
 export const DEFAULT_VARIABLES: Variables = [];
 export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
   DefaultRenderVariable;
+export const DEFAULT_VARIABLE_SUGGESTION_POPOVER = VariableSuggestionsPopover;
 
 export type MailyContextType = {
   placeholderUrl?: string;
@@ -50,6 +55,13 @@ export type MailyContextType = {
   variables?: Variables;
   blocks?: BlockGroupItem[];
   renderVariable?: RenderVariableFunction;
+
+  /**
+   * Variable suggestion popover is the component that will be used to render
+   * the variable suggestions for the content, bubble menu variables
+   * @default VariableSuggestionPopover
+   */
+  variableSuggestionPopover?: VariableSuggestionsPopoverType;
 };
 
 export const MailyContext = createContext<MailyContextType>({
@@ -58,6 +70,7 @@ export const MailyContext = createContext<MailyContextType>({
   variables: DEFAULT_VARIABLES,
   blocks: DEFAULT_SLASH_COMMANDS,
   renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
+  variableSuggestionPopover: DEFAULT_VARIABLE_SUGGESTION_POPOVER,
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;

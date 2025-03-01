@@ -1,7 +1,3 @@
-import {
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  useMailyContext,
-} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { BubbleMenu, findChildren } from '@tiptap/react';
@@ -22,6 +18,7 @@ import {
 import { useRepeatState } from './use-repeat-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
 import { processVariables } from '@/editor/utils/variable';
+import { useVariableOptions } from '@/editor/utils/node-options';
 
 export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -77,8 +74,9 @@ export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
     pluginKey: 'repeatBubbleMenu',
   };
 
-  const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
-    useMailyContext();
+  const opts = useVariableOptions(editor);
+  const variables = opts?.variables;
+  const renderVariable = opts?.renderVariable;
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
 
@@ -150,6 +148,7 @@ export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           >
             <InputAutocomplete
+              editor={editor}
               placeholder="ie. payload.items"
               value={state?.each || ''}
               onValueChange={(value) => {

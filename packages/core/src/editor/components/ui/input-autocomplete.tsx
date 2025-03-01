@@ -1,11 +1,9 @@
 import { VariableSuggestionsPopoverRef } from '@/editor/nodes/variable/variable-suggestions-popover';
-import {
-  DEFAULT_VARIABLE_SUGGESTION_POPOVER,
-  useMailyContext,
-} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
+import { useVariableOptions } from '@/editor/utils/node-options';
 import { useOutsideClick } from '@/editor/utils/use-outside-click';
+import { Editor } from '@tiptap/core';
 import { CornerDownLeft } from 'lucide-react';
 import { forwardRef, HTMLAttributes, useRef } from 'react';
 
@@ -19,6 +17,8 @@ type InputAutocompleteProps = HTMLAttributes<HTMLInputElement> & {
   onOutsideClick?: () => void;
   triggerChar?: string;
   placeholder?: string;
+
+  editor: Editor;
 };
 
 export const InputAutocomplete = forwardRef<
@@ -33,15 +33,14 @@ export const InputAutocomplete = forwardRef<
     onSelectOption,
     autoCompleteOptions = [],
     triggerChar = '',
+    editor,
     ...inputProps
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<VariableSuggestionsPopoverRef>(null);
-  const {
-    variableSuggestionPopover:
-      VariableSuggestionPopoverComponent = DEFAULT_VARIABLE_SUGGESTION_POPOVER,
-  } = useMailyContext();
+  const VariableSuggestionPopoverComponent =
+    useVariableOptions(editor)?.variableSuggestionsPopover;
 
   useOutsideClick(containerRef, () => {
     onOutsideClick?.();
@@ -92,7 +91,7 @@ export const InputAutocomplete = forwardRef<
 
       {isTriggeringVariable && (
         <div className="mly-absolute mly-left-0 mly-top-8">
-          <DEFAULT_VARIABLE_SUGGESTION_POPOVER
+          <VariableSuggestionPopoverComponent
             items={autoCompleteOptions.map((option) => {
               return {
                 name: option,

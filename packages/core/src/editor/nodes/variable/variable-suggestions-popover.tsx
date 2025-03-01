@@ -1,4 +1,3 @@
-import { Variable } from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import {
   ArrowDownIcon,
@@ -7,12 +6,13 @@ import {
   CornerDownLeftIcon,
 } from 'lucide-react';
 import {
-  useImperativeHandle,
   forwardRef,
-  useState,
   useEffect,
+  useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
+import { Variable } from './variable';
 
 export type VariableSuggestionsPopoverProps = {
   items: Variable[];

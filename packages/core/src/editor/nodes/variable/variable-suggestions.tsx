@@ -1,31 +1,29 @@
 import {
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  DEFAULT_VARIABLES,
-  Variable as VariableType,
-  Variables,
-  useMailyContext,
-  DEFAULT_VARIABLE_SUGGESTION_POPOVER,
-} from '@/editor/provider';
+  getVariableOptions,
+  useVariableOptions,
+} from '@/editor/utils/node-options';
 import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
-import { useRef, forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
+import {
+  DEFAULT_VARIABLE_TRIGGER_CHAR,
+  Variable as VariableType,
+} from './variable';
 import { VariableSuggestionsPopoverRef } from './variable-suggestions-popover';
 
 export type VariableListProps = {
   command: (params: { id: string; required: boolean }) => void;
   items: VariableType[];
-};
+} & SuggestionOptions;
 
 export const VariableList = forwardRef((props: VariableListProps, ref) => {
-  const { items = [] } = props;
+  const { items = [], editor } = props;
 
   const popoverRef = useRef<VariableSuggestionsPopoverRef>(null);
-  const {
-    variableSuggestionPopover:
-      VariableSuggestionPopoverComponent = DEFAULT_VARIABLE_SUGGESTION_POPOVER,
-  } = useMailyContext();
+  const VariableSuggestionPopoverComponent =
+    useVariableOptions(editor)?.variableSuggestionsPopover;
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -72,12 +70,13 @@ export const VariableList = forwardRef((props: VariableListProps, ref) => {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: Variables = DEFAULT_VARIABLES,
   char: string = DEFAULT_VARIABLE_TRIGGER_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     char,
     items: ({ query, editor }) => {
+      const variables = getVariableOptions(editor)?.variables;
+
       return processVariables(variables, {
         query,
         editor,

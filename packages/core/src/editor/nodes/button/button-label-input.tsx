@@ -1,16 +1,10 @@
 import { InputAutocomplete } from '@/editor/components/ui/input-autocomplete';
-import {
-  DEFAULT_PLACEHOLDER_URL,
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  useMailyContext,
-} from '@/editor/provider';
+import { DEFAULT_VARIABLE_TRIGGER_CHAR } from '@/editor/nodes/variable/variable';
+import { DEFAULT_PLACEHOLDER_URL, useMailyContext } from '@/editor/provider';
+import { useVariableOptions } from '@/editor/utils/node-options';
 import { processVariables } from '@/editor/utils/variable';
 import { Editor } from '@tiptap/core';
-import { BracesIcon } from 'lucide-react';
-import { useMemo } from 'react';
-import { useState } from 'react';
-import { useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 type ButtonLabelInputProps = {
   value: string;
@@ -26,12 +20,12 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
   const linkInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(!isVariable);
 
-  const {
-    variables = [],
-    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
-    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
-    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
-  } = useMailyContext();
+  const { placeholderUrl = DEFAULT_PLACEHOLDER_URL } = useMailyContext();
+  const otps = useVariableOptions(editor);
+  const variables = otps?.variables;
+  const variableTriggerCharacter =
+    otps?.suggestion?.char ?? DEFAULT_VARIABLE_TRIGGER_CHAR;
+  const renderVariable = otps?.renderVariable;
 
   const autoCompleteOptions = useMemo(() => {
     const withoutTrigger = value.replace(
@@ -71,6 +65,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
 
       {isEditing && (
         <InputAutocomplete
+          editor={editor}
           value={value}
           onValueChange={(value) => {
             onValueChange?.(value);

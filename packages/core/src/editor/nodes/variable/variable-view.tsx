@@ -5,23 +5,30 @@ import {
 } from '@/editor/components/popover';
 import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import {
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  RenderVariableFunction,
-  useMailyContext,
-} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
+import { getNodeOptions } from '@/editor/utils/node-options';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
+import { useMemo } from 'react';
+import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
+  VariableOptions,
+  type RenderVariableFunction,
+} from './variable';
 
 export function VariableView(props: NodeViewProps) {
   const { node, updateAttributes, editor } = props;
   const { id, fallback, required } = node.attrs;
 
-  const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
-    useMailyContext();
+  const renderVariable = useMemo(() => {
+    const variableRender =
+      getNodeOptions<VariableOptions>(editor, 'variable')?.renderVariable ??
+      DEFAULT_RENDER_VARIABLE_FUNCTION;
+
+    return variableRender;
+  }, [editor]);
 
   return (
     <NodeViewWrapper

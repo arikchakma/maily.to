@@ -1,25 +1,29 @@
 import {
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  DEFAULT_VARIABLES,
-  Variable as VariableType,
-  Variables,
-} from '@/editor/provider';
+  getVariableOptions,
+  useVariableOptions,
+} from '@/editor/utils/node-options';
 import { processVariables } from '@/editor/utils/variable';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
-import { useRef, forwardRef, useImperativeHandle, ComponentType } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-import { VariablePopover, VariablePopoverRef } from './variable-popover';
+import {
+  DEFAULT_VARIABLE_TRIGGER_CHAR,
+  Variable as VariableType,
+} from './variable';
+import { VariableSuggestionsPopoverRef } from './variable-suggestions-popover';
 
 export type VariableListProps = {
   command: (params: { id: string; required: boolean }) => void;
   items: VariableType[];
-};
+} & SuggestionOptions;
 
 export const VariableList = forwardRef((props: VariableListProps, ref) => {
-  const { items = [] } = props;
+  const { items = [], editor } = props;
 
-  const popoverRef = useRef<VariablePopoverRef>(null);
+  const popoverRef = useRef<VariableSuggestionsPopoverRef>(null);
+  const VariableSuggestionPopoverComponent =
+    useVariableOptions(editor)?.variableSuggestionsPopover;
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -50,7 +54,7 @@ export const VariableList = forwardRef((props: VariableListProps, ref) => {
   }));
 
   return (
-    <VariablePopover
+    <VariableSuggestionPopoverComponent
       items={items}
       onSelectItem={(value) => {
         props.command({
@@ -66,13 +70,13 @@ export const VariableList = forwardRef((props: VariableListProps, ref) => {
 VariableList.displayName = 'VariableList';
 
 export function getVariableSuggestions(
-  variables: Variables = DEFAULT_VARIABLES,
-  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR,
-  variableListComponent: ComponentType<VariableListProps> = VariableList
+  char: string = DEFAULT_VARIABLE_TRIGGER_CHAR
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     char,
     items: ({ query, editor }) => {
+      const variables = getVariableOptions(editor)?.variables;
+
       return processVariables(variables, {
         query,
         editor,
@@ -86,7 +90,7 @@ export function getVariableSuggestions(
 
       return {
         onStart: (props) => {
-          component = new ReactRenderer(variableListComponent, {
+          component = new ReactRenderer(VariableList, {
             props,
             editor: props.editor,
           });

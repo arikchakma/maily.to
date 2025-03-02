@@ -1,24 +1,15 @@
-import {
-  BracesIcon,
-  ChevronDownIcon,
-  CornerDownLeft,
-  Link,
-  LucideIcon,
-} from 'lucide-react';
+import { ChevronDownIcon, Link, LucideIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
-import {
-  DEFAULT_PLACEHOLDER_URL,
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  useMailyContext,
-} from '@/editor/provider';
+import { DEFAULT_PLACEHOLDER_URL, useMailyContext } from '@/editor/provider';
 import { InputAutocomplete } from './input-autocomplete';
 import { processVariables } from '@/editor/utils/variable';
 import { useMemo } from 'react';
 import { Editor } from '@tiptap/core';
+import { useVariableOptions } from '@/editor/utils/node-options';
+import { DEFAULT_VARIABLE_TRIGGER_CHAR } from '@/editor/nodes/variable/variable';
 
 const LINK_PROTOCOL_REGEX = /https?:\/\//;
 
@@ -56,12 +47,13 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
 
   const linkInputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    variables = [],
-    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
-    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
-    placeholderUrl = DEFAULT_PLACEHOLDER_URL,
-  } = useMailyContext();
+  const { placeholderUrl = DEFAULT_PLACEHOLDER_URL } = useMailyContext();
+  const options = useVariableOptions(editor);
+
+  const renderVariable = options?.renderVariable;
+  const variables = options?.variables;
+  const variableTriggerCharacter =
+    options?.suggestion?.char ?? DEFAULT_VARIABLE_TRIGGER_CHAR;
 
   const autoCompleteOptions = useMemo(() => {
     const withoutTrigger = defaultUrlWithoutProtocol.replace(
@@ -74,7 +66,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
       from: 'bubble-variable',
       editor,
     }).map((variable) => variable.name);
-  }, [variables, defaultUrlWithoutProtocol, editor]);
+  }, [variables, variableTriggerCharacter, defaultUrlWithoutProtocol, editor]);
 
   const popoverButton = (
     <PopoverTrigger asChild>
@@ -184,6 +176,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                 </div>
 
                 <InputAutocomplete
+                  editor={editor}
                   value={defaultUrlWithoutProtocol}
                   onValueChange={(value) => {
                     let newValue = normalizeProtocol(value);

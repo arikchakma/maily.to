@@ -139,21 +139,21 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             <div className="mly-flex mly-space-x-0.5">
               <ImageSize
                 dimension="width"
-                value={state?.width ?? 0}
+                value={state?.width ?? ''}
                 onValueChange={(value) => {
                   editor
                     ?.chain()
-                    .updateAttributes('image', { width: value })
+                    .updateAttributes('image', { width: value || null })
                     .run();
                 }}
               />
               <ImageSize
                 dimension="height"
-                value={state?.height ?? 0}
+                value={state?.height ?? ''}
                 onValueChange={(value) => {
                   editor
                     ?.chain()
-                    .updateAttributes('image', { height: value })
+                    .updateAttributes('image', { height: value || null })
                     .run();
                 }}
               />

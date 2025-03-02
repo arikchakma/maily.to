@@ -57,7 +57,7 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <div className="flex items-center mly-h-7 mly-rounded-md mly-bg-soft-gray mly-px-0.5">

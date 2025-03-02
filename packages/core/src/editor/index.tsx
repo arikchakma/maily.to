@@ -152,7 +152,7 @@ export function Editor(props: EditorProps) {
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
-            'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
+            'mly-mt-4 mly-rounded mly-border mly-border-gray-200 mly-bg-white mly-p-4',
             bodyClassName
           )}
         >

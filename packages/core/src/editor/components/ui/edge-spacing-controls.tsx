@@ -34,7 +34,7 @@ export function EdgeSpacingControl(props: EdgeSpacingControlProps) {
         <ChevronUp size={14} />
       </PopoverTrigger>
       <PopoverContent
-        className="mly-flex mly-max-w-max mly-gap-0.5 mly-rounded-md mly-border !mly-p-0.5 mly-shadow-none"
+        className="mly-flex mly-max-w-max mly-gap-0.5 mly-rounded-md mly-border mly-border-gray-200 !mly-p-0.5 mly-shadow-none"
         side="top"
         sideOffset={8}
       >

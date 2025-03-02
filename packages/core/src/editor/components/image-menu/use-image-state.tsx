@@ -7,8 +7,8 @@ export const useImageState = (editor: Editor) => {
     editor,
     selector: ({ editor }) => {
       return {
-        width: editor.getAttributes('image').width as string,
-        height: editor.getAttributes('image').height as string,
+        width: String(editor.getAttributes('image').width),
+        height: String(editor.getAttributes('image').height),
         isImageActive: editor.isActive('image'),
         isLogoActive: editor.isActive('logo'),
         alignment:

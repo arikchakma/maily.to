@@ -1,80 +1,21 @@
-Maily.to - Non-Commercial Use Only License
+The MIT License
 
-IMPORTANT: READ CAREFULLY BEFORE USING, COPYING, MODIFYING, OR DISTRIBUTING THIS SOFTWARE. BY USING, COPYING, MODIFYING, OR DISTRIBUTING Maily.to, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE, COPY, MODIFY, OR DISTRIBUTE Maily.to.
+Copyright (c) Arik Chakma
 
-**Summary:** This license allows you to use Maily.to for personal, educational, academic, and research purposes *only*. You *cannot* redistribute it, use it for any commercial purpose, including making money or supporting a business. If you want to use it commercially, you need to contact us for a different license.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-This is a legally binding agreement between Maily.to (hereinafter referred to as "Licensor") and you (hereinafter referred to as "Licensee"). This License governs the use of the Maily.to software (hereinafter referred to as the "Software").
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-1. Grant of License – Non-Commercial Use Only:
-
-Licensor hereby grants to Licensee a limited, non-exclusive, non-transferable, non-sublicensable license to use, copy, modify, and distribute the Software solely for Non-Commercial Purposes. This license is explicitly restricted to Non-Commercial Purposes, as defined below.
-
-Notwithstanding the foregoing, Licensor hereby grants to Novu and its affiliates (hereinafter referred to as "Novu") a perpetual, non-exclusive license to use, copy, modify, and distribute the Software, including for commercial purposes relating to the continued development and improvement of Maily.to, and integration with Novu's other products and services. This grant of license to Novu shall not affect the restrictions placed on other Licensees under this License.
-
-2. Definition of Non-Commercial Purposes:
-
-For the purposes of this License, "Non-Commercial Purposes" shall mean activities that are strictly personal, educational, academic, or research-oriented, where there is no intention, either direct or indirect, to generate profit, gain, commercial advantage, or monetary compensation. This explicitly excludes any use related to, or supporting, any commercial activity, enterprise, or endeavor, irrespective of whether that activity, enterprise, or endeavor is for-profit or not-for-profit.
-
-3. Explicit Prohibition of Commercial Use:
-
-NOTWITHSTANDING ANYTHING TO THE CONTRARY CONTAINED HEREIN, COMMERCIAL USE OF THE SOFTWARE IS STRICTLY PROHIBITED for all Licensees other than Novu, as explicitly granted in Section 1. NO LICENSE, RIGHT, OR PERMISSION IS GRANTED FOR ANY COMMERCIAL USE WHATSOEVER (except for Novu as specified in Section 1). THE SOFTWARE IS INTENDED SOLELY FOR NON-COMMERCIAL APPLICATION. UNDER NO CIRCUMSTANCES SHALL THE SOFTWARE BE USED (except by Novu as specified in Section 1):
-
-   * In or as part of any commercial product or service offered for sale or lease.
-   * To support, facilitate, or enhance any commercial activity, enterprise, or endeavor.
-   * To generate revenue, directly or indirectly, regardless of the means of revenue generation.
-   * By or for the benefit of any commercial entity, organization, or enterprise, whether for-profit or not-for-profit, including but not limited to businesses, corporations, limited liability companies, partnerships, and sole proprietorships.
-   * For any purpose where a fee is charged for access to the Software or to results or data obtained through the use of the Software.
-   * As a component of a system or workflow used for commercial gain.
-   * To provide services to a third party for commercial gain.
-
-Even if no fee is charged, providing access to the Software as a hosted service (e.g., SaaS) to others *may* be considered commercial use, requiring a commercial license. Contact Licensor for clarification.
-
-Any use of the Software that is not explicitly permitted under Section 2 is deemed a prohibited Commercial Use.
-
-4. No Commercial License Granted:
-
-This License does not grant any commercial license, right, or permission whatsoever, *except as explicitly granted to Novu in Section 1*.  If Licensee desires to use the Software for any Commercial Purpose (other than as granted to Novu), Licensee must contact Licensor and negotiate a separate, written commercial license agreement.  Licensor retains the sole and absolute discretion to grant or deny such a commercial license, and to set the terms and conditions of such license.
-
-5. Source Code Availability and Modification:
-
-The source code for Maily.to is made available under this License solely to facilitate non-commercial use, learning, and research.  Licensee may modify the source code, but all modified versions must comply with the terms of this License, including the strict prohibition on Commercial Use (except as explicitly granted to Novu).  Licensee is not permitted to distribute modified versions of the Software commercially, even if such versions are provided free of charge (except as explicitly granted to Novu).
-
-6. Redistribution:
-
-Licensee may redistribute the Software, provided that the following conditions are met:
-
-   * This License, in its entirety, is included with all copies of the Software.
-   * All copyright notices and attributions are retained and unaltered.
-   * Any modifications to the Software are clearly indicated and accompanied by a statement that the modifications are not endorsed by the Licensor.
-   * No fee is charged for the Software, and no attempt is made to derive commercial gain from its distribution (except by Novu as permitted in Section 1).
-
-7. Disclaimer of Warranty:
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-8. Limitation of Liability:
-
-IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-9. Termination:
-
-This License will terminate immediately and automatically if Licensee breaches any provision of this License, including, but not limited to, the prohibition on Commercial Use (except as explicitly granted to Novu). Upon termination, Licensee shall immediately cease all use, copying, modification, and distribution of the Software.
-
-10. Audit Rights:
-
-Licensor reserves the right to audit Licensee's use of the Software to ensure compliance with the terms of this License. Licensee agrees to cooperate fully with any such audit and to provide Licensor with reasonable access to Licensee's records and systems.  This right shall not extend to Novu with respect to their usage of the Software as permitted in Section 1.
-
-11. Severability:
-
-If any provision of this License is held to be invalid or unenforceable, such provision shall be struck from this License and the remaining provisions shall remain in full force and effect.
-
-12. Entire Agreement:
-
-This License constitutes the entire agreement between Licensor and Licensee with respect to the Software and supersedes all prior or contemporaneous communications and proposals, whether electronic, oral, or written, between Licensor and Licensee with respect to the Software.
-
-13. Contact Information:
-
-For any questions regarding this License or to request a commercial license (WHICH IS NOT CURRENTLY GRANTED UNDER THIS LICENSE, except to Novu as specified in Section 1), please contact arikchangma@gmail.com.
-
-By using, copying, modifying, or distributing Maily.to, you signify your acceptance of this Non-Commercial Use Only License (with Novu Exception) and agree to be legally bound by its terms.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

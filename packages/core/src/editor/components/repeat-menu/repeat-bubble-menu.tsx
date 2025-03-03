@@ -5,12 +5,7 @@ import {
 import { cn } from '@/editor/utils/classname';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
 import { BubbleMenu, findChildren } from '@tiptap/react';
-import {
-  Braces,
-  InfoIcon,
-  TriangleAlert,
-  TriangleAlertIcon,
-} from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { sticky } from 'tippy.js';
 import { getRenderContainer } from '../../utils/get-render-container';
@@ -24,20 +19,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
-import { useForState } from './use-for-state';
+import { useRepeatState } from './use-repeat-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
 import { processVariables } from '@/editor/utils/variable';
 
-export function ForBubbleMenu(props: EditorBubbleMenuProps) {
+export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
   if (!editor) {
     return null;
   }
 
-  const state = useForState(editor);
+  const state = useRepeatState(editor);
 
   const getReferenceClientRect = useCallback(() => {
-    const renderContainer = getRenderContainer(editor!, 'for');
+    const renderContainer = getRenderContainer(editor!, 'repeat');
     const rect =
       renderContainer?.getBoundingClientRect() ||
       new DOMRect(-1000, -1000, 0, 0);
@@ -49,7 +44,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
-      const activeForNode = getClosestNodeByName(editor, 'for');
+      const activeForNode = getClosestNodeByName(editor, 'repeat');
       const sectionNodeChildren = activeForNode
         ? findChildren(activeForNode?.node, (node) => {
             return node.type.name === 'section';
@@ -58,11 +53,15 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
       const hasActiveSectionNodeChildren =
         sectionNodeChildren && editor.isActive('section');
 
-      if (isTextSelected(editor) || hasActiveSectionNodeChildren) {
+      if (
+        isTextSelected(editor) ||
+        hasActiveSectionNodeChildren ||
+        !editor.isEditable
+      ) {
         return false;
       }
 
-      return editor.isActive('for');
+      return editor.isActive('repeat');
     },
     tippyOptions: {
       offset: [0, 8],
@@ -75,7 +74,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
       sticky: 'popper',
       maxWidth: 'auto',
     },
-    pluginKey: 'forBubbleMenu',
+    pluginKey: 'repeatBubbleMenu',
   };
 
   const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
@@ -88,7 +87,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
     return processVariables(variables, {
       query: eachKey || '',
       editor,
-      from: 'for-variable',
+      from: 'repeat-variable',
     }).map((variable) => variable.name);
   }, [variables, eachKey, editor]);
 
@@ -97,11 +96,11 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <div className="mly-flex mly-items-center mly-gap-1.5 mly-px-1.5 mly-text-sm mly-leading-none">
-          For
+          Repeat
           <Tooltip>
             <TooltipTrigger>
               <InfoIcon
@@ -154,7 +153,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
               placeholder="ie. payload.items"
               value={state?.each || ''}
               onValueChange={(value) => {
-                editor.commands.updateFor({
+                editor.commands.updateRepeat({
                   each: value,
                 });
               }}
@@ -162,7 +161,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
                 setIsUpdatingKey(false);
               }}
               onSelectOption={(value) => {
-                editor.commands.updateFor({
+                editor.commands.updateRepeat({
                   each: value,
                 });
                 setIsUpdatingKey(false);
@@ -177,7 +176,7 @@ export function ForBubbleMenu(props: EditorBubbleMenuProps) {
         <ShowPopover
           showIfKey={state.currentShowIfKey}
           onShowIfKeyValueChange={(value) => {
-            editor.commands.updateFor({
+            editor.commands.updateRepeat({
               showIfKey: value,
             });
           }}

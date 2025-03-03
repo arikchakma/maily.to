@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/render",
-  "version": "0.0.17",
+  "version": "0.1.1",
   "private": false,
   "description": "A transformer that converts Maily content into HTML email templates.",
   "sideEffects": false,
@@ -22,7 +22,6 @@
       }
     }
   },
-  "license": "MIT",
   "scripts": {
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
@@ -55,11 +54,12 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.28",
-    "@react-email/render": "^1.0.2"
+    "@react-email/components": "^0.0.25",
+    "@react-email/render": "^1.0.1",
+    "node-html-parser": "^7.0.1"
   },
   "peerDependencies": {
-    "react": "^18"
+    "react": "^18.3.1"
   },
   "publishConfig": {
     "access": "public"

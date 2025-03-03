@@ -1,6 +1,9 @@
+import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
 import { BubbleMenu } from '@tiptap/react';
-import { ArrowUpRight, ImageDown } from 'lucide-react';
+import { ImageDown } from 'lucide-react';
+import { sticky } from 'tippy.js';
 import { AlignmentSwitch } from '../alignment-switch';
+import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
 import { LinkInputPopover } from '../ui/link-input-popover';
@@ -8,9 +11,6 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { ShowPopover } from '../show-popover';
-import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
-import { sticky } from 'tippy.js';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -24,6 +24,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
+      if (!editor.isEditable) {
+        return false;
+      }
+
       return editor.isActive('logo') || editor.isActive('image');
     },
     tippyOptions: {
@@ -39,7 +43,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         {state.isLogoActive && state.imageSrc && (
@@ -135,21 +139,21 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             <div className="mly-flex mly-space-x-0.5">
               <ImageSize
                 dimension="width"
-                value={state?.width ?? 0}
+                value={state?.width ?? ''}
                 onValueChange={(value) => {
                   editor
                     ?.chain()
-                    .updateAttributes('image', { width: value })
+                    .updateAttributes('image', { width: value || null })
                     .run();
                 }}
               />
               <ImageSize
                 dimension="height"
-                value={state?.height ?? 0}
+                value={state?.height ?? ''}
                 onValueChange={(value) => {
                   editor
                     ?.chain()
-                    .updateAttributes('image', { height: value })
+                    .updateAttributes('image', { height: value || null })
                     .run();
                 }}
               />

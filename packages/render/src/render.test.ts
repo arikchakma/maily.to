@@ -163,6 +163,7 @@ describe('render', () => {
             mailyComponent: 'button',
             text: 'Unsubscribe',
             url: 'unsubscribe_url',
+            isUrlVariable: true,
             alignment: 'left',
             variant: 'filled',
             borderRadius: 'smooth',

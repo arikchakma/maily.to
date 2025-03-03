@@ -1,7 +1,6 @@
 import { BubbleMenu } from '@tiptap/react';
 
 import { BubbleMenuButton } from '../bubble-menu-button';
-import { allowedSpacerSize } from '../../nodes/spacer';
 import {
   BubbleMenuItem,
   EditorBubbleMenuProps,
@@ -10,6 +9,8 @@ import { Divider } from '../ui/divider';
 import { useSpacerState } from './use-spacer-state';
 import { ShowPopover } from '../show-popover';
 import { TooltipProvider } from '../ui/tooltip';
+import { spacing } from '@/editor/utils/spacing';
+import { useMemo } from 'react';
 
 export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -17,18 +18,31 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
     return null;
   }
 
-  const items: BubbleMenuItem[] = allowedSpacerSize.map((height) => ({
-    name: height,
-    isActive: () => editor?.isActive('spacer', { height })!,
-    command: () => {
-      editor?.chain().focus().setSpacer({ height }).run();
-    },
-  }));
+  const items: BubbleMenuItem[] = useMemo(
+    () =>
+      spacing.map((space) => {
+        const { value: height, short: name } = space;
+        return {
+          name,
+          isActive: () => editor?.isActive('spacer', { height }),
+          command: () => {
+            editor?.chain().focus().setSpacer({ height }).run();
+          },
+        };
+      }),
+    [editor]
+  );
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
-    shouldShow: ({ editor }) => editor.isActive('spacer'),
+    shouldShow: ({ editor }) => {
+      if (!editor.isEditable) {
+        return false;
+      }
+
+      return editor.isActive('spacer');
+    },
     tippyOptions: {
       maxWidth: '100%',
       moveTransition: 'mly-transform 0.15s mly-ease-out',
@@ -40,7 +54,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         {items.map((item, index) => (

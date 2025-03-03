@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily/blob/main/license">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    <img src="https://img.shields.io/badge/License-Non--Commercial-222222.svg" />
   </a>
   <a href="https://maily.to">
     	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
@@ -82,7 +82,7 @@ const html = await maily.render();
 
 ### Payloads
 
-Payload values are used for the `For Loop` and `Show If` blocks.
+Payload values are used for the `Repeat` and `Show If` blocks.
 
 ```ts
 // (Omitted repeated imports)
@@ -91,7 +91,7 @@ const maily = new Maily({
   type: 'doc',
   content: [
     {
-      type: 'for',
+      type: 'repeat',
       attrs: { each: 'items', showIfKey: null },
       content: [
         {
@@ -114,4 +114,4 @@ Feel free to submit pull requests, create issues, or spread the word.
 
 ## License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+Non-Commercial Use Only. See `LICENSE` for more information.

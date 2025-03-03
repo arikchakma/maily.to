@@ -1,6 +1,7 @@
 {
   "name": "maily",
   "private": true,
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",

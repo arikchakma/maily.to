@@ -1,6 +1,6 @@
 'use client';
 
-import { BlockItem } from '@/blocks/types';
+import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import { Editor } from '@tiptap/core';
@@ -16,7 +16,7 @@ export type Variable = {
 
 export type VariableFunctionOptions = {
   query: string;
-  from: 'content-variable' | 'bubble-variable' | 'for-variable';
+  from: 'content-variable' | 'bubble-variable' | 'repeat-variable';
   editor: Editor;
 };
 
@@ -37,19 +37,23 @@ export type RenderVariableFunction = (
   opts: RenderVariableOptions
 ) => JSX.Element | null;
 
+export const DEFAULT_PLACEHOLDER_URL = 'maily.to/';
+
 export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
 export const DEFAULT_VARIABLES: Variables = [];
 export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
   DefaultRenderVariable;
 
 export type MailyContextType = {
+  placeholderUrl?: string;
   variableTriggerCharacter?: string;
   variables?: Variables;
-  blocks?: BlockItem[];
+  blocks?: BlockGroupItem[];
   renderVariable?: RenderVariableFunction;
 };
 
 export const MailyContext = createContext<MailyContextType>({
+  placeholderUrl: DEFAULT_PLACEHOLDER_URL,
   variableTriggerCharacter: DEFAULT_VARIABLE_TRIGGER_CHAR,
   variables: DEFAULT_VARIABLES,
   blocks: DEFAULT_SLASH_COMMANDS,

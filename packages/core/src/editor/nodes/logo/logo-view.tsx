@@ -6,7 +6,7 @@ import { LogoAttributes, logoSizes } from './logo';
 import { ImageStatus, ImageStatusLabel } from '../image/image-view';
 
 export function LogoView(props: NodeViewProps) {
-  const { node } = props;
+  const { node, editor } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
 
@@ -48,8 +48,8 @@ export function LogoView(props: NodeViewProps) {
   return (
     <NodeViewWrapper
       as="div"
-      draggable
-      data-drag-handle
+      draggable={editor.isEditable}
+      data-drag-handle={editor.isEditable}
       style={{
         overflow: 'hidden',
         position: 'relative',
@@ -58,17 +58,15 @@ export function LogoView(props: NodeViewProps) {
         display: 'block',
       }}
     >
-      {!hasImageSrc && (
-        <ImageStatusLabel style={{ height: logoSize }} status="idle" />
-      )}
+      {!hasImageSrc && <ImageStatusLabel status="idle" minHeight={logoSize} />}
       {hasImageSrc && isSrcVariable && (
-        <ImageStatusLabel style={{ height: logoSize }} status="variable" />
+        <ImageStatusLabel status="variable" minHeight={logoSize} />
       )}
       {hasImageSrc && status === 'loading' && !isSrcVariable && (
-        <ImageStatusLabel style={{ height: logoSize }} status="loading" />
+        <ImageStatusLabel status="loading" minHeight={logoSize} />
       )}
       {hasImageSrc && status === 'error' && !isSrcVariable && (
-        <ImageStatusLabel style={{ height: logoSize }} status="error" />
+        <ImageStatusLabel status="error" minHeight={logoSize} />
       )}
 
       {hasImageSrc && status === 'loaded' && !isSrcVariable && (
@@ -86,6 +84,7 @@ export function LogoView(props: NodeViewProps) {
               right: { marginLeft: 'auto' },
             }[alignment] || {}),
           }}
+          draggable={editor.isEditable}
         />
       )}
     </NodeViewWrapper>

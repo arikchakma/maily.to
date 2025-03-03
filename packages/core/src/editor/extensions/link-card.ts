@@ -10,6 +10,8 @@ declare module '@tiptap/core' {
   }
 }
 
+export type LinkCardOptions = {};
+
 export const LinkCardExtension = Node.create({
   name: 'linkCard',
   group: 'block',

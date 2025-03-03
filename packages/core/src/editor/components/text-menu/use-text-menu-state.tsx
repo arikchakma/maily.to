@@ -27,6 +27,13 @@ export const useTextMenuState = (editor: Editor) => {
           ctx.editor.isActive('bulletList') ||
           ctx.editor.isActive('orderedList'),
         isUrlVariable: ctx.editor.getAttributes('link').isUrlVariable ?? false,
+
+        isHeadingActive: ctx.editor.isActive('heading'),
+        headingShowIfKey: ctx.editor.getAttributes('heading')?.showIfKey || '',
+
+        isParagraphActive: ctx.editor.isActive('paragraph'),
+        paragraphShowIfKey:
+          ctx.editor.getAttributes('paragraph')?.showIfKey || '',
       };
     },
     equalityFn: deepEql,

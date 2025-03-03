@@ -1,171 +1,386 @@
-import { BlockItem } from '@/blocks/types';
+import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import { cn } from '@/editor/utils/classname';
-import { updateScrollView } from '@/editor/utils/update-scroll-view';
 import { Editor } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import {
-  ReactNode,
+  forwardRef,
+  Fragment,
+  KeyboardEvent,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
-
-interface CommandItemProps {
-  title: string;
-  description: string;
-  icon: ReactNode;
-}
+import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
+import { ChevronRightIcon } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/editor/components/ui/tooltip';
 
 type CommandListProps = {
-  items: CommandItemProps[];
-  command: (item: CommandItemProps) => void;
+  items: BlockGroupItem[];
+  command: (item: BlockItem) => void;
   editor: Editor;
   range: any;
+  query: string;
 };
 
-function CommandList(props: CommandListProps) {
-  const { items, command, editor } = props;
+const CommandList = forwardRef(function CommandList(
+  props: CommandListProps,
+  ref
+) {
+  const { items: groups, command, editor } = props;
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
+  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
 
   const selectItem = useCallback(
-    (index: number) => {
-      const item = items[index];
-      if (item) {
-        command(item);
+    (groupIndex: number, commandIndex: number) => {
+      const item = groups[groupIndex].commands[commandIndex];
+      if (!item) {
+        return;
       }
+
+      command(item);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [command, editor, items]
+    [command]
   );
 
-  useEffect(() => {
-    const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (navigationKeys.includes(e.key)) {
-        e.preventDefault();
-        if (e.key === 'ArrowUp') {
-          setSelectedIndex((selectedIndex + items.length - 1) % items.length);
+  useImperativeHandle(ref, () => ({
+    onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+      const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
+      if (navigationKeys.includes(event.key)) {
+        if (event.key === 'ArrowUp') {
+          if (!groups.length) {
+            return false;
+          }
+
+          let newCommandIndex = selectedCommandIndex - 1;
+          let newGroupIndex = selectedGroupIndex;
+
+          if (newCommandIndex < 0) {
+            newGroupIndex = selectedGroupIndex - 1;
+            newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
+          }
+
+          if (newGroupIndex < 0) {
+            newGroupIndex = groups.length - 1;
+            newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
+          }
+
+          setSelectedGroupIndex(newGroupIndex);
+          setSelectedCommandIndex(newCommandIndex);
           return true;
         }
-        if (e.key === 'ArrowDown') {
-          setSelectedIndex((selectedIndex + 1) % items.length);
+        if (event.key === 'ArrowDown') {
+          if (!groups.length) {
+            return false;
+          }
+
+          const commands = groups[selectedGroupIndex].commands;
+          let newCommandIndex = selectedCommandIndex + 1;
+          let newGroupIndex = selectedGroupIndex;
+
+          if (commands.length - 1 < newCommandIndex) {
+            newCommandIndex = 0;
+            newGroupIndex = selectedGroupIndex + 1;
+          }
+
+          if (groups.length - 1 < newGroupIndex) {
+            newGroupIndex = 0;
+          }
+
+          setSelectedGroupIndex(newGroupIndex);
+          setSelectedCommandIndex(newCommandIndex);
           return true;
         }
-        if (e.key === 'Enter') {
-          selectItem(selectedIndex);
+        if (event.key === 'Enter') {
+          if (!groups.length) {
+            return false;
+          }
+
+          selectItem(selectedGroupIndex, selectedCommandIndex);
           return true;
         }
         return false;
       }
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, [items, selectedIndex, setSelectedIndex, selectItem]);
+    },
+  }));
 
   useEffect(() => {
-    setSelectedIndex(0);
-  }, [items]);
+    setSelectedGroupIndex(0);
+    setSelectedCommandIndex(0);
+  }, [groups]);
 
   const commandListContainer = useRef<HTMLDivElement>(null);
+  const activeCommandRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const container = commandListContainer?.current;
-
-    const item = container?.children[selectedIndex] as HTMLElement;
-
-    if (item && container) {
-      updateScrollView(container, item);
+    const activeCommandContainer = activeCommandRef?.current;
+    if (!container || !activeCommandContainer) {
+      return;
     }
-  }, [selectedIndex]);
 
-  return items.length > 0 ? (
-    <div className="mly-z-50 mly-w-72 mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
-      <div
-        id="slash-command"
-        ref={commandListContainer}
-        className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth mly-p-1"
-      >
-        {items.map((item: CommandItemProps, index: number) => {
-          return (
-            <button
-              className={cn(
-                'mly-flex mly-w-full mly-items-center mly-space-x-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
-                index === selectedIndex
-                  ? 'mly-bg-gray-100 mly-text-gray-900'
-                  : 'mly-bg-transparent'
-              )}
-              key={index}
-              onClick={() => selectItem(index)}
-              type="button"
-            >
-              <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
-                {item.icon}
+    const { offsetTop, offsetHeight } = activeCommandContainer;
+    container.scrollTop = offsetTop - offsetHeight;
+  }, [
+    selectedGroupIndex,
+    selectedCommandIndex,
+    commandListContainer,
+    activeCommandRef,
+  ]);
+
+  return groups.length > 0 ? (
+    <TooltipProvider>
+      <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
+        <div
+          id="slash-command"
+          ref={commandListContainer}
+          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth"
+        >
+          {groups.map((group, groupIndex) => (
+            <Fragment key={groupIndex}>
+              <span
+                className={cn(
+                  'mly-block mly-border-b mly-border-gray-200 mly-bg-soft-gray mly-p-2 mly-text-xs mly-uppercase mly-text-gray-400',
+                  groupIndex > 0 ? 'mly-border-t' : ''
+                )}
+              >
+                {group.title}
+              </span>
+              <div className="mly-space-y-0.5 mly-p-1">
+                {group.commands.map((item, commandIndex) => {
+                  const isActive =
+                    groupIndex === selectedGroupIndex &&
+                    commandIndex === selectedCommandIndex;
+                  const isSubCommand = 'commands' in item;
+
+                  const hasRenderFunction = typeof item.render === 'function';
+                  const renderFunctionValue = hasRenderFunction
+                    ? item.render?.(editor)
+                    : null;
+
+                  let value = (
+                    <>
+                      <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
+                        {item.icon}
+                      </div>
+                      <div className="mly-grow">
+                        <p className="mly-font-medium">{item.title}</p>
+                        <p className="mly-text-xs mly-text-gray-400">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      {isSubCommand && (
+                        <span className="mly-block mly-px-1 mly-text-gray-400">
+                          <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
+                        </span>
+                      )}
+                    </>
+                  );
+
+                  if (
+                    renderFunctionValue !== null &&
+                    renderFunctionValue !== true
+                  ) {
+                    value = renderFunctionValue!;
+                  }
+
+                  const shouldOpenTooltip = !!item?.preview && isActive;
+
+                  return (
+                    <Tooltip open={shouldOpenTooltip} key={commandIndex}>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={cn(
+                            'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
+                            isActive
+                              ? 'mly-bg-gray-100 mly-text-gray-900'
+                              : 'mly-bg-transparent'
+                          )}
+                          onClick={() => selectItem(groupIndex, commandIndex)}
+                          type="button"
+                          ref={isActive ? activeCommandRef : null}
+                        >
+                          {value}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="right"
+                        sideOffset={10}
+                        className="mly-w-52 mly-rounded-lg mly-border-none mly-p-1 mly-shadow"
+                      >
+                        {typeof item.preview === 'function' ? (
+                          item?.preview(editor)
+                        ) : (
+                          <>
+                            <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
+                              <img
+                                src={item?.preview}
+                                alt={item?.title}
+                                className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
+                              />
+                            </figure>
+                            <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
+                              {item.description}
+                            </p>
+                          </>
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
               </div>
-              <div>
-                <p className="mly-font-medium">{item.title}</p>
-                <p className="mly-text-xs mly-text-gray-400">
-                  {item.description}
-                </p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-      <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
-        <div className="mly-flex mly-items-center">
-          <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↑
-            </kbd>
-            <kbd className="mly-ml-1 mly-rounded mly-border mly-p-1 mly-px-2 mly-font-medium">
-              ↓
-            </kbd>{' '}
-            to navigate
-          </p>
-          <span aria-hidden="true" className="mly-select-none mly-px-1">
-            ·
-          </span>
-          <p className="mly-text-center mly-text-xs mly-text-gray-400">
-            <kbd className="mly-rounded mly-border mly-p-1 mly-px-1.5 mly-font-medium">
-              Enter
-            </kbd>{' '}
-            to select
-          </p>
+            </Fragment>
+          ))}
+        </div>
+        <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
+          <div className="mly-flex mly-items-center">
+            <p className="mly-text-center mly-text-xs mly-text-gray-400">
+              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
+                ↑
+              </kbd>
+              <kbd className="mly-ml-1 mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
+                ↓
+              </kbd>{' '}
+              to navigate
+            </p>
+            <span aria-hidden="true" className="mly-select-none mly-px-1">
+              ·
+            </span>
+            <p className="mly-text-center mly-text-xs mly-text-gray-400">
+              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-1.5 mly-font-medium">
+                Enter
+              </kbd>{' '}
+              to select
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   ) : null;
-}
+});
 
 export function getSlashCommandSuggestions(
-  commands: BlockItem[] = []
+  groups: BlockGroupItem[] = DEFAULT_SLASH_COMMANDS
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      return commands.filter((item) => {
-        if (typeof query === 'string' && query.length > 0) {
-          const search = query.toLowerCase();
+      let newGroups = groups;
 
-          if (item?.shouldBeHidden?.(editor)) {
-            return false;
-          }
-
+      let search = query.toLowerCase();
+      const subCommandIds = newGroups
+        .map((group) => {
           return (
-            item.title.toLowerCase().includes(search) ||
-            item.description.toLowerCase().includes(search) ||
-            (item.searchTerms &&
-              item.searchTerms.some((term: string) => term.includes(search)))
+            group.commands
+              .filter((item) => 'commands' in item)
+              // @ts-ignore
+              .map((item) => item?.id.toLowerCase())
           );
+        })
+        .flat()
+        .map((id) => `${id}.`);
+
+      const shouldEnterSubCommand = subCommandIds.some((id) =>
+        search.startsWith(id)
+      );
+
+      if (shouldEnterSubCommand) {
+        const subCommandId = subCommandIds.find((id) => search.startsWith(id));
+        const sanitizedSubCommandId = subCommandId?.slice(0, -1);
+
+        const group = newGroups
+          .find((group) => {
+            return group.commands.some(
+              // @ts-ignore
+              (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
+            );
+          })
+          ?.commands.find(
+            // @ts-ignore
+            (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
+          );
+
+        if (!group) {
+          return groups;
         }
-        return true;
-      });
+
+        search = search.replace(subCommandId || '', '');
+        newGroups = [
+          {
+            ...group,
+            commands: group?.commands || [],
+          },
+        ];
+      }
+
+      const filteredGroups = newGroups
+        .map((group) => {
+          return {
+            ...group,
+            commands: group.commands
+              .filter((item) => {
+                if (typeof query === 'string' && query.length > 0) {
+                  const show = item?.render?.(editor);
+                  if (show === null) {
+                    return false;
+                  }
+
+                  return (
+                    item.title.toLowerCase().includes(search) ||
+                    (item?.description &&
+                      item?.description.toLowerCase().includes(search)) ||
+                    (item.searchTerms &&
+                      item.searchTerms.some((term: string) =>
+                        term.includes(search)
+                      ))
+                  );
+                }
+                return true;
+              })
+              .map((item) => {
+                const isSubCommandItem = 'commands' in item;
+                if (isSubCommandItem) {
+                  // so to make it work with the enter key
+                  // we make it a command
+                  // @ts-ignore
+                  item = {
+                    ...item,
+                    command: (options) => {
+                      const { editor, range } = options;
+                      editor
+                        .chain()
+                        .focus()
+                        .insertContentAt(range, `/${item.id}.`)
+                        .run();
+                    },
+                  };
+                }
+
+                return item;
+              }),
+          };
+        })
+        .filter((group) => group.commands.length > 0);
+
+      return filteredGroups;
+    },
+    allow: ({ editor }) => {
+      const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');
+      if (isInsideHTMLCodeBlock) {
+        return false;
+      }
+
+      return true;
     },
     render: () => {
       let component: ReactRenderer<any>;

@@ -246,4 +246,4 @@ See the [@maily-to/render](../render) package for more information on how to ren
 
 ## License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+Non-Commercial Use Only. See `LICENSE` for more information.

@@ -11,7 +11,7 @@ export function ImageUploadExample() {
         content: [
           {
             type: 'text',
-            text: "Bienvenue dans l'exemple de téléchargement d'images. Vous pouvez:",
+            text: 'Welcome to the image upload example. You can:',
           },
         ],
       },
@@ -26,7 +26,7 @@ export function ImageUploadExample() {
                 content: [
                   {
                     type: 'text',
-                    text: "Glisser-déposer une image n'importe où dans l'éditeur",
+                    text: 'Drag and drop an image anywhere in the editor',
                   },
                 ],
               },
@@ -40,7 +40,7 @@ export function ImageUploadExample() {
                 content: [
                   {
                     type: 'text',
-                    text: 'Cliquer sur "Click or drop image here" pour sélectionner une image',
+                    text: 'Click on "Click or drop image here" to select an image',
                   },
                 ],
               },
@@ -54,7 +54,7 @@ export function ImageUploadExample() {
                 content: [
                   {
                     type: 'text',
-                    text: 'Coller une image depuis le presse-papier',
+                    text: 'Paste an image from the clipboard',
                   },
                 ],
               },
@@ -67,7 +67,7 @@ export function ImageUploadExample() {
         content: [
           {
             type: 'text',
-            text: "Voici un exemple d'image vide que vous pouvez remplacer:",
+            text: "Here's an example of an empty image that you can replace:",
           },
         ],
       },
@@ -82,32 +82,30 @@ export function ImageUploadExample() {
         content: [
           {
             type: 'text',
-            text: "Essayez de glisser-déposer une image sur l'image vide ci-dessus!",
+            text: 'Try to drag and drop an image onto the empty image above!',
           },
         ],
       },
     ],
   });
 
-  // Cette fonction téléchargerait normalement l'image sur votre serveur ou stockage cloud
+  // This function would normally upload the image to your server or cloud storage
   const handleImageUpload = async (file: Blob): Promise<string> => {
-    // Simuler un délai de téléchargement
+    // Simulate an upload delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Dans une implémentation réelle, vous téléchargeriez le fichier sur votre serveur
-    // et retourneriez l'URL de l'image téléchargée
-    // Pour cet exemple, nous allons créer une URL d'objet local
+    // In a real implementation, you would upload the file to your server
+    // and return the URL of the uploaded image
+    // For this example, we'll create a local object URL
     return URL.createObjectURL(file);
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Exemple de téléchargement d'images
-      </h1>
+      <h1 className="text-2xl font-bold mb-4">Image Upload Example</h1>
       <p className="mb-4">
-        Glissez et déposez une image dans l'éditeur ci-dessous, ou collez une
-        image depuis votre presse-papier.
+        Drag and drop an image into the editor below, or paste an image from
+        your clipboard.
       </p>
       <Editor
         contentJson={content}

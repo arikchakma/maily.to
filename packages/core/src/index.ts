@@ -3,4 +3,3 @@ import './styles/preflight.css';
 import './styles/tailwind.css';
 
 export * from './editor/index';
-export * from './examples/index';

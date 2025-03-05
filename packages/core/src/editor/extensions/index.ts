@@ -4,7 +4,6 @@ import { HTMLCodeBlockExtension } from '../nodes/html/html';
 import { InlineImageExtension } from '../nodes/inline-image/inline-image';
 import { getVariableSuggestions } from '../nodes/variable/variable-suggestions';
 import { MailyContextType } from '../provider';
-import { ImageUploadExtension } from './image-upload';
 import { MailyKit } from './maily-kit';
 import { PlaceholderExtension } from './placeholder';
 import { SlashCommandExtension } from './slash-command/slash-command';
@@ -12,7 +11,6 @@ import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
 
 type ExtensionsProps = Partial<MailyContextType> & {
   extensions?: AnyExtension[];
-  onImageUpload?: (file: Blob) => Promise<string>;
 };
 
 export function extensions(props: ExtensionsProps) {
@@ -21,7 +19,6 @@ export function extensions(props: ExtensionsProps) {
     blocks,
     variableTriggerCharacter,
     extensions = [],
-    onImageUpload,
   } = props;
 
   const defaultExtensions = [
@@ -35,13 +32,6 @@ export function extensions(props: ExtensionsProps) {
     HTMLCodeBlockExtension,
     InlineImageExtension,
     PlaceholderExtension,
-    ...(onImageUpload
-      ? [
-          ImageUploadExtension.configure({
-            onImageUpload,
-          }),
-        ]
-      : []),
   ].filter((ext) => {
     return !extensions.some((e) => e.name === ext.name);
   });

@@ -51,7 +51,6 @@ export type EditorProps = {
     immediatelyRender?: boolean;
   };
   editable?: boolean;
-  onImageUpload?: (file: Blob) => Promise<string>;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -76,7 +75,6 @@ export function Editor(props: EditorProps) {
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
-    onImageUpload,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -125,7 +123,6 @@ export function Editor(props: EditorProps) {
       variableTriggerCharacter,
       extensions,
       blocks,
-      onImageUpload,
     }),
     content: formattedContent,
     autofocus,

@@ -1,4 +1,3 @@
-import { getImageUploadFunction } from '@/editor/extensions/image-upload';
 import { cn } from '@/editor/utils/classname';
 import { useEvent } from '@/editor/utils/use-event';
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/react';
@@ -14,6 +13,7 @@ export function ImageView(props: NodeViewProps) {
   const { node, updateAttributes, selected, editor } = props;
 
   const [status, setStatus] = useState<ImageStatus>('idle');
+  const [isPlaceholderImage, setIsPlaceholderImage] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -78,6 +78,10 @@ export function ImageView(props: NodeViewProps) {
   );
 
   function dragCornerButton(direction: string) {
+    if (isPlaceholderImage) {
+      return null;
+    }
+
     return (
       <div
         role="button"
@@ -110,43 +114,43 @@ export function ImageView(props: NodeViewProps) {
   const hasImageSrc = !!attrs.src;
 
   // Get the onImageUpload function from the editor
-  const onImageUpload = getImageUploadFunction(editor);
+  // const onImageUpload = getImageUploadFunction(editor);
 
   const handleImageSelect = () => {
-    if (onImageUpload && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    // if (onImageUpload && fileInputRef.current) {
+    //   fileInputRef.current.click();
+    // }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onImageUpload && e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      if (file.type.startsWith('image/')) {
-        try {
-          setStatus('loading');
-          const imageUrl = await onImageUpload(file);
-          updateAttributes({ src: imageUrl });
-          setStatus('loaded');
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          setStatus('error');
-        }
-      }
-    }
+    // if (onImageUpload && e.target.files && e.target.files.length > 0) {
+    //   const file = e.target.files[0];
+    //   if (file.type.startsWith('image/')) {
+    //     try {
+    //       setStatus('loading');
+    //       const imageUrl = await onImageUpload(file);
+    //       updateAttributes({ src: imageUrl });
+    //       setStatus('loaded');
+    //     } catch (error) {
+    //       console.error('Error uploading image:', error);
+    //       setStatus('error');
+    //     }
+    //   }
+    // }
   };
 
   const handleImageDrop = async (file: File) => {
-    if (onImageUpload) {
-      try {
-        setStatus('loading');
-        const imageUrl = await onImageUpload(file);
-        updateAttributes({ src: imageUrl });
-        setStatus('loaded');
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        setStatus('error');
-      }
-    }
+    // if (onImageUpload) {
+    //   try {
+    //     setStatus('loading');
+    //     const imageUrl = await onImageUpload(file);
+    //     updateAttributes({ src: imageUrl });
+    //     setStatus('loaded');
+    //   } catch (error) {
+    //     console.error('Error uploading image:', error);
+    //     setStatus('error');
+    //   }
+    // }
   };
 
   // load the image using new Image() to avoid layout shift
@@ -157,6 +161,10 @@ export function ImageView(props: NodeViewProps) {
     }
 
     setStatus('loading');
+    const isPlaceHolder =
+      editor?.extensionStorage?.imageUpload?.placeholderImages?.has(src) ??
+      false;
+    setIsPlaceholderImage(isPlaceHolder);
     const img = new Image();
     img.src = src;
     img.onload = () => {
@@ -194,32 +202,31 @@ export function ImageView(props: NodeViewProps) {
   }, [src]);
 
   const handleDragOver = (e: React.DragEvent) => {
-    if (editor.isEditable && onImageUpload) {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDraggingOver(true);
-    }
+    // if (editor.isEditable && onImageUpload) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    //   setIsDraggingOver(true);
+    // }
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingOver(false);
+    // e.preventDefault();
+    // e.stopPropagation();
+    // setIsDraggingOver(false);
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    if (editor.isEditable && onImageUpload) {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDraggingOver(false);
-
-      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('image/')) {
-          handleImageDrop(file);
-        }
-      }
-    }
+    // if (editor.isEditable && onImageUpload) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    //   setIsDraggingOver(false);
+    //   if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    //     const file = e.dataTransfer.files[0];
+    //     if (file.type.startsWith('image/')) {
+    //       handleImageDrop(file);
+    //     }
+    //   }
+    // }
   };
 
   return (
@@ -227,9 +234,7 @@ export function ImageView(props: NodeViewProps) {
       as="div"
       draggable={editor.isEditable}
       data-drag-handle={editor.isEditable}
-      className={cn('mly-image-drop-zone', {
-        'mly-drag-over': isDraggingOver,
-      })}
+      className={cn('mly-image-drop-zone', isDraggingOver && 'mly-drag-over')}
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
@@ -258,8 +263,8 @@ export function ImageView(props: NodeViewProps) {
         <ImageStatusLabel
           status="idle"
           minHeight={height}
-          onImageSelect={onImageUpload ? handleImageSelect : undefined}
-          onImageDrop={onImageUpload ? handleImageDrop : undefined}
+          // onImageSelect={onImageUpload ? handleImageSelect : undefined}
+          // onImageDrop={onImageUpload ? handleImageDrop : undefined}
         />
       )}
       {hasImageSrc && isSrcVariable && (
@@ -293,9 +298,12 @@ export function ImageView(props: NodeViewProps) {
               marginBottom: 0,
             }}
             draggable={editor.isEditable}
+            className={cn(
+              isPlaceholderImage && 'mly-animate-pulse mly-opacity-40'
+            )}
           />
 
-          {selected && editor.isEditable && (
+          {selected && editor.isEditable && !isPlaceholderImage && (
             <>
               {/* Don't use a simple border as it pushes other content around. */}
               {[

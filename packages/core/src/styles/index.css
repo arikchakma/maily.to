@@ -1,5 +1,3 @@
-@import './editor.css';
-
 :root {
   --placeholder-color: #adb5bd;
   --bg-color: #ffffff;
@@ -384,6 +382,21 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  .mly-image-drop-zone::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px dashed #00bcff;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .mly-image-drop-zone.mly-drag-over::after {
+    opacity: 1;
   }
 
   /* Remove margin before and after of Gap Cursor */

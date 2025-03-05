@@ -101,17 +101,11 @@ export function ImageUploadPlugin(options: ImageUploadPluginOptions) {
           return false;
         }
 
-        const nodeAtPos = view.state.doc.nodeAt(pos.pos);
-        // we will handle drops on image nodes in the ImageView component
-        // so we only want to handle drops in empty areas
-        if (nodeAtPos && ['image', 'logo'].includes(nodeAtPos.type.name)) {
-          return false;
-        }
-
         event.preventDefault();
         event.stopPropagation();
 
         images.forEach((file) => handleImageUpload(view, file, pos.pos));
+        return true;
       },
       handlePaste: (view, event) => {
         if (!onImageUpload || !event.clipboardData?.files?.length) {
@@ -127,6 +121,9 @@ export function ImageUploadPlugin(options: ImageUploadPluginOptions) {
 
         event.preventDefault();
         event.stopPropagation();
+
+        images.forEach((file) => handleImageUpload(view, file));
+        return true;
       },
     },
   });

@@ -2,7 +2,8 @@ import {
   ImageUploadPlugin,
   ImageUploadPluginOptions,
 } from '@/editor/plugins/image-upload/image-upload-plugin';
-import { Extension } from '@tiptap/core';
+import { Editor, Extension } from '@tiptap/core';
+import { useMemo } from 'react';
 
 export type ImageUploadOptions = Omit<ImageUploadPluginOptions, 'editor'> & {};
 export type ImageUploadStorage = {
@@ -47,3 +48,13 @@ export const ImageUploadExtension = Extension.create<ImageUploadOptions>({
     ];
   },
 });
+
+export function useImageUploadOptions(editor: Editor): ImageUploadOptions {
+  return useMemo(() => {
+    const node = editor.extensionManager.extensions.find(
+      (extension) => extension.name === 'imageUpload'
+    );
+
+    return node?.options || {};
+  }, [editor]);
+}

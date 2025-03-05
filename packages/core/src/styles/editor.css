@@ -1,0 +1,37 @@
+.mly-image-upload-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  margin: 10px 0;
+  min-height: 100px;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+
+.mly-image-drop-zone {
+  position: relative;
+}
+
+.mly-image-drop-zone::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px dashed #3b82f6;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.mly-image-drop-zone.mly-drag-over::after {
+  opacity: 1;
+}

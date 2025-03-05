@@ -11,12 +11,16 @@ import { useMemo, useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { RepeatBubbleMenu } from './components/repeat-menu/repeat-bubble-menu';
+import { HTMLBubbleMenu } from './components/html-menu/html-menu';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
+import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
+import { RepeatBubbleMenu } from './components/repeat-menu/repeat-bubble-menu';
 import { SectionBubbleMenu } from './components/section-menu/section-bubble-menu';
 import { SpacerBubbleMenu } from './components/spacer-menu/spacer-bubble-menu';
 import { TextBubbleMenu } from './components/text-menu/text-bubble-menu';
+import { VariableBubbleMenu } from './components/variable-menu/variable-bubble-menu';
 import { extensions as defaultExtensions } from './extensions';
+import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
   DEFAULT_PLACEHOLDER_URL,
   DEFAULT_RENDER_VARIABLE_FUNCTION,
@@ -26,11 +30,7 @@ import {
   MailyProvider,
 } from './provider';
 import { cn } from './utils/classname';
-import { VariableBubbleMenu } from './components/variable-menu/variable-bubble-menu';
 import { replaceDeprecatedNode } from './utils/replace-deprecated';
-import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
-import { HTMLBubbleMenu } from './components/html-menu/html-menu';
-import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -50,8 +50,8 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
-
   editable?: boolean;
+  onImageUpload?: (file: Blob) => Promise<string>;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -76,6 +76,7 @@ export function Editor(props: EditorProps) {
     renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
+    onImageUpload,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -124,6 +125,7 @@ export function Editor(props: EditorProps) {
       variableTriggerCharacter,
       extensions,
       blocks,
+      onImageUpload,
     }),
     content: formattedContent,
     autofocus,

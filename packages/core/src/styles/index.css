@@ -1,3 +1,5 @@
+@import './editor.css';
+
 :root {
   --placeholder-color: #adb5bd;
   --bg-color: #ffffff;

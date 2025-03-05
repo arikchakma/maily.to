@@ -1,3 +1,4 @@
+import { getImageUploadFunction } from '@/editor/extensions/image-upload';
 import { cn } from '@/editor/utils/classname';
 import { useEvent } from '@/editor/utils/use-event';
 import { type NodeViewProps, NodeViewWrapper } from '@tiptap/react';
@@ -16,10 +17,13 @@ export function ImageView(props: NodeViewProps) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [resizingStyle, setResizingStyle] = useState<
     Pick<CSSProperties, 'width' | 'height'> | undefined
   >();
+
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleMouseDown = useEvent(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -105,6 +109,46 @@ export function ImageView(props: NodeViewProps) {
 
   const hasImageSrc = !!attrs.src;
 
+  // Get the onImageUpload function from the editor
+  const onImageUpload = getImageUploadFunction(editor);
+
+  const handleImageSelect = () => {
+    if (onImageUpload && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onImageUpload && e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/')) {
+        try {
+          setStatus('loading');
+          const imageUrl = await onImageUpload(file);
+          updateAttributes({ src: imageUrl });
+          setStatus('loaded');
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          setStatus('error');
+        }
+      }
+    }
+  };
+
+  const handleImageDrop = async (file: File) => {
+    if (onImageUpload) {
+      try {
+        setStatus('loading');
+        const imageUrl = await onImageUpload(file);
+        updateAttributes({ src: imageUrl });
+        setStatus('loaded');
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        setStatus('error');
+      }
+    }
+  };
+
   // load the image using new Image() to avoid layout shift
   // then if the image is loaded, set the status to loaded
   useEffect(() => {
@@ -149,11 +193,43 @@ export function ImageView(props: NodeViewProps) {
     };
   }, [src]);
 
+  const handleDragOver = (e: React.DragEvent) => {
+    if (editor.isEditable && onImageUpload) {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (editor.isEditable && onImageUpload) {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(false);
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+          handleImageDrop(file);
+        }
+      }
+    }
+  };
+
   return (
     <NodeViewWrapper
       as="div"
       draggable={editor.isEditable}
       data-drag-handle={editor.isEditable}
+      className={cn('mly-image-drop-zone', {
+        'mly-drag-over': isDraggingOver,
+      })}
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
@@ -174,8 +250,18 @@ export function ImageView(props: NodeViewProps) {
         }[alignment as string] || {}),
       }}
       ref={wrapperRef}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
-      {!hasImageSrc && <ImageStatusLabel status="idle" minHeight={height} />}
+      {!hasImageSrc && (
+        <ImageStatusLabel
+          status="idle"
+          minHeight={height}
+          onImageSelect={onImageUpload ? handleImageSelect : undefined}
+          onImageDrop={onImageUpload ? handleImageDrop : undefined}
+        />
+      )}
       {hasImageSrc && isSrcVariable && (
         <ImageStatusLabel status="variable" minHeight={height} />
       )}
@@ -186,6 +272,15 @@ export function ImageView(props: NodeViewProps) {
       {hasImageSrc && status === 'error' && !isSrcVariable && (
         <ImageStatusLabel status="error" minHeight={height} />
       )}
+
+      {/* Hidden file input for image selection */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept="image/*"
+        onChange={handleFileChange}
+      />
 
       {hasImageSrc && status === 'loaded' && !isSrcVariable && (
         <>
@@ -233,10 +328,39 @@ export function ImageView(props: NodeViewProps) {
 type ImageStatusLabelProps = {
   status: ImageStatus | 'variable';
   minHeight?: number | string;
+  onImageSelect?: () => void;
+  onImageDrop?: (file: File) => void;
 };
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
-  const { status, minHeight } = props;
+  const { status, minHeight, onImageSelect, onImageDrop } = props;
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (status === 'idle' && onImageDrop) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (status === 'idle' && onImageDrop) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+          onImageDrop(file);
+        }
+      }
+    }
+  };
+
+  const handleClick = () => {
+    if (status === 'idle' && onImageSelect) {
+      onImageSelect();
+    }
+  };
 
   return (
     <div
@@ -245,6 +369,8 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
         {
           'mly-text-gray-500 hover:mly-bg-soft-gray/60': status === 'loading',
           'mly-text-red-500 hover:mly-bg-soft-gray/60': status === 'error',
+          'mly-cursor-pointer hover:mly-bg-soft-gray/80':
+            status === 'idle' && (onImageSelect || onImageDrop),
         }
       )}
       style={{
@@ -254,11 +380,18 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
             }
           : {}),
       }}
+      onClick={handleClick}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       {status === 'idle' && (
         <>
           <ImageOffIcon className="mly-size-4 mly-stroke-[2.5]" />
-          <span>No image selected</span>
+          <span>
+            {onImageSelect || onImageDrop
+              ? 'Click or drop image here'
+              : 'No image selected'}
+          </span>
         </>
       )}
       {status === 'loading' && (

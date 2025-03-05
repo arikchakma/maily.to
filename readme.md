@@ -50,6 +50,33 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Repeat
 - Show If Condition
 
+## Sponsors
+
+Sponsorship at any level is appreciated and encouraged. If you built a paid product using Maily, consider one of the [sponsorship tiers](https://github.com/sponsors/arikchakma).
+
+<br/>
+
+<h3 align="center">Gold</h3>
+
+<table align="center" style="justify-content: center;align-items: center;display: flex;">
+  <tr>
+    <td align="center">
+      <p></p>
+      <p>
+      <a href="https://novu.co?ref=maily.to">
+        <picture height="60px">
+          <source media="(prefers-color-scheme: dark)" srcset="">
+          <img alt="Novu Logo" height="60px" src="">
+        </picture>
+      </a>
+      <p></p>
+      <p>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
 ## Contributions
 
 Feel free to submit pull requests, create issues, or spread the word. For getting a development version of it up & running, go through the following steps.

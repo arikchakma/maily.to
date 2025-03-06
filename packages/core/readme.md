@@ -242,6 +242,27 @@ import { CustomExtension } from './extensions/custom-extension';
 />
 ```
 
+### Image Upload
+
+To enable image upload, you need to pass the `ImageUploadExtension` extension to the editor. The `onImageUpload` function will be called when an image is being uploaded. You can use this function to upload the image to your server and return the URL.
+
+```tsx
+// (Omitted repeated imports)
+import { ImageUploadExtension } from '@maily-to/core/extensions';
+
+<Editor
+  extensions={[
+    ImageUploadExtension.configure({
+      onImageUpload: async (file) => {
+        // upload the image to wherever you want
+        const url = await uploadImage(file);
+        return url;
+      },
+    }),
+  ]}
+/>
+```
+
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
 
 ## License

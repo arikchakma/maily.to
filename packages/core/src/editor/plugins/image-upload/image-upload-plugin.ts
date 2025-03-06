@@ -28,7 +28,10 @@ export function ImageUploadPlugin(options: ImageUploadPluginOptions) {
     const { tr, schema } = view.state;
     const imageNode = schema.nodes.image.create({
       src: placeholderSrc,
+      isSrcVariable: false,
       alt: file.name,
+      externalLink: '',
+      isExternalLinkVariable: false,
     });
     editor?.extensionStorage?.imageUpload?.placeholderImages?.add(
       placeholderSrc

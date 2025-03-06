@@ -11,26 +11,12 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { useCallback } from 'react';
-import { getRenderContainer } from '@/editor/utils/get-render-container';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
   if (!editor) {
     return null;
   }
-
-  const getReferenceClientRect = useCallback(() => {
-    const renderContainer =
-      getRenderContainer(editor!, 'image') ||
-      getRenderContainer(editor!, 'logo');
-
-    const rect =
-      renderContainer?.getBoundingClientRect() ||
-      new DOMRect(-1000, -1000, 0, 0);
-
-    return rect;
-  }, [editor]);
 
   const state = useImageState(editor);
 
@@ -48,7 +34,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       popperOptions: {
         modifiers: [{ name: 'flip', enabled: false }],
       },
-      getReferenceClientRect,
       plugins: [sticky],
       sticky: 'popper',
       maxWidth: '100%',

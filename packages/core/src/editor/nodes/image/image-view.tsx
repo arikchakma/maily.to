@@ -27,7 +27,6 @@ export function ImageView(props: NodeViewProps) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [resizingStyle, setResizingStyle] = useState<
     Pick<CSSProperties, 'width' | 'height'> | undefined
@@ -151,6 +150,7 @@ export function ImageView(props: NodeViewProps) {
         setStatus('loading');
         const imageUrl = await onImageUpload(file);
         updateAttributes({ src: imageUrl });
+        setIsPlaceholderImage(false);
         setStatus('loaded');
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -163,7 +163,7 @@ export function ImageView(props: NodeViewProps) {
   // load the image using new Image() to avoid layout shift
   // then if the image is loaded, set the status to loaded
   useEffect(() => {
-    if (!src) {
+    if (!src || isSrcVariable) {
       return;
     }
 
@@ -284,7 +284,7 @@ export function ImageView(props: NodeViewProps) {
         }[alignment as string] || {}),
       }}
       ref={wrapperRef}
-      {...(!hasImageSrc
+      {...(isDroppable
         ? {
             onDragOver: handleDragOver,
             onDragLeave: handleDragLeave,
@@ -318,7 +318,6 @@ export function ImageView(props: NodeViewProps) {
       {isDroppable && (
         <input
           type="file"
-          ref={fileInputRef}
           accept="image/*"
           onChange={handleFileChange}
           className="mly-absolute mly-inset-0 mly-opacity-0"

@@ -1,8 +1,8 @@
 import { Editor } from '@tiptap/core';
 import { Eye, InfoIcon } from 'lucide-react';
 import { memo, useMemo, useRef, useState } from 'react';
-import { DEFAULT_RENDER_VARIABLE_FUNCTION, useMailyContext } from '../provider';
 import { cn } from '../utils/classname';
+import { useVariableOptions } from '../utils/node-options';
 import { processVariables } from '../utils/variable';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { InputAutocomplete } from './ui/input-autocomplete';
@@ -18,8 +18,9 @@ type ShowPopoverProps = {
 function _ShowPopover(props: ShowPopoverProps) {
   const { showIfKey = '', onShowIfKeyValueChange, editor } = props;
 
-  const { variables = [], renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
-    useMailyContext();
+  const opts = useVariableOptions(editor);
+  const variables = opts?.variables;
+  const renderVariable = opts?.renderVariable;
   const [isUpdatingKey, setIsUpdatingKey] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -120,6 +121,7 @@ function _ShowPopover(props: ShowPopoverProps) {
             }}
           >
             <InputAutocomplete
+              editor={editor}
               value={showIfKey || ''}
               onValueChange={(value) => {
                 onShowIfKeyValueChange?.(value);

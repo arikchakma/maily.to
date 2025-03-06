@@ -23,9 +23,6 @@ import { extensions as defaultExtensions } from './extensions';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 import {
   DEFAULT_PLACEHOLDER_URL,
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  DEFAULT_VARIABLES,
   MailyContextType,
   MailyProvider,
 } from './provider';
@@ -70,9 +67,6 @@ export function Editor(props: EditorProps) {
     contentHtml,
     contentJson,
     blocks = DEFAULT_SLASH_COMMANDS,
-    variables = DEFAULT_VARIABLES,
-    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
-    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
   } = props;
@@ -119,8 +113,6 @@ export function Editor(props: EditorProps) {
       onUpdate?.(editor);
     },
     extensions: defaultExtensions({
-      variables,
-      variableTriggerCharacter,
       extensions,
       blocks,
     }),
@@ -134,12 +126,7 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <MailyProvider
-      variables={variables}
-      variableTriggerCharacter={variableTriggerCharacter}
-      renderVariable={renderVariable}
-      placeholderUrl={placeholderUrl}
-    >
+    <MailyProvider placeholderUrl={placeholderUrl}>
       <div
         className={cn(
           'mly-editor mly-antialiased',

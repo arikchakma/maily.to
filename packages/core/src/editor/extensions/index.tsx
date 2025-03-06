@@ -14,12 +14,7 @@ type ExtensionsProps = Partial<MailyContextType> & {
 };
 
 export function extensions(props: ExtensionsProps) {
-  const {
-    variables,
-    blocks,
-    variableTriggerCharacter,
-    extensions = [],
-  } = props;
+  const { blocks, extensions = [] } = props;
 
   const defaultExtensions = [
     MailyKit,
@@ -27,7 +22,7 @@ export function extensions(props: ExtensionsProps) {
       suggestion: getSlashCommandSuggestions(blocks),
     }),
     VariableExtension.configure({
-      suggestion: getVariableSuggestions(variables, variableTriggerCharacter),
+      suggestion: getVariableSuggestions(),
     }),
     HTMLCodeBlockExtension,
     InlineImageExtension,

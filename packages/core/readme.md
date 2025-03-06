@@ -149,13 +149,17 @@ You can pass variables to the editor in two ways:
 
    ```tsx
    // (Omitted repeated imports)
+   import { VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
+
    <Editor
-     variableTriggerCharacter="@"
-     variables={[
-       {
-         name: 'currentDate',
-         required: false,
-       },
+     extensions={[
+       VariableExtension.configure({
+         suggestions: getVariableSuggestions('@'),
+         variables: [{
+            name: 'currentTime',
+            required: false,
+         }],
+       }),
      ]}
    />
    ```
@@ -166,26 +170,32 @@ You can pass variables to the editor in two ways:
 
    ```tsx
    // (Omitted repeated imports)
-   <Editor
-     variableTriggerCharacter="@"
-     variables={({ query, from, editor }) => {
-       // magic goes here
-       // query: the text after the trigger character
-       // from: the context from where the variables are requested (repeat, variable)
-       // editor: the editor instance
-       if (from === 'repeat-variable') {
-         // return variables for the Repeat block `each` key
-         return [
-           { name: 'notifications' },
-           { name: 'comments' },
-         ];
-       }
+   import { VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
 
-       return [
-         { name: 'currentDate' },
-         { name: 'currentTime', required: false },
-       ];
-     }}
+   <Editor
+     extensions={[
+       VariableExtension.configure({
+         suggestions: getVariableSuggestions('@'),
+         variables: ({ query, from, editor }) => {
+           // magic goes here
+           // query: the text after the trigger character
+           // from: the context from where the variables are requested (repeat, variable)
+           // editor: the editor instance
+           if (from === 'repeat-variable') {
+             // return variables for the Repeat block `each` key
+             return [
+               { name: 'notifications' },
+               { name: 'comments' },
+             ];
+           }
+
+           return [
+             { name: 'currentDate' },
+             { name: 'currentTime', required: false },
+           ];
+         },
+       }),
+     ]}
    />
    ```
 
@@ -217,11 +227,7 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
         });
       },
     }).configure({
-      suggestions: getVariableSuggestions(
-        variables,
-        variableTriggerCharacter,
-        variableListComponent, // optional custom component for variable list
-      ),
+      suggestions: getVariableSuggestions(variableTriggerCharacter),
     }),
   ]}
 />

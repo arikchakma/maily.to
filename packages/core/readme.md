@@ -2,11 +2,11 @@
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/license">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
   </a>
   <a href="https://maily.to">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
-    </a>
+    <img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
+  </a>
 </p>
 
 > Currently, this package is under development. You can follow the progress [here](https://github.com/arikchakma/maily.to).
@@ -242,7 +242,57 @@ import { CustomExtension } from './extensions/custom-extension';
 />
 ```
 
+### Image Upload
+
+To enable image upload, you need to pass the `ImageUploadExtension` extension to the editor. The `onImageUpload` function will be called when an image is being uploaded. You can use this function to upload the image to your server and return the URL.
+
+```tsx
+// (Omitted repeated imports)
+import { ImageUploadExtension } from '@maily-to/core/extensions';
+
+<Editor
+  extensions={[
+    ImageUploadExtension.configure({
+      onImageUpload: async (file) => {
+        // upload the image to wherever you want
+        const url = await uploadImage(file);
+        return url;
+      },
+    }),
+  ]}
+/>
+```
+
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
+
+<br/>
+
+## Sponsors
+
+Sponsorship at any level is appreciated and encouraged. If you built a paid product using Maily, consider one of the [sponsorship tiers](https://github.com/sponsors/arikchakma).
+
+<br/>
+
+<h3 align="center">Gold</h3>
+
+<table align="center" style="justify-content: center;align-items: center;display: flex;">
+  <tr>
+    <td align="center">
+      <p></p>
+      <p></p>
+      <a href="https://novu.co?ref=maily.to">
+        <picture height="60px">
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/5e2b9ef1-5ded-4863-995d-62c7e40f946a">
+          <img alt="Novu Logo" height="60px" src="https://github.com/user-attachments/assets/d2fdaf14-2211-4946-ab67-a4ce547aabc0">
+        </picture>
+      </a>
+      <p></p>
+      <p></p>
+    </td>
+  </tr>
+</table>
+
+<br/>
 
 ## License
 

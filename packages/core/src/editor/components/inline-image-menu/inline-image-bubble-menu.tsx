@@ -7,6 +7,10 @@ import { useInlineImageState } from './use-inline-image-state';
 import { LinkInputPopover } from '../ui/link-input-popover';
 import { ImageDownIcon } from 'lucide-react';
 import { isTextSelected } from '@/editor/utils/is-text-selected';
+import {
+  DEFAULT_INLINE_IMAGE_HEIGHT,
+  DEFAULT_INLINE_IMAGE_WIDTH,
+} from '@/editor/nodes/inline-image/inline-image';
 
 export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -39,7 +43,7 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <div className="mly-flex mly-space-x-0.5">
@@ -83,8 +87,8 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
               editor
                 ?.chain()
                 .updateAttributes('inlineImage', {
-                  width: value,
-                  height: value,
+                  width: value || DEFAULT_INLINE_IMAGE_WIDTH,
+                  height: value || DEFAULT_INLINE_IMAGE_HEIGHT,
                 })
                 .run();
             }}

@@ -272,7 +272,7 @@
   }
 
   :where(.is-editor-empty:first-child, .is-empty):not(
-      :where([data-type='columns'], [data-type='section'], ul, li, ol, )
+      :where([data-type='columns'], [data-type='section'], ul, li, ol)
     )::before {
     content: attr(data-placeholder);
     float: left;
@@ -295,7 +295,7 @@
   .is-editor-empty:first-child:where(.node-htmlCodeBlock):not(
       [data-active-tab='code']
     )::before {
-    content: ''
+    content: '';
   }
 
   [data-type='columns'] .is-empty::before,
@@ -382,6 +382,21 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  .mly-image-drop-zone::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px dashed #00bcff;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .mly-image-drop-zone.mly-drag-over::after {
+    opacity: 1;
   }
 
   /* Remove margin before and after of Gap Cursor */

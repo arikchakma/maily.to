@@ -28,7 +28,6 @@ import {
 } from './provider';
 import { cn } from './utils/classname';
 import { replaceDeprecatedNode } from './utils/replace-deprecated';
-export type { VariableSuggestionsPopoverType as VariableSuggestionPopoverType } from './nodes/variable/variable-suggestions-popover';
 
 type ParitialMailContextType = Partial<MailyContextType>;
 
@@ -48,7 +47,6 @@ export type EditorProps = {
     autofocus?: FocusPosition;
     immediatelyRender?: boolean;
   };
-
   editable?: boolean;
 } & ParitialMailContextType;
 
@@ -140,7 +138,7 @@ export function Editor(props: EditorProps) {
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
-            'mly-mt-4 mly-rounded mly-border mly-bg-white mly-p-4',
+            'mly-mt-4 mly-rounded mly-border mly-border-gray-200 mly-bg-white mly-p-4',
             bodyClassName
           )}
         >

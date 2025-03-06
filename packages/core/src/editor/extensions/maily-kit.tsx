@@ -90,7 +90,7 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         horizontalRule: false,
         dropcursor: false,
         document: false,
-      }),
+      }) as AnyExtension,
       Underline,
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure(),

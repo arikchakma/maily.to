@@ -22,7 +22,6 @@
       }
     }
   },
-  "license": "MIT",
   "scripts": {
     "dev": "tsup --watch",
     "clean": "rm -rf dist",

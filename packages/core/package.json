@@ -25,7 +25,8 @@
       "browser": "./dist/extensions/index.mjs",
       "import": "./dist/extensions/index.mjs",
       "require": "./dist/extensions/index.js"
-    }
+    },
+    "./style.css": "./dist/index.css"
   },
   "typesVersions": {
     "*": {

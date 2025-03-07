@@ -9,6 +9,7 @@ module.exports = {
       pattern: /(--tw|\*, ::before, ::after)/g,
       data: {
         '--tw': '--mly-tw',
+        '*, ::before, ::after': ':root',
       },
     },
   },

@@ -16,7 +16,6 @@ export default defineConfig([
       index: 'src/index.ts',
     },
     external: ['react'],
-    injectStyle: true,
     banner: {
       js: "'use client'",
     },

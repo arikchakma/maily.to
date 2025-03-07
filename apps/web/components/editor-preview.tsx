@@ -1,5 +1,6 @@
 'use client';
 
+import '@maily-to/core/style.css';
 import { useEffect, useState } from 'react';
 import type { EditorProps } from '@maily-to/core';
 import { Editor } from '@maily-to/core';

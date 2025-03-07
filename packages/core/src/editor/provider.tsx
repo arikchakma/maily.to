@@ -4,7 +4,7 @@ import { BlockGroupItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
 
-export const DEFAULT_PLACEHOLDER_URL = 'maily.to/';
+export const DEFAULT_PLACEHOLDER_URL = 'https://maily.to/';
 
 export type MailyContextType = {
   placeholderUrl?: string;

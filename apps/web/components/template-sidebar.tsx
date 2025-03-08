@@ -44,49 +44,56 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
       <NextLink
         className={cn(
           buttonVariants({ variant: 'outline' }),
-          'w-full rounded-none border-none'
+          'w-full rounded-none border-x-0 border-b border-t-0 border-gray-200'
         )}
         href="/template"
       >
         + New Email
       </NextLink>
 
-      <div className="border-t py-2">
-        {mails.length === 0 ? (
-          <p className="text-center text-sm">No Saved Emails</p>
-        ) : (
-          <ul className="space-y-0.5 px-1">
-            {mails.map((template) => {
-              return (
-                <li
-                  className="group relative flex items-center"
-                  key={template.id}
-                >
-                  <NextLink
-                    className={cn(
-                      'rounded-md px-2 py-1.5 pr-7 text-sm hover:bg-gray-100',
-                      'flex h-auto w-full min-w-0 items-center font-medium',
-                      templateId === template.id ? 'bg-gray-100' : ''
-                    )}
-                    href={`/template/${template.id}`}
-                  >
-                    <span className="block truncate">{template.title}</span>
-                  </NextLink>
-                  <button
-                    className="absolute right-0 mr-1.5 hidden group-hover:block"
-                    onClick={() => {
-                      handleEmailDuplicate(template.id);
-                    }}
-                    type="button"
-                  >
-                    <FilePlus2 className="h-4 w-4 shrink-0" />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+      {mails.length === 0 && (
+        <p className="py-2 text-center text-sm">No Saved Emails</p>
+      )}
+
+      {mails.length > 0 && (
+        <div className="flex grow flex-col pb-4">
+          <div className="relative grow overflow-hidden">
+            <div className="scrollbar-none absolute inset-0 overflow-y-scroll">
+              <ul className="space-y-0.5 px-1">
+                {mails.map((template) => {
+                  return (
+                    <li
+                      className="group relative flex items-center"
+                      key={template.id}
+                    >
+                      <NextLink
+                        className={cn(
+                          'rounded-md px-2 py-1.5 pr-7 text-sm hover:bg-gray-100',
+                          'flex h-auto w-full min-w-0 items-center font-medium',
+                          templateId === template.id ? 'bg-gray-100' : ''
+                        )}
+                        href={`/template/${template.id}`}
+                      >
+                        <span className="block truncate">{template.title}</span>
+                      </NextLink>
+                      <button
+                        className="absolute right-0 mr-1.5 hidden group-hover:block"
+                        onClick={() => {
+                          handleEmailDuplicate(template.id);
+                        }}
+                        type="button"
+                      >
+                        <FilePlus2 className="h-4 w-4 shrink-0" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mt-auto px-1">
         <LogoutButton />
       </div>

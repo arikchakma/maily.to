@@ -104,9 +104,7 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
       <LinkInputPopover
         defaultValue={state?.linkUrl ?? ''}
         onValueChange={(value, isVariable) => {
-          const defaultValueWithoutProtocol = value.replace(/https?:\/\//, '');
-
-          if (!defaultValueWithoutProtocol) {
+          if (!value) {
             editor
               ?.chain()
               .focus()

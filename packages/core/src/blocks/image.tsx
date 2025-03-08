@@ -37,7 +37,7 @@ export const inlineImage: BlockItem = {
       .deleteRange(range)
       // @ts-ignore
       .setInlineImage({
-        src: '',
+        src: 'https://maily.to/brand/logo.png',
       })
       // @ts-ignore
       .command((props) => {

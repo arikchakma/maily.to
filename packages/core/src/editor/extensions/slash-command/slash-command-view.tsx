@@ -199,7 +199,6 @@ const CommandList = forwardRef(function CommandList(
                     value = renderFunctionValue!;
                   }
 
-                  // const shouldOpenTooltip = !!item?.preview && isActive;
                   const shouldOpenTooltip =
                     !!item?.preview &&
                     (isActive ||

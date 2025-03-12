@@ -40,6 +40,10 @@ const CommandList = forwardRef(function CommandList(
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<{
+    group: number;
+    command: number;
+  } | null>(null);
 
   const selectItem = useCallback(
     (groupIndex: number, commandIndex: number) => {
@@ -195,7 +199,11 @@ const CommandList = forwardRef(function CommandList(
                     value = renderFunctionValue!;
                   }
 
-                  const shouldOpenTooltip = !!item?.preview && isActive;
+                  const shouldOpenTooltip =
+                    !!item?.preview &&
+                    (isActive ||
+                      (hoveredIndex?.group === groupIndex &&
+                        hoveredIndex?.command === commandIndex));
 
                   return (
                     <Tooltip open={shouldOpenTooltip} key={commandIndex}>
@@ -208,6 +216,13 @@ const CommandList = forwardRef(function CommandList(
                               : 'mly-bg-transparent'
                           )}
                           onClick={() => selectItem(groupIndex, commandIndex)}
+                          onMouseEnter={() =>
+                            setHoveredIndex({
+                              group: groupIndex,
+                              command: commandIndex,
+                            })
+                          }
+                          onMouseLeave={() => setHoveredIndex(null)}
                           type="button"
                           ref={isActive ? activeCommandRef : null}
                         >

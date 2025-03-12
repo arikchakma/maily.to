@@ -29,8 +29,14 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
 
     const htmlParser = new DOMParser();
     const htmlDoc = htmlParser.parseFromString(text, 'text/html');
-    const body = htmlDoc.body;
-    return body.innerHTML;
+
+    // get styles from head
+    const styles = Array.from(htmlDoc.head.getElementsByTagName('style'))
+      .map((style) => style.outerHTML)
+      .join('');
+
+    // combine styles with body content
+    return styles + htmlDoc.body.innerHTML;
   }, [activeTab]);
 
   const isEmpty = html === '';
@@ -56,7 +62,13 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
             'mly-not-prose mly-rounded-lg mly-border mly-border-gray-200 mly-p-2',
             isEmpty && 'mly-min-h-[42px]'
           )}
-          dangerouslySetInnerHTML={{ __html: html }}
+          // shadow DOM to prevent styles from leaking
+          ref={(node) => {
+            if (node && !node.shadowRoot) {
+              const shadow = node.attachShadow({ mode: 'open' });
+              shadow.innerHTML = html;
+            }
+          }}
           contentEditable={false}
           onClick={() => {
             if (!isEmpty) {

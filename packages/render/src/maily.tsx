@@ -1155,6 +1155,7 @@ export class Maily {
       alignment = 'center',
       externalLink = '',
       isExternalLinkVariable,
+      borderRadius,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -1187,6 +1188,7 @@ export class Maily {
           border: 'none',
           textDecoration: 'none',
           display: 'block', // Prevent unwanted spacing
+          borderRadius,
         }}
         title={title || alt || 'Image'}
       />

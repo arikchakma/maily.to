@@ -11,6 +11,7 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
+import { borderRadius } from '@/editor/utils/border-radius';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -85,6 +86,27 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               }
             }}
           />
+
+          {state.isImageActive && (
+            <Select
+              label="Border Radius"
+              value={state?.borderRadius}
+              options={borderRadius.map((value) => ({
+                value: value.value.toString(),
+                label: value.name,
+              }))}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', {
+                    borderRadius: Number(value),
+                  })
+                  .run();
+              }}
+              tooltip="Border Radius"
+              className="mly-capitalize"
+            />
+          )}
 
           <LinkInputPopover
             defaultValue={state?.imageSrc ?? ''}

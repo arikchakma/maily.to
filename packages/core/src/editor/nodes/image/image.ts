@@ -3,6 +3,8 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 import { ImageView } from './image-view';
 
+const DEFAULT_IMAGE_BORDER_RADIUS = 0;
+
 export const ImageExtension = TiptapImage.extend({
   addAttributes() {
     return {
@@ -75,6 +77,18 @@ export const ImageExtension = TiptapImage.extend({
 
           return {
             'data-is-external-link-variable': 'true',
+          };
+        },
+      },
+
+      borderRadius: {
+        default: DEFAULT_IMAGE_BORDER_RADIUS,
+        parseHTML: (element) => {
+          return Number(element.getAttribute('data-border-radius'));
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-border-radius': attributes.borderRadius,
           };
         },
       },

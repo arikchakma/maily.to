@@ -28,6 +28,9 @@ export const useImageState = (editor: Editor) => {
         isExternalLinkVariable:
           editor.getAttributes('image')?.isExternalLinkVariable,
 
+        lockAspectRatio: editor.getAttributes('image')?.lockAspectRatio,
+        aspectRatio: editor.getAttributes('image')?.aspectRatio,
+
         currentShowIfKey:
           editor.getAttributes('image')?.showIfKey ||
           editor.getAttributes('logo')?.showIfKey ||

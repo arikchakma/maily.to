@@ -98,6 +98,38 @@ export const ImageExtension = TiptapImage.extend({
         },
       },
 
+      aspectRatio: {
+        default: 0,
+        parseHTML: (element) => {
+          return element.getAttribute('data-aspect-ratio') || 0;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.aspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-aspect-ratio': attributes.aspectRatio,
+          };
+        },
+      },
+
+      lockAspectRatio: {
+        default: false,
+        parseHTML: (element) => {
+          return element.getAttribute('data-lock-aspect-ratio') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.lockAspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-lock-aspect-ratio': 'true',
+          };
+        },
+      },
+
       showIfKey: {
         default: DEFAULT_SECTION_SHOW_IF_KEY,
         parseHTML: (element) => {

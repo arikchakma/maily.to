@@ -11,6 +11,8 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
+import { LockAspectRatioButton } from './lock-aspect-ratio-button';
+import { getNewHeight, getNewWidth } from '@/editor/utils/aspect-ratio';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -130,6 +132,20 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               isVariable={state.isExternalLinkVariable}
             />
           )}
+
+          {state.isImageActive && state.imageSrc && (
+            <LockAspectRatioButton
+              isLocked={state.lockAspectRatio}
+              onClick={() => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', {
+                    lockAspectRatio: !state.lockAspectRatio,
+                  })
+                  .run();
+              }}
+            />
+          )}
         </div>
 
         {state.isImageActive && state.imageSrc && (
@@ -141,20 +157,34 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                 dimension="width"
                 value={state?.width ?? ''}
                 onValueChange={(value) => {
-                  editor
-                    ?.chain()
-                    .updateAttributes('image', { width: value || null })
-                    .run();
+                  const data: Record<string, string | null> = {
+                    width: value || null,
+                  };
+                  if (state.lockAspectRatio && value) {
+                    data.height = getNewHeight(
+                      Number(value),
+                      state.aspectRatio
+                    ).toString();
+                  }
+
+                  editor?.chain().updateAttributes('image', data).run();
                 }}
               />
               <ImageSize
                 dimension="height"
                 value={state?.height ?? ''}
                 onValueChange={(value) => {
-                  editor
-                    ?.chain()
-                    .updateAttributes('image', { height: value || null })
-                    .run();
+                  const data: Record<string, string | null> = {
+                    height: value || null,
+                  };
+                  if (state.lockAspectRatio && value) {
+                    data.width = getNewWidth(
+                      Number(value),
+                      state.aspectRatio
+                    ).toString();
+                  }
+
+                  editor?.chain().updateAttributes('image', data).run();
                 }}
               />
             </div>

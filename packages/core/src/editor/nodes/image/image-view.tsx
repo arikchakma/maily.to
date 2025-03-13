@@ -10,6 +10,7 @@ import { Ban, BracesIcon, GrabIcon, ImageOffIcon, Loader2 } from 'lucide-react';
 import { useImageUploadOptions } from '@/editor/extensions/image-upload/image-upload';
 import { cn } from '@/editor/utils/classname';
 import { useEvent } from '@/editor/utils/use-event';
+import { getAspectRatio, getNewHeight } from '@/editor/utils/aspect-ratio';
 
 const MIN_WIDTH = 20;
 const MAX_WIDTH = 600;
@@ -186,15 +187,16 @@ export function ImageView(props: NodeViewProps) {
       }
 
       const wrapperWidth = wrapper.offsetWidth;
-      const aspectRatio = naturalWidth / naturalHeight;
+      const aspectRatio = getAspectRatio(naturalWidth, naturalHeight);
       const calculatedHeight = Math.min(
-        wrapperWidth / aspectRatio,
+        getNewHeight(wrapperWidth, aspectRatio),
         naturalHeight
       );
 
       updateAttributes({
         width: Math.min(wrapperWidth, naturalWidth),
         height: Math.min(calculatedHeight, naturalHeight),
+        aspectRatio,
       });
     };
     img.onerror = () => {

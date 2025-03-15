@@ -64,12 +64,11 @@ const CommandList = forwardRef(function CommandList(
       if (navigationKeys.includes(event.key)) {
         switch (event.key) {
           case 'ArrowLeft': {
-            event.preventDefault();
-
             const isInsideSubCommand = 'id' in groups[selectedGroupIndex];
             if (!isInsideSubCommand) {
               return false;
             }
+            event.preventDefault();
 
             editor
               .chain()
@@ -83,14 +82,13 @@ const CommandList = forwardRef(function CommandList(
             return true;
           }
           case 'ArrowRight': {
-            event.preventDefault();
-
             const isSelectingSubCommand =
               'commands' in
               groups[selectedGroupIndex].commands[selectedCommandIndex];
             if (!isSelectingSubCommand) {
               return false;
             }
+            event.preventDefault();
 
             selectItem(selectedGroupIndex, selectedCommandIndex);
             prevQuery.current = query;

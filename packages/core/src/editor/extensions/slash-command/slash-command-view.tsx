@@ -31,11 +31,12 @@ const CommandList = forwardRef(function CommandList(
   props: CommandListProps,
   ref
 ) {
-  const { items: groups, command, editor, range } = props;
+  const { items: groups, command, editor, range, query } = props;
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
 
+  const prevQuery = useRef('');
   const prevSelectedGroupIndex = useRef(0);
   const prevSelectedCommandIndex = useRef(0);
 
@@ -63,20 +64,17 @@ const CommandList = forwardRef(function CommandList(
       if (navigationKeys.includes(event.key)) {
         switch (event.key) {
           case 'ArrowLeft': {
+            event.preventDefault();
+
             const isInsideSubCommand = 'id' in groups[selectedGroupIndex];
             if (!isInsideSubCommand) {
               return false;
             }
 
-            event.preventDefault();
             editor
               .chain()
               .focus()
-              .deleteRange({
-                // so that we don't delete the slash
-                from: range.from + 1,
-                to: range.to,
-              })
+              .insertContentAt(range, `/${prevQuery.current}`)
               .run();
             setTimeout(() => {
               setSelectedGroupIndex(prevSelectedGroupIndex.current);
@@ -85,14 +83,17 @@ const CommandList = forwardRef(function CommandList(
             return true;
           }
           case 'ArrowRight': {
+            event.preventDefault();
+
             const isSelectingSubCommand =
               'commands' in
               groups[selectedGroupIndex].commands[selectedCommandIndex];
             if (!isSelectingSubCommand) {
               return false;
             }
-            event.preventDefault();
+
             selectItem(selectedGroupIndex, selectedCommandIndex);
+            prevQuery.current = query;
             prevSelectedGroupIndex.current = selectedGroupIndex;
             prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
@@ -102,6 +103,8 @@ const CommandList = forwardRef(function CommandList(
               return false;
             }
             selectItem(selectedGroupIndex, selectedCommandIndex);
+
+            prevQuery.current = query;
             prevSelectedGroupIndex.current = selectedGroupIndex;
             prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
@@ -177,6 +180,7 @@ const CommandList = forwardRef(function CommandList(
 
   useEffect(() => {
     return () => {
+      prevQuery.current = '';
       prevSelectedGroupIndex.current = 0;
       prevSelectedCommandIndex.current = 0;
     };

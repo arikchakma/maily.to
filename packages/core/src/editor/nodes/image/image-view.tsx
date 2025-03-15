@@ -114,7 +114,13 @@ export function ImageView(props: NodeViewProps) {
     [handleMouseDown, isPlaceholderImage]
   );
 
-  let { alignment = 'center', width, height, src } = node.attrs || {};
+  let {
+    alignment = 'center',
+    width,
+    height,
+    src,
+    borderRadius,
+  } = node.attrs || {};
 
   const {
     externalLink,
@@ -336,6 +342,7 @@ export function ImageView(props: NodeViewProps) {
               ...resizingStyle,
               cursor: 'default',
               marginBottom: 0,
+              borderRadius,
             }}
             draggable={editor.isEditable}
             className={cn(

@@ -14,6 +14,7 @@ export const useImageState = (editor: Editor) => {
         alignment:
           editor.getAttributes('image')?.alignment ||
           editor.getAttributes('logo')?.alignment,
+        borderRadius: editor.getAttributes('image')?.borderRadius,
 
         logoSize: editor.getAttributes('logo')?.size || DEFAULT_LOGO_SIZE,
         imageSrc:

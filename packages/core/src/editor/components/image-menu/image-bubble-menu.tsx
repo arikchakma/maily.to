@@ -87,27 +87,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           />
 
-          {state.isImageActive && (
-            <Select
-              label="Border Radius"
-              value={state?.borderRadius}
-              options={borderRadius.map((value) => ({
-                value: value.value.toString(),
-                label: value.name,
-              }))}
-              onValueChange={(value) => {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', {
-                    borderRadius: Number(value),
-                  })
-                  .run();
-              }}
-              tooltip="Border Radius"
-              className="mly-capitalize"
-            />
-          )}
-
           <LinkInputPopover
             defaultValue={state?.imageSrc ?? ''}
             onValueChange={(value, isVariable) => {
@@ -156,6 +135,27 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
 
         {state.isImageActive && state.imageSrc && (
           <>
+            <Divider />
+
+            <Select
+              label="Border Radius"
+              value={state?.borderRadius}
+              options={borderRadius.map((value) => ({
+                value: String(value.value),
+                label: value.name,
+              }))}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', {
+                    borderRadius: Number(value),
+                  })
+                  .run();
+              }}
+              tooltip="Border Radius"
+              className="mly-capitalize"
+            />
+
             <Divider />
 
             <div className="mly-flex mly-space-x-0.5">

@@ -1155,7 +1155,7 @@ export class Maily {
       alignment = 'center',
       externalLink = '',
       isExternalLinkVariable,
-      borderRadius,
+      borderRadius = 0,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);

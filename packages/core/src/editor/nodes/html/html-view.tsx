@@ -56,7 +56,24 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
             'mly-not-prose mly-rounded-lg mly-border mly-border-gray-200 mly-p-2',
             isEmpty && 'mly-min-h-[42px]'
           )}
-          dangerouslySetInnerHTML={{ __html: html }}
+          ref={(node) => {
+            if (!node || node?.shadowRoot) {
+              return;
+            }
+            const shadow = node.attachShadow({ mode: 'open' });
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(`
+              * { font-family: 'Inter', sans-serif; }
+              blockquote, h1, h2, h3, img, li, ol, p, ul {
+                margin-top: 0;
+                margin-bottom: 0;
+              }
+            `);
+            shadow.adoptedStyleSheets = [sheet];
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            shadow.appendChild(container);
+          }}
           contentEditable={false}
           onClick={() => {
             if (!isEmpty) {

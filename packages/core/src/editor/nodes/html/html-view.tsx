@@ -60,10 +60,19 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
             if (!node || node?.shadowRoot) {
               return;
             }
-            // shadow DOM to prevent styles from leaking
             const shadow = node.attachShadow({ mode: 'open' });
-            const htmlWithStyles = `<style>blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}</style>${html}`;
-            shadow.innerHTML = htmlWithStyles;
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(`
+              * { all: unset; }
+              blockquote, h1, h2, h3, img, li, ol, p, ul {
+                margin-top: 0;
+                margin-bottom: 0;
+              }
+            `);
+            shadow.adoptedStyleSheets = [sheet];
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            shadow.appendChild(container);
           }}
           contentEditable={false}
           onClick={() => {

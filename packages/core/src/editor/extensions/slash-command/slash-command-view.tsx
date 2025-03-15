@@ -14,7 +14,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import tippy, { GetReferenceClientRect } from 'tippy.js';
+import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { SlashCommandItem } from './slash-command-item';
@@ -64,11 +64,13 @@ const CommandList = forwardRef(function CommandList(
       if (navigationKeys.includes(event.key)) {
         switch (event.key) {
           case 'ArrowLeft': {
-            const isInsideSubCommand = 'id' in groups[selectedGroupIndex];
+            event.preventDefault();
+
+            const group = groups?.[selectedGroupIndex];
+            const isInsideSubCommand = group && 'id' in group;
             if (!isInsideSubCommand) {
               return false;
             }
-            event.preventDefault();
 
             editor
               .chain()
@@ -82,13 +84,14 @@ const CommandList = forwardRef(function CommandList(
             return true;
           }
           case 'ArrowRight': {
-            const isSelectingSubCommand =
-              'commands' in
-              groups[selectedGroupIndex].commands[selectedCommandIndex];
+            event.preventDefault();
+
+            const command =
+              groups?.[selectedGroupIndex]?.commands?.[selectedCommandIndex];
+            const isSelectingSubCommand = command && 'commands' in command;
             if (!isSelectingSubCommand) {
               return false;
             }
-            event.preventDefault();
 
             selectItem(selectedGroupIndex, selectedCommandIndex);
             prevQuery.current = query;
@@ -363,7 +366,7 @@ export function getSlashCommandSuggestions(
     },
     render: () => {
       let component: ReactRenderer<any>;
-      let popup: InstanceType<any> | null = null;
+      let popup: Instance<any>[] | null = null;
 
       return {
         onStart: (props) => {
@@ -382,17 +385,24 @@ export function getSlashCommandSuggestions(
           });
         },
         onUpdate: (props) => {
-          component?.updateProps(props);
+          const currentPopup = popup?.[0];
+          if (!currentPopup || currentPopup?.state?.isDestroyed) {
+            return;
+          }
 
-          popup &&
-            popup[0].setProps({
-              getReferenceClientRect: props.clientRect,
-            });
+          component?.updateProps(props);
+          currentPopup.setProps({
+            getReferenceClientRect: props.clientRect,
+          });
         },
         onKeyDown: (props) => {
           if (props.event.key === 'Escape') {
-            popup?.[0].hide();
+            const currentPopup = popup?.[0];
+            if (!currentPopup?.state?.isDestroyed) {
+              currentPopup?.destroy();
+            }
 
+            component?.destroy();
             return true;
           }
 
@@ -403,7 +413,11 @@ export function getSlashCommandSuggestions(
             return;
           }
 
-          popup?.[0].destroy();
+          const currentPopup = popup?.[0];
+          if (!currentPopup.state.isDestroyed) {
+            currentPopup.destroy();
+          }
+
           component?.destroy();
         },
       };

@@ -36,7 +36,7 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const isActive =
     groupIndex === selectedGroupIndex && commandIndex === selectedCommandIndex;
-  const isSubCommand = 'commands' in item;
+  const isSubCommand = item && 'commands' in item;
 
   const shouldOpenTooltip = !!item?.preview && (isActive || isHovered);
 

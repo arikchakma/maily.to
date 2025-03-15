@@ -36,6 +36,9 @@ const CommandList = forwardRef(function CommandList(
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
 
+  const prevSelectedGroupIndex = useRef(0);
+  const prevSelectedCommandIndex = useRef(0);
+
   const selectItem = useCallback(
     (groupIndex: number, commandIndex: number) => {
       const item = groups[groupIndex].commands[commandIndex];
@@ -75,6 +78,10 @@ const CommandList = forwardRef(function CommandList(
                 to: range.to,
               })
               .run();
+            setTimeout(() => {
+              setSelectedGroupIndex(prevSelectedGroupIndex.current);
+              setSelectedCommandIndex(prevSelectedCommandIndex.current);
+            }, 0);
             return true;
           }
           case 'ArrowRight': {
@@ -86,6 +93,8 @@ const CommandList = forwardRef(function CommandList(
             }
             event.preventDefault();
             selectItem(selectedGroupIndex, selectedCommandIndex);
+            prevSelectedGroupIndex.current = selectedGroupIndex;
+            prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
           }
           case 'Enter': {
@@ -93,6 +102,8 @@ const CommandList = forwardRef(function CommandList(
               return false;
             }
             selectItem(selectedGroupIndex, selectedCommandIndex);
+            prevSelectedGroupIndex.current = selectedGroupIndex;
+            prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
           }
           case 'ArrowUp': {
@@ -139,11 +150,6 @@ const CommandList = forwardRef(function CommandList(
     },
   }));
 
-  useEffect(() => {
-    setSelectedGroupIndex(0);
-    setSelectedCommandIndex(0);
-  }, [groups]);
-
   const commandListContainer = useRef<HTMLDivElement>(null);
   const activeCommandRef = useRef<HTMLButtonElement>(null);
 
@@ -155,6 +161,7 @@ const CommandList = forwardRef(function CommandList(
     }
 
     const { offsetTop, offsetHeight } = activeCommandContainer;
+    container.style.transition = 'none';
     container.scrollTop = offsetTop - offsetHeight;
   }, [
     selectedGroupIndex,
@@ -163,13 +170,25 @@ const CommandList = forwardRef(function CommandList(
     activeCommandRef,
   ]);
 
+  useEffect(() => {
+    setSelectedGroupIndex(0);
+    setSelectedCommandIndex(0);
+  }, [groups]);
+
+  useEffect(() => {
+    return () => {
+      prevSelectedGroupIndex.current = 0;
+      prevSelectedCommandIndex.current = 0;
+    };
+  }, []);
+
   return groups.length > 0 ? (
     <TooltipProvider>
       <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
         <div
           id="slash-command"
           ref={commandListContainer}
-          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth"
+          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto"
         >
           {groups.map((group, groupIndex) => (
             <Fragment key={groupIndex}>

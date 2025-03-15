@@ -68,7 +68,7 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
   const openTimerRef = useRef<number>(0);
   const handleDelayedOpen = useCallback(() => {
     window.clearTimeout(openTimerRef.current);
-    const delay = 1000;
+    const delay = 700;
     openTimerRef.current = window.setTimeout(() => {
       setOpen(true);
       openTimerRef.current = 0;

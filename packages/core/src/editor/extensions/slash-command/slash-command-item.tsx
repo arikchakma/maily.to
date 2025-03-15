@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/editor/components/ui/tooltip';
-import { useState } from 'react';
+import { useCallback, useState, useRef, useEffect, useMemo } from 'react';
 import { cn } from '@/editor/utils/classname';
 
 type SlashCommandItemProps = {
@@ -32,6 +32,7 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
     selectItem,
   } = props;
 
+  const [open, setOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const isActive =
     groupIndex === selectedGroupIndex && commandIndex === selectedCommandIndex;
@@ -64,8 +65,37 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
     value = renderFunctionValue!;
   }
 
+  const openTimerRef = useRef<number>(0);
+  const handleDelayedOpen = useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    const delay = 1000;
+    openTimerRef.current = window.setTimeout(() => {
+      setOpen(true);
+      openTimerRef.current = 0;
+    }, delay);
+  }, [setOpen]);
+
+  useEffect(() => {
+    if (shouldOpenTooltip) {
+      handleDelayedOpen();
+    } else {
+      window.clearTimeout(openTimerRef.current);
+      openTimerRef.current = 0;
+      setOpen(false);
+    }
+  }, [shouldOpenTooltip]);
+
+  useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        window.clearTimeout(openTimerRef.current);
+        openTimerRef.current = 0;
+      }
+    };
+  }, []);
+
   return (
-    <Tooltip open={shouldOpenTooltip} key={commandIndex}>
+    <Tooltip open={open} key={`${groupIndex}-${commandIndex}`}>
       <TooltipTrigger asChild>
         <button
           className={cn(

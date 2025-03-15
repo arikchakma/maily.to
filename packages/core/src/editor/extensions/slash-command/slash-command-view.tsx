@@ -16,13 +16,7 @@ import {
 } from 'react';
 import tippy, { GetReferenceClientRect } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
-import { ChevronRightIcon } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/editor/components/ui/tooltip';
+import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { SlashCommandItem } from './slash-command-item';
 
 type CommandListProps = {
@@ -170,7 +164,7 @@ const CommandList = forwardRef(function CommandList(
   ]);
 
   return groups.length > 0 ? (
-    <TooltipProvider delayDuration={500}>
+    <TooltipProvider>
       <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
         <div
           id="slash-command"

@@ -302,7 +302,6 @@ export class Maily {
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
   private meta: MetaDescriptors = DEFAULT_META_TAGS;
   private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
-  private htmlStyles: Set<string> = new Set();
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -509,7 +508,6 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
-    const htmlStyles = Array.from(this.htmlStyles).join('\n');
 
     const markup = (
       <Html {...htmlProps}>
@@ -526,7 +524,7 @@ export class Maily {
           />
           <style
             dangerouslySetInnerHTML={{
-              __html: `@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}} ${htmlStyles || ''}`,
+              __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
             }}
           />
           {tags}
@@ -1736,17 +1734,8 @@ export class Maily {
       }, '') || '';
     const doc = parse(text);
 
-    // extract styles from head and add to htmlStyles collection
     const head = doc.querySelector('head');
-    if (head) {
-      head.querySelectorAll('style').forEach((style) => {
-        const cssContent = style.text || style.innerHTML;
-        if (cssContent) {
-          this.htmlStyles.add(cssContent);
-        }
-      });
-      head.remove();
-    }
+    head?.remove();
 
     const html = doc.toString();
     return (

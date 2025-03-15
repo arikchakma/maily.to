@@ -113,23 +113,23 @@ export const ImageExtension = TiptapImage.extend({
       },
 
       aspectRatio: {
-        default: 0,
+        default: null,
         parseHTML: (element) => {
-          return element.getAttribute('data-aspect-ratio') || 0;
+          return element.getAttribute('data-aspect-ratio') || null;
         },
         renderHTML: (attributes) => {
-          if (!attributes.aspectRatio) {
+          if (!attributes?.aspectRatio) {
             return {};
           }
 
           return {
-            'data-aspect-ratio': attributes.aspectRatio,
+            'data-aspect-ratio': attributes?.aspectRatio,
           };
         },
       },
 
       lockAspectRatio: {
-        default: false,
+        default: true,
         parseHTML: (element) => {
           return element.getAttribute('data-lock-aspect-ratio') === 'true';
         },

@@ -13,7 +13,8 @@ import { useEvent } from '@/editor/utils/use-event';
 import { getAspectRatio, getNewHeight } from '@/editor/utils/aspect-ratio';
 
 const MIN_WIDTH = 20;
-const MAX_WIDTH = 600;
+export const IMAGE_MAX_WIDTH = 600;
+export const IMAGE_MAX_HEIGHT = 400;
 
 export type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -45,7 +46,10 @@ export function ImageView(props: NodeViewProps) {
         return;
       }
 
-      const imageParentWidth = Math.max(imageParent.offsetWidth, MAX_WIDTH);
+      const imageParentWidth = Math.max(
+        imageParent.offsetWidth,
+        IMAGE_MAX_WIDTH
+      );
 
       event.preventDefault();
       const direction = event.currentTarget.dataset.direction || '--';
@@ -59,7 +63,8 @@ export function ImageView(props: NodeViewProps) {
       const removeListeners = () => {
         window.removeEventListener('mousemove', mouseMoveHandler);
         window.removeEventListener('mouseup', removeListeners);
-        updateAttributes({ width: newWidth, height: newHeight });
+        const aspectRatio = getAspectRatio(newWidth, newHeight);
+        updateAttributes({ width: newWidth, height: newHeight, aspectRatio });
         setResizingStyle(undefined);
       };
 
@@ -127,6 +132,9 @@ export function ImageView(props: NodeViewProps) {
     isExternalLinkVariable,
     isSrcVariable,
     showIfKey,
+    aspectRatio: defaultAspectRatio,
+    borderRadius: _,
+    lockAspectRatio,
     ...attrs
   } = node.attrs || {};
 
@@ -285,6 +293,7 @@ export function ImageView(props: NodeViewProps) {
         // Weird! Basically tiptap/prose wraps this in a span and the line height causes an annoying buffer.
         lineHeight: '0px',
         display: 'block',
+        maxWidth: '100%',
         ...({
           center: { marginLeft: 'auto', marginRight: 'auto' },
           left: { marginRight: 'auto' },

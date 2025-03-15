@@ -1,8 +1,11 @@
 import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
+import { getNewHeight, getNewWidth } from '@/editor/utils/aspect-ratio';
+import { borderRadius } from '@/editor/utils/border-radius';
 import { BubbleMenu } from '@tiptap/react';
-import { ImageDown } from 'lucide-react';
+import { ImageDown, LockIcon, LockOpenIcon } from 'lucide-react';
 import { sticky } from 'tippy.js';
 import { AlignmentSwitch } from '../alignment-switch';
+import { BubbleMenuButton } from '../bubble-menu-button';
 import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
@@ -11,9 +14,10 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { LockAspectRatioButton } from './lock-aspect-ratio-button';
-import { getNewHeight, getNewWidth } from '@/editor/utils/aspect-ratio';
-import { borderRadius } from '@/editor/utils/border-radius';
+import {
+  IMAGE_MAX_HEIGHT,
+  IMAGE_MAX_WIDTH,
+} from '@/editor/nodes/image/image-view';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -42,6 +46,8 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       maxWidth: '100%',
     },
   };
+
+  const { lockAspectRatio } = state;
 
   return (
     <BubbleMenu
@@ -133,20 +139,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               isVariable={state.isExternalLinkVariable}
             />
           )}
-
-          {state.isImageActive && state.imageSrc && (
-            <LockAspectRatioButton
-              isLocked={state.lockAspectRatio}
-              onClick={() => {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', {
-                    lockAspectRatio: !state.lockAspectRatio,
-                  })
-                  .run();
-              }}
-            />
-          )}
         </div>
 
         {state.isImageActive && state.imageSrc && (
@@ -172,42 +164,67 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               className="mly-capitalize"
             />
 
-            <Divider />
-
             <div className="mly-flex mly-space-x-0.5">
               <ImageSize
                 dimension="width"
                 value={state?.width ?? ''}
                 onValueChange={(value) => {
-                  const data: Record<string, string | null> = {
-                    width: value || null,
-                  };
-                  if (state.lockAspectRatio && value) {
-                    data.height = getNewHeight(
-                      Number(value),
-                      state.aspectRatio
-                    ).toString();
-                  }
+                  const width = Math.min(Number(value) || 0, IMAGE_MAX_WIDTH);
 
-                  editor?.chain().updateAttributes('image', data).run();
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', {
+                      width: String(width),
+                      ...(lockAspectRatio && value
+                        ? {
+                            height: String(
+                              getNewHeight(width, state.aspectRatio)
+                            ),
+                          }
+                        : {}),
+                    })
+                    .run();
                 }}
               />
               <ImageSize
                 dimension="height"
                 value={state?.height ?? ''}
                 onValueChange={(value) => {
-                  const data: Record<string, string | null> = {
-                    height: value || null,
-                  };
-                  if (state.lockAspectRatio && value) {
-                    data.width = getNewWidth(
-                      Number(value),
-                      state.aspectRatio
-                    ).toString();
-                  }
+                  const height = Number(value) || 0;
 
-                  editor?.chain().updateAttributes('image', data).run();
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', {
+                      height: String(height),
+                      ...(lockAspectRatio && value
+                        ? {
+                            width: String(
+                              getNewWidth(height, state.aspectRatio)
+                            ),
+                          }
+                        : {}),
+                    })
+                    .run();
                 }}
+              />
+
+              <BubbleMenuButton
+                isActive={() => lockAspectRatio}
+                command={() => {
+                  const width = Number(state.width) || 0;
+                  const height = Number(state.height) || 0;
+                  const aspectRatio = width / height;
+
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', {
+                      lockAspectRatio: !lockAspectRatio,
+                      aspectRatio,
+                    })
+                    .run();
+                }}
+                icon={lockAspectRatio ? LockIcon : LockOpenIcon}
+                tooltip="Lock Aspect Ratio"
               />
             </div>
           </>

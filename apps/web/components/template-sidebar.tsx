@@ -56,7 +56,7 @@ export function TemplateSidebar(props: TemplateSidebarProps) {
       )}
 
       {mails.length > 0 && (
-        <div className="flex grow flex-col pb-4">
+        <div className="flex grow flex-col pb-4 pt-1">
           <div className="relative grow overflow-hidden">
             <div className="scrollbar-none absolute inset-0 overflow-y-scroll">
               <ul className="space-y-0.5 px-1">

@@ -527,7 +527,6 @@ export class Maily {
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
             }}
           />
-
           {tags}
         </Head>
         <Body
@@ -1737,7 +1736,6 @@ export class Maily {
       }, '') || '';
     const doc = parse(text);
 
-    // remove head if exists
     const head = doc.querySelector('head');
     head?.remove();
 

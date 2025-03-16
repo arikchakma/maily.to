@@ -379,6 +379,7 @@ export function getSlashCommandSuggestions(
             showOnCreate: true,
             interactive: true,
             trigger: 'manual',
+            placement: 'top-start',
           });
         },
         onUpdate: (props) => {

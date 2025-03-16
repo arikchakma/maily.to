@@ -62,8 +62,11 @@ const CommandList = forwardRef(function CommandList(
         'ArrowRight',
       ];
       if (navigationKeys.includes(event.key)) {
+        let newCommandIndex = selectedCommandIndex;
+        let newGroupIndex = selectedGroupIndex;
+
         switch (event.key) {
-          case 'ArrowLeft': {
+          case 'ArrowLeft':
             event.preventDefault();
 
             const group = groups?.[selectedGroupIndex];
@@ -82,8 +85,7 @@ const CommandList = forwardRef(function CommandList(
               setSelectedCommandIndex(prevSelectedCommandIndex.current);
             }, 0);
             return true;
-          }
-          case 'ArrowRight': {
+          case 'ArrowRight':
             event.preventDefault();
 
             const command =
@@ -98,8 +100,7 @@ const CommandList = forwardRef(function CommandList(
             prevSelectedGroupIndex.current = selectedGroupIndex;
             prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
-          }
-          case 'Enter': {
+          case 'Enter':
             if (!groups.length) {
               return false;
             }
@@ -109,13 +110,12 @@ const CommandList = forwardRef(function CommandList(
             prevSelectedGroupIndex.current = selectedGroupIndex;
             prevSelectedCommandIndex.current = selectedCommandIndex;
             return true;
-          }
-          case 'ArrowUp': {
+          case 'ArrowUp':
             if (!groups.length) {
               return false;
             }
-            let newCommandIndex = selectedCommandIndex - 1;
-            let newGroupIndex = selectedGroupIndex;
+            newCommandIndex = selectedCommandIndex - 1;
+            newGroupIndex = selectedGroupIndex;
             if (newCommandIndex < 0) {
               newGroupIndex = selectedGroupIndex - 1;
               newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
@@ -127,14 +127,13 @@ const CommandList = forwardRef(function CommandList(
             setSelectedGroupIndex(newGroupIndex);
             setSelectedCommandIndex(newCommandIndex);
             return true;
-          }
-          case 'ArrowDown': {
+          case 'ArrowDown':
             if (!groups.length) {
               return false;
             }
             const commands = groups[selectedGroupIndex].commands;
-            let newCommandIndex = selectedCommandIndex + 1;
-            let newGroupIndex = selectedGroupIndex;
+            newCommandIndex = selectedCommandIndex + 1;
+            newGroupIndex = selectedGroupIndex;
             if (commands.length - 1 < newCommandIndex) {
               newCommandIndex = 0;
               newGroupIndex = selectedGroupIndex + 1;
@@ -145,10 +144,8 @@ const CommandList = forwardRef(function CommandList(
             setSelectedGroupIndex(newGroupIndex);
             setSelectedCommandIndex(newCommandIndex);
             return true;
-          }
-          default: {
+          default:
             return false;
-          }
         }
       }
     },

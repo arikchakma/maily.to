@@ -4,7 +4,7 @@
   "version": "0.2.2",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
@@ -15,17 +15,17 @@
     ".": {
       "browser": "./dist/index.mjs",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./blocks": {
       "browser": "./dist/blocks/index.mjs",
       "import": "./dist/blocks/index.mjs",
-      "require": "./dist/blocks/index.js"
+      "require": "./dist/blocks/index.cjs"
     },
     "./extensions": {
       "browser": "./dist/extensions/index.mjs",
       "import": "./dist/extensions/index.mjs",
-      "require": "./dist/extensions/index.js"
+      "require": "./dist/extensions/index.cjs"
     },
     "./style.css": "./dist/index.css"
   },

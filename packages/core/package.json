@@ -1,5 +1,6 @@
 {
   "name": "@maily-to/core",
+  "type": "module",
   "version": "0.2.2",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,

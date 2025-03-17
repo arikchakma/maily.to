@@ -1,7 +1,7 @@
 {
   "name": "@maily-to/core",
   "type": "module",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
   "main": "./dist/index.cjs",
@@ -13,37 +13,24 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./dist/index.d.ts",
       "browser": "./dist/index.mjs",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     },
     "./blocks": {
+      "types": "./dist/blocks/index.d.ts",
       "browser": "./dist/blocks/index.mjs",
       "import": "./dist/blocks/index.mjs",
-      "require": "./dist/blocks/index.cjs",
-      "types": "./dist/blocks/index.d.ts"
+      "require": "./dist/blocks/index.cjs"
     },
     "./extensions": {
+      "types": "./dist/extensions/index.d.ts",
       "browser": "./dist/extensions/index.mjs",
       "import": "./dist/extensions/index.mjs",
-      "require": "./dist/extensions/index.cjs",
-      "types": "./dist/extensions/index.d.ts"
+      "require": "./dist/extensions/index.cjs"
     },
     "./style.css": "./dist/index.css"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ],
-      "blocks": [
-        "dist/blocks/index.d.ts"
-      ],
-      "extensions": [
-        "dist/extensions/index.d.ts"
-      ]
-    }
   },
   "scripts": {
     "dev": "tsup --watch",

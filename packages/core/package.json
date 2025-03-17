@@ -1,7 +1,7 @@
 {
   "name": "@maily-to/core",
   "type": "module",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
   "main": "./dist/index.cjs",
@@ -13,24 +13,115 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "browser": "./dist/index.mjs",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "node": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      }
     },
     "./blocks": {
-      "types": "./dist/blocks/index.d.ts",
-      "browser": "./dist/blocks/index.mjs",
-      "import": "./dist/blocks/index.mjs",
-      "require": "./dist/blocks/index.cjs"
+      "node": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      }
     },
     "./extensions": {
-      "types": "./dist/extensions/index.d.ts",
-      "browser": "./dist/extensions/index.mjs",
-      "import": "./dist/extensions/index.mjs",
-      "require": "./dist/extensions/index.cjs"
+      "node": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      }
     },
     "./style.css": "./dist/index.css"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ],
+      "blocks": [
+        "dist/blocks/index.d.ts"
+      ],
+      "extensions": [
+        "dist/extensions/index.d.ts"
+      ]
+    }
   },
   "scripts": {
     "dev": "tsup --watch",

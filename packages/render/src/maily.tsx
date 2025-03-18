@@ -24,6 +24,7 @@ import { generateKey } from './utils';
 import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
+import juice from 'juice';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -265,11 +266,13 @@ export interface RenderOptions {
    *  line breaks.
    * - `plainText` - If `true`, the output will be plain text instead of HTML.
    * This is useful for testing purposes.
+   * - `inlineCss` - If `true`, the CSS will be inlined in the HTML.
    *
-   * Default: `pretty` - `false`, `plainText` - `false`
+   * Default: `pretty` - `false`, `plainText` - `false`, `inlineCss` - `false`
    */
   pretty?: boolean;
   plainText?: boolean;
+  inlineCss?: boolean;
 }
 
 export type VariableFormatter = (options: {
@@ -302,6 +305,7 @@ export class Maily {
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
   private meta: MetaDescriptors = DEFAULT_META_TAGS;
   private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
+  private htmlStyles: Set<string> = new Set();
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -481,7 +485,13 @@ export class Maily {
     options: RenderOptions = DEFAULT_RENDER_OPTIONS
   ): Promise<string> {
     const markup = this.markup();
-    return reactEmailRenderAsync(markup, options);
+    const html = await reactEmailRenderAsync(markup, options);
+
+    if (options.inlineCss) {
+      return juice(html);
+    }
+
+    return html;
   }
 
   /**
@@ -508,6 +518,7 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
+    const htmlStyles = Array.from(this.htmlStyles).join('\n');
 
     const markup = (
       <Html {...htmlProps}>
@@ -527,6 +538,7 @@ export class Maily {
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
             }}
           />
+          <style dangerouslySetInnerHTML={{ __html: htmlStyles }} />
           {tags}
         </Head>
         <Body
@@ -1736,8 +1748,17 @@ export class Maily {
       }, '') || '';
     const doc = parse(text);
 
+    // extract styles from head
     const head = doc.querySelector('head');
-    head?.remove();
+    if (head) {
+      head.querySelectorAll('style').forEach((style) => {
+        const cssContent = style.text || style.innerHTML;
+        if (cssContent) {
+          this.htmlStyles.add(cssContent);
+        }
+      });
+      head.remove();
+    }
 
     const html = doc.toString();
     return (

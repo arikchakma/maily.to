@@ -1736,10 +1736,14 @@ export class Maily {
 
         return acc;
       }, '') || '';
-    const doc = parse(text);
 
+    // we will inline the css in the html
+    // so that it can be rendered properly
+    const inlineCssHtml = juice(text);
+    const doc = parse(inlineCssHtml);
+    const head = doc?.querySelector('head');
+    head?.remove();
     const html = doc.toString();
-    const inlineCssHtml = juice(html);
 
     return (
       <table
@@ -1755,7 +1759,7 @@ export class Maily {
             <td
               style={{ width: '100%' }}
               dangerouslySetInnerHTML={{
-                __html: inlineCssHtml,
+                __html: html,
               }}
             />
           </tr>

@@ -29,8 +29,13 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
 
     const htmlParser = new DOMParser();
     const htmlDoc = htmlParser.parseFromString(text, 'text/html');
+    const style = htmlDoc.querySelectorAll('style');
     const body = htmlDoc.body;
-    return body.innerHTML;
+    const combinedStyle = Array.from(style)
+      .map((s) => s.innerHTML)
+      .join('\n');
+
+    return `<style>${combinedStyle}</style>${body.innerHTML}`;
   }, [activeTab]);
 
   const isEmpty = html === '';

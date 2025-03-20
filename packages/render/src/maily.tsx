@@ -24,6 +24,7 @@ import { generateKey } from './utils';
 import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
+import juice from 'juice';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -481,6 +482,7 @@ export class Maily {
     options: RenderOptions = DEFAULT_RENDER_OPTIONS
   ): Promise<string> {
     const markup = this.markup();
+
     return reactEmailRenderAsync(markup, options);
   }
 
@@ -1734,12 +1736,15 @@ export class Maily {
 
         return acc;
       }, '') || '';
-    const doc = parse(text);
 
-    const head = doc.querySelector('head');
+    // we will inline the css in the html
+    // so that it can be rendered properly
+    const inlineCssHtml = juice(text);
+    const doc = parse(inlineCssHtml);
+    const head = doc?.querySelector('head');
     head?.remove();
-
     const html = doc.toString();
+
     return (
       <table
         align="left"

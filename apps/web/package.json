@@ -11,7 +11,6 @@
   "dependencies": {
     "@maily-to/core": "workspace:*",
     "@maily-to/render": "workspace:*",
-    "@next/third-parties": "^14.2.15",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",

@@ -5,10 +5,10 @@
     <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
   </a>
   <a href="https://buymeacoffee.com/arikchakma">
-    	<img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-222222?logo=buy-me-a-coffee" alt="Buy me a coffee" />
+     <img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-222222?logo=buy-me-a-coffee" alt="Buy me a coffee" />
   </a>
   <a href="https://maily.to">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=222222" alt="Get Maily Editor" />
+     <img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=222222" alt="Get Maily Editor" />
   </a>
 </p>
 
@@ -78,7 +78,7 @@ Feel free to submit pull requests, create issues, or spread the word. For gettin
 1. Clone the repo: `git clone https://github.com/arikchakma/maily.to`
 2. Change directory: `cd maily.to`
 3. Copy the example config file: `cp ./apps/web/.env.example ./apps/web/.env`
-4. Add `Google` & `Github` providers in your `supabase` project. You can find more information about it [here](https://supabase.com/docs/guides/auth).
+4. Add `Github` providers in your `supabase` project. You can find more information about it [here](https://supabase.com/docs/guides/auth).
 5. `pnpm install` to install all the dependencies.
 6. `pnpm dev` to start the development server.
 

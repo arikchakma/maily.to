@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const _provider = formData.get('provider');
 
-  const schema = z.union([z.literal('github'), z.literal('google')]);
+  const schema = z.literal('github');
   const result = schema.safeParse(_provider);
 
   if (!result.success) {
@@ -25,14 +25,6 @@ export async function POST(request: NextRequest) {
     provider,
     options: {
       redirectTo: `${config.appUrl}/auth/callback`,
-      ...(provider === 'google'
-        ? {
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent',
-            },
-          }
-        : {}),
     },
   });
 

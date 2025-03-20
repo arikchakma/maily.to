@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { buttonVariants } from '@/components/ui/button';
 import { GithubLoginButton } from '@/components/auth/github-login-button';
 import { cn } from '@/utils/classname';
-import { GoogleLoginButton } from '@/components/auth/google-login-button';
 import { EmailLoginForm } from '@/components/auth/email-login-form';
 
 export const metadata: Metadata = {
@@ -45,7 +44,7 @@ export default function LoginPage() {
               Login / Register
             </h1>
             <p className="text-muted-foreground text-sm">
-              You can continue with your GitHub / Google account.
+              Continue with your email address or GitHub account.
             </p>
           </div>
 
@@ -59,7 +58,6 @@ export default function LoginPage() {
 
           <div className="flex flex-col gap-2">
             <GithubLoginButton />
-            <GoogleLoginButton />
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ export async function emailLoginAction(formData: FormData) {
     email,
     options: {
       shouldCreateUser: true,
-      emailRedirectTo: `${config.appUrl}/template`,
+      emailRedirectTo: `${config.appUrl}/auth/callback`,
     },
   });
 

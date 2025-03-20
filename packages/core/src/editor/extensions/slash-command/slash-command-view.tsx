@@ -35,6 +35,7 @@ const CommandList = forwardRef(function CommandList(
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+  const [hoveredItemKey, setHoveredItemKey] = useState<string | null>(null);
 
   const prevQuery = useRef('');
   const prevSelectedGroupIndex = useRef(0);
@@ -204,9 +205,10 @@ const CommandList = forwardRef(function CommandList(
               </span>
               <div className="mly-space-y-0.5 mly-p-1">
                 {group.commands.map((item, commandIndex) => {
+                  const itemKey = `${groupIndex}-${commandIndex}`;
                   return (
                     <SlashCommandItem
-                      key={commandIndex}
+                      key={itemKey}
                       item={item}
                       groupIndex={groupIndex}
                       commandIndex={commandIndex}
@@ -215,6 +217,10 @@ const CommandList = forwardRef(function CommandList(
                       selectItem={() => selectItem(groupIndex, commandIndex)}
                       editor={editor}
                       activeCommandRef={activeCommandRef}
+                      hoveredItemKey={hoveredItemKey}
+                      onHover={(isHovered) =>
+                        setHoveredItemKey(isHovered ? itemKey : null)
+                      }
                     />
                   );
                 })}

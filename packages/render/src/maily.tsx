@@ -91,14 +91,14 @@ export interface ThemeOptions {
     linkCardSubTitle: string;
   }>;
   fontSize?: Partial<{
-    paragraph: {
+    paragraph: Partial<{
       size: string;
       lineHeight: string;
-    };
-    footer: {
+    }>;
+    footer: Partial<{
       size: string;
       lineHeight: string;
-    };
+    }>;
   }>;
 }
 

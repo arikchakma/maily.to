@@ -12,6 +12,7 @@ export const htmlCodeBlock: BlockItem = {
       .chain()
       .focus()
       .deleteRange(range)
+      // @ts-ignore
       .setHtmlCodeBlock({ language: 'html' })
       .run();
   },

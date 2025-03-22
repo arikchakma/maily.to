@@ -3,6 +3,8 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 import { ImageView } from './image-view';
 
+const DEFAULT_IMAGE_BORDER_RADIUS = 0;
+
 export const ImageExtension = TiptapImage.extend({
   addAttributes() {
     return {
@@ -79,6 +81,18 @@ export const ImageExtension = TiptapImage.extend({
         },
       },
 
+      borderRadius: {
+        default: DEFAULT_IMAGE_BORDER_RADIUS,
+        parseHTML: (element) => {
+          return Number(element.getAttribute('data-border-radius'));
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-border-radius': attributes.borderRadius,
+          };
+        },
+      },
+
       // Later we will remove this attribute
       // and use the `src` attribute instead when implement
       // the URL variable feature
@@ -94,6 +108,38 @@ export const ImageExtension = TiptapImage.extend({
 
           return {
             'data-is-src-variable': 'true',
+          };
+        },
+      },
+
+      aspectRatio: {
+        default: null,
+        parseHTML: (element) => {
+          return element.getAttribute('data-aspect-ratio') || null;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes?.aspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-aspect-ratio': attributes?.aspectRatio,
+          };
+        },
+      },
+
+      lockAspectRatio: {
+        default: true,
+        parseHTML: (element) => {
+          return element.getAttribute('data-lock-aspect-ratio') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.lockAspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-lock-aspect-ratio': 'true',
           };
         },
       },

@@ -7,6 +7,11 @@ const packageOptions: Options = {
   treeshake: false,
   dts: true,
   format: ['esm', 'cjs'],
+  outExtension: ({ format }) => {
+    return {
+      js: format === 'esm' ? '.mjs' : '.cjs',
+    };
+  },
 };
 
 export default defineConfig([
@@ -16,7 +21,6 @@ export default defineConfig([
       index: 'src/index.ts',
     },
     external: ['react'],
-    injectStyle: true,
     banner: {
       js: "'use client'",
     },

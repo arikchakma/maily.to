@@ -23,6 +23,8 @@ pnpm add -D @tiptap/core
 ## Usage
 
 ```tsx
+import '@maily-to/core/style.css';
+
 import { useState } from 'react';
 import { Editor } from '@maily-to/core';
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
@@ -149,13 +151,17 @@ You can pass variables to the editor in two ways:
 
    ```tsx
    // (Omitted repeated imports)
+   import { VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
+
    <Editor
-     variableTriggerCharacter="@"
-     variables={[
-       {
-         name: 'currentDate',
-         required: false,
-       },
+     extensions={[
+       VariableExtension.configure({
+         suggestions: getVariableSuggestions('@'),
+         variables: [{
+            name: 'currentTime',
+            required: false,
+         }],
+       }),
      ]}
    />
    ```
@@ -166,26 +172,32 @@ You can pass variables to the editor in two ways:
 
    ```tsx
    // (Omitted repeated imports)
-   <Editor
-     variableTriggerCharacter="@"
-     variables={({ query, from, editor }) => {
-       // magic goes here
-       // query: the text after the trigger character
-       // from: the context from where the variables are requested (repeat, variable)
-       // editor: the editor instance
-       if (from === 'repeat-variable') {
-         // return variables for the Repeat block `each` key
-         return [
-           { name: 'notifications' },
-           { name: 'comments' },
-         ];
-       }
+   import { VariableExtension, getVariableSuggestions } from '@maily-to/core/extensions';
 
-       return [
-         { name: 'currentDate' },
-         { name: 'currentTime', required: false },
-       ];
-     }}
+   <Editor
+     extensions={[
+       VariableExtension.configure({
+         suggestions: getVariableSuggestions('@'),
+         variables: ({ query, from, editor }) => {
+           // magic goes here
+           // query: the text after the trigger character
+           // from: the context from where the variables are requested (repeat, variable)
+           // editor: the editor instance
+           if (from === 'repeat-variable') {
+             // return variables for the Repeat block `each` key
+             return [
+               { name: 'notifications' },
+               { name: 'comments' },
+             ];
+           }
+
+           return [
+             { name: 'currentDate' },
+             { name: 'currentTime', required: false },
+           ];
+         },
+       }),
+     ]}
    />
    ```
 
@@ -217,11 +229,7 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
         });
       },
     }).configure({
-      suggestions: getVariableSuggestions(
-        variables,
-        variableTriggerCharacter,
-        variableListComponent, // optional custom component for variable list
-      ),
+      suggestions: getVariableSuggestions(variableTriggerCharacter),
     }),
   ]}
 />
@@ -242,7 +250,57 @@ import { CustomExtension } from './extensions/custom-extension';
 />
 ```
 
+### Image Upload
+
+To enable image upload, you need to pass the `ImageUploadExtension` extension to the editor. The `onImageUpload` function will be called when an image is being uploaded. You can use this function to upload the image to your server and return the URL.
+
+```tsx
+// (Omitted repeated imports)
+import { ImageUploadExtension } from '@maily-to/core/extensions';
+
+<Editor
+  extensions={[
+    ImageUploadExtension.configure({
+      onImageUpload: async (file) => {
+        // upload the image to wherever you want
+        const url = await uploadImage(file);
+        return url;
+      },
+    }),
+  ]}
+/>
+```
+
 See the [@maily-to/render](../render) package for more information on how to render the editor content to HTML.
+
+<br/>
+
+## Sponsors
+
+Sponsorship at any level is appreciated and encouraged. If you built a paid product using Maily, consider one of the [sponsorship tiers](https://github.com/sponsors/arikchakma).
+
+<br/>
+
+<h3 align="center">Gold</h3>
+
+<table align="center" style="justify-content: center;align-items: center;display: flex;">
+  <tr>
+    <td align="center">
+      <p></p>
+      <p></p>
+      <a href="https://novu.co?ref=maily.to">
+        <picture height="60px">
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/5e2b9ef1-5ded-4863-995d-62c7e40f946a">
+          <img alt="Novu Logo" height="60px" src="https://github.com/user-attachments/assets/d2fdaf14-2211-4946-ab67-a4ce547aabc0">
+        </picture>
+      </a>
+      <p></p>
+      <p></p>
+    </td>
+  </tr>
+</table>
+
+<br/>
 
 ## License
 

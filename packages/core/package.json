@@ -1,9 +1,10 @@
 {
   "name": "@maily-to/core",
-  "version": "0.1.2",
+  "type": "module",
+  "version": "0.2.7",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
@@ -12,20 +13,102 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "default": "./dist/index.mjs"
+      "node": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/index.cjs"
+        }
+      }
     },
     "./blocks": {
-      "import": "./dist/blocks/index.mjs",
-      "require": "./dist/blocks/index.js",
-      "default": "./dist/blocks/index.mjs"
+      "node": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.mjs"
+        },
+        "require": {
+          "types": "./dist/blocks/index.d.ts",
+          "default": "./dist/blocks/index.cjs"
+        }
+      }
     },
     "./extensions": {
-      "import": "./dist/extensions/index.mjs",
-      "require": "./dist/extensions/index.js",
-      "default": "./dist/extensions/index.mjs"
-    }
+      "node": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      },
+      "browser": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      },
+      "default": {
+        "import": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.mjs"
+        },
+        "require": {
+          "types": "./dist/extensions/index.d.ts",
+          "default": "./dist/extensions/index.cjs"
+        }
+      }
+    },
+    "./style.css": "./dist/index.css"
   },
   "typesVersions": {
     "*": {
@@ -93,15 +176,16 @@
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.453.0",
-    "nanoid": "^5.1.2",
     "react-colorful": "^5.6.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^3.4.14",
     "tippy.js": "^6.3.7",
+    "uuid": "^10.0.0",
     "y-prosemirror": "^1.2.15"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
+    "@types/uuid": "^10.0.0",
     "postcss": "^8.4.47",
     "postcss-replace": "^2.0.1",
     "tailwind-config": "workspace:*",

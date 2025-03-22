@@ -14,6 +14,7 @@ export const useImageState = (editor: Editor) => {
         alignment:
           editor.getAttributes('image')?.alignment ||
           editor.getAttributes('logo')?.alignment,
+        borderRadius: editor.getAttributes('image')?.borderRadius,
 
         logoSize: editor.getAttributes('logo')?.size || DEFAULT_LOGO_SIZE,
         imageSrc:
@@ -27,6 +28,9 @@ export const useImageState = (editor: Editor) => {
         imageExternalLink: editor.getAttributes('image')?.externalLink || '',
         isExternalLinkVariable:
           editor.getAttributes('image')?.isExternalLinkVariable,
+
+        lockAspectRatio: editor.getAttributes('image')?.lockAspectRatio,
+        aspectRatio: editor.getAttributes('image')?.aspectRatio,
 
         currentShowIfKey:
           editor.getAttributes('image')?.showIfKey ||

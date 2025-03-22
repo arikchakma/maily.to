@@ -59,7 +59,7 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
                 key={option.id}
                 onClick={option.onClick}
                 variant="ghost"
-                className="mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm mly-font-normal mly-text-midnight-gray"
+                className="mly-h-auto mly-justify-start mly-gap-2 mly-mb-0.5 !mly-rounded mly-px-2 mly-py-1 mly-text-sm mly-font-normal mly-text-midnight-gray"
               >
                 <option.icon className="mly-size-[15px] mly-shrink-0" />
                 {option.label}

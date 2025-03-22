@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '~/lib/supabase/server';
-import type { Route } from './+types/playground';
+import type { Route } from './+types/auth.callback';
 import { data, redirect } from 'react-router';
 
 export type EmailOtpType =

@@ -2,8 +2,8 @@ import { goToColumn } from '@/editor/utils/columns';
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { mergeAttributes } from '@tiptap/core';
 import { Node } from '@tiptap/core';
-import { v4 as uuid } from 'uuid';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
+import { nanoid } from 'nanoid';
 
 export const DEFAULT_COLUMNS_GAP = 8;
 
@@ -78,7 +78,7 @@ export const ColumnsExtension = Node.create({
               {
                 type: 'column',
                 attrs: {
-                  columnId: uuid(),
+                  columnId: nanoid(),
                 },
                 content: [
                   {
@@ -89,7 +89,7 @@ export const ColumnsExtension = Node.create({
               {
                 type: 'column',
                 attrs: {
-                  columnId: uuid(),
+                  columnId: nanoid(),
                 },
                 content: [
                   {

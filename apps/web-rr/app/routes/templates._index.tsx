@@ -1,7 +1,6 @@
-import type { Route } from './+types/templates';
+import type { Route } from './+types/templates._index';
 import { Link, redirect } from 'react-router';
 import {
-  LogInIcon,
   MailIcon,
   PlusIcon,
   SquarePenIcon,
@@ -42,7 +41,14 @@ export async function loader(args: Route.LoaderArgs) {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  return { mails, user: user.user_metadata };
+  return {
+    mails,
+    user: user.user_metadata as {
+      avatar_url: string;
+      email: string;
+      name: string;
+    },
+  };
 }
 
 export default function Templates(props: Route.ComponentProps) {

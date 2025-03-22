@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { XIcon } from 'lucide-react';
 import { PreviewTextInfo } from './preview-text-info';
-import { Editor } from '@maily-to/core';
 import type { Database } from '~/types/database';
+import { Editor } from '@maily-to/core';
 import type { Editor as TiptapEditor } from '@tiptap/core';
 
 type EmailEditorProps = {
@@ -150,10 +150,10 @@ export function EmailEditor(props: EmailEditorProps) {
         }}
         contentJson={JSON.parse(template?.content as any)}
         onCreate={(editor) => {
-          setEditor(editor);
+          setEditor(editor as any);
         }}
         onUpdate={(editor) => {
-          setEditor(editor);
+          setEditor(editor as any);
         }}
       />
     </div>

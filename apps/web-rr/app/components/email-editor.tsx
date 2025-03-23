@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { XIcon } from 'lucide-react';
+import { Loader2Icon, XIcon } from 'lucide-react';
 import { PreviewTextInfo } from './preview-text-info';
 import type { Database } from '~/types/database';
 import type { Editor as TiptapEditor } from '@tiptap/core';
@@ -9,8 +9,8 @@ import { Suspense } from 'react';
 import { lazy } from 'react';
 
 const Editor = lazy(() =>
-  import('@maily-to/core').then((mod) => ({
-    default: mod.Editor,
+  import('@maily-to/core').then((module) => ({
+    default: module.Editor,
   }))
 );
 
@@ -145,7 +145,13 @@ export function EmailEditor(props: EmailEditorProps) {
         </div>
       </div>
 
-      <Suspense fallback={<div>Hello</div>}>
+      <Suspense
+        fallback={
+          <div>
+            <Loader2Icon className="mx-auto h-6 w-6 animate-spin" />
+          </div>
+        }
+      >
         <Editor
           config={{
             hasMenuBar: false,

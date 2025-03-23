@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { EmailEditor } from './email-editor';
 import { PreviewEmailDialog } from './preview-email-dialog';
 import type { Database } from '~/types/database';
+import { CopyEmailHtml } from './copy-email-html';
 
 type EmailEditorSandboxProps = {
   template?: Database['public']['Tables']['mails']['Row'];
@@ -23,6 +24,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
       <div className="flex items-center justify-between gap-1.5">
         <div className="flex items-center gap-1.5">
           <PreviewEmailDialog previewText={previewText} editor={editor} />
+          <CopyEmailHtml previewText={previewText} editor={editor} />
         </div>
       </div>
 

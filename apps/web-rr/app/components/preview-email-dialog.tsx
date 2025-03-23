@@ -29,7 +29,7 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
   const [open, setOpen] = useState(false);
   const [html, setHtml] = useState('');
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const json = editor?.getJSON();
       return httpPost<PreviewEmailResponse>('/api/v1/emails/preview', {
@@ -41,23 +41,25 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
       setHtml(data?.html);
       setOpen(true);
     },
+    onError: (error) => {
+      toast.error(error?.message || 'Failed to preview email');
+    },
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className="flex min-h-[28px] items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
-        onClick={() => {
+        className="flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
           if (!editor) {
             toast.error('No email content to preview');
             return;
           }
 
-          toast.promise(mutateAsync(), {
-            loading: 'Generating preview...',
-            success: 'Preview generated successfully',
-            error: (err) => err?.message || 'Failed to generate preview',
-          });
+          mutate();
         }}
         disabled={isPending}
       >
@@ -70,7 +72,7 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
       </DialogTrigger>
 
       {open && (
-        <DialogContent className="animation-none z-[99999] min-h-[75vh] w-full min-w-0 max-w-[620px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
+        <DialogContent className="z-[99999] min-h-[75vh] w-full min-w-0 max-w-[620px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
           <DialogHeader className="sr-only">
             <DialogTitle>Preview Email</DialogTitle>
             <DialogDescription>

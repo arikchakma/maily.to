@@ -12,4 +12,7 @@ export default defineConfig(({ isSsrBuild, command }) => ({
       : undefined,
   },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  ssr: {
+    noExternal: [/^@maily-to\//, /^@radix-ui\//, /^@tiptap\//],
+  },
 }));

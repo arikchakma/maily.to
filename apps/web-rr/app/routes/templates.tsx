@@ -105,9 +105,7 @@ export default function Templates(props: Route.ComponentProps) {
       </aside>
 
       <div className="grow overflow-y-auto">
-        <div className="mx-auto w-full max-w-[calc(600px+40px)] p-5">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
     </div>
   );

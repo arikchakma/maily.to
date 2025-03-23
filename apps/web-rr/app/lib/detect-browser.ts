@@ -35,3 +35,8 @@ export function isOpera(): boolean {
     (/opr/i.test(navigator.userAgent) || /opera/i.test(navigator.userAgent))
   );
 }
+
+export function isMacOS(): boolean {
+  const platform = typeof navigator === 'object' ? navigator.platform : '';
+  return /Mac|iPod|iPhone|iPad/.test(platform);
+}

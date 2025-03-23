@@ -7,7 +7,7 @@ import { GithubLoginButton } from '~/components/auth/github-login';
 import { GoogleLoginButton } from '~/components/auth/google-login';
 import { buttonVariants } from '~/components/ui/button';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
-import { cn } from '~/utils/classname';
+import { cn } from '~/lib/classname';
 
 export function meta({}: Route.MetaArgs) {
   return [

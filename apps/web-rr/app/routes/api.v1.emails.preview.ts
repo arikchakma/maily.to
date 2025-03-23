@@ -4,6 +4,10 @@ import { render } from '@maily-to/render';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
+  if (request.method !== 'POST') {
+    return { status: 405, message: 'Method Not Allowed', errors: [] };
+  }
+
   const body = await request.json();
   const schema = z.object({
     previewText: z.string().optional(),

@@ -12,6 +12,8 @@ import '@maily-to/core/style.css';
 import stylesheet from './app.css?url';
 import { Toaster } from 'sonner';
 import { NavigationLoadingBar } from './components/navigation-loader';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './lib/query-client';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -46,11 +48,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <Toaster />
-        <NavigationLoadingBar />
+        <QueryClientProvider client={queryClient}>
+          <>
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+            <Toaster />
+            <NavigationLoadingBar />
+          </>
+        </QueryClientProvider>
       </body>
     </html>
   );

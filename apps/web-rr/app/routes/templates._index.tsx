@@ -1,19 +1,11 @@
 import type { Route } from './+types/templates._index';
-import { Link, redirect } from 'react-router';
-import {
-  MailIcon,
-  PlusIcon,
-  SquarePenIcon,
-  Trash2Icon,
-  User2Icon,
-} from 'lucide-react';
+import { redirect } from 'react-router';
+import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
-import { cn } from '~/utils/classname';
-import { useState } from 'react';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Playground | Maily' },
+    { title: 'Templates | Maily' },
     {
       name: 'description',
       content: 'Try out Maily, the Open-source editor for crafting emails.',
@@ -52,5 +44,5 @@ export async function loader(args: Route.LoaderArgs) {
 }
 
 export default function Templates(props: Route.ComponentProps) {
-  return <div>Hello</div>;
+  return <EmailEditorSandbox />;
 }

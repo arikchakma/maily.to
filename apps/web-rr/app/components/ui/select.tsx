@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import { ChevronDownIcon, type LucideIcon } from 'lucide-react';
-import { cn } from '~/utils/classname';
+import { cn } from '~/lib/classname';
 
 type SelectProps = {
   label: string;

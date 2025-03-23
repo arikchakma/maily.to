@@ -2,18 +2,8 @@ import type { Route } from './+types/templates._index';
 import { Link, NavLink, Outlet, redirect } from 'react-router';
 import { FilePlus2Icon } from 'lucide-react';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
-import { cn } from '~/utils/classname';
+import { cn } from '~/lib/classname';
 import { buttonVariants } from '~/components/ui/button';
-
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Playground | Maily' },
-    {
-      name: 'description',
-      content: 'Try out Maily, the Open-source editor for crafting emails.',
-    },
-  ];
-}
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;

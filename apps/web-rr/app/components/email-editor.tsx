@@ -1,14 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { XIcon } from 'lucide-react';
 import { PreviewTextInfo } from './preview-text-info';
 import type { Database } from '~/types/database';
-import { Editor } from '@maily-to/core';
 import type { Editor as TiptapEditor } from '@tiptap/core';
+import { Suspense } from 'react';
+import { lazy } from 'react';
+
+const Editor = lazy(() =>
+  import('@maily-to/core').then((mod) => ({
+    default: mod.Editor,
+  }))
+);
 
 type EmailEditorProps = {
-  template: Database['public']['Tables']['mails']['Row'];
+  defaultContent: Database['public']['Tables']['mails']['Row']['content'];
 
   subject: string;
   setSubject: (subject: string) => void;
@@ -27,7 +34,8 @@ type EmailEditorProps = {
 
 export function EmailEditor(props: EmailEditorProps) {
   const {
-    template,
+    defaultContent,
+
     subject,
     setSubject,
     from,
@@ -137,25 +145,29 @@ export function EmailEditor(props: EmailEditorProps) {
         </div>
       </div>
 
-      <Editor
-        config={{
-          hasMenuBar: false,
-          wrapClassName: 'editor-wrap',
-          bodyClassName: '!mt-0 !border-0 !p-0',
-          contentClassName: 'editor-content',
-          toolbarClassName: 'flex-wrap !items-start',
-          spellCheck: false,
-          autofocus: 'end',
-          immediatelyRender: false,
-        }}
-        contentJson={JSON.parse(template?.content as any)}
-        onCreate={(editor) => {
-          setEditor(editor as any);
-        }}
-        onUpdate={(editor) => {
-          setEditor(editor as any);
-        }}
-      />
+      <Suspense fallback={<div>Hello</div>}>
+        <Editor
+          config={{
+            hasMenuBar: false,
+            wrapClassName: 'editor-wrap',
+            bodyClassName: '!mt-0 !border-0 !p-0',
+            contentClassName: 'editor-content',
+            toolbarClassName: 'flex-wrap !items-start',
+            spellCheck: false,
+            autofocus: 'end',
+            immediatelyRender: false,
+          }}
+          contentJson={
+            defaultContent ? JSON.parse(defaultContent as string) : null
+          }
+          onCreate={(editor) => {
+            setEditor(editor);
+          }}
+          onUpdate={(editor) => {
+            setEditor(editor);
+          }}
+        />
+      </Suspense>
     </div>
   );
 }

@@ -10,6 +10,7 @@
   "dependencies": {
     "@maily-to/core": "workspace:*",
     "@maily-to/render": "workspace:*",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",

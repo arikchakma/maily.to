@@ -15,6 +15,7 @@ import { EyeIcon, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
 type PreviewEmailDialogProps = {
+  subject?: string;
   previewText?: string;
   editor: Editor | null;
 };
@@ -24,7 +25,7 @@ type PreviewEmailResponse = {
 };
 
 export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
-  const { previewText = '', editor } = props;
+  const { subject = '', previewText = '', editor } = props;
 
   const [open, setOpen] = useState(false);
   const [html, setHtml] = useState('');
@@ -73,7 +74,7 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
       </DialogTrigger>
 
       {open && (
-        <DialogContent className="z-[99999] min-h-[75vh] w-full min-w-0 max-w-[620px] overflow-hidden p-0 max-[680px]:h-full max-[680px]:rounded-none max-[680px]:border-0 max-[680px]:shadow-none">
+        <DialogContent className="z-[99999] flex max-w-[620px] flex-col border-none bg-transparent p-0 shadow-none max-[680px]:h-full max-[680px]:border-0 max-[680px]:p-2">
           <DialogHeader className="sr-only">
             <DialogTitle>Preview Email</DialogTitle>
             <DialogDescription>
@@ -81,7 +82,27 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
             </DialogDescription>
           </DialogHeader>
 
-          <EmailPreviewIFrame className="h-full w-full" innerHTML={html} />
+          <div className="shadow-xs flex items-start gap-4 rounded-xl border border-gray-200 bg-white p-3">
+            <div className="flex size-8 items-center justify-center rounded-full border border-gray-200 bg-white text-sm">
+              AC
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <h3 className="font-medium">Arik Chakma</h3>
+              <h4 className="text-sm">{subject || 'Your Subject Goes Here'}</h4>
+              <p className="text-sm text-gray-500">
+                {previewText ||
+                  'This is a preview text of your email, that will be shown in the inbox preview...'}
+              </p>
+            </div>
+          </div>
+
+          <div className="shadow-xs flex min-h-[75vh] w-full grow overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <EmailPreviewIFrame
+              wrapperClassName="w-full"
+              className="h-full w-full grow"
+              innerHTML={html}
+            />
+          </div>
         </DialogContent>
       )}
     </Dialog>

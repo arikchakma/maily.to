@@ -104,7 +104,11 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             apiKey={apiKeyConfig?.apiKey}
             provider={apiKeyConfig?.provider}
           />
-          <PreviewEmailDialog previewText={previewText} editor={editor} />
+          <PreviewEmailDialog
+            subject={subject}
+            previewText={previewText}
+            editor={editor}
+          />
           <CopyEmailHtml previewText={previewText} editor={editor} />
           <button
             className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"

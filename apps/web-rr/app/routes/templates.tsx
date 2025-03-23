@@ -3,7 +3,6 @@ import { Link, NavLink, Outlet, redirect } from 'react-router';
 import { FilePlus2Icon } from 'lucide-react';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { cn } from '~/utils/classname';
-import { useState } from 'react';
 import { buttonVariants } from '~/components/ui/button';
 
 export function meta({}: Route.MetaArgs) {
@@ -48,7 +47,7 @@ export async function loader(args: Route.LoaderArgs) {
 
 export default function Templates(props: Route.ComponentProps) {
   const { loaderData } = props;
-  const { mails, user } = loaderData;
+  const { mails } = loaderData;
 
   const data = mails?.data || [];
 
@@ -88,7 +87,7 @@ export default function Templates(props: Route.ComponentProps) {
                               isActive ? 'bg-gray-100' : ''
                             )
                           }
-                          to={`/template/${template.id}`}
+                          to={`/templates/${template.id}`}
                         >
                           <span className="block truncate">
                             {template.title}

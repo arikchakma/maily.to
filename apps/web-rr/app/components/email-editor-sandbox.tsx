@@ -26,10 +26,6 @@ import {
   apiKeyQueryOptions,
 } from './api-key-config-dialog';
 
-type EmailEditorSandboxProps = {
-  template?: Database['public']['Tables']['mails']['Row'];
-};
-
 type UpdateTemplateData = {
   title: string;
   previewText: string;
@@ -40,8 +36,13 @@ type SaveTemplateResponse = {
   template: Database['public']['Tables']['mails']['Row'];
 };
 
+type EmailEditorSandboxProps = {
+  template?: Database['public']['Tables']['mails']['Row'];
+  showSaveButton?: boolean;
+};
+
 export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
-  const { template } = props;
+  const { template, showSaveButton = true } = props;
 
   const navigate = useNavigate();
   const revalidator = useRevalidator();
@@ -126,7 +127,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
           </button>
         </div>
 
-        {!template?.id && (
+        {!template?.id && showSaveButton && (
           <button
             className={cn(
               'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7'

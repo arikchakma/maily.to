@@ -53,7 +53,7 @@ export default function Playground(props: Route.ComponentProps) {
         </div>
       </header>
 
-      <EmailEditorSandbox />
+      <EmailEditorSandbox showSaveButton={false} />
     </main>
   );
 }

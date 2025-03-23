@@ -5,7 +5,13 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "build/**",
+        ".vercel/**"
+      ]
     },
     "web#build": {
       "dependsOn": ["^build"],
@@ -26,7 +32,7 @@
         "VITE_SUPABASE_ANON_KEY",
         "VITE_APP_URL"
       ],
-      "outputs": ["build/**"]
+      "outputs": [".vercel/**"]
     },
     "lint": {
       "dependsOn": ["^build"]

@@ -1,6 +1,8 @@
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/api.v1.templates.$templateId';
 import { z } from 'zod';
+import { json } from '~/lib/response';
+import { serializeZodError } from '~/lib/errors';
 
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
@@ -16,11 +18,16 @@ export async function action(args: Route.ActionArgs) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return {
-      status: 401,
-      message: 'Unauthorized',
-      errors: ['Unauthorized'],
-    };
+    return json(
+      {
+        status: 401,
+        message: 'Unauthorized',
+        errors: ['Unauthorized'],
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   const paramsSchema = z.object({
@@ -29,11 +36,7 @@ export async function action(args: Route.ActionArgs) {
   const { data: paramsData, error: paramsError } =
     paramsSchema.safeParse(params);
   if (paramsError) {
-    return {
-      status: 400,
-      message: paramsError.message,
-      errors: paramsError.errors,
-    };
+    return serializeZodError(paramsError);
   }
 
   const { templateId } = paramsData;
@@ -48,7 +51,7 @@ export async function action(args: Route.ActionArgs) {
 
     const { data, error } = schema.safeParse(body);
     if (error) {
-      return { status: 400, message: error.message, errors: error.errors };
+      return serializeZodError(error);
     }
 
     const { data: template } = await supabase
@@ -59,7 +62,10 @@ export async function action(args: Route.ActionArgs) {
       .single();
 
     if (!template) {
-      return { errors: [], message: 'Template not found', status: 404 };
+      return json(
+        { errors: [], message: 'Template not found', status: 404 },
+        { status: 404 }
+      );
     }
 
     const { title, previewText, content } = data;
@@ -71,7 +77,10 @@ export async function action(args: Route.ActionArgs) {
       .single();
 
     if (updateError) {
-      return { errors: [], message: 'Failed to update template', status: 500 };
+      return json(
+        { errors: [], message: 'Failed to update template', status: 500 },
+        { status: 500 }
+      );
     }
 
     return { status: 'ok' };
@@ -83,7 +92,10 @@ export async function action(args: Route.ActionArgs) {
       .eq('user_id', user.id);
 
     if (error) {
-      return { errors: [], message: 'Failed to delete template', status: 500 };
+      return json(
+        { errors: [], message: 'Failed to delete template', status: 500 },
+        { status: 500 }
+      );
     }
 
     return { status: 'ok' };

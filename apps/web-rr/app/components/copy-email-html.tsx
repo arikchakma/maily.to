@@ -35,7 +35,7 @@ export function CopyEmailHtml(props: CopyEmailHtmlProps) {
   return (
     <button
       className={cn(
-        'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-sm:w-7',
+        'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7',
         isCopied
           ? 'bg-green-200 text-green-600'
           : 'bg-black disabled:opacity-50'
@@ -54,18 +54,18 @@ export function CopyEmailHtml(props: CopyEmailHtmlProps) {
       disabled={isPending || isCopied}
     >
       {isPending ? (
-        <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+        <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
       ) : (
         <>
           {isCopied ? (
-            <ClipboardCheckIcon className="inline-block size-4 shrink-0 sm:mr-1" />
+            <ClipboardCheckIcon className="inline-block size-4 shrink-0 lg:mr-1" />
           ) : (
-            <ClipboardIcon className="inline-block size-4 shrink-0 sm:mr-1" />
+            <ClipboardIcon className="inline-block size-4 shrink-0 lg:mr-1" />
           )}
         </>
       )}
 
-      <span className="hidden sm:inline-block">
+      <span className="hidden lg:inline-block">
         {isCopied ? 'Copied' : 'Copy HTML'}
       </span>
     </button>

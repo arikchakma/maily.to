@@ -59,7 +59,7 @@ export async function httpCall<ResponseType = AppResponse>(
     }
 
     if (!response.ok) {
-      if (data.errors) {
+      if ('errors' in data) {
         throw new FetchError(response.status, data.message);
       } else {
         throw new Error('An unexpected error occurred');
@@ -92,9 +92,7 @@ export async function httpGet<ResponseType = AppResponse>(
   const searchParams = new URLSearchParams(queryParams).toString();
   const queryUrl = searchParams ? `${url}?${searchParams}` : url;
 
-  return httpCall<ResponseType>(queryUrl, {
-    credentials: 'omit',
-  });
+  return httpCall<ResponseType>(queryUrl, options);
 }
 
 export async function httpPatch<ResponseType = AppResponse>(

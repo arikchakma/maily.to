@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import type { Route } from './+types/api.v1.emails.preview';
 import { render } from '@maily-to/render';
+import { data } from 'react-router';
+import { serializeZodError } from '~/lib/errors';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
@@ -14,12 +16,12 @@ export async function action(args: Route.ActionArgs) {
     content: z.any(),
   });
 
-  const { data, error } = schema.safeParse(body);
+  const { data: bodyData, error } = schema.safeParse(body);
   if (error) {
-    return { status: 400, message: error.message, errors: error.errors };
+    return serializeZodError(error);
   }
 
-  const { content, previewText } = data;
+  const { content, previewText } = bodyData;
   const html = await render(JSON.parse(content), {
     pretty: true,
     preview: previewText,

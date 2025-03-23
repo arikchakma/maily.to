@@ -1,11 +1,17 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type { Editor } from '@tiptap/core';
-import { FileCogIcon, Loader2Icon, SaveIcon, XIcon } from 'lucide-react';
+import {
+  FileCogIcon,
+  Loader2Icon,
+  SaveIcon,
+  XIcon,
+  AsteriskIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { toast } from 'sonner';
 import { cn } from '~/lib/classname';
-import { httpPost } from '~/lib/http';
+import { FetchError, httpPost } from '~/lib/http';
 import type { Database } from '~/types/database';
 import { CopyEmailHtml } from './copy-email-html';
 import { DeleteEmailDialog } from './delete-email-dialog';
@@ -15,6 +21,10 @@ import { PreviewTextInfo } from './preview-text-info';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
+import {
+  ApiKeyConfigDialog,
+  apiKeyQueryOptions,
+} from './api-key-config-dialog';
 
 type EmailEditorSandboxProps = {
   template?: Database['public']['Tables']['mails']['Row'];
@@ -35,6 +45,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
 
   const navigate = useNavigate();
   const revalidator = useRevalidator();
+  const { data: apiKeyConfig } = useQuery(apiKeyQueryOptions());
 
   const [subject, setSubject] = useState(template?.title || '');
   const [previewText, setPreviewText] = useState(template?.preview_text || '');
@@ -65,18 +76,60 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
       },
     });
 
+  const { mutateAsync: sendTestEmail, isPending: isSendTestEmailPending } =
+    useMutation({
+      mutationFn: async () => {
+        const json = editor?.getJSON();
+        if (!json) {
+          throw new FetchError(400, 'Editor content is empty');
+        }
+
+        return httpPost(`/api/v1/emails/send`, {
+          subject,
+          previewText,
+          from,
+          to,
+          replyTo,
+          content: JSON.stringify(json),
+        });
+      },
+    });
+
   return (
     <>
       <div className="max-w-[calc(600px+80px)]! mx-auto mb-8 flex items-center justify-between gap-1.5 px-10 pt-5">
         <div className="flex items-center gap-1.5">
+          <ApiKeyConfigDialog
+            apiKey={apiKeyConfig?.apiKey}
+            provider={apiKeyConfig?.provider}
+          />
           <PreviewEmailDialog previewText={previewText} editor={editor} />
           <CopyEmailHtml previewText={previewText} editor={editor} />
+          <button
+            className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+            type="submit"
+            disabled={isSendTestEmailPending}
+            onClick={() => {
+              toast.promise(sendTestEmail(), {
+                loading: 'Sending Test Email...',
+                success: 'Test Email has been sent',
+                error: (err) => err?.message || 'Failed to send test email',
+              });
+            }}
+          >
+            {isSendTestEmailPending ? (
+              <Loader2Icon className="mr-1 inline-block size-4 animate-spin" />
+            ) : (
+              <AsteriskIcon className="mr-1 inline-block size-4" />
+            )}
+            Send Email
+          </button>
         </div>
 
         {!template?.id && (
           <button
             className={cn(
-              'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-sm:w-7'
+              'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7'
             )}
             disabled={isSaveTemplatePending}
             onClick={() => {
@@ -109,11 +162,11 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             }}
           >
             {isSaveTemplatePending ? (
-              <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+              <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
             ) : (
-              <SaveIcon className="inline-block size-4 shrink-0 sm:mr-1" />
+              <SaveIcon className="inline-block size-4 shrink-0 lg:mr-1" />
             )}
-            <span className="hidden sm:inline-block">Save</span>
+            <span className="hidden lg:inline-block">Save</span>
           </button>
         )}
 
@@ -122,7 +175,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             <DeleteEmailDialog templateId={template.id} />
             <button
               className={cn(
-                'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-sm:w-7'
+                'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7'
               )}
               disabled={isUpdateTemplatePending}
               onClick={() => {
@@ -155,11 +208,11 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
               }}
             >
               {isUpdateTemplatePending ? (
-                <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+                <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
               ) : (
-                <FileCogIcon className="inline-block size-4 shrink-0 sm:mr-1" />
+                <FileCogIcon className="inline-block size-4 shrink-0 lg:mr-1" />
               )}
-              <span className="hidden sm:inline-block">Update</span>
+              <span className="hidden lg:inline-block">Update</span>
             </button>
           </div>
         )}

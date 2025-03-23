@@ -1,6 +1,8 @@
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/api.v1.templates._index';
 import { z } from 'zod';
+import { json } from '~/lib/response';
+import { serializeZodError } from '~/lib/errors';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
@@ -16,11 +18,14 @@ export async function action(args: Route.ActionArgs) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return {
-      status: 401,
-      message: 'Unauthorized',
-      errors: ['Unauthorized'],
-    };
+    return json(
+      {
+        status: 401,
+        message: 'Unauthorized',
+        errors: ['Unauthorized'],
+      },
+      { status: 401 }
+    );
   }
 
   const body = await request.json();
@@ -32,7 +37,7 @@ export async function action(args: Route.ActionArgs) {
 
   const { data, error } = schema.safeParse(body);
   if (error) {
-    return { status: 400, message: error.message, errors: error.errors };
+    return serializeZodError(error);
   }
 
   const { title, previewText, content } = data;
@@ -42,7 +47,10 @@ export async function action(args: Route.ActionArgs) {
     .select()
     .single();
   if (insertError) {
-    return { errors: [], message: 'Failed to insert template', status: 500 };
+    return json(
+      { errors: [], message: 'Failed to insert template', status: 500 },
+      { status: 500 }
+    );
   }
 
   return { template: insertData };

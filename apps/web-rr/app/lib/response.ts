@@ -8,10 +8,10 @@
  */
 export function json<T>(response: T, options: ResponseInit = {}): Response {
   return new Response(JSON.stringify(response), {
-    status: options.status || 200,
+    status: options?.status || 200,
     headers: {
       'content-type': 'application/json',
-      ...options.headers,
+      ...options?.headers,
     },
   });
 }

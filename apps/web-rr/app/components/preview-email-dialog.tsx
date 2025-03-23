@@ -49,7 +49,7 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className="flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
+        className="flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50 max-lg:w-7"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -59,16 +59,17 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
             return;
           }
 
+          setHtml('');
           mutate();
         }}
         disabled={isPending}
       >
         {isPending ? (
-          <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+          <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
         ) : (
-          <EyeIcon className="inline-block size-4 shrink-0 sm:mr-1" />
+          <EyeIcon className="inline-block size-4 shrink-0 lg:mr-1" />
         )}
-        <span className="hidden sm:inline-block">Preview Email</span>
+        <span className="hidden lg:inline-block">Preview Email</span>
       </DialogTrigger>
 
       {open && (

@@ -38,15 +38,15 @@ export function DeleteEmailDialog(props: DeleteEmailDialogProps) {
   return (
     <Dialog>
       <DialogTrigger
-        className="flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-red-100 px-2 py-1 text-sm text-red-800 disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
+        className="flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-red-100 px-2 py-1 text-sm text-red-800 disabled:cursor-not-allowed disabled:opacity-50 max-lg:w-7"
         disabled={isDeleteTemplatePending}
       >
         {isDeleteTemplatePending ? (
-          <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+          <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
         ) : (
-          <Trash2Icon className="inline-block size-4 shrink-0 sm:mr-1" />
+          <Trash2Icon className="inline-block size-4 shrink-0 lg:mr-1" />
         )}
-        <span className="hidden sm:inline-block">Delete</span>
+        <span className="hidden lg:inline-block">Delete</span>
       </DialogTrigger>
 
       <DialogContent className="w-full max-w-xs p-4">
@@ -69,13 +69,13 @@ export function DeleteEmailDialog(props: DeleteEmailDialogProps) {
             </button>
           </DialogClose>
           <button
-            className="flex min-h-[28px] w-full cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1.5 text-sm text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-7"
+            className="flex min-h-[28px] w-full cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1.5 text-sm text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 max-lg:w-7"
             type="button"
             disabled={isDeleteTemplatePending}
             onClick={() => deleteTemplate()}
           >
             {isDeleteTemplatePending ? (
-              <Loader2Icon className="inline-block size-4 shrink-0 animate-spin sm:mr-1" />
+              <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
             ) : (
               'Delete'
             )}

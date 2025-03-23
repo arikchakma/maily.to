@@ -8,6 +8,7 @@ import {
 } from 'react-router';
 
 import type { Route } from './+types/root';
+import '@maily-to/core/style.css';
 import stylesheet from './app.css?url';
 import { Toaster } from 'sonner';
 import { NavigationLoadingBar } from './components/navigation-loader';

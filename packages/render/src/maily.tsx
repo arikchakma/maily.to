@@ -1153,6 +1153,7 @@ export class Maily {
       alt,
       title,
       width = 'auto',
+      height = 'auto',
       alignment = 'center',
       externalLink = '',
       isExternalLinkVariable,
@@ -1178,12 +1179,17 @@ export class Maily {
     const imageWidth = width === 'auto' ? 'auto' : Number(width);
     const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
+    // Handle height value
+    const imageHeight = height === 'auto' ? 'auto' : Number(height);
+    const heightStyle = imageHeight === 'auto' ? 'auto' : `${imageHeight}px`;
+
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
         src={src}
         style={{
           width: widthStyle, // Use the calculated width
+          height: heightStyle, // Use the calculated height
           maxWidth: '100%', // Ensure image doesn't overflow container
           outline: 'none',
           border: 'none',

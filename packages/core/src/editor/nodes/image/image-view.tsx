@@ -362,8 +362,19 @@ export function ImageView(props: NodeViewProps) {
             style={{
               ...resizingStyle,
               cursor: 'default',
+              objectFit: 'fill',
               marginBottom: 0,
               borderRadius,
+              width: resizingStyle?.width
+                ? `${resizingStyle.width}px`
+                : width
+                  ? `${width}px`
+                  : 'auto',
+              height: resizingStyle?.height
+                ? `${resizingStyle.height}px`
+                : height
+                  ? `${height}px`
+                  : 'auto',
             }}
             draggable={editor.isEditable}
             className={cn(

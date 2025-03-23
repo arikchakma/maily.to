@@ -1,9 +1,20 @@
-import type { Route } from './+types/templates._index';
-import { Link, NavLink, Outlet, redirect } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
 import { FilePlus2Icon } from 'lucide-react';
-import { createSupabaseServerClient } from '~/lib/supabase/server';
-import { cn } from '~/lib/classname';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRevalidator,
+} from 'react-router';
+import { toast } from 'sonner';
+import { LogoutButton } from '~/components/auth/logout-button';
 import { buttonVariants } from '~/components/ui/button';
+import { cn } from '~/lib/classname';
+import { httpPost } from '~/lib/http';
+import { createSupabaseServerClient } from '~/lib/supabase/server';
+import type { Route } from './+types/templates._index';
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;
@@ -40,6 +51,27 @@ export default function Templates(props: Route.ComponentProps) {
   const { mails } = loaderData;
 
   const data = mails?.data || [];
+
+  const revalidator = useRevalidator();
+  const navigate = useNavigate();
+
+  const {
+    mutateAsync: handleEmailDuplicate,
+    isPending: isDuplicateEmailPending,
+  } = useMutation({
+    mutationFn: async (templateId: string) => {
+      return httpPost<{ template: { id: string } }>(
+        `/api/v1/templates/${templateId}/duplicate`,
+        {}
+      );
+    },
+    onSettled: () => {
+      revalidator.revalidate();
+    },
+    onSuccess: (data) => {
+      navigate(`/templates/${data.template.id}`);
+    },
+  });
 
   return (
     <div className="flex h-screen w-screen items-stretch overflow-hidden">
@@ -78,16 +110,23 @@ export default function Templates(props: Route.ComponentProps) {
                             )
                           }
                           to={`/templates/${template.id}`}
+                          end={true}
                         >
                           <span className="block truncate">
                             {template.title}
                           </span>
                         </NavLink>
                         <button
-                          className="absolute right-0 mr-1.5 hidden group-hover:block"
-                          // onClick={() => {
-                          //   handleEmailDuplicate(template.id);
-                          // }}
+                          className="absolute right-0 mr-1.5 hidden cursor-pointer group-hover:block"
+                          onClick={() => {
+                            toast.promise(handleEmailDuplicate(template.id), {
+                              loading: 'Duplicating Template...',
+                              success: 'Duplicate Template Created!',
+                              error: (err) =>
+                                err?.message || 'Something went wrong!',
+                            });
+                          }}
+                          disabled={isDuplicateEmailPending}
                           type="button"
                         >
                           <FilePlus2Icon className="h-4 w-4 shrink-0" />
@@ -101,7 +140,9 @@ export default function Templates(props: Route.ComponentProps) {
           </div>
         )}
 
-        <div className="mt-auto px-1">{/* <LogoutButton /> */}</div>
+        <div className="mt-auto px-1">
+          <LogoutButton />
+        </div>
       </aside>
 
       <div className="grow overflow-y-auto">

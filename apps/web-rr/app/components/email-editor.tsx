@@ -1,6 +1,7 @@
 import type { Editor as TiptapEditor } from '@tiptap/core';
 import { Loader2Icon } from 'lucide-react';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
+import { cn } from '~/lib/classname';
 import type { Database } from '~/types/database';
 
 const Editor = lazy(() =>
@@ -11,38 +12,27 @@ const Editor = lazy(() =>
 
 type EmailEditorProps = {
   defaultContent: Database['public']['Tables']['mails']['Row']['content'];
-
-  subject: string;
-  setSubject: (subject: string) => void;
-  from: string;
-  setFrom: (from: string) => void;
-  to: string;
-  setTo: (to: string) => void;
-  replyTo?: string;
-  setReplyTo: (replyTo: string) => void;
-
-  previewText: string;
-  setPreviewText: (previewText: string) => void;
-
   setEditor: (editor: TiptapEditor) => void;
 };
 
 export function EmailEditor(props: EmailEditorProps) {
   const { defaultContent, setEditor } = props;
 
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <>
-      <Suspense
-        fallback={
-          <div>
-            <Loader2Icon className="mx-auto h-6 w-6 animate-spin" />
-          </div>
-        }
-      >
+      {isLoading && (
+        <div className="flex w-full items-center justify-center py-10">
+          <Loader2Icon className="h-8 w-8 animate-spin stroke-[2.5] text-gray-500" />
+        </div>
+      )}
+
+      <Suspense>
         <Editor
           config={{
             hasMenuBar: false,
-            wrapClassName: 'editor-wrap',
+            wrapClassName: cn('editor-wrap', isLoading && 'hidden'),
             bodyClassName: '!mt-0 !border-0 !p-0',
             contentClassName: `editor-content mx-auto max-w-[calc(600px+80px)]! px-10! pb-10!`,
             toolbarClassName: 'flex-wrap !items-start',
@@ -54,6 +44,7 @@ export function EmailEditor(props: EmailEditorProps) {
             defaultContent ? JSON.parse(defaultContent as string) : null
           }
           onCreate={(editor) => {
+            setIsLoading(false);
             setEditor(editor);
           }}
           onUpdate={(editor) => {

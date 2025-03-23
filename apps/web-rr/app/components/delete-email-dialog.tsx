@@ -1,4 +1,8 @@
+import { DialogClose } from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
+import { Loader2Icon, Trash2Icon } from 'lucide-react';
+import { useNavigate, useRevalidator } from 'react-router';
+import { httpDelete } from '~/lib/http';
 import {
   Dialog,
   DialogContent,
@@ -7,14 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { httpDelete, httpPost } from '~/lib/http';
-import type { Editor } from '@tiptap/core';
-import { useState } from 'react';
-import { EmailPreviewIFrame } from './email-preview-iframe';
-import { EyeIcon, Loader2Icon, Trash2Icon } from 'lucide-react';
-import { toast } from 'sonner';
-import { useNavigate, useRevalidator } from 'react-router';
 
 type DeleteEmailDialogProps = {
   templateId: string;

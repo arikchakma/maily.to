@@ -14,6 +14,7 @@ import { PreviewEmailDialog } from './preview-email-dialog';
 import { PreviewTextInfo } from './preview-text-info';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import defaultEmailJSON from '~/lib/default-editor-json.json';
 
 type EmailEditorSandboxProps = {
   template?: Database['public']['Tables']['mails']['Row'];
@@ -257,17 +258,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
       </div>
 
       <EmailEditor
-        defaultContent={template?.content || ''}
-        subject={subject}
-        setSubject={setSubject}
-        previewText={previewText}
-        setPreviewText={setPreviewText}
-        from={from}
-        setFrom={setFrom}
-        to={to}
-        setTo={setTo}
-        replyTo={replyTo}
-        setReplyTo={setReplyTo}
+        defaultContent={template?.content || JSON.stringify(defaultEmailJSON)}
         setEditor={setEditor}
       />
     </>

@@ -1,6 +1,5 @@
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/api.v1.templates.$templateId';
-import { redirect } from 'react-router';
 import { z } from 'zod';
 
 export async function action(args: Route.ActionArgs) {
@@ -17,7 +16,11 @@ export async function action(args: Route.ActionArgs) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect('/login', { headers });
+    return {
+      status: 401,
+      message: 'Unauthorized',
+      errors: ['Unauthorized'],
+    };
   }
 
   const paramsSchema = z.object({

@@ -2,6 +2,7 @@ import type { Route } from './+types/playground';
 import { Link, redirect } from 'react-router';
 import { LogInIcon } from 'lucide-react';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
+import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -34,8 +35,8 @@ export async function loader(args: Route.LoaderArgs) {
 
 export default function Playground(props: Route.ComponentProps) {
   return (
-    <main className="mx-auto w-full max-w-[calc(36rem+40px)] px-5">
-      <header className="mt-14 border-b pb-6">
+    <main className="mx-auto w-full">
+      <header className="mx-auto mt-14 max-w-[calc(600px+80px)] border-b border-gray-200 px-10 pb-6">
         <p className="text-balance sm:text-lg">
           You can create an account to save email templates as well. It&apos;s
           free and easy to use.
@@ -51,6 +52,8 @@ export default function Playground(props: Route.ComponentProps) {
           </Link>
         </div>
       </header>
+
+      <EmailEditorSandbox />
     </main>
   );
 }

@@ -1,10 +1,9 @@
 import { Loader2Icon } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useFetcher } from 'react-router';
+import { toast } from 'sonner';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { useFetcher } from 'react-router';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useRef } from 'react';
 
 export function EmailLoginForm() {
   const formRef = useRef<HTMLFormElement>(null);

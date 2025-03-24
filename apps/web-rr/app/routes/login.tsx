@@ -8,16 +8,37 @@ import { GoogleLoginButton } from '~/components/auth/google-login';
 import { buttonVariants } from '~/components/ui/button';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { cn } from '~/lib/classname';
+import { mergeRouteModuleMeta } from '~/lib/merge-meta';
+import { json } from '~/lib/response';
 
-export function meta({}: Route.MetaArgs) {
+export const meta = mergeRouteModuleMeta(() => {
+  const title = 'Login | Maily';
+  const description = 'Login to your Maily account.';
+
   return [
-    { title: 'Playground | Maily' },
+    { title: title },
     {
       name: 'description',
-      content: 'Try out Maily, the Open-source editor for crafting emails.',
+      content: description,
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: description,
+    },
+    {
+      name: 'og:title',
+      content: title,
+    },
+    {
+      name: 'og:description',
+      content: description,
     },
   ];
-}
+});
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
@@ -32,7 +53,7 @@ export async function action(args: Route.ActionArgs) {
   const result = v.safeParse(schema, _provider);
 
   if (!result.success) {
-    return data(
+    return json(
       {
         message: result.issues.map((issue) => issue.message).join(', '),
         errors: result.issues,
@@ -77,7 +98,7 @@ export async function action(args: Route.ActionArgs) {
     });
 
     if (error) {
-      return data(
+      return json(
         {
           message: error.message,
           errors: [error?.message],
@@ -89,9 +110,9 @@ export async function action(args: Route.ActionArgs) {
       );
     }
 
-    return data({
+    return {
       status: 200,
-    });
+    };
   } else {
     const { data: oAuthData } = await supabase.auth.signInWithOAuth({
       provider,
@@ -109,7 +130,7 @@ export async function action(args: Route.ActionArgs) {
     });
 
     if (!oAuthData.url) {
-      return data(
+      return json(
         {
           message: 'Invalid OAuth URL',
           errors: ['Invalid OAuth URL'],

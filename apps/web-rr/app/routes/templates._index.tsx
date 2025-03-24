@@ -1,17 +1,47 @@
 import type { Route } from './+types/templates._index';
 import { redirect } from 'react-router';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
+import { mergeRouteModuleMeta } from '~/lib/merge-meta';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 
-export function meta({}: Route.MetaArgs) {
+export const meta = mergeRouteModuleMeta(() => {
+  const title = 'Templates | Maily';
+  const description = 'List of your created templates.';
+
   return [
-    { title: 'Templates | Maily' },
+    { title: title },
     {
       name: 'description',
-      content: 'Try out Maily, the Open-source editor for crafting emails.',
+      content: description,
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: description,
+    },
+    {
+      name: 'og:title',
+      content: title,
+    },
+    {
+      name: 'og:description',
+      content: description,
+    },
+
+    // no index
+    {
+      name: 'robots',
+      content: 'noindex',
+    },
+    {
+      name: 'googlebot',
+      content: 'noindex',
     },
   ];
-}
+});
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;

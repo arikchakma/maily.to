@@ -3,20 +3,9 @@ import type { Route } from './+types/_index';
 import { Link } from 'react-router';
 import { ArrowUpRightIcon, StarIcon } from 'lucide-react';
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Maily - Open-source editor for crafting emails' },
-    {
-      name: 'description',
-      content:
-        'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
-    },
-  ];
-}
-
 export function headers(_: Route.HeadersArgs) {
   return {
-    'Cache-Control': 'max-age=3600, s-maxage=86400', // 1 day
+    'Cache-Control': 'max-age=3600, s-maxage=86400',
   };
 }
 

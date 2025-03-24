@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { FilePlus2Icon } from 'lucide-react';
 import {
   Link,
@@ -15,7 +15,6 @@ import { cn } from '~/lib/classname';
 import { httpPost } from '~/lib/http';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/templates._index';
-import { apiKeyQueryOptions } from '~/components/api-key-config-dialog';
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;

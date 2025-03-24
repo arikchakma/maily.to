@@ -1,17 +1,51 @@
 import type { Route } from './+types/templates.$templateId';
-import { redirect } from 'react-router';
+import { redirect, type MetaFunction } from 'react-router';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
+import { mergeRouteModuleMeta } from '~/lib/merge-meta';
 
-export function meta({}: Route.MetaArgs) {
+export const meta: Route.MetaFunction = mergeRouteModuleMeta((args) => {
+  const { template } = args.data;
+
+  const title = template ? `${template?.title} | Maily` : 'Template | Maily';
+  const description = template
+    ? `Edit your template: ${template?.title}`
+    : 'Edit your template.';
+
   return [
-    { title: 'Playground | Maily' },
+    { title: title },
     {
       name: 'description',
-      content: 'Try out Maily, the Open-source editor for crafting emails.',
+      content: description,
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: description,
+    },
+    {
+      name: 'og:title',
+      content: title,
+    },
+    {
+      name: 'og:description',
+      content: description,
+    },
+
+    // no index
+    {
+      name: 'robots',
+      content: 'noindex',
+    },
+    {
+      name: 'googlebot',
+      content: 'noindex',
     },
   ];
-}
+});
 
 export async function loader(args: Route.LoaderArgs) {
   const { request, params } = args;
@@ -25,7 +59,7 @@ export async function loader(args: Route.LoaderArgs) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect('/login', { headers });
+    throw redirect('/login', { headers });
   }
 
   const { data: template } = await supabase
@@ -36,7 +70,7 @@ export async function loader(args: Route.LoaderArgs) {
     .single();
 
   if (!template) {
-    return redirect('/templates');
+    throw redirect('/templates');
   }
 
   return { template };

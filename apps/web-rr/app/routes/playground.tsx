@@ -3,16 +3,37 @@ import { Link, redirect } from 'react-router';
 import { LogInIcon } from 'lucide-react';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
+import { mergeRouteModuleMeta } from '~/lib/merge-meta';
 
-export function meta({}: Route.MetaArgs) {
+export const meta = mergeRouteModuleMeta(() => {
+  const title = 'Playground | Maily';
+  const description =
+    'Try out Maily, the Open-source editor for crafting emails.';
+
   return [
-    { title: 'Playground | Maily' },
+    { title: title },
     {
       name: 'description',
-      content: 'Try out Maily, the Open-source editor for crafting emails.',
+      content: description,
+    },
+    {
+      name: 'twitter:title',
+      content: title,
+    },
+    {
+      name: 'twitter:description',
+      content: description,
+    },
+    {
+      name: 'og:title',
+      content: title,
+    },
+    {
+      name: 'og:description',
+      content: description,
     },
   ];
-}
+});
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;

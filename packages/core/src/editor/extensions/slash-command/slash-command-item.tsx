@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/editor/components/ui/tooltip';
-import { useCallback, useState, useRef, useEffect, useMemo } from 'react';
+import { useCallback, useState, useRef, useEffect, RefObject } from 'react';
 import { cn } from '@/editor/utils/classname';
 
 type SlashCommandItemProps = {
@@ -16,7 +16,7 @@ type SlashCommandItemProps = {
   selectedGroupIndex: number;
   selectedCommandIndex: number;
   editor: Editor;
-  activeCommandRef: React.RefObject<HTMLButtonElement>;
+  activeCommandRef: RefObject<HTMLButtonElement> | null;
   selectItem: (groupIndex: number, commandIndex: number) => void;
   hoveredItemKey: string | null;
   onHover: (isHovered: boolean) => void;

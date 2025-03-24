@@ -7,6 +7,7 @@ import {
   forwardRef,
   Fragment,
   KeyboardEvent,
+  RefObject,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -27,10 +28,7 @@ type CommandListProps = {
   query: string;
 };
 
-const CommandList = forwardRef(function CommandList(
-  props: CommandListProps,
-  ref
-) {
+const CommandList = forwardRef<unknown, CommandListProps>((props, ref) => {
   const { items: groups, command, editor, range, query } = props;
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
@@ -153,7 +151,7 @@ const CommandList = forwardRef(function CommandList(
   }));
 
   const commandListContainer = useRef<HTMLDivElement>(null);
-  const activeCommandRef = useRef<HTMLButtonElement>(null);
+  const activeCommandRef = useRef<HTMLButtonElement | null>(null);
 
   useLayoutEffect(() => {
     const container = commandListContainer?.current;
@@ -185,7 +183,11 @@ const CommandList = forwardRef(function CommandList(
     };
   }, []);
 
-  return groups.length > 0 ? (
+  if (!groups) {
+    return null;
+  }
+
+  return (
     <TooltipProvider>
       <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
         <div
@@ -252,7 +254,7 @@ const CommandList = forwardRef(function CommandList(
         </div>
       </div>
     </TooltipProvider>
-  ) : null;
+  );
 });
 
 export function getSlashCommandSuggestions(

@@ -27,9 +27,10 @@ export default function Home(props: Route.ComponentProps) {
     'Columns',
     'Repeat',
     'Show',
+    'Social',
   ];
 
-  const comingSoon = ['Social', 'Video', 'Table', 'Countdown'];
+  const comingSoon = ['Video', 'Table', 'Countdown'];
 
   return (
     <>

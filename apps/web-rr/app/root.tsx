@@ -44,6 +44,47 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Twitter */}
+        <meta name="twitter:creator" content="@imarikchakma" />
+        <meta
+          name="twitter:title"
+          content="Maily - Open-source editor for crafting emails"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:description"
+          content="Create, preview, and manage emails with Maily – your open-source solution for modern email editing."
+        />
+        <meta name="twitter:image" content="https://maily.to/og-image.png" />
+
+        {/* Open Graph */}
+        <meta property="og:site_name" content="Maily" />
+        <meta
+          property="og:title"
+          content="Maily - Open-source editor for crafting emails"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://maily.to" />
+        <meta property="og:locale" content="en-US" />
+        <meta property="og:image" content="https://maily.to/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Maily Preview" />
+
+        {/* Robots */}
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="googlebot" content="max-video-preview: -1" />
+        <meta name="googlebot" content="max-image-preview: large" />
+        <meta name="googlebot" content="max-snippet: -1" />
+
+        {/* Icons */}
+        <link rel="icon" type="image/svg+xml" href="/brand/logo.svg" />
+        <link rel="icon" href="/brand/logo.svg" />
+
+        <meta name="theme-color" content="#ffffff" />
+
         <Meta />
         <Links />
       </head>

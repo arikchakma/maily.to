@@ -8,6 +8,7 @@ import { MailyKit } from './maily-kit';
 import { PlaceholderExtension } from './placeholder';
 import { SlashCommandExtension } from './slash-command/slash-command';
 import { getSlashCommandSuggestions } from './slash-command/slash-command-view';
+import { SelectionExtension } from './selection/selection';
 
 type ExtensionsProps = Partial<MailyContextType> & {
   extensions?: AnyExtension[];
@@ -27,6 +28,7 @@ export function extensions(props: ExtensionsProps) {
     HTMLCodeBlockExtension,
     InlineImageExtension,
     PlaceholderExtension,
+    SelectionExtension,
   ].filter((ext) => {
     return !extensions.some((e) => e.name === ext.name);
   });

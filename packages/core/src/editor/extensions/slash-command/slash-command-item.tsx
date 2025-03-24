@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/editor/components/ui/tooltip';
-import { useCallback, useState, useRef, useEffect, useMemo } from 'react';
+import { useCallback, useState, useRef, useEffect, RefObject } from 'react';
 import { cn } from '@/editor/utils/classname';
 
 type SlashCommandItemProps = {
@@ -16,8 +16,10 @@ type SlashCommandItemProps = {
   selectedGroupIndex: number;
   selectedCommandIndex: number;
   editor: Editor;
-  activeCommandRef: React.RefObject<HTMLButtonElement>;
+  activeCommandRef: RefObject<HTMLButtonElement> | null;
   selectItem: (groupIndex: number, commandIndex: number) => void;
+  hoveredItemKey: string | null;
+  onHover: (isHovered: boolean) => void;
 };
 
 export function SlashCommandItem(props: SlashCommandItemProps) {
@@ -30,15 +32,22 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
     editor,
     activeCommandRef,
     selectItem,
+    hoveredItemKey,
+    onHover,
   } = props;
 
   const [open, setOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const isActive =
     groupIndex === selectedGroupIndex && commandIndex === selectedCommandIndex;
+
+  const itemKey = `${groupIndex}-${commandIndex}`;
+  const isHovered = hoveredItemKey === itemKey;
+
   const isSubCommand = item && 'commands' in item;
 
-  const shouldOpenTooltip = !!item?.preview && (isActive || isHovered);
+  // show tooltip only if this item is hovered OR (active/keyboard selected AND no other item is hovered)
+  const shouldOpenTooltip =
+    !!item?.preview && (isHovered || (isActive && !hoveredItemKey));
 
   const hasRenderFunction = typeof item.render === 'function';
   const renderFunctionValue = hasRenderFunction ? item.render?.(editor) : null;
@@ -105,8 +114,8 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
               : 'mly-bg-transparent'
           )}
           onClick={() => selectItem(groupIndex, commandIndex)}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={() => onHover(true)}
+          onMouseLeave={() => onHover(false)}
           type="button"
           ref={isActive ? activeCommandRef : null}
         >

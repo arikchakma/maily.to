@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/react';
 import { Fragment, Node } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { findParentNode } from '@tiptap/core';
 import { DEFAULT_COLUMN_WIDTH } from '../nodes/columns/column';
 
@@ -37,7 +37,7 @@ export function addColumn(editor: Editor) {
   const newColumn = state.schema.nodes.column.create(
     {
       width: calculatedWidth,
-      columnId: uuid(),
+      columnId: uuidv4(),
     },
     state.schema.nodes.paragraph.create(null)
   );
@@ -279,7 +279,7 @@ export function addColumnByIndex(editor: Editor, index: number = -1) {
   const newColumn = state.schema.nodes.column.create(
     {
       width: DEFAULT_COLUMN_WIDTH,
-      columnId: uuid(),
+      columnId: uuidv4(),
     },
     state.schema.nodes.paragraph.create(null)
   );

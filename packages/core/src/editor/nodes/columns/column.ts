@@ -1,6 +1,6 @@
 import { updateAttributes } from '@/editor/utils/update-attribute';
 import { Node, mergeAttributes } from '@tiptap/core';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export const DEFAULT_COLUMN_WIDTH = 'auto';
 
@@ -41,11 +41,11 @@ export const ColumnExtension = Node.create({
       columnId: {
         default: null,
         parseHTML: (element) =>
-          element.getAttribute('data-column-id') || uuid(),
+          element.getAttribute('data-column-id') || uuidv4(),
         renderHTML: (attributes) => {
           if (!attributes.columnId) {
             return {
-              'data-column-id': uuid(),
+              'data-column-id': uuidv4(),
             };
           }
 

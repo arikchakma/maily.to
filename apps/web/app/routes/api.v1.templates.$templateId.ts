@@ -4,6 +4,40 @@ import { z } from 'zod';
 import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
 
+export async function loader(args: Route.ActionArgs) {
+  const { request, params } = args;
+  const headers = new Headers();
+  const supabase = createSupabaseServerClient(request, headers);
+
+  // TODO: add authentication
+
+  const paramsSchema = z.object({
+    templateId: z.string(),
+  });
+  const { data: paramsData, error: paramsError } = paramsSchema.safeParse(params);
+  if (paramsError) {
+    return serializeZodError(paramsError);
+  }
+
+  const { templateId } = paramsData;
+
+  const { data: template, error } = await supabase
+    .from('mails')
+    .select('*')
+    .eq('id', templateId)
+    // TODO: add user_id filter
+    .single();
+
+  if (error || !template) {
+    return json(
+      { errors: [], message: 'Template not found', status: 404 },
+      { status: 404 }
+    );
+  }
+
+  return json({ template }, { status: 200 });
+}
+
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
   if (!['POST', 'DELETE'].includes(request.method)) {

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Maily } from '@maily-to/render';
 import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
+import { tryApiKeyAuth } from '~/lib/api-key-auth';
 
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
@@ -14,7 +15,24 @@ export async function action(args: Route.ActionArgs) {
   const headers = new Headers();
   const supabase = createSupabaseServerClient(request, headers);
 
-  // TODO: add authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isApiKeyAuth = tryApiKeyAuth(request.headers);
+
+  if (!user && !isApiKeyAuth) {
+    return json(
+      {
+        status: 401,
+        message: 'Unauthorized',
+        errors: ['Unauthorized'],
+      },
+      {
+        status: 401,
+      }
+    );
+  }
 
   const paramsSchema = z.object({
     templateId: z.string(),

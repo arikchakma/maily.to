@@ -3,13 +3,33 @@ import type { Route } from './+types/api.v1.templates.$templateId';
 import { z } from 'zod';
 import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
+import { tryApiKeyAuth } from '~/lib/api-key-auth';
 
-export async function loader(args: Route.ActionArgs) {
+export async function loader(args: Route.LoaderArgs) {
   const { request, params } = args;
   const headers = new Headers();
   const supabase = createSupabaseServerClient(request, headers);
 
-  // TODO: add authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // TODO: keep track of middlewares in React Router (https://reactrouter.com/start/changelog#middleware-unstable)
+  // They are unstable now, but can be useful in the future
+  const isApiKeyAuth = tryApiKeyAuth(request.headers);
+
+  if (!user && !isApiKeyAuth) {
+    return json(
+      {
+        status: 401,
+        message: 'Unauthorized',
+        errors: ['Unauthorized'],
+      },
+      {
+        status: 401,
+      }
+    );
+  }
 
   const paramsSchema = z.object({
     templateId: z.string(),

@@ -1,0 +1,58 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "thomasaelbrecht"
+    
+    groups:
+      # Group all updates for devDependencies in one PR
+      dev-deps:
+        dependency-type: "development"
+        exclude-patterns:
+          - "@nestjs/*"
+
+      patches:
+        update-types:
+          - "patch"
+      
+      # Group minor and major updates for Nest.js (and related dependencies) in one PR
+      nest-upgrades:
+        update-types:
+          - "minor"
+          - "major"
+        patterns:
+          - "@bull-board/*"
+          - "@nestjs/*"
+          - "nestjs-*"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "thomasaelbrecht"
+    groups:
+      # Group all updates for Docker in one PR
+      docker-deps:
+        patterns:
+          - "*" 
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "thomasaelbrecht"
+    groups:
+      # Group all updates for GitHub Actions in one PR
+      action-deps:
+        patterns:
+          - "*"

@@ -19,6 +19,7 @@ import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { SlashCommandItem } from './slash-command-item';
+import { searchSlashCommands } from './slash-command-search';
 
 type CommandListProps = {
   items: BlockGroupItem[];
@@ -262,104 +263,7 @@ export function getSlashCommandSuggestions(
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      let newGroups = groups;
-
-      let search = query.toLowerCase();
-      const subCommandIds = newGroups
-        .map((group) => {
-          return (
-            group.commands
-              .filter((item) => 'commands' in item)
-              // @ts-ignore
-              .map((item) => item?.id.toLowerCase())
-          );
-        })
-        .flat()
-        .map((id) => `${id}.`);
-
-      const shouldEnterSubCommand = subCommandIds.some((id) =>
-        search.startsWith(id)
-      );
-
-      if (shouldEnterSubCommand) {
-        const subCommandId = subCommandIds.find((id) => search.startsWith(id));
-        const sanitizedSubCommandId = subCommandId?.slice(0, -1);
-
-        const group = newGroups
-          .find((group) => {
-            return group.commands.some(
-              // @ts-ignore
-              (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
-            );
-          })
-          ?.commands.find(
-            // @ts-ignore
-            (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
-          );
-
-        if (!group) {
-          return groups;
-        }
-
-        search = search.replace(subCommandId || '', '');
-        newGroups = [
-          {
-            ...group,
-            commands: group?.commands || [],
-          },
-        ];
-      }
-
-      const filteredGroups = newGroups
-        .map((group) => {
-          return {
-            ...group,
-            commands: group.commands
-              .filter((item) => {
-                if (typeof query === 'string' && query.length > 0) {
-                  const show = item?.render?.(editor);
-                  if (show === null) {
-                    return false;
-                  }
-
-                  return (
-                    item.title.toLowerCase().includes(search) ||
-                    (item?.description &&
-                      item?.description.toLowerCase().includes(search)) ||
-                    (item.searchTerms &&
-                      item.searchTerms.some((term: string) =>
-                        term.includes(search)
-                      ))
-                  );
-                }
-                return true;
-              })
-              .map((item) => {
-                const isSubCommandItem = 'commands' in item;
-                if (isSubCommandItem) {
-                  // so to make it work with the enter key
-                  // we make it a command
-                  // @ts-ignore
-                  item = {
-                    ...item,
-                    command: (options) => {
-                      const { editor, range } = options;
-                      editor
-                        .chain()
-                        .focus()
-                        .insertContentAt(range, `/${item.id}.`)
-                        .run();
-                    },
-                  };
-                }
-
-                return item;
-              }),
-          };
-        })
-        .filter((group) => group.commands.length > 0);
-
-      return filteredGroups;
+      return searchSlashCommands(query, editor, groups);
     },
     allow: ({ editor }) => {
       const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');

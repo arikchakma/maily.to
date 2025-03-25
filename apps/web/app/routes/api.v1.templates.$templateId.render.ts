@@ -60,8 +60,10 @@ export async function action(args: Route.ActionArgs) {
   const { data: template } = await supabase
     .from('mails')
     .select('*')
-    .eq('id', templateId)
-    // TODO: add user_id filter
+    .match({
+      id: templateId,
+      ...(user ? { user_id: user.id } : {}),
+    })
     .single();
 
   if (!template) {

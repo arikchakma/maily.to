@@ -45,8 +45,10 @@ export async function loader(args: Route.LoaderArgs) {
   const { data: template, error } = await supabase
     .from('mails')
     .select('*')
-    .eq('id', templateId)
-    // TODO: add user_id filter
+    .match({
+      id: templateId,
+      ...(user ? { user_id: user.id } : {}),
+    })
     .single();
 
   if (error || !template) {
@@ -56,7 +58,10 @@ export async function loader(args: Route.LoaderArgs) {
     );
   }
 
-  return json({ template }, { status: 200 });
+  return json({
+    ...template,
+    content: JSON.parse(template.content as string),
+  }, { status: 200 });
 }
 
 export async function action(args: Route.ActionArgs) {

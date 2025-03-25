@@ -1,0 +1,31 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: ["dev", "main"]
+  pull_request:
+    branches: ["dev", "main"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+    defaults:
+      run:
+        working-directory: ./apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm run lint
+
+      # Build will be checked by Vercel

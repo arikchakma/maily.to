@@ -70,9 +70,11 @@ export async function action(args: Route.ActionArgs) {
     maily.setPreviewText(previewText || template.preview_text);
   }
 
-  const html = await maily.render({
-    pretty: true,
-  });
+  const html = await maily.render();
+  const plainText = await maily.render({ plainText: true });
 
-  return html;
+  return {
+    html,
+    plainText
+  };
 }

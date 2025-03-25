@@ -29,47 +29,43 @@ export async function httpCall<ResponseType = AppResponse>(
   url: string,
   options?: HttpOptionsType
 ): Promise<ApiReturn<ResponseType>> {
-  try {
-    const isMultiPartFormData = options?.body instanceof FormData;
+  const isMultiPartFormData = options?.body instanceof FormData;
 
-    const headers = new Headers({
-      Accept: 'application/json',
-      ...(options?.headers ?? {}),
-    });
+  const headers = new Headers({
+    Accept: 'application/json',
+    ...(options?.headers ?? {}),
+  });
 
-    if (!isMultiPartFormData) {
-      headers.set('Content-Type', 'application/json');
-    }
-
-    const response = await fetch(url, {
-      credentials: 'include',
-      ...options,
-      headers,
-    });
-
-    // @ts-ignore
-    const doesAcceptHtml = options?.headers?.['Accept'] === 'text/html';
-
-    const data = doesAcceptHtml ? await response.text() : await response.json();
-
-    // Logout user if token is invalid
-    if (data.status === 401) {
-      window.location.reload();
-      return null as unknown as ApiReturn<ResponseType>;
-    }
-
-    if (!response.ok) {
-      if ('errors' in data) {
-        throw new FetchError(response.status, data.message);
-      } else {
-        throw new Error('An unexpected error occurred');
-      }
-    }
-
-    return data as ResponseType;
-  } catch (error: any) {
-    throw error;
+  if (!isMultiPartFormData) {
+    headers.set('Content-Type', 'application/json');
   }
+
+  const response = await fetch(url, {
+    credentials: 'include',
+    ...options,
+    headers,
+  });
+
+  // @ts-expect-error Accept header is not defined in RequestInit
+  const doesAcceptHtml = options?.headers?.['Accept'] === 'text/html';
+
+  const data = doesAcceptHtml ? await response.text() : await response.json();
+
+  // Logout user if token is invalid
+  if (data.status === 401) {
+    window.location.reload();
+    return null as unknown as ApiReturn<ResponseType>;
+  }
+
+  if (!response.ok) {
+    if ('errors' in data) {
+      throw new FetchError(response.status, data.message);
+    } else {
+      throw new Error('An unexpected error occurred');
+    }
+  }
+
+  return data as ResponseType;
 }
 
 export async function httpPost<ResponseType = AppResponse>(

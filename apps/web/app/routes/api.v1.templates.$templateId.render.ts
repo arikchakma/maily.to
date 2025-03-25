@@ -72,10 +72,10 @@ export async function action(args: Route.ActionArgs) {
   }
 
   const { variables, repeatVariables, previewText } = data;
-  
+
   const parsedJson = JSON.parse(template.content as string);
   const maily = new Maily(parsedJson);
-  
+
   if (variables) {
     maily.setVariableValues(variables);
   }
@@ -93,6 +93,6 @@ export async function action(args: Route.ActionArgs) {
 
   return {
     html,
-    plainText
+    plainText,
   };
 }

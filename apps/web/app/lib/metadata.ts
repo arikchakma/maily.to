@@ -161,7 +161,7 @@ export function resolveSitemap(data: SitemapFile): string {
     }
     if (item.videos?.length) {
       for (const video of item.videos) {
-        let videoFields = [
+        const videoFields = [
           `<video:video>`,
           `<video:title>${video.title}</video:title>`,
           `<video:thumbnail_loc>${video.thumbnail_loc}</video:thumbnail_loc>`,

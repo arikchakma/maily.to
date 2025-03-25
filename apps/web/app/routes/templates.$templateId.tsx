@@ -1,5 +1,5 @@
 import type { Route } from './+types/templates.$templateId';
-import { redirect, type MetaFunction } from 'react-router';
+import { redirect } from 'react-router';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
 import { mergeRouteModuleMeta } from '~/lib/merge-meta';

@@ -34,7 +34,8 @@ export async function loader(args: Route.LoaderArgs) {
   const paramsSchema = z.object({
     templateId: z.string(),
   });
-  const { data: paramsData, error: paramsError } = paramsSchema.safeParse(params);
+  const { data: paramsData, error: paramsError } =
+    paramsSchema.safeParse(params);
   if (paramsError) {
     return serializeZodError(paramsError);
   }

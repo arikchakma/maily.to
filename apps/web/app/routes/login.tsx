@@ -43,10 +43,7 @@ export async function action(args: Route.ActionArgs) {
   const formData = await request.formData();
   const _provider = formData.get('provider');
 
-  const schema = v.union([
-    v.literal('github'),
-    v.literal('email'),
-  ]);
+  const schema = v.union([v.literal('github'), v.literal('email')]);
   const result = v.safeParse(schema, _provider);
 
   if (!result.success) {
@@ -176,9 +173,9 @@ export default function Login() {
               <h1 className="text-2xl font-semibold tracking-tight">
                 Login / Register
               </h1>
-                <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-sm">
                 Continue with your email address or GitHub account.
-                </p>
+              </p>
             </div>
 
             <EmailLoginForm />

@@ -5,7 +5,9 @@ import {
 } from '@supabase/ssr';
 import type { Database } from '~/types/database';
 
-export type SupabaseServerClient = ReturnType<typeof createServerClient<Database>>;
+export type SupabaseServerClient = ReturnType<
+  typeof createServerClient<Database>
+>;
 
 type CreateSupabaseServerClient = (
   request: Request,

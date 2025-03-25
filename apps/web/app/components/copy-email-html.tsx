@@ -19,7 +19,7 @@ type PreviewEmailResponse = {
 export function CopyEmailHtml(props: CopyEmailHtmlProps) {
   const { previewText = '', editor } = props;
 
-  const [_, copy] = useCopyToClipboard();
+  const [, copy] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
 
   const { mutateAsync, isPending } = useMutation({
@@ -40,7 +40,7 @@ export function CopyEmailHtml(props: CopyEmailHtmlProps) {
           ? 'bg-green-200 text-green-600'
           : 'bg-black disabled:opacity-50'
       )}
-      onClick={async (e) => {
+      onClick={async () => {
         if (!editor) {
           toast.error('No email content to copy');
           return;

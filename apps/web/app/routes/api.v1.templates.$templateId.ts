@@ -58,10 +58,13 @@ export async function loader(args: Route.LoaderArgs) {
     );
   }
 
-  return json({
-    ...template,
-    content: JSON.parse(template.content as string),
-  }, { status: 200 });
+  return json(
+    {
+      ...template,
+      content: JSON.parse(template.content as string),
+    },
+    { status: 200 }
+  );
 }
 
 export async function action(args: Route.ActionArgs) {

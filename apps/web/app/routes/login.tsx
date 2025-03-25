@@ -1,6 +1,5 @@
 import type { Route } from './+types/login';
-import { Link } from 'react-router';
-import { redirect, data } from 'react-router';
+import { data, Link, redirect } from 'react-router';
 import * as v from 'valibot';
 import { EmailLoginForm } from '~/components/auth/email-login';
 import { GithubLoginButton } from '~/components/auth/github-login';
@@ -93,7 +92,7 @@ export async function action(args: Route.ActionArgs) {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${import.meta.env.VITE_APP_URL}/templates`,
+        emailRedirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
       },
     });
 

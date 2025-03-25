@@ -17,8 +17,10 @@
       "dependsOn": ["^build"],
       "env": [
         "NODE_ENV",
-        "NEXT_PUBLIC_SUPABASE_URL",
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+        "VITE_SUPABASE_URL",
+        "VITE_SUPABASE_ANON_KEY",
+        "VITE_APP_URL",
+        "VITE_MAILY_API_KEY"
       ],
       "outputs": [".next/**", "!.next/cache/**"]
     },

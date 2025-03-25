@@ -54,11 +54,13 @@ export function ImageView(props: NodeViewProps) {
       event.preventDefault();
       const direction = event.currentTarget.dataset.direction || '--';
       const initialXPosition = event.clientX;
+      const initialYPosition = event.clientY;
       const currentWidth = imgRef.current.width;
       const currentHeight = imgRef.current.height;
       let newWidth = currentWidth;
       let newHeight = currentHeight;
-      const transform = direction[1] === 'w' ? -1 : 1;
+      const transformX = direction[1] === 'w' ? -1 : 1;
+      const transformY = direction[0] === 'n' ? -1 : 1;
 
       const removeListeners = () => {
         window.removeEventListener('mousemove', mouseMoveHandler);
@@ -70,15 +72,25 @@ export function ImageView(props: NodeViewProps) {
 
       const mouseMoveHandler = (event: MouseEvent) => {
         newWidth = Math.max(
-          currentWidth + transform * (event.clientX - initialXPosition),
+          currentWidth + transformX * (event.clientX - initialXPosition),
+          MIN_WIDTH
+        );
+        newHeight = Math.max(
+          currentHeight + transformY * (event.clientY - initialYPosition),
           MIN_WIDTH
         );
 
         if (newWidth > imageParentWidth) {
           newWidth = imageParentWidth;
         }
+        if (newHeight > IMAGE_MAX_HEIGHT) {
+          newHeight = IMAGE_MAX_HEIGHT;
+        }
 
-        newHeight = (newWidth / currentWidth) * currentHeight;
+        // If aspect ratio is locked, calculate height based on aspect ratio
+        if (node.attrs.lockAspectRatio) {
+          newHeight = getNewHeight(newWidth, node.attrs.aspectRatio);
+        }
 
         setResizingStyle({ width: newWidth, height: newHeight });
         // If mouse is up, remove event listeners
@@ -350,8 +362,19 @@ export function ImageView(props: NodeViewProps) {
             style={{
               ...resizingStyle,
               cursor: 'default',
+              objectFit: 'fill',
               marginBottom: 0,
               borderRadius,
+              width: resizingStyle?.width
+                ? `${resizingStyle.width}px`
+                : width
+                  ? `${width}px`
+                  : 'auto',
+              height: resizingStyle?.height
+                ? `${resizingStyle.height}px`
+                : height
+                  ? `${height}px`
+                  : 'auto',
             }}
             draggable={editor.isEditable}
             className={cn(

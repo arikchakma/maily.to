@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-plugin-prettier/recommended';
 
 export default [
-  { ignores: ['.react-router', '.turbo'] },
+  { ignores: ['.react-router', '.turbo', '.vercel', 'build'] },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   {
     languageOptions: {

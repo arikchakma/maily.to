@@ -3,6 +3,69 @@ import type { Route } from './+types/api.v1.templates.$templateId';
 import { z } from 'zod';
 import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
+import { tryApiKeyAuth } from '~/lib/api-key-auth';
+
+export async function loader(args: Route.LoaderArgs) {
+  const { request, params } = args;
+  const headers = new Headers();
+  const supabase = createSupabaseServerClient(request, headers);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // TODO: keep track of middlewares in React Router (https://reactrouter.com/start/changelog#middleware-unstable)
+  // They are unstable now, but can be useful in the future
+  const isApiKeyAuth = tryApiKeyAuth(request.headers);
+
+  if (!user && !isApiKeyAuth) {
+    return json(
+      {
+        status: 401,
+        message: 'Unauthorized',
+        errors: ['Unauthorized'],
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
+  const paramsSchema = z.object({
+    templateId: z.string(),
+  });
+  const { data: paramsData, error: paramsError } =
+    paramsSchema.safeParse(params);
+  if (paramsError) {
+    return serializeZodError(paramsError);
+  }
+
+  const { templateId } = paramsData;
+
+  const { data: template, error } = await supabase
+    .from('mails')
+    .select('*')
+    .match({
+      id: templateId,
+      ...(user ? { user_id: user.id } : {}),
+    })
+    .single();
+
+  if (error || !template) {
+    return json(
+      { errors: [], message: 'Template not found', status: 404 },
+      { status: 404 }
+    );
+  }
+
+  return json(
+    {
+      ...template,
+      content: JSON.parse(template.content as string),
+    },
+    { status: 200 }
+  );
+}
 
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;

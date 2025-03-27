@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig(({ isSsrBuild, command }) => ({
+export default defineConfig(() => ({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   ssr: {
     noExternal: [/^@maily-to\//, /^@radix-ui\//, /^@tiptap\//],

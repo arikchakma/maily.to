@@ -73,6 +73,6 @@ export async function loader(args: Route.LoaderArgs) {
   };
 }
 
-export default function Templates(props: Route.ComponentProps) {
+export default function Templates() {
   return <EmailEditorSandbox />;
 }

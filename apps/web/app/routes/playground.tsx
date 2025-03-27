@@ -54,7 +54,7 @@ export async function loader(args: Route.LoaderArgs) {
   });
 }
 
-export default function Playground(props: Route.ComponentProps) {
+export default function Playground() {
   return (
     <main className="mx-auto w-full">
       <header className="mx-auto mt-14 max-w-[calc(600px+80px)] border-b border-gray-200 px-10 pb-6">

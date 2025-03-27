@@ -1,15 +1,14 @@
 import { Icons } from '~/components/icons';
-import type { Route } from './+types/_index';
 import { Link } from 'react-router';
 import { ArrowUpRightIcon, StarIcon } from 'lucide-react';
 
-export function headers(_: Route.HeadersArgs) {
+export function headers() {
   return {
     'Cache-Control': 'max-age=3600, s-maxage=86400',
   };
 }
 
-export default function Home(props: Route.ComponentProps) {
+export default function Home() {
   const components = [
     'Logo',
     'Buttons and Variants',

@@ -1,10 +1,8 @@
 import type { Route } from './+types/login';
-import { Link } from 'react-router';
-import { redirect, data } from 'react-router';
+import { data, Link, redirect } from 'react-router';
 import * as v from 'valibot';
 import { EmailLoginForm } from '~/components/auth/email-login';
 import { GithubLoginButton } from '~/components/auth/github-login';
-import { GoogleLoginButton } from '~/components/auth/google-login';
 import { buttonVariants } from '~/components/ui/button';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { cn } from '~/lib/classname';
@@ -45,11 +43,7 @@ export async function action(args: Route.ActionArgs) {
   const formData = await request.formData();
   const _provider = formData.get('provider');
 
-  const schema = v.union([
-    v.literal('github'),
-    v.literal('google'),
-    v.literal('email'),
-  ]);
+  const schema = v.union([v.literal('github'), v.literal('email')]);
   const result = v.safeParse(schema, _provider);
 
   if (!result.success) {
@@ -93,7 +87,7 @@ export async function action(args: Route.ActionArgs) {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${import.meta.env.VITE_APP_URL}/templates`,
+        emailRedirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
       },
     });
 
@@ -118,14 +112,6 @@ export async function action(args: Route.ActionArgs) {
       provider,
       options: {
         redirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
-        ...(provider === 'google'
-          ? {
-              queryParams: {
-                access_type: 'offline',
-                prompt: 'consent',
-              },
-            }
-          : {}),
       },
     });
 
@@ -168,7 +154,7 @@ export async function loader(args: Route.LoaderArgs) {
   });
 }
 
-export default function Login(props: Route.ComponentProps) {
+export default function Login() {
   return (
     <main className="mx-auto w-full max-w-[calc(36rem+40px)] px-5">
       <div className="container relative flex h-screen flex-col items-center justify-center sm:grid lg:max-w-none lg:px-0">
@@ -188,7 +174,7 @@ export default function Login(props: Route.ComponentProps) {
                 Login / Register
               </h1>
               <p className="text-muted-foreground text-sm">
-                You can continue with your GitHub / Google account.
+                Continue with your email address or GitHub account.
               </p>
             </div>
 
@@ -202,7 +188,6 @@ export default function Login(props: Route.ComponentProps) {
 
             <div className="flex flex-col gap-2">
               <GithubLoginButton />
-              <GoogleLoginButton />
             </div>
           </div>
         </div>

@@ -13,6 +13,8 @@ import { tryApiKeyAuth } from '~/lib/api-key-auth';
  *     description: Fetches an email template by its ID. Requires either user authentication or a valid API key.
  *     tags:
  *       - Templates
+ *     security:
+ *      - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: templateId

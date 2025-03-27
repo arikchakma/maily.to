@@ -52,9 +52,12 @@ import { tryApiKeyAuth } from '~/lib/api-key-auth';
  *                 html:
  *                   type: string
  *                   description: The rendered HTML content of the email.
- *                 plainText:
+ *                 text:
  *                   type: string
  *                   description: The rendered plain text content of the email.
+ *               required:
+ *                 - html
+ *                 - text
  *       400:
  *         description: Bad request due to invalid input.
  *         content:
@@ -209,10 +212,10 @@ export async function action(args: Route.ActionArgs) {
   }
 
   const html = await maily.render();
-  const plainText = await maily.render({ plainText: true });
+  const text = await maily.render({ plainText: true });
 
   return {
     html,
-    plainText,
+    text,
   };
 }

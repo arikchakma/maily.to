@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "cross-env NODE_ENV=development react-router dev --port 3000",
+    "dev": "cross-env NODE_ENV=development react-router dev --port 3002",
     "start": "react-router ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "generate:meta": "tsx ./app/scripts/generate-metadata-files.ts",
+    "generate:openapi": "openapi-typescript http://localhost:3000/api/v1/swagger.json -o maily-schema.d.ts",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -61,6 +62,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.5",
     "globals": "^16.0.0",
+    "openapi-typescript": "^7.6.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.15",
     "tsx": "^4.19.3",

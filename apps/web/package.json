@@ -8,7 +8,7 @@
     "start": "react-router ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "generate:meta": "tsx ./app/scripts/generate-metadata-files.ts",
-    "generate:openapi": "openapi-typescript http://localhost:3000/api/v1/swagger.json -o maily-schema.d.ts",
+    "generate:openapi": "openapi-typescript http://localhost:3002/api/v1/swagger.json -o maily-schema.d.ts",
     "lint": "eslint ."
   },
   "dependencies": {

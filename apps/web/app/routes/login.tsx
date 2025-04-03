@@ -41,31 +41,23 @@ export async function action(args: Route.ActionArgs) {
   const { request } = args;
   const formData = await request.formData();
 
-  if (formData.get('provider') !== 'email') {
-    return json(
-      {
-        message: 'Invalid provider',
-        errors: ['Invalid provider'],
-        status: 400,
-      },
-      {
-        status: 400,
-      }
-    );
-  }
-
   const headers = new Headers();
   const supabase = createSupabaseServerClient(request, headers);
 
-  const _email = formData.get('email');
-  const emailSchema = v.pipe(v.string(), v.trim(), v.email());
+  const bodySchema = v.object({
+    email: v.pipe(v.string(), v.trim(), v.email()),
+    password: v.string(),
+  });
 
-  const emailResult = v.safeParse(emailSchema, _email);
-  if (!emailResult.success) {
+  const bodyResult = v.safeParse(bodySchema, {
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+  if (!bodyResult.success) {
     return data(
       {
-        message: emailResult.issues.map((issue) => issue.message).join(', '),
-        errors: emailResult.issues,
+        message: bodyResult.issues.map((issue) => issue.message).join(', '),
+        errors: bodyResult.issues,
         status: 400,
       },
       {
@@ -74,15 +66,7 @@ export async function action(args: Route.ActionArgs) {
     );
   }
 
-  const email = emailResult.output;
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      shouldCreateUser: false,
-      emailRedirectTo: `${import.meta.env.VITE_APP_URL}/templates`,
-    },
-  });
+  const { error } = await supabase.auth.signInWithPassword(bodyResult.output);
 
   if (error) {
     return json(
@@ -97,9 +81,7 @@ export async function action(args: Route.ActionArgs) {
     );
   }
 
-  return {
-    status: 200,
-  };
+  return redirect('/templates', { headers });
 }
 
 export async function loader(args: Route.LoaderArgs) {
@@ -138,9 +120,6 @@ export default function Login() {
           <div className="mx-auto flex w-full flex-col justify-center sm:w-[360px]">
             <div className="mb-10 flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
-              <p className="text-muted-foreground text-sm">
-                Continue with your email address.
-              </p>
             </div>
 
             <EmailLoginForm />

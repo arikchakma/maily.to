@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '~/lib/supabase/server';
-import type { Route } from './+types/auth.callback';
+import type { Route } from './+types/auth.confirm';
 import { data, redirect } from 'react-router';
 
 export type EmailOtpType =
@@ -12,7 +12,7 @@ export type EmailOtpType =
 
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;
-  const { searchParams } = new URL(request.url);
+  const { searchParams, origin } = new URL(request.url);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType;
   const next = searchParams.get('next') ?? '/templates';
@@ -28,7 +28,7 @@ export async function loader(args: Route.LoaderArgs) {
 
     if (!error) {
       // redirect user to specified redirect URL or root of app
-      return redirect(next, {
+      return redirect(next.startsWith('/') ? `${origin}${next}` : next, {
         headers,
       });
     }

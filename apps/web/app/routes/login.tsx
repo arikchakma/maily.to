@@ -2,7 +2,6 @@ import type { Route } from './+types/login';
 import { data, Link, redirect } from 'react-router';
 import * as v from 'valibot';
 import { EmailLoginForm } from '~/components/auth/email-login';
-import { GithubLoginButton } from '~/components/auth/github-login';
 import { buttonVariants } from '~/components/ui/button';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { cn } from '~/lib/classname';
@@ -81,7 +80,7 @@ export async function action(args: Route.ActionArgs) {
     email,
     options: {
       shouldCreateUser: false,
-      emailRedirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
+      emailRedirectTo: `${import.meta.env.VITE_APP_URL}/templates`,
     },
   });
 
@@ -138,25 +137,13 @@ export default function Login() {
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center sm:w-[360px]">
             <div className="mb-10 flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Login / Register
-              </h1>
+              <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
               <p className="text-muted-foreground text-sm">
-                Continue with your email address or GitHub account.
+                Continue with your email address.
               </p>
             </div>
 
             <EmailLoginForm />
-
-            <div className="flex w-full items-center gap-2 py-6 text-sm text-gray-600">
-              <div className="h-px w-full bg-gray-200" />
-              OR
-              <div className="h-px w-full bg-gray-200" />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <GithubLoginButton />
-            </div>
           </div>
         </div>
       </div>

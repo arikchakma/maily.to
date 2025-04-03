@@ -5,6 +5,76 @@ import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
 import { tryApiKeyAuth } from '~/lib/api-key-auth';
 
+/**
+ * @swagger
+ * /api/v1/templates/{templateId}:
+ *   get:
+ *     summary: Retrieve a specific email template by ID.
+ *     description: Fetches an email template by its ID. Requires either user authentication or a valid API key.
+ *     tags:
+ *       - Templates
+ *     security:
+ *      - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: templateId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the email template to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the email template.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 preview_text:
+ *                   type: string
+ *                 content:
+ *                   type: object
+ *                 user_id:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized. User is not authenticated or API key is invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message:
+ *                   type: string
+ *                   example: Unauthorized
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       404:
+ *         description: Template not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: Template not found
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ */
 export async function loader(args: Route.LoaderArgs) {
   const { request, params } = args;
   const headers = new Headers();

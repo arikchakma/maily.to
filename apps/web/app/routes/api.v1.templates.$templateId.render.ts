@@ -6,6 +6,127 @@ import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
 import { tryApiKeyAuth } from '~/lib/api-key-auth';
 
+/**
+ * @swagger
+ * /api/v1/templates/{templateId}/render:
+ *   post:
+ *     summary: Render an email template
+ *     description: Renders an email template using the provided variables and returns the HTML and plain text versions.
+ *     tags:
+ *       - Templates
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: templateId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the template to render.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               variables:
+ *                 type: object
+ *                 additionalProperties: true
+ *                 description: Key-value pairs for template variables.
+ *               repeatVariables:
+ *                 type: object
+ *                 additionalProperties: true
+ *                 description: Key-value pairs for repeatable template variables.
+ *               previewText:
+ *                 type: string
+ *                 description: Optional preview text for the email.
+ *     responses:
+ *       200:
+ *         description: Successfully rendered the template.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 html:
+ *                   type: string
+ *                   description: The rendered HTML content of the email.
+ *                 text:
+ *                   type: string
+ *                   description: The rendered plain text content of the email.
+ *               required:
+ *                 - html
+ *                 - text
+ *       400:
+ *         description: Bad request due to invalid input.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid input"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 401
+ *                 message:
+ *                   type: string
+ *                   example: "Unauthorized"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       404:
+ *         description: Template not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: "Template not found"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       405:
+ *         description: Method not allowed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 405
+ *                 message:
+ *                   type: string
+ *                   example: "Method Not Allowed"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ */
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
   if (request.method !== 'POST') {
@@ -91,10 +212,10 @@ export async function action(args: Route.ActionArgs) {
   }
 
   const html = await maily.render();
-  const plainText = await maily.render({ plainText: true });
+  const text = await maily.render({ plainText: true });
 
   return {
     html,
-    plainText,
+    text,
   };
 }

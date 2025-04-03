@@ -14,6 +14,7 @@
     "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
+    "@remix-run/dev": "^2.16.4",
     "@types/node": "^22.10.7",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/apps/web"
     schedule:
       interval: "weekly"
     reviewers:

@@ -41,16 +41,12 @@ export const meta = mergeRouteModuleMeta(() => {
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
   const formData = await request.formData();
-  const _provider = formData.get('provider');
 
-  const schema = v.union([v.literal('github'), v.literal('email')]);
-  const result = v.safeParse(schema, _provider);
-
-  if (!result.success) {
+  if (formData.get('provider') !== 'email') {
     return json(
       {
-        message: result.issues.map((issue) => issue.message).join(', '),
-        errors: result.issues,
+        message: 'Invalid provider',
+        errors: ['Invalid provider'],
         status: 400,
       },
       {
@@ -59,80 +55,52 @@ export async function action(args: Route.ActionArgs) {
     );
   }
 
-  const provider = result.output;
   const headers = new Headers();
   const supabase = createSupabaseServerClient(request, headers);
 
-  if (provider === 'email') {
-    const _email = formData.get('email');
-    const emailSchema = v.pipe(v.string(), v.trim(), v.email());
+  const _email = formData.get('email');
+  const emailSchema = v.pipe(v.string(), v.trim(), v.email());
 
-    const emailResult = v.safeParse(emailSchema, _email);
-    if (!emailResult.success) {
-      return data(
-        {
-          message: emailResult.issues.map((issue) => issue.message).join(', '),
-          errors: emailResult.issues,
-          status: 400,
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const email = emailResult.output;
-
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
+  const emailResult = v.safeParse(emailSchema, _email);
+  if (!emailResult.success) {
+    return data(
+      {
+        message: emailResult.issues.map((issue) => issue.message).join(', '),
+        errors: emailResult.issues,
+        status: 400,
       },
-    });
-
-    if (error) {
-      return json(
-        {
-          message: error.message,
-          errors: [error?.message],
-          status: 400,
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    return {
-      status: 200,
-    };
-  } else {
-    const { data: oAuthData } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
-      },
-    });
-
-    if (!oAuthData.url) {
-      return json(
-        {
-          message: 'Invalid OAuth URL',
-          errors: ['Invalid OAuth URL'],
-          status: 400,
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    return redirect(oAuthData.url, {
-      headers,
-      status: 301,
-    });
+      {
+        status: 400,
+      }
+    );
   }
+
+  const email = emailResult.output;
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo: `${import.meta.env.VITE_APP_URL}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    return json(
+      {
+        message: error.message,
+        errors: [error?.message],
+        status: 400,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  return {
+    status: 200,
+  };
 }
 
 export async function loader(args: Route.LoaderArgs) {

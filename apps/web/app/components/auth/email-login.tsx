@@ -33,7 +33,7 @@ export function EmailLoginForm() {
         </div>
 
         <div>
-          <Label htmlFor="email">Password</Label>
+          <Label htmlFor="password">Password</Label>
           <Input
             type="password"
             className="border-gray-300"

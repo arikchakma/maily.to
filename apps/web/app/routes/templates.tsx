@@ -33,7 +33,6 @@ export async function loader(args: Route.LoaderArgs) {
   const mails = await supabase
     .from('mails')
     .select('id, title, created_at')
-    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
   return {

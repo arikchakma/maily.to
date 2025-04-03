@@ -183,7 +183,6 @@ export async function action(args: Route.ActionArgs) {
     .select('*')
     .match({
       id: templateId,
-      ...(user ? { user_id: user.id } : {}),
     })
     .single();
 

@@ -45,7 +45,6 @@ export async function action(args: Route.ActionArgs) {
     .from('mails')
     .select('*')
     .eq('id', templateId)
-    .eq('user_id', user.id)
     .single();
 
   if (!template) {

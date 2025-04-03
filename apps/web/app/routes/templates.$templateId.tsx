@@ -66,7 +66,6 @@ export async function loader(args: Route.LoaderArgs) {
     .from('mails')
     .select('*')
     .eq('id', templateId)
-    .eq('user_id', user.id)
     .single();
 
   if (!template) {

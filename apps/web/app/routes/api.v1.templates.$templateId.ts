@@ -117,7 +117,6 @@ export async function loader(args: Route.LoaderArgs) {
     .select('*')
     .match({
       id: templateId,
-      ...(user ? { user_id: user.id } : {}),
     })
     .single();
 
@@ -191,7 +190,6 @@ export async function action(args: Route.ActionArgs) {
       .from('mails')
       .select('*')
       .eq('id', templateId)
-      .eq('user_id', user.id)
       .single();
 
     if (!template) {
@@ -206,7 +204,6 @@ export async function action(args: Route.ActionArgs) {
       .from('mails')
       .update({ title, preview_text: previewText, content })
       .eq('id', templateId)
-      .eq('user_id', user.id)
       .single();
 
     if (updateError) {
@@ -221,8 +218,7 @@ export async function action(args: Route.ActionArgs) {
     const { error } = await supabase
       .from('mails')
       .delete()
-      .eq('id', templateId)
-      .eq('user_id', user.id);
+      .eq('id', templateId);
 
     if (error) {
       return json(

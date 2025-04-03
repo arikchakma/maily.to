@@ -48,13 +48,13 @@
   "devDependencies": {
     "@antfu/utils": "^9.1.0",
     "@babel/preset-react": "^7.26.3",
-    "@tiptap/core": "^2.11.5",
+    "@tiptap/core": "^2.11.7",
     "@types/react": "^19.0.12",
     "tsconfig": "workspace:*",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.34",
+    "@react-email/components": "^0.0.35",
     "@react-email/render": "^1.0.5",
     "juice": "^11.0.1",
     "node-html-parser": "^7.0.1"

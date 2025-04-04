@@ -90,6 +90,14 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
+  container?: Partial<{
+    maxWidth: string;
+    minWidth: string;
+    width: string;
+    marginLeft: string;
+    marginRight: string;
+    padding: string;
+  }>;
   fontSize?: Partial<{
     paragraph: Partial<{
       size: string;
@@ -172,6 +180,14 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardBadgeText: '#111827',
     linkCardBadgeBackground: '#FEF08A',
     linkCardSubTitle: '#6B7280',
+  },
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
   },
   fontSize: {
     paragraph: {
@@ -510,7 +526,8 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
-
+    const containerStyles = this.config.theme?.container;
+    console.log('STYLES!', containerStyles);
     const markup = (
       <Html {...htmlProps}>
         <Head>
@@ -541,12 +558,19 @@ export class Maily {
           ) : null}
           <Container
             style={{
-              maxWidth: '600px',
-              minWidth: '300px',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: '0.5rem',
+              maxWidth:
+                containerStyles?.maxWidth || DEFAULT_THEME.container?.maxWidth,
+              minWidth:
+                containerStyles?.minWidth || DEFAULT_THEME.container?.minWidth,
+              width: containerStyles?.width || DEFAULT_THEME.container?.width,
+              marginLeft:
+                containerStyles?.marginLeft ||
+                DEFAULT_THEME.container?.marginLeft,
+              marginRight:
+                containerStyles?.marginRight ||
+                DEFAULT_THEME.container?.marginRight,
+              padding:
+                containerStyles?.padding || DEFAULT_THEME.container?.padding,
             }}
           >
             {jsxNodes}

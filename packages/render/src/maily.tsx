@@ -527,7 +527,7 @@ export class Maily {
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
     const containerStyles = this.config.theme?.container;
-    console.log('STYLES!', containerStyles);
+
     const markup = (
       <Html {...htmlProps}>
         <Head>

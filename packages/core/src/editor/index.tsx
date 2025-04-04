@@ -39,7 +39,7 @@ export type EditorProps = {
   extensions?: AnyExtension[];
   config?: {
     hasMenuBar?: boolean;
-    hasContextMenu?: boolean;
+    hideContextMenu?: boolean;
     spellCheck?: boolean;
     wrapClassName?: string;
     toolbarClassName?: string;
@@ -58,7 +58,7 @@ export function Editor(props: EditorProps) {
       contentClassName = '',
       bodyClassName = '',
       hasMenuBar = true,
-      hasContextMenu = true,
+      hideContextMenu = false,
       spellCheck = false,
       autofocus = 'end',
       immediatelyRender = false,
@@ -150,7 +150,7 @@ export function Editor(props: EditorProps) {
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          {hasContextMenu && <ContentMenu editor={editor} />}
+          {!hideContextMenu && <ContentMenu editor={editor} />}
           <VariableBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <HTMLBubbleMenu editor={editor} appendTo={menuContainerRef} />

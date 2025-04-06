@@ -1,58 +1,69 @@
-import { BlockGroupItem, BlockItem } from '@/blocks/types';
+import { BlockGroupItem, BlockItem, CommandProps } from '@/blocks/types';
 import { Editor, Range } from '@tiptap/core';
 
-const containsText = (text: string | undefined, search: string) =>
-  text?.toLowerCase().includes(search) ?? false;
+function containsText(text: string | undefined, search: string): boolean {
+  if (!text) {
+    return false;
+  }
 
-const isCommandMatch = (item: BlockItem, search: string): boolean => {
+  return text.toLowerCase().includes(search.toLowerCase());
+}
+
+function isCommandMatch(item: BlockItem, search: string): boolean {
   return (
     containsText(item.title, search) ||
     containsText(item.description, search) ||
     (item.searchTerms?.some((term) => containsText(term, search)) ?? false)
   );
-};
+}
 
 // Creates a command that navigates into a group
-const createGroupNavigationCommand = (groupId: string) => {
-  return ({ editor, range }: { editor: Editor; range: Range }) => {
+function createGroupNavigationCommand(groupId: string) {
+  return ({ editor, range }: CommandProps) => {
     editor.chain().focus().insertContentAt(range, `/${groupId}.`).run();
   };
-};
+}
 
 // Create a command-only BlockItem
-const createCommandOnlyItem = (
+function createCommandOnlyItem(
   baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
-  command: (options: { editor: Editor; range: Range }) => void
-): BlockItem => ({
-  ...baseItem,
-  command,
-});
+  command: (options: CommandProps) => void
+): BlockItem {
+  return {
+    ...baseItem,
+    command,
+  };
+}
 
 // Create a navigable group item that looks like a group but acts like a command
-const createNavigableGroupItem = (
+function createNavigableGroupItem(
   baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
   id: string,
   commands: BlockItem[]
-): BlockItem => ({
-  ...baseItem,
-  command: createGroupNavigationCommand(id),
-});
+): BlockItem {
+  return {
+    ...baseItem,
+    command: createGroupNavigationCommand(id),
+  };
+}
 
 // Create a group-only BlockItem
-const createGroupItem = (
+function createGroupItem(
   baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
   id: string,
   commands: BlockItem[]
-): BlockItem => ({
-  ...baseItem,
-  id,
-  commands,
-});
+): BlockItem {
+  return {
+    ...baseItem,
+    id,
+    commands,
+  };
+}
 
-const createFlattenedCommand = (
+function createFlattenedCommand(
   parentItem: BlockItem & { id: string },
   subItem: BlockItem
-): BlockItem => {
+): BlockItem {
   const baseItem = {
     title: subItem.title,
     description: subItem.description,
@@ -82,33 +93,38 @@ const createFlattenedCommand = (
     baseItem,
     createGroupNavigationCommand(parentItem.id)
   );
+}
+
+type SubCommandGroup = BlockItem & {
+  id: string;
+  commands: BlockItem[];
 };
 
-const findSubCommandGroup = (
+function findSubCommandGroup(
   groups: BlockGroupItem[],
   subCommandId: string
-): (BlockItem & { commands: BlockItem[] }) | undefined => {
+): SubCommandGroup | undefined {
   return groups
     .flatMap((group) => group.commands)
     .find(
       (item) =>
         'commands' in item &&
         item.id?.toLowerCase() === subCommandId.toLowerCase()
-    ) as (BlockItem & { commands: BlockItem[] }) | undefined;
-};
+    ) as SubCommandGroup | undefined;
+}
 
 // Check if an item is a command group
-const isCommandGroup = (
+function isCommandGroup(
   item: BlockItem
-): item is BlockItem & { id: string; commands: BlockItem[] } => {
+): item is BlockItem & { id: string; commands: BlockItem[] } {
   return 'commands' in item && Array.isArray(item.commands) && !!item.id;
-};
+}
 
 // Process a command group during search
-const processGroupDuringSearch = (
+function processGroupDuringSearch(
   group: BlockItem & { id: string; commands: BlockItem[] },
   search: string
-): BlockItem[] => {
+): BlockItem[] {
   // If group title matches, return it as a navigable command
   if (isCommandMatch(group, search)) {
     return [
@@ -120,20 +136,23 @@ const processGroupDuringSearch = (
   return group.commands
     .filter((subItem) => isCommandMatch(subItem, search))
     .map((subItem) => createFlattenedCommand(group, subItem));
-};
+}
 
-const processCommand = (
+function processCommand(
   item: BlockItem,
   search: string,
   isSearching: boolean,
   editor: Editor
-): BlockItem[] => {
+): BlockItem[] {
   if (item?.render?.(editor) === null) {
     return [];
   }
 
   if (isCommandGroup(item)) {
     if (!isSearching) {
+      // if we are not searching, we want to return a navigable command
+      // that will navigate to the group so that we can navigate into it
+      // using the arrow keys / enter key
       return [createNavigableGroupItem(item, item.id, item.commands)];
     }
 
@@ -141,24 +160,24 @@ const processCommand = (
   }
 
   return !isSearching || isCommandMatch(item, search) ? [item] : [];
-};
+}
 
-export const searchSlashCommands = (
+export function filterSlashCommands(
   query: string,
   editor: Editor,
   groups: BlockGroupItem[]
-): BlockGroupItem[] => {
+): BlockGroupItem[] {
   const search = query.toLowerCase();
   const isSearching = search.length > 0;
 
   // Handle subcommand navigation (e.g., "headers.")
   const subCommandMatch = search.match(/^([^.]+)\./);
   if (subCommandMatch) {
-    const [, subCommandId] = subCommandMatch;
+    const [match, subCommandId] = subCommandMatch;
     const subCommandGroup = findSubCommandGroup(groups, subCommandId);
 
     if (subCommandGroup) {
-      const remainingSearch = search.slice(subCommandMatch[0].length);
+      const remainingSearch = search.slice(match.length);
       const filteredCommands = subCommandGroup.commands.filter(
         (item) => !remainingSearch || isCommandMatch(item, remainingSearch)
       );
@@ -166,7 +185,7 @@ export const searchSlashCommands = (
       return filteredCommands.length
         ? [
             {
-              title: subCommandGroup.title,
+              ...subCommandGroup,
               commands: filteredCommands,
             },
           ]
@@ -185,4 +204,4 @@ export const searchSlashCommands = (
     .filter((group) => group.commands.length > 0);
 
   return results;
-};
+}

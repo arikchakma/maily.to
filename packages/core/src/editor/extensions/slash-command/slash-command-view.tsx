@@ -19,7 +19,7 @@ import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { SlashCommandItem } from './slash-command-item';
-import { filterSlashCommands } from './slash-command-filter';
+import { filterSlashCommands } from './slash-command-search';
 
 type CommandListProps = {
   items: BlockGroupItem[];

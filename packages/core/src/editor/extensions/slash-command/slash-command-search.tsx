@@ -1,98 +1,55 @@
-import { BlockGroupItem, BlockItem, CommandProps } from '@/blocks/types';
-import { Editor, Range } from '@tiptap/core';
+import { BlockGroupItem, BlockItem } from '@/blocks';
+import { Editor } from '@tiptap/core';
 
-function containsText(text: string | undefined, search: string): boolean {
-  if (!text) {
-    return false;
+type SlashCommandFilterOptions = {
+  readonly groups: BlockGroupItem[];
+  query: string;
+  editor: Editor;
+};
+
+export function filterSlashCommands(options: SlashCommandFilterOptions) {
+  const { groups, query, editor } = options;
+  const newGroups = [...groups];
+  let searchQuery = query?.toLowerCase();
+
+  const subCommandMatch = searchQuery.match(/^([^.]+)\./);
+
+  // so if we are inside a subcommand we need to
+  // filter the commands based on the remaining search
+  if (subCommandMatch) {
+    const [match, subCommandId] = subCommandMatch;
+    const subCommandGroup = findSubCommandGroup(groups, subCommandId);
+
+    if (subCommandGroup) {
+      // headers.something -> headers. -> something (remainingSearch)
+      const remainingSearch = searchQuery.slice(match.length);
+      const filteredCommands = subCommandGroup.commands.filter(
+        (item) => !remainingSearch || isCommandMatch(item, remainingSearch)
+      );
+
+      return filteredCommands.length
+        ? [
+            {
+              ...subCommandGroup,
+              commands: filteredCommands,
+            },
+          ]
+        : [];
+    }
   }
 
-  return text.toLowerCase().includes(search.toLowerCase());
-}
+  const filteredGroups = newGroups
+    .map((group) => {
+      return {
+        ...group,
+        commands: group.commands.flatMap((item) =>
+          processCommand({ item, search: searchQuery, editor })
+        ),
+      };
+    })
+    .filter((group) => group.commands.length > 0);
 
-function isCommandMatch(item: BlockItem, search: string): boolean {
-  return (
-    containsText(item.title, search) ||
-    containsText(item.description, search) ||
-    (item.searchTerms?.some((term) => containsText(term, search)) ?? false)
-  );
-}
-
-// Creates a command that navigates into a group
-function createGroupNavigationCommand(groupId: string) {
-  return ({ editor, range }: CommandProps) => {
-    editor.chain().focus().insertContentAt(range, `/${groupId}.`).run();
-  };
-}
-
-// Create a command-only BlockItem
-function createCommandOnlyItem(
-  baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
-  command: (options: CommandProps) => void
-): BlockItem {
-  return {
-    ...baseItem,
-    command,
-  };
-}
-
-// Create a navigable group item that looks like a group but acts like a command
-function createNavigableGroupItem(
-  baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
-  id: string,
-  commands: BlockItem[]
-): BlockItem {
-  return {
-    ...baseItem,
-    command: createGroupNavigationCommand(id),
-  };
-}
-
-// Create a group-only BlockItem
-function createGroupItem(
-  baseItem: Omit<BlockItem, 'command' | 'id' | 'commands'>,
-  id: string,
-  commands: BlockItem[]
-): BlockItem {
-  return {
-    ...baseItem,
-    id,
-    commands,
-  };
-}
-
-function createFlattenedCommand(
-  parentItem: BlockItem & { id: string },
-  subItem: BlockItem
-): BlockItem {
-  const baseItem = {
-    title: subItem.title,
-    description: subItem.description,
-    searchTerms: subItem.searchTerms || [],
-    icon: subItem.icon,
-    render: subItem.render,
-    preview: subItem.preview,
-  };
-
-  // For subcommands that have their own command, we want to execute that directly
-  if ('command' in subItem && subItem.command) {
-    return createCommandOnlyItem(baseItem, subItem.command);
-  }
-
-  // For subcommands that are groups themselves, we keep the group navigation
-  if (
-    'commands' in subItem &&
-    'id' in subItem &&
-    subItem.id &&
-    Array.isArray(subItem.commands)
-  ) {
-    return createGroupItem(baseItem, subItem.id, subItem.commands);
-  }
-
-  // Fallback case - create a command that enters the parent group
-  return createCommandOnlyItem(
-    baseItem,
-    createGroupNavigationCommand(parentItem.id)
-  );
+  return filteredGroups;
 }
 
 type SubCommandGroup = BlockItem & {
@@ -113,95 +70,74 @@ function findSubCommandGroup(
     ) as SubCommandGroup | undefined;
 }
 
-// Check if an item is a command group
-function isCommandGroup(
-  item: BlockItem
-): item is BlockItem & { id: string; commands: BlockItem[] } {
+function containsText(text: string | undefined, search: string): boolean {
+  if (!text) {
+    return false;
+  }
+
+  return text.toLowerCase().includes(search.toLowerCase());
+}
+
+function isCommandMatch(item: BlockItem, search: string): boolean {
+  return (
+    containsText(item.title, search) ||
+    containsText(item.description, search) ||
+    (item.searchTerms?.some((term) => containsText(term, search)) ?? false)
+  );
+}
+
+function isSubCommand(item: BlockItem): item is SubCommandGroup {
   return 'commands' in item && Array.isArray(item.commands) && !!item.id;
 }
 
-// Process a command group during search
-function processGroupDuringSearch(
-  group: BlockItem & { id: string; commands: BlockItem[] },
-  search: string
-): BlockItem[] {
-  // If group title matches, return it as a navigable command
-  if (isCommandMatch(group, search)) {
-    return [
-      createCommandOnlyItem(group, createGroupNavigationCommand(group.id)),
-    ];
-  }
+type ProcessCommandOptions = {
+  item: BlockItem;
+  search: string;
+  editor: Editor;
+};
 
-  // Otherwise, return matching subcommands as flattened commands
-  return group.commands
-    .filter((subItem) => isCommandMatch(subItem, search))
-    .map((subItem) => createFlattenedCommand(group, subItem));
-}
+function processCommand(options: ProcessCommandOptions): BlockItem[] {
+  const { item, search, editor } = options;
 
-function processCommand(
-  item: BlockItem,
-  search: string,
-  isSearching: boolean,
-  editor: Editor
-): BlockItem[] {
-  if (item?.render?.(editor) === null) {
+  const show = item?.render?.(editor);
+  if (show === null) {
     return [];
   }
 
-  if (isCommandGroup(item)) {
-    if (!isSearching) {
-      // if we are not searching, we want to return a navigable command
-      // that will navigate to the group so that we can navigate into it
-      // using the arrow keys / enter key
-      return [createNavigableGroupItem(item, item.id, item.commands)];
+  const isSearching = search.length > 0;
+  if (isSubCommand(item)) {
+    // if we are not searching, we want to return a navigable command
+    // that will navigate to the group so that we can navigate into it
+    // using the arrow keys / enter key
+    // @ts-expect-error
+    const navigableCommand: BlockItem = {
+      ...item,
+      command: (options) => {
+        const { editor, range } = options;
+        editor.chain().focus().insertContentAt(range, `/${item.id}.`).run();
+      },
+    };
+
+    // first check if the item matches the search
+    const matched = isCommandMatch(navigableCommand, search);
+    if (matched) {
+      return [navigableCommand];
     }
 
-    return processGroupDuringSearch(item, search);
+    // so the main command does not match the search
+    // we need to check if any of the commands match the search
+    // if they do, we return the commands instead of the main command
+    const hasMatchingCommands =
+      navigableCommand?.commands?.some((command) =>
+        isCommandMatch(command, search)
+      ) ?? false;
+
+    if (!hasMatchingCommands) {
+      return [];
+    }
+
+    return navigableCommand?.commands ?? [];
   }
 
   return !isSearching || isCommandMatch(item, search) ? [item] : [];
-}
-
-export function filterSlashCommands(
-  query: string,
-  editor: Editor,
-  groups: BlockGroupItem[]
-): BlockGroupItem[] {
-  const search = query.toLowerCase();
-  const isSearching = search.length > 0;
-
-  // Handle subcommand navigation (e.g., "headers.")
-  const subCommandMatch = search.match(/^([^.]+)\./);
-  if (subCommandMatch) {
-    const [match, subCommandId] = subCommandMatch;
-    const subCommandGroup = findSubCommandGroup(groups, subCommandId);
-
-    if (subCommandGroup) {
-      const remainingSearch = search.slice(match.length);
-      const filteredCommands = subCommandGroup.commands.filter(
-        (item) => !remainingSearch || isCommandMatch(item, remainingSearch)
-      );
-
-      return filteredCommands.length
-        ? [
-            {
-              ...subCommandGroup,
-              commands: filteredCommands,
-            },
-          ]
-        : [];
-    }
-  }
-
-  // Process all groups and filter out empty ones
-  const results = groups
-    .map((group) => ({
-      ...group,
-      commands: group.commands.flatMap((item) =>
-        processCommand(item, search, isSearching, editor)
-      ),
-    }))
-    .filter((group) => group.commands.length > 0);
-
-  return results;
 }

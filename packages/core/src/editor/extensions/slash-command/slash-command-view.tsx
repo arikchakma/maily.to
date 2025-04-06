@@ -263,7 +263,7 @@ export function getSlashCommandSuggestions(
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      return filterSlashCommands(query, editor, groups);
+      return filterSlashCommands({ query, editor, groups });
     },
     allow: ({ editor }) => {
       const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');

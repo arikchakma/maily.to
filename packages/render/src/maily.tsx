@@ -90,14 +90,7 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
-  container?: Partial<{
-    maxWidth: string;
-    minWidth: string;
-    width: string;
-    marginLeft: string;
-    marginRight: string;
-    padding: string;
-  }>;
+  container?: Partial<CSSProperties>;
   fontSize?: Partial<{
     paragraph: Partial<{
       size: string;
@@ -556,25 +549,7 @@ export class Maily {
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container
-            style={{
-              maxWidth:
-                containerStyles?.maxWidth || DEFAULT_THEME.container?.maxWidth,
-              minWidth:
-                containerStyles?.minWidth || DEFAULT_THEME.container?.minWidth,
-              width: containerStyles?.width || DEFAULT_THEME.container?.width,
-              marginLeft:
-                containerStyles?.marginLeft ||
-                DEFAULT_THEME.container?.marginLeft,
-              marginRight:
-                containerStyles?.marginRight ||
-                DEFAULT_THEME.container?.marginRight,
-              padding:
-                containerStyles?.padding || DEFAULT_THEME.container?.padding,
-            }}
-          >
-            {jsxNodes}
-          </Container>
+          <Container style={containerStyles}>{jsxNodes}</Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""

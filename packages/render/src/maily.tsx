@@ -90,6 +90,7 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
+  container?: Partial<CSSProperties>;
   fontSize?: Partial<{
     paragraph: Partial<{
       size: string;
@@ -172,6 +173,14 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardBadgeText: '#111827',
     linkCardBadgeBackground: '#FEF08A',
     linkCardSubTitle: '#6B7280',
+  },
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
   },
   fontSize: {
     paragraph: {
@@ -510,6 +519,7 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
+    const containerStyles = this.config.theme?.container;
 
     const markup = (
       <Html {...htmlProps}>
@@ -539,18 +549,7 @@ export class Maily {
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container
-            style={{
-              maxWidth: '600px',
-              minWidth: '300px',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: '0.5rem',
-            }}
-          >
-            {jsxNodes}
-          </Container>
+          <Container style={containerStyles}>{jsxNodes}</Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""

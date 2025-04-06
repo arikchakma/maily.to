@@ -106,11 +106,10 @@ type SlashCommandFilterOptions = {
   editor: Editor;
 };
 
-export function slashCommandFilter(options: SlashCommandFilterOptions) {
+export function filterSlashCommands(options: SlashCommandFilterOptions) {
   const { groups, query, editor } = options;
   const newGroups = [...groups];
   let searchQuery = query?.toLowerCase();
-  const isSearching = searchQuery.length > 0;
 
   const subCommandMatch = searchQuery.match(/^([^.]+)\./);
 
@@ -130,7 +129,7 @@ export function slashCommandFilter(options: SlashCommandFilterOptions) {
       return filteredCommands.length
         ? [
             {
-              title: subCommandGroup.title,
+              ...subCommandGroup,
               commands: filteredCommands,
             },
           ]
@@ -138,44 +137,13 @@ export function slashCommandFilter(options: SlashCommandFilterOptions) {
     }
   }
 
-  // now we are at the top level
   const filteredGroups = newGroups
     .map((group) => {
       return {
         ...group,
-        commands: group.commands
-          .filter((item) => {
-            if (!isSearching) {
-              return true;
-            }
-
-            const show = item?.render?.(editor);
-            if (show === null) {
-              return false;
-            }
-
-            return isCommandMatch(item, searchQuery);
-          })
-          .map((item) => {
-            if (isSubCommand(item)) {
-              // so to make it work with the enter key
-              // we make it a command
-              // @ts-ignore
-              item = {
-                ...item,
-                command: (options) => {
-                  const { editor, range } = options;
-                  editor
-                    .chain()
-                    .focus()
-                    .insertContentAt(range, `/${item.id}.`)
-                    .run();
-                },
-              };
-            }
-
-            return item;
-          }),
+        commands: group.commands.flatMap((item) =>
+          processCommand({ item, search: searchQuery, editor })
+        ),
       };
     })
     .filter((group) => group.commands.length > 0);
@@ -219,4 +187,57 @@ function isCommandMatch(item: BlockItem, search: string): boolean {
 
 function isSubCommand(item: BlockItem): item is SubCommandGroup {
   return 'commands' in item && Array.isArray(item.commands) && !!item.id;
+}
+
+type ProcessCommandOptions = {
+  item: BlockItem;
+  search: string;
+  editor: Editor;
+};
+
+function processCommand(options: ProcessCommandOptions): BlockItem[] {
+  const { item, search, editor } = options;
+
+  const show = item?.render?.(editor);
+  if (show === null) {
+    return [];
+  }
+
+  const isSearching = search.length > 0;
+  if (isSubCommand(item)) {
+    if (!isSearching) {
+      // if we are not searching, we want to return a navigable command
+      // that will navigate to the group so that we can navigate into it
+      // using the arrow keys / enter key
+      // @ts-expect-error
+      const navigableCommand: BlockItem = {
+        ...item,
+        command: (options) => {
+          const { editor, range } = options;
+          editor.chain().focus().insertContentAt(range, `/${item.id}.`).run();
+        },
+      };
+
+      return [navigableCommand];
+    }
+
+    // now if we are searching, we will flatten the commands
+    // if and only if the comamnds match the search
+    const hasMatchingCommands = item.commands.some((command) =>
+      isCommandMatch(command, search)
+    );
+
+    if (!hasMatchingCommands) {
+      return [];
+    }
+
+    return item.commands;
+  }
+
+  const matched = isCommandMatch(item, search);
+  if (!matched) {
+    return [];
+  }
+
+  return !isSearching || isCommandMatch(item, search) ? [item] : [];
 }

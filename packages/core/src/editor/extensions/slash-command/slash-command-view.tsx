@@ -19,7 +19,7 @@ import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { SlashCommandItem } from './slash-command-item';
-import { filterSlashCommands } from './slash-command-search';
+import { filterSlashCommands } from './slash-command-filter';
 
 type CommandListProps = {
   items: BlockGroupItem[];
@@ -263,7 +263,7 @@ export function getSlashCommandSuggestions(
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      return filterSlashCommands(query, editor, groups);
+      return filterSlashCommands({ query, editor, groups });
     },
     allow: ({ editor }) => {
       const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');

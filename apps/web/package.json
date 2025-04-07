@@ -40,7 +40,7 @@
     "resend": "^4.2.0",
     "sonner": "^2.0.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-react": "^5.20.3",
+    "swagger-ui-react": "^5.20.7",
     "tailwind-merge": "^3.0.2",
     "tiny-invariant": "^1.3.3",
     "valibot": "1.0.0",

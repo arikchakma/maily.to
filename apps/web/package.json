@@ -20,7 +20,7 @@
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.2",
-    "@radix-ui/react-tooltip": "^1.1.8",
+    "@radix-ui/react-tooltip": "^1.2.0",
     "@react-router/fs-routes": "^7.5.0",
     "@react-router/node": "^7.4.1",
     "@supabase/ssr": "^0.6.1",

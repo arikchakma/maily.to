@@ -472,17 +472,6 @@ export function DragHandlePlugin(
     },
     props: {
       handleDOMEvents: {
-        mouseleave: (e, event) => (
-          x ||
-            (event.target &&
-              !container.contains(event?.relatedTarget as Node) &&
-              (null == tippyInstance || tippyInstance.hide(),
-              (currentNode = null),
-              (lastNodePos = -1),
-              null == onNodeChange ||
-                onNodeChange({ editor: editor, node: null, pos: -1 }))),
-          false
-        ),
         mousemove(e, t) {
           if (!element || !tippyInstance || x) return false;
           const n = findElementNextToCoords({

@@ -719,15 +719,15 @@ export class Maily {
   }
 
   private text(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const text = node.text || '&nbsp';
     if (node.marks) {
       return this.renderMark(node, options);
     }
 
+    const text = node.text;
     // if it's all empty, return an invisible space length
     // of the text so that it doesn't look empty for inline-images
     const spaces = text?.match(/\s/g);
-    if (spaces && spaces.length === text.length) {
+    if (spaces && spaces.length === text?.length) {
       return (
         <>
           {spaces.map((_, index) => (
@@ -737,7 +737,7 @@ export class Maily {
       );
     }
 
-    return <>{text}</>;
+    return text ? <>{text}</> : <>&nbsp;</>;
   }
 
   private bold(_: MarkType, text: JSX.Element): JSX.Element {

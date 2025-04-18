@@ -13,7 +13,7 @@ import {
 } from '@/editor/nodes/inline-image/inline-image';
 
 export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appendTo } = props;
+  const { editor, appendTo, allowExternal } = props;
   if (!editor) {
     return null;
   }
@@ -64,21 +64,23 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
             isVariable={state.isSrcVariable}
           />
 
-          <LinkInputPopover
-            defaultValue={state?.imageExternalLink ?? ''}
-            onValueChange={(value, isVariable) => {
-              editor
-                ?.chain()
-                .updateAttributes('inlineImage', {
-                  externalLink: value,
-                  isExternalLinkVariable: isVariable ?? false,
-                })
-                .run();
-            }}
-            tooltip="External URL"
-            editor={editor}
-            isVariable={state.isExternalLinkVariable}
-          />
+          {allowExternal && (
+            <LinkInputPopover
+              defaultValue={state?.imageExternalLink ?? ''}
+              onValueChange={(value, isVariable) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('inlineImage', {
+                    externalLink: value,
+                    isExternalLinkVariable: isVariable ?? false,
+                  })
+                  .run();
+              }}
+              tooltip="External URL"
+              editor={editor}
+              isVariable={state.isExternalLinkVariable}
+            />
+          )}
 
           <ImageSize
             dimension="height"

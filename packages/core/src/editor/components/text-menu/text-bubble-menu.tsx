@@ -29,6 +29,7 @@ export interface BubbleMenuItem {
 
 export type EditorBubbleMenuProps = Omit<BubbleMenuProps, 'children'> & {
   appendTo?: React.RefObject<any>;
+  allowExternal?: boolean;
 };
 
 export function TextBubbleMenu(props: EditorBubbleMenuProps) {

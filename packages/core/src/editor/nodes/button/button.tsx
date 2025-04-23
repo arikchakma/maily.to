@@ -11,6 +11,11 @@ export const DEFAULT_BUTTON_BORDER_RADIUS: AllowedButtonBorderRadius = 'smooth';
 export const DEFAULT_BUTTON_BACKGROUND_COLOR = '#000000';
 export const DEFAULT_BUTTON_TEXT_COLOR = '#ffffff';
 
+export const DEFAULT_BUTTON_PADDING_TOP = 10;
+export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
+export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
+export const DEFAULT_BUTTON_PADDING_LEFT = 32;
+
 export const allowedButtonVariant = ['filled', 'outline'] as const;
 export type AllowedButtonVariant = (typeof allowedButtonVariant)[number];
 
@@ -18,9 +23,13 @@ export const allowedButtonBorderRadius = ['sharp', 'smooth', 'round'] as const;
 export type AllowedButtonBorderRadius =
   (typeof allowedButtonBorderRadius)[number];
 
-type ButtonAttributes = {
+export type ButtonAttributes = {
   text: string;
+  isTextVariable: boolean;
+
   url: string;
+  isUrlVariable: boolean;
+
   alignment: AllowedLogoAlignment;
   variant: AllowedButtonVariant;
   borderRadius: AllowedButtonBorderRadius;
@@ -28,6 +37,11 @@ type ButtonAttributes = {
   textColor: string;
 
   showIfKey: string;
+
+  paddingTop: number;
+  paddingRight: number;
+  paddingBottom: number;
+  paddingLeft: number;
 };
 
 declare module '@tiptap/core' {
@@ -184,6 +198,67 @@ export const ButtonExtension = Node.create({
 
           return {
             'data-show-if-key': attributes.showIfKey,
+          };
+        },
+      },
+
+      paddingTop: {
+        default: DEFAULT_BUTTON_PADDING_TOP,
+        parseHTML: (element) => {
+          return parseInt(
+            element.getAttribute('data-padding-top') ||
+              DEFAULT_BUTTON_PADDING_TOP.toString(),
+            10
+          );
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-padding-top': attributes.paddingTop,
+          };
+        },
+      },
+      paddingRight: {
+        default: DEFAULT_BUTTON_PADDING_RIGHT,
+        parseHTML: (element) => {
+          return parseInt(
+            element.getAttribute('data-padding-right') ||
+              DEFAULT_BUTTON_PADDING_RIGHT.toString(),
+            10
+          );
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-padding-right': attributes.paddingRight,
+          };
+        },
+      },
+      paddingBottom: {
+        default: DEFAULT_BUTTON_PADDING_BOTTOM,
+        parseHTML: (element) => {
+          return parseInt(
+            element.getAttribute('data-padding-bottom') ||
+              DEFAULT_BUTTON_PADDING_BOTTOM.toString(),
+            10
+          );
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-padding-bottom': attributes.paddingBottom,
+          };
+        },
+      },
+      paddingLeft: {
+        default: DEFAULT_BUTTON_PADDING_LEFT,
+        parseHTML: (element) => {
+          return parseInt(
+            element.getAttribute('data-padding-left') ||
+              DEFAULT_BUTTON_PADDING_LEFT.toString(),
+            10
+          );
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-padding-left': attributes.paddingLeft,
           };
         },
       },

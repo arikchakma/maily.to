@@ -14,6 +14,7 @@ import { Select } from '../ui/select';
 import { Space, Trash } from 'lucide-react';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { deleteNode } from '@/editor/utils/delete-node';
+import { spacing } from '@/editor/utils/spacing';
 
 type ColumnsBubbleMenuProps = {
   editor: EditorBubbleMenuProps['editor'];
@@ -70,10 +71,10 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
           value={state.currentColumnsGap}
           options={[
             { value: '0', label: 'None' },
-            { value: '4', label: 'Small' },
-            { value: '8', label: 'Medium' },
-            { value: '16', label: 'Large' },
-            { value: '24', label: 'Extra Large' },
+            ...spacing.map((space) => ({
+              label: space.name,
+              value: String(space.value),
+            })),
           ]}
           onValueChange={(value) => {
             editor.commands.updateColumns({

@@ -4,11 +4,18 @@ import * as React from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { cn } from '@/editor/utils/classname';
 
-const TooltipProvider = TooltipPrimitive.Provider;
+// Explicit type annotations to avoid TS2742 errors
+const TooltipProvider: React.FC<
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
+> = TooltipPrimitive.Provider;
 
-const Tooltip = TooltipPrimitive.Root;
+const Tooltip: React.FC<
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>
+> = TooltipPrimitive.Root;
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+const TooltipTrigger: React.FC<
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>
+> = TooltipPrimitive.Trigger;
 
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
@@ -23,7 +30,11 @@ const TooltipContent = React.forwardRef<
     )}
     {...props}
   />
-));
+)) as React.ForwardRefExoticComponent<
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> &
+    React.RefAttributes<React.ElementRef<typeof TooltipPrimitive.Content>>
+>;
+
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

@@ -163,6 +163,7 @@ describe('render', () => {
             mailyComponent: 'button',
             text: 'Unsubscribe',
             url: 'unsubscribe_url',
+            isUrlVariable: true,
             alignment: 'left',
             variant: 'filled',
             borderRadius: 'smooth',
@@ -209,7 +210,7 @@ describe('render', () => {
         paragraph: 'rgb(0, 255, 0)',
       },
       fontSize: {
-        paragraph: '18px',
+        paragraph: { size: '18px' },
       },
     };
 

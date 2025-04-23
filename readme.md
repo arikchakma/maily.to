@@ -18,14 +18,6 @@
 </p>
 <br />
 
-<p align="center">
-  <a href="https://novu.co">
-    <img src="https://github.com/user-attachments/assets/a4d3f4d1-9e76-4bc9-91f9-1156c9f14d5d" alt="Backed by Novu" style="height: 36px;" />
-  </a>
-</p>
-
-<br />
-
 ## Start Using
 
 Just follow this link to [access the editor](https://maily.to/playground)
@@ -47,8 +39,37 @@ Designing emails that work across all email platforms, browsers, etc is hard. **
 - Link Cards
 - Section
 - Columns
-- For Loop
+- Repeat
 - Show If Condition
+
+<br/>
+
+## Sponsors
+
+Sponsorship at any level is appreciated and encouraged. If you built a paid product using Maily, consider one of the [sponsorship tiers](https://github.com/sponsors/arikchakma).
+
+<br/>
+
+<h3 align="center">Gold</h3>
+
+<table align="center" style="justify-content: center;align-items: center;display: flex;">
+  <tr>
+    <td align="center">
+      <p></p>
+      <p></p>
+      <a href="https://novu.co?ref=maily.to">
+        <picture height="60px">
+          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/5e2b9ef1-5ded-4863-995d-62c7e40f946a">
+          <img alt="Novu Logo" height="60px" src="https://github.com/user-attachments/assets/d2fdaf14-2211-4946-ab67-a4ce547aabc0">
+        </picture>
+      </a>
+      <p></p>
+      <p></p>
+    </td>
+  </tr>
+</table>
+
+<br/>
 
 ## Contributions
 

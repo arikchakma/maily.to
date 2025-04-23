@@ -21,6 +21,7 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { useSectionState } from './use-section-state';
 import { getClosestNodeByName } from '@/editor/utils/columns';
+import { spacing } from '@/editor/utils/spacing';
 
 export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   const { appendTo, editor } = props;
@@ -42,15 +43,27 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       const activeSectionNode = getClosestNodeByName(editor, 'section');
-      const forNodeChildren = activeSectionNode
+      const repeatNodeChildren = activeSectionNode
         ? findChildren(activeSectionNode?.node, (node) => {
-            return node.type.name === 'for';
+            return node.type.name === 'repeat';
           })?.[0]
         : null;
-      const hasActiveForNodeChildren =
-        forNodeChildren && editor.isActive('for');
+      const inlineImageNodeChildren = activeSectionNode
+        ? findChildren(activeSectionNode?.node, (node) => {
+            return node.type.name === 'inlineImage';
+          })?.[0]
+        : null;
+      const hasActiveRepeatNodeChildren =
+        repeatNodeChildren && editor.isActive('repeat');
+      const hasActiveInlineImageNodeChildren =
+        inlineImageNodeChildren && editor.isActive('inlineImage');
 
-      if (isTextSelected(editor) || hasActiveForNodeChildren) {
+      if (
+        isTextSelected(editor) ||
+        hasActiveRepeatNodeChildren ||
+        hasActiveInlineImageNodeChildren ||
+        !editor.isEditable
+      ) {
         return false;
       }
 
@@ -81,7 +94,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
     >
       <TooltipProvider>
         <AlignmentSwitch
@@ -137,9 +150,10 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           value={String(state.currentMarginTop)}
           options={[
             { value: '0', label: 'None' },
-            { value: '4', label: 'Small' },
-            { value: '8', label: 'Medium' },
-            { value: '12', label: 'Large' },
+            ...spacing.map((space) => ({
+              label: space.name,
+              value: String(space.value),
+            })),
           ]}
           onValueChange={(_value) => {
             const value = Number(_value);
@@ -163,9 +177,10 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           value={String(state.currentPaddingTop)}
           options={[
             { value: '0', label: 'None' },
-            { value: '4', label: 'Small' },
-            { value: '8', label: 'Medium' },
-            { value: '12', label: 'Large' },
+            ...spacing.map((space) => ({
+              label: space.name,
+              value: String(space.value),
+            })),
           ]}
           onValueChange={(_value) => {
             const value = Number(_value);

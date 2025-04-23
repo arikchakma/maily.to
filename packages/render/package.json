@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/render",
-  "version": "0.0.17",
+  "version": "0.1.4",
   "private": false,
   "description": "A transformer that converts Maily content into HTML email templates.",
   "sideEffects": false,
@@ -22,7 +22,6 @@
       }
     }
   },
-  "license": "MIT",
   "scripts": {
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
@@ -47,20 +46,22 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@antfu/utils": "^0.7.10",
-    "@babel/preset-react": "^7.25.9",
-    "@tiptap/core": "^2.10.3",
-    "@types/react": "^18.3.12",
+    "@antfu/utils": "^9.1.0",
+    "@babel/preset-react": "^7.26.3",
+    "@tiptap/core": "^2.11.5",
+    "@types/react": "^19.0.12",
     "tsconfig": "workspace:*",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.28",
-    "@react-email/render": "^1.0.2",
+    "@react-email/components": "^0.0.34",
+    "@react-email/render": "^1.0.5",
+    "juice": "^11.0.1",
+    "node-html-parser": "^7.0.1",
     "react-element-to-jsx-string": "^15.0.0"
   },
   "peerDependencies": {
-    "react": "^18.3.1"
+    "react": "^18.0.0 || ^19.0.0"
   },
   "publishConfig": {
     "access": "public"

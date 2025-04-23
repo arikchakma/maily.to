@@ -1,6 +1,12 @@
+import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
+import { getNewHeight, getNewWidth } from '@/editor/utils/aspect-ratio';
+import { borderRadius } from '@/editor/utils/border-radius';
 import { BubbleMenu } from '@tiptap/react';
-import { ArrowUpRight, ImageDown } from 'lucide-react';
+import { ImageDown, LockIcon, LockOpenIcon } from 'lucide-react';
+import { sticky } from 'tippy.js';
 import { AlignmentSwitch } from '../alignment-switch';
+import { BubbleMenuButton } from '../bubble-menu-button';
+import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
 import { LinkInputPopover } from '../ui/link-input-popover';
@@ -8,9 +14,10 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { ShowPopover } from '../show-popover';
-import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
-import { sticky } from 'tippy.js';
+import {
+  IMAGE_MAX_HEIGHT,
+  IMAGE_MAX_WIDTH,
+} from '@/editor/nodes/image/image-view';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -23,6 +30,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     shouldShow: ({ editor }) => {
+      if (!editor.isEditable) {
+        return false;
+      }
+
       return editor.isActive('logo') || editor.isActive('image');
     },
     tippyOptions: {
@@ -35,6 +46,8 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
       maxWidth: '100%',
     },
   };
+
+  const { lockAspectRatio } = state;
 
   return (
     <BubbleMenu
@@ -132,26 +145,94 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           <>
             <Divider />
 
+            <Select
+              label="Border Radius"
+              value={state?.borderRadius}
+              options={borderRadius.map((value) => ({
+                value: String(value.value),
+                label: value.name,
+              }))}
+              onValueChange={(value) => {
+                editor
+                  ?.chain()
+                  .updateAttributes('image', {
+                    borderRadius: Number(value),
+                  })
+                  .run();
+              }}
+              tooltip="Border Radius"
+              className="mly-capitalize"
+            />
+
             <div className="mly-flex mly-space-x-0.5">
               <ImageSize
                 dimension="width"
-                value={state?.width ?? 0}
+                value={state?.width ?? ''}
                 onValueChange={(value) => {
+                  const width = Math.min(Number(value) || 0, IMAGE_MAX_WIDTH);
+                  const currentHeight = Number(state.height) || 0;
+                  const currentWidth = Number(state.width) || 0;
+                  const currentAspectRatio =
+                    state.aspectRatio || currentWidth / currentHeight || 1;
+
                   editor
                     ?.chain()
-                    .updateAttributes('image', { width: value })
+                    .updateAttributes('image', {
+                      width: String(width),
+                      ...(lockAspectRatio && value
+                        ? {
+                            height: String(
+                              getNewHeight(width, currentAspectRatio)
+                            ),
+                          }
+                        : {}),
+                    })
                     .run();
                 }}
               />
               <ImageSize
                 dimension="height"
-                value={state?.height ?? 0}
+                value={state?.height ?? ''}
                 onValueChange={(value) => {
+                  const height = Number(value) || 0;
+                  const currentHeight = Number(state.height) || 0;
+                  const currentWidth = Number(state.width) || 0;
+                  const currentAspectRatio =
+                    state.aspectRatio || currentWidth / currentHeight || 1;
+
                   editor
                     ?.chain()
-                    .updateAttributes('image', { height: value })
+                    .updateAttributes('image', {
+                      height: String(height),
+                      ...(lockAspectRatio && value
+                        ? {
+                            width: String(
+                              getNewWidth(height, currentAspectRatio)
+                            ),
+                          }
+                        : {}),
+                    })
                     .run();
                 }}
+              />
+
+              <BubbleMenuButton
+                isActive={() => lockAspectRatio}
+                command={() => {
+                  const width = Number(state.width) || 0;
+                  const height = Number(state.height) || 0;
+                  const aspectRatio = width / height;
+
+                  editor
+                    ?.chain()
+                    .updateAttributes('image', {
+                      lockAspectRatio: !lockAspectRatio,
+                      aspectRatio,
+                    })
+                    .run();
+                }}
+                icon={lockAspectRatio ? LockIcon : LockOpenIcon}
+                tooltip="Lock Aspect Ratio"
               />
             </div>
           </>

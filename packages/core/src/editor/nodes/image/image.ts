@@ -3,6 +3,8 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 import { DEFAULT_SECTION_SHOW_IF_KEY } from '../section/section';
 import { ImageView } from './image-view';
 
+const DEFAULT_IMAGE_BORDER_RADIUS = 0;
+
 export const ImageExtension = TiptapImage.extend({
   addAttributes() {
     return {
@@ -10,18 +12,30 @@ export const ImageExtension = TiptapImage.extend({
       width: {
         default: 'auto',
         parseHTML: (element) => {
-          const width = element.style.width;
-          return width ? { width } : null;
+          return (
+            element.getAttribute('width') ||
+            (element.style?.width || element.style?.inlineSize)?.replace(
+              'px',
+              ''
+            ) ||
+            null
+          );
         },
-        renderHTML: ({ width }) => ({ style: `width: ${width}` }),
+        renderHTML: ({ width }) => ({ width }),
       },
       height: {
         default: 'auto',
         parseHTML: (element) => {
-          const height = element.style.height;
-          return height ? { height } : null;
+          return (
+            element.getAttribute('height') ||
+            (element.style?.height || element.style?.blockSize)?.replace(
+              'px',
+              ''
+            ) ||
+            null
+          );
         },
-        renderHTML: ({ height }) => ({ style: `height: ${height}` }),
+        renderHTML: ({ height }) => ({ height }),
       },
       alignment: {
         default: 'center',
@@ -67,6 +81,18 @@ export const ImageExtension = TiptapImage.extend({
         },
       },
 
+      borderRadius: {
+        default: DEFAULT_IMAGE_BORDER_RADIUS,
+        parseHTML: (element) => {
+          return Number(element.getAttribute('data-border-radius'));
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-border-radius': attributes.borderRadius,
+          };
+        },
+      },
+
       // Later we will remove this attribute
       // and use the `src` attribute instead when implement
       // the URL variable feature
@@ -82,6 +108,38 @@ export const ImageExtension = TiptapImage.extend({
 
           return {
             'data-is-src-variable': 'true',
+          };
+        },
+      },
+
+      aspectRatio: {
+        default: null,
+        parseHTML: (element) => {
+          return element.getAttribute('data-aspect-ratio') || null;
+        },
+        renderHTML: (attributes) => {
+          if (!attributes?.aspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-aspect-ratio': attributes?.aspectRatio,
+          };
+        },
+      },
+
+      lockAspectRatio: {
+        default: true,
+        parseHTML: (element) => {
+          return element.getAttribute('data-lock-aspect-ratio') === 'true';
+        },
+        renderHTML: (attributes) => {
+          if (!attributes.lockAspectRatio) {
+            return {};
+          }
+
+          return {
+            'data-lock-aspect-ratio': 'true',
           };
         },
       },

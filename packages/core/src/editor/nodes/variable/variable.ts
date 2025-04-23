@@ -1,34 +1,104 @@
-import { mergeAttributes, Node } from '@tiptap/core';
-import { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { Editor, mergeAttributes, Node } from '@tiptap/core';
+import { Node as TNode } from '@tiptap/pm/model';
 import { PluginKey } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion';
-import { VariableView } from './variable-view';
+import {
+  VariableSuggestionsPopover,
+  VariableSuggestionsPopoverType,
+} from './variable-suggestions-popover';
+import { DefaultRenderVariable, VariableView } from './variable-view';
+
+export type Variable = {
+  name: string;
+  // Default is true
+  required?: boolean;
+  // default is true
+  valid?: boolean;
+};
+
+export type VariableFunctionOptions = {
+  query: string;
+  from: 'content-variable' | 'bubble-variable' | 'repeat-variable';
+  editor: Editor;
+};
+
+export type VariablesFunction = (
+  opts: VariableFunctionOptions
+) => Array<Variable>;
+
+export type Variables = Array<Variable> | VariablesFunction;
+
+export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
+export const DEFAULT_VARIABLES: Variables = [];
+export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
+  DefaultRenderVariable;
+export const DEFAULT_VARIABLE_SUGGESTION_POPOVER = VariableSuggestionsPopover;
+
+export type RenderVariableOptions = {
+  variable: Variable;
+  fallback?: string;
+  editor: Editor;
+  from: 'content-variable' | 'bubble-variable' | 'button-variable';
+};
+
+export type RenderVariableFunction = (
+  opts: RenderVariableOptions
+) => JSX.Element | null;
 
 export type VariableOptions = {
-  HTMLAttributes: Record<string, any>;
-  renderLabel: (props: {
-    options: VariableOptions;
-    node: ProseMirrorNode;
-  }) => string;
+  renderLabel: (props: { options: VariableOptions; node: TNode }) => string;
   suggestion: Omit<SuggestionOptions, 'editor'>;
+
+  /**
+   * Variables is the array of variables that will be used to render the variable pill.
+   */
+  variables: Variables;
+
+  /**
+   * Render variable is the function that will be used to render the variable pill.
+   * @default DefaultRenderVariable
+   */
+  renderVariable: RenderVariableFunction;
+
+  /**
+   * Variable suggestion popover is the component that will be used to render
+   * the variable suggestions for the content, bubble menu variables
+   * @default VariableSuggestionPopover
+   */
+  variableSuggestionsPopover: VariableSuggestionsPopoverType;
+};
+
+export type VariableStorage = {
+  popover: boolean;
 };
 
 export const VariablePluginKey = new PluginKey('variable');
 
-export const VariableExtension = Node.create<VariableOptions>({
+export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
   name: 'variable',
   group: 'inline',
   inline: true,
   selectable: true,
   atom: true,
 
+  addStorage() {
+    return {
+      popover: false,
+    };
+  },
+
   addOptions() {
     return {
-      HTMLAttributes: {},
-      renderLabel({ options, node }) {
+      variables: DEFAULT_VARIABLES,
+      variableSuggestionsPopover: DEFAULT_VARIABLE_SUGGESTION_POPOVER,
+      renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
+
+      renderLabel(props) {
+        const { node } = props;
         return `${node.attrs.label ?? node.attrs.id}`;
       },
+
       suggestion: {
         char: '@',
         pluginKey: VariablePluginKey,
@@ -137,11 +207,7 @@ export const VariableExtension = Node.create<VariableOptions>({
   renderHTML({ node, HTMLAttributes }) {
     return [
       'div',
-      mergeAttributes(
-        { 'data-type': this.name },
-        this.options.HTMLAttributes,
-        HTMLAttributes
-      ),
+      mergeAttributes({ 'data-type': this.name }, HTMLAttributes),
       this.options.renderLabel({
         options: this.options,
         node,

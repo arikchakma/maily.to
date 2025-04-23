@@ -44,16 +44,6 @@ export const logoSizes: Record<AllowedLogoSize, string> = {
   lg: '64px',
 };
 
-function getAlignmentStyle(alignment: AllowedLogoAlignment): string[] {
-  const alignments: Record<AllowedLogoAlignment, string[]> = {
-    left: ['margin-right:auto', 'margin-left:0'],
-    center: ['margin-right:auto', 'margin-left:auto'],
-    right: ['margin-right:0', 'margin-left:auto'],
-  };
-
-  return alignments[alignment] || alignments[DEFAULT_ALIGNMENT];
-}
-
 export const LogoExtension = TiptapImage.extend({
   name: 'logo',
   priority: 1000,

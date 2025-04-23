@@ -21,4 +21,11 @@ export const linkCard: BlockItem = {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setLinkCard().run();
   },
+  render: (editor) => {
+    return editor.extensionManager.extensions.findIndex(
+      (ext) => ext.name === 'linkCard'
+    ) === -1
+      ? null
+      : true;
+  },
 };

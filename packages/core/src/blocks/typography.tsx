@@ -28,7 +28,7 @@ export const text: BlockItem = {
 export const heading1: BlockItem = {
   title: 'Heading 1',
   description: 'Big heading.',
-  searchTerms: ['title', 'big', 'large'],
+  searchTerms: ['h1', 'title', 'big', 'large'],
   icon: <Heading1 className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     editor
@@ -43,7 +43,7 @@ export const heading1: BlockItem = {
 export const heading2: BlockItem = {
   title: 'Heading 2',
   description: 'Medium heading.',
-  searchTerms: ['subtitle', 'medium'],
+  searchTerms: ['h2', 'subtitle', 'medium'],
   icon: <Heading2 className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     editor
@@ -58,7 +58,7 @@ export const heading2: BlockItem = {
 export const heading3: BlockItem = {
   title: 'Heading 3',
   description: 'Small heading.',
-  searchTerms: ['subtitle', 'small'],
+  searchTerms: ['h3', 'subtitle', 'small'],
   icon: <Heading3 className="mly-h-4 mly-w-4" />,
   command: ({ editor, range }) => {
     editor

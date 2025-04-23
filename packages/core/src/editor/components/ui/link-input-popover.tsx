@@ -1,25 +1,15 @@
-import {
-  BracesIcon,
-  ChevronDownIcon,
-  CornerDownLeft,
-  Link,
-  LucideIcon,
-} from 'lucide-react';
+import { Link, LinkIcon, LucideIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
 import { BaseButton } from '../base-button';
 import { useRef, useState } from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
-import {
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  DEFAULT_VARIABLE_TRIGGER_CHAR,
-  useMailyContext,
-} from '@/editor/provider';
+import { DEFAULT_PLACEHOLDER_URL, useMailyContext } from '@/editor/provider';
 import { InputAutocomplete } from './input-autocomplete';
 import { processVariables } from '@/editor/utils/variable';
 import { useMemo } from 'react';
 import { Editor } from '@tiptap/core';
-
-const LINK_PROTOCOL_REGEX = /https?:\/\//;
+import { useVariableOptions } from '@/editor/utils/node-options';
+import { DEFAULT_VARIABLE_TRIGGER_CHAR } from '@/editor/nodes/variable/variable';
 
 type LinkInputPopoverProps = {
   defaultValue?: string;
@@ -43,26 +33,21 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
     isVariable,
   } = props;
 
-  const defaultProtocol = defaultValue.match(LINK_PROTOCOL_REGEX)?.[0];
-  const defaultUrlWithoutProtocol = defaultValue.replace(
-    LINK_PROTOCOL_REGEX,
-    ''
-  );
-
   const [isOpen, setIsOpen] = useState(false);
-  const [protocol, setProtocol] = useState(defaultProtocol || 'https://');
   const [isEditing, setIsEditing] = useState(!isVariable);
 
   const linkInputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    variables = [],
-    variableTriggerCharacter = DEFAULT_VARIABLE_TRIGGER_CHAR,
-    renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION,
-  } = useMailyContext();
+  const { placeholderUrl = DEFAULT_PLACEHOLDER_URL } = useMailyContext();
+  const options = useVariableOptions(editor);
+
+  const renderVariable = options?.renderVariable;
+  const variables = options?.variables;
+  const variableTriggerCharacter =
+    options?.suggestion?.char ?? DEFAULT_VARIABLE_TRIGGER_CHAR;
 
   const autoCompleteOptions = useMemo(() => {
-    const withoutTrigger = defaultUrlWithoutProtocol.replace(
+    const withoutTrigger = defaultValue.replace(
       new RegExp(variableTriggerCharacter, 'g'),
       ''
     );
@@ -72,7 +57,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
       from: 'bubble-variable',
       editor,
     }).map((variable) => variable.name);
-  }, [variables, defaultUrlWithoutProtocol, editor]);
+  }, [variables, variableTriggerCharacter, defaultValue, editor]);
 
   const popoverButton = (
     <PopoverTrigger asChild>
@@ -80,23 +65,26 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="mly-size-7"
-        data-state={!!defaultUrlWithoutProtocol}
+        className="!mly-size-7"
+        data-state={!!defaultValue}
       >
         <Icon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-midnight-gray" />
       </BaseButton>
     </PopoverTrigger>
   );
 
-  const normalizeProtocol = (value: string, p: string = protocol) => {
-    // remove protocol if it's already there
-    // and add the new one
-    value = value?.replace(LINK_PROTOCOL_REGEX, '');
-    return p + value;
-  };
-
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (open) {
+          setTimeout(() => {
+            linkInputRef.current?.focus();
+          }, 0);
+        }
+      }}
+    >
       {tooltip ? (
         <Tooltip>
           <TooltipTrigger asChild>{popoverButton}</TooltipTrigger>
@@ -121,8 +109,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
               return;
             }
 
-            let value = normalizeProtocol(input.value);
-            onValueChange?.(value);
+            onValueChange?.(input.value);
             setIsOpen(false);
           }}
         >
@@ -139,7 +126,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                 >
                   {renderVariable({
                     variable: {
-                      name: defaultUrlWithoutProtocol,
+                      name: defaultValue,
                       valid: true,
                     },
                     fallback: '',
@@ -151,61 +138,34 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
             )}
 
             {isEditing && (
-              <>
-                <div className="mly-relative">
-                  <select
-                    className="hover:text-accent-foreground mly-peer mly-inline-flex mly-h-full mly-appearance-none mly-items-center mly-rounded-none mly-rounded-s-lg mly-border mly-border-gray-300 mly-bg-gray-50 mly-pe-8 mly-ps-3 mly-text-sm mly-text-gray-700 mly-transition-shadow hover:mly-bg-gray-100 focus:mly-z-10 focus-visible:mly-outline-none disabled:mly-pointer-events-none disabled:mly-cursor-not-allowed disabled:mly-opacity-50"
-                    aria-label="Protocol"
-                    value={protocol}
-                    onChange={(e) => {
-                      const protocol = e.target.value;
-
-                      setProtocol(protocol);
-                      const newValue = normalizeProtocol(
-                        linkInputRef.current?.value || '',
-                        protocol
-                      );
-                      onValueChange?.(newValue);
-                    }}
-                  >
-                    <option value="https://">https://</option>
-                    <option value="http://">http://</option>
-                  </select>
-                  <span className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-0 mly-z-10 mly-flex mly-h-full mly-w-9 mly-items-center mly-justify-center mly-text-gray-600 peer-disabled:mly-opacity-50">
-                    <ChevronDownIcon
-                      size={16}
-                      strokeWidth={2}
-                      aria-hidden="true"
-                      role="img"
-                    />
-                  </span>
+              <div className="mly-relative">
+                <div className="mly-absolute mly-inset-y-0 mly-left-1.5 mly-z-10 mly-flex mly-items-center">
+                  <LinkIcon className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
                 </div>
 
                 <InputAutocomplete
-                  value={defaultUrlWithoutProtocol}
+                  editor={editor}
+                  value={defaultValue}
                   onValueChange={(value) => {
-                    let newValue = normalizeProtocol(value);
-                    onValueChange?.(newValue);
+                    onValueChange?.(value);
                   }}
                   autoCompleteOptions={autoCompleteOptions}
                   ref={linkInputRef}
-                  placeholder="maily.to/"
-                  className="-mly-ms-px mly-block mly-h-8 mly-w-52 mly-rounded-lg mly-rounded-s-none mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
+                  placeholder={placeholderUrl}
+                  className="-mly-ms-px mly-block mly-h-8 mly-w-56 mly-rounded-lg mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pl-6 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
                   triggerChar={variableTriggerCharacter}
                   onSelectOption={(value) => {
                     const isVariable =
                       autoCompleteOptions.includes(value) ?? false;
                     if (isVariable) {
                       setIsEditing(false);
-                    } else {
-                      value = normalizeProtocol(value);
                     }
 
                     onValueChange?.(value, isVariable);
                     setIsOpen(false);
                   }}
                 />
-              </>
+              </div>
             )}
           </div>
         </form>

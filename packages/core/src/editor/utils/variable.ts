@@ -1,4 +1,8 @@
-import { Variable, VariableFunctionOptions, Variables } from '../provider';
+import type {
+  VariableFunctionOptions,
+  Variables,
+  Variable,
+} from '@/extensions';
 
 export function processVariables(
   variables: Variables,

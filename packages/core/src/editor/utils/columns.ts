@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/react';
 import { Fragment, Node } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { findParentNode } from '@tiptap/core';
 import { DEFAULT_COLUMN_WIDTH } from '../nodes/columns/column';
 
@@ -37,7 +37,7 @@ export function addColumn(editor: Editor) {
   const newColumn = state.schema.nodes.column.create(
     {
       width: calculatedWidth,
-      columnId: uuid(),
+      columnId: uuidv4(),
     },
     state.schema.nodes.paragraph.create(null)
   );
@@ -225,6 +225,13 @@ export function updateColumnWidth(
 
   const { state, dispatch } = editor.view;
   const { tr } = state;
+  const { selection } = state;
+
+  const beforeNodeEnd = columnsNodePos + columnsNode.nodeSize;
+  const selectionRelative = {
+    from: selection.from - columnsNodePos,
+    to: selection.to - columnsNodePos,
+  };
 
   const updatedContent: Node[] = [];
   columnsNode.content.forEach((child, _, i) => {
@@ -242,11 +249,17 @@ export function updateColumnWidth(
   const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
   const transaction = tr.replaceWith(
     columnsNodePos,
-    columnsNodePos + columnsNode.nodeSize,
+    beforeNodeEnd,
     updatedColumnsNode
   );
 
-  dispatch(transaction);
+  const newSelection = TextSelection.create(
+    transaction.doc,
+    columnsNodePos + selectionRelative.from,
+    columnsNodePos + selectionRelative.to
+  );
+
+  dispatch(transaction.setSelection(newSelection));
   return true;
 }
 
@@ -266,7 +279,7 @@ export function addColumnByIndex(editor: Editor, index: number = -1) {
   const newColumn = state.schema.nodes.column.create(
     {
       width: DEFAULT_COLUMN_WIDTH,
-      columnId: uuid(),
+      columnId: uuidv4(),
     },
     state.schema.nodes.paragraph.create(null)
   );

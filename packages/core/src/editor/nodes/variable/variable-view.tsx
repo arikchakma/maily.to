@@ -5,30 +5,41 @@ import {
 } from '@/editor/components/popover';
 import { Divider } from '@/editor/components/ui/divider';
 import { TooltipProvider } from '@/editor/components/ui/tooltip';
-import {
-  DEFAULT_RENDER_VARIABLE_FUNCTION,
-  RenderVariableFunction,
-  useMailyContext,
-} from '@/editor/provider';
 import { cn } from '@/editor/utils/classname';
 import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '@/editor/utils/constants';
+import { getNodeOptions } from '@/editor/utils/node-options';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewWrapper } from '@tiptap/react';
 import { AlertTriangle, Braces, Pencil } from 'lucide-react';
+import { useMemo } from 'react';
+import {
+  DEFAULT_RENDER_VARIABLE_FUNCTION,
+  VariableOptions,
+  type RenderVariableFunction,
+} from './variable';
 
 export function VariableView(props: NodeViewProps) {
   const { node, updateAttributes, editor } = props;
   const { id, fallback, required } = node.attrs;
 
-  const { renderVariable = DEFAULT_RENDER_VARIABLE_FUNCTION } =
-    useMailyContext();
+  const renderVariable = useMemo(() => {
+    const variableRender =
+      getNodeOptions<VariableOptions>(editor, 'variable')?.renderVariable ??
+      DEFAULT_RENDER_VARIABLE_FUNCTION;
+
+    return variableRender;
+  }, [editor]);
 
   return (
     <NodeViewWrapper
       className="react-component mly-inline-block mly-leading-none"
       draggable="false"
     >
-      <Popover>
+      <Popover
+        onOpenChange={(open) => {
+          editor.storage.variable.popover = open;
+        }}
+      >
         <PopoverTrigger>
           {renderVariable({
             variable: { name: id, required: required, valid: true },
@@ -124,7 +135,7 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
   return (
     <span
       tabIndex={-1}
-      className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-px-1.5 mly-py-0.5 mly-leading-none"
+      className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-border-gray-200 mly-px-1.5 mly-py-0.5 mly-leading-none"
     >
       <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
       {name}

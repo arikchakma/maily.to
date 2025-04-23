@@ -1,8 +1,9 @@
 'use client';
 
-import { BlockItem } from '@/blocks/types';
+import { BlockGroupItem } from '@/blocks/types';
 import { createContext, PropsWithChildren, useContext } from 'react';
 import { DEFAULT_SLASH_COMMANDS } from './extensions/slash-command/default-slash-commands';
+<<<<<<< HEAD
 import { DefaultRenderVariable } from './nodes/variable/variable-view';
 import { MailyEditor } from '.';
 
@@ -41,29 +42,25 @@ export const DEFAULT_VARIABLE_TRIGGER_CHAR = '@';
 export const DEFAULT_VARIABLES: Variables = [];
 export const DEFAULT_RENDER_VARIABLE_FUNCTION: RenderVariableFunction =
   DefaultRenderVariable;
+=======
+
+export const DEFAULT_PLACEHOLDER_URL = 'https://maily.to/';
+>>>>>>> main
 
 export type MailyContextType = {
-  variableTriggerCharacter?: string;
-  variables?: Variables;
-  blocks?: BlockItem[];
-  renderVariable?: RenderVariableFunction;
+  placeholderUrl?: string;
+  blocks?: BlockGroupItem[];
 };
 
 export const MailyContext = createContext<MailyContextType>({
-  variableTriggerCharacter: DEFAULT_VARIABLE_TRIGGER_CHAR,
-  variables: DEFAULT_VARIABLES,
+  placeholderUrl: DEFAULT_PLACEHOLDER_URL,
   blocks: DEFAULT_SLASH_COMMANDS,
-  renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
 });
 
 type MailyProviderProps = PropsWithChildren<MailyContextType>;
 
 export function MailyProvider(props: MailyProviderProps) {
   const { children, ...defaultValues } = props;
-
-  if (defaultValues.variableTriggerCharacter === '') {
-    throw new Error('variableTriggerCharacter cannot be an empty string');
-  }
 
   return (
     <MailyContext.Provider value={defaultValues}>

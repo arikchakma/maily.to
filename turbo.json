@@ -1,11 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "env": [],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "build/**",
+        ".vercel/**"
+      ]
     },
     "web#build": {
       "dependsOn": ["^build"],
@@ -17,10 +23,16 @@
       ],
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "web-transformer#build": {
+    "@maily-to/web#build": {
       "dependsOn": ["^build"],
-      "env": [],
-      "outputs": [".dist/**"]
+      "env": [
+        "NODE_ENV",
+        "VITE_GA_TRACKING_ID",
+        "VITE_SUPABASE_URL",
+        "VITE_SUPABASE_ANON_KEY",
+        "VITE_APP_URL"
+      ],
+      "outputs": [".vercel/**"]
     },
     "lint": {
       "dependsOn": ["^build"]

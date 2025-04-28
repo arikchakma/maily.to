@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
-    "@react-router/dev": "^7.5.1",
+    "@react-router/dev": "^7.5.2",
     "@tailwindcss/vite": "^4.1.4",
     "@types/express": "^5.0.1",
     "@types/node": "^22",
@@ -67,7 +67,7 @@
     "tailwindcss": "^4.0.15",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0",
+    "typescript-eslint": "^8.31.1",
     "vite": "^6.3.3",
     "vite-tsconfig-paths": "^5.1.4"
   }

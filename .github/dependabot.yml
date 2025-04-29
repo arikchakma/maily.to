@@ -6,7 +6,9 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/apps/web"
+    directories:
+      - "/"
+      - "/apps/web"
     schedule:
       interval: "weekly"
     reviewers:
@@ -17,21 +19,20 @@ updates:
       dev-deps:
         dependency-type: "development"
         exclude-patterns:
-          - "@nestjs/*"
+          - "*react*"
 
       patches:
         update-types:
           - "patch"
       
       # Group minor and major updates for Nest.js (and related dependencies) in one PR
-      nest-upgrades:
+      react-upgrades:
         update-types:
           - "minor"
           - "major"
         patterns:
-          - "@bull-board/*"
-          - "@nestjs/*"
-          - "nestjs-*"
+          - "*react*"
+          - "@radix-ui/*"
 
   - package-ecosystem: "docker"
     directory: "/"

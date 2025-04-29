@@ -1,6 +1,6 @@
 import type { Editor, Range } from '@tiptap/core';
 
-interface CommandProps {
+export interface CommandProps {
   editor: Editor;
   range: Range;
 }

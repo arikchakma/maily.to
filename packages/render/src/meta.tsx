@@ -1,4 +1,4 @@
-import { createElement } from 'react';
+import { createElement, ReactElement } from 'react';
 
 export type MetaDescriptor =
   | {
@@ -44,7 +44,7 @@ export function meta(meta: MetaDescriptors) {
         );
       })
       .map(process)
-      .filter(Boolean) as JSX.Element[]
+      .filter(Boolean) as ReactElement[]
   );
 }
 

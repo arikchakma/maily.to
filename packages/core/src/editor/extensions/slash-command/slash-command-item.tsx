@@ -16,7 +16,7 @@ type SlashCommandItemProps = {
   selectedGroupIndex: number;
   selectedCommandIndex: number;
   editor: Editor;
-  activeCommandRef: RefObject<HTMLButtonElement> | null;
+  activeCommandRef: RefObject<HTMLButtonElement | null>;
   selectItem: (groupIndex: number, commandIndex: number) => void;
   hoveredItemKey: string | null;
   onHover: (isHovered: boolean) => void;

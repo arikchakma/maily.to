@@ -8,6 +8,7 @@ import {
   VariableSuggestionsPopoverType,
 } from './variable-suggestions-popover';
 import { DefaultRenderVariable, VariableView } from './variable-view';
+import { ReactElement } from 'react';
 
 export type Variable = {
   name: string;
@@ -44,7 +45,7 @@ export type RenderVariableOptions = {
 
 export type RenderVariableFunction = (
   opts: RenderVariableOptions
-) => JSX.Element | null;
+) => ReactElement | null;
 
 export type VariableOptions = {
   renderLabel: (props: { options: VariableOptions; node: TNode }) => string;

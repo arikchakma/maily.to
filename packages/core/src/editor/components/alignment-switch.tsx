@@ -1,6 +1,6 @@
 import { AlignCenter, AlignLeft, AlignRight } from 'lucide-react';
 import { BubbleMenuButton } from './bubble-menu-button';
-import { AllowedLogoAlignment } from '../nodes/logo/logo';
+import { AllowedLogoAlignment, allowedLogoAlignment } from '../nodes/logo/logo';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { cn } from '../utils/classname';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -11,7 +11,12 @@ type AlignmentSwitchProps = {
 };
 
 export function AlignmentSwitch(props: AlignmentSwitchProps) {
-  const { alignment = 'left', onAlignmentChange } = props;
+  const { alignment: rawAlignment, onAlignmentChange } = props;
+  const alignment = allowedLogoAlignment.includes(
+    rawAlignment as AllowedLogoAlignment
+  )
+    ? rawAlignment
+    : 'left';
 
   const alignments = {
     left: {

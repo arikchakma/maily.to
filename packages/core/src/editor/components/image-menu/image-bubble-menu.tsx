@@ -170,6 +170,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                 value={state?.width ?? ''}
                 onValueChange={(value) => {
                   const width = Math.min(Number(value) || 0, IMAGE_MAX_WIDTH);
+                  const currentHeight = Number(state.height) || 0;
+                  const currentWidth = Number(state.width) || 0;
+                  const currentAspectRatio =
+                    state.aspectRatio || currentWidth / currentHeight || 1;
 
                   editor
                     ?.chain()
@@ -178,7 +182,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                       ...(lockAspectRatio && value
                         ? {
                             height: String(
-                              getNewHeight(width, state.aspectRatio)
+                              getNewHeight(width, currentAspectRatio)
                             ),
                           }
                         : {}),
@@ -191,6 +195,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                 value={state?.height ?? ''}
                 onValueChange={(value) => {
                   const height = Number(value) || 0;
+                  const currentHeight = Number(state.height) || 0;
+                  const currentWidth = Number(state.width) || 0;
+                  const currentAspectRatio =
+                    state.aspectRatio || currentWidth / currentHeight || 1;
 
                   editor
                     ?.chain()
@@ -199,7 +207,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                       ...(lockAspectRatio && value
                         ? {
                             width: String(
-                              getNewWidth(height, state.aspectRatio)
+                              getNewWidth(height, currentAspectRatio)
                             ),
                           }
                         : {}),

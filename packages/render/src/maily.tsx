@@ -90,6 +90,7 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
+  container?: Partial<CSSProperties>;
   fontSize?: Partial<{
     paragraph: Partial<{
       size: string;
@@ -172,6 +173,14 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardBadgeText: '#111827',
     linkCardBadgeBackground: '#FEF08A',
     linkCardSubTitle: '#6B7280',
+  },
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
   },
   fontSize: {
     paragraph: {
@@ -510,6 +519,7 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
+    const containerStyles = this.config.theme?.container;
 
     const markup = (
       <Html {...htmlProps}>
@@ -539,18 +549,7 @@ export class Maily {
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container
-            style={{
-              maxWidth: '600px',
-              minWidth: '300px',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: '0.5rem',
-            }}
-          >
-            {jsxNodes}
-          </Container>
+          <Container style={containerStyles}>{jsxNodes}</Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""
@@ -720,15 +719,15 @@ export class Maily {
   }
 
   private text(node: JSONContent, options?: NodeOptions): JSX.Element {
-    const text = node.text || '&nbsp';
     if (node.marks) {
       return this.renderMark(node, options);
     }
 
+    const text = node.text;
     // if it's all empty, return an invisible space length
     // of the text so that it doesn't look empty for inline-images
     const spaces = text?.match(/\s/g);
-    if (spaces && spaces.length === text.length) {
+    if (spaces && spaces.length === text?.length) {
       return (
         <>
           {spaces.map((_, index) => (
@@ -738,7 +737,7 @@ export class Maily {
       );
     }
 
-    return <>{text}</>;
+    return text ? <>{text}</> : <>&nbsp;</>;
   }
 
   private bold(_: MarkType, text: JSX.Element): JSX.Element {
@@ -1153,6 +1152,7 @@ export class Maily {
       alt,
       title,
       width = 'auto',
+      height = 'auto',
       alignment = 'center',
       externalLink = '',
       isExternalLinkVariable,
@@ -1178,12 +1178,17 @@ export class Maily {
     const imageWidth = width === 'auto' ? 'auto' : Number(width);
     const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
+    // Handle height value
+    const imageHeight = height === 'auto' ? 'auto' : Number(height);
+    const heightStyle = imageHeight === 'auto' ? 'auto' : `${imageHeight}px`;
+
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
         src={src}
         style={{
           width: widthStyle, // Use the calculated width
+          height: heightStyle, // Use the calculated height
           maxWidth: '100%', // Ensure image doesn't overflow container
           outline: 'none',
           border: 'none',

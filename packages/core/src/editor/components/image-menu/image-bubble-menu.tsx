@@ -20,7 +20,7 @@ import {
 } from '@/editor/nodes/image/image-view';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appendTo } = props;
+  const { editor, appendTo, allowExternal } = props;
   if (!editor) {
     return null;
   }
@@ -122,7 +122,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             isVariable={state.isSrcVariable}
           />
 
-          {state.isImageActive && (
+          {state.isImageActive && allowExternal && (
             <LinkInputPopover
               defaultValue={state?.imageExternalLink ?? ''}
               onValueChange={(value, isVariable) => {

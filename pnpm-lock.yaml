@@ -157,7 +157,7 @@ importers:
         specifier: ^9.25.1
         version: 9.25.1
       '@react-router/dev':
-        specifier: ^7.5.2
+        specifier: ^7.5.3
         version: 7.5.3(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.2)(react-router@7.5.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(tsx@4.19.4)(typescript@5.8.3)(vite@6.3.3(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.4)(yaml@2.7.0))(yaml@2.7.0)
       '@tailwindcss/vite':
         specifier: ^4.1.4

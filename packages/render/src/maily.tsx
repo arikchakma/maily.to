@@ -673,7 +673,7 @@ export class Maily {
         const type = mark.type;
         if (type in this) {
           // @ts-expect-error - `this` is not assignable to type 'never'
-          return this[type]?.(mark, acc) as ReactElement;
+          return this[type]?.(mark, acc, options) as ReactElement;
         }
 
         throw new Error(`Mark type "${type}" is not supported.`);
@@ -1560,7 +1560,7 @@ export class Maily {
     const measuredWidth = Math.round(remainingWidth / autoWidthColumns.length);
 
     const columnCount = content.filter((c) => c.type === 'column').length;
-    const gap = node.attrs?.gap || DEFAULT_COLUMNS_GAP;
+    const gap = node.attrs?.gap ?? DEFAULT_COLUMNS_GAP;
 
     return [
       {

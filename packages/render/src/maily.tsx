@@ -1560,7 +1560,7 @@ export class Maily {
     const measuredWidth = Math.round(remainingWidth / autoWidthColumns.length);
 
     const columnCount = content.filter((c) => c.type === 'column').length;
-    const gap = node.attrs?.gap || DEFAULT_COLUMNS_GAP;
+    const gap = node.attrs?.gap ?? DEFAULT_COLUMNS_GAP;
 
     return [
       {

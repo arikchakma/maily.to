@@ -673,7 +673,7 @@ export class Maily {
         const type = mark.type;
         if (type in this) {
           // @ts-expect-error - `this` is not assignable to type 'never'
-          return this[type]?.(mark, acc, options) as ReactElement
+          return this[type]?.(mark, acc, options) as ReactElement;
         }
 
         throw new Error(`Mark type "${type}" is not supported.`);

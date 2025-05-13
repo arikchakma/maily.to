@@ -14,6 +14,7 @@ import { Toaster } from 'sonner';
 import { NavigationLoadingBar } from './components/navigation-loader';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/query-client';
+import { GoogleAnalytics } from './components/google-analytics';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -148,6 +149,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <GoogleAnalytics />
 
         <Meta />
         <Links />

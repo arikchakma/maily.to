@@ -39,6 +39,7 @@ export type EditorProps = {
   extensions?: AnyExtension[];
   config?: {
     hasMenuBar?: boolean;
+    allowExternalImages?: boolean;
     hideContextMenu?: boolean;
     spellCheck?: boolean;
     wrapClassName?: string;
@@ -59,6 +60,7 @@ export function Editor(props: EditorProps) {
       bodyClassName = '',
       hasMenuBar = true,
       hideContextMenu = false,
+      allowExternalImages = true,
       spellCheck = false,
       autofocus = 'end',
       immediatelyRender = false,
@@ -145,7 +147,11 @@ export function Editor(props: EditorProps) {
           )}
         >
           <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <ImageBubbleMenu
+            allowExternal={allowExternalImages}
+            editor={editor}
+            appendTo={menuContainerRef}
+          />
           <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
@@ -154,7 +160,11 @@ export function Editor(props: EditorProps) {
           <VariableBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <HTMLBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <InlineImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <InlineImageBubbleMenu
+            allowExternal={allowExternalImages}
+            editor={editor}
+            appendTo={menuContainerRef}
+          />
         </div>
       </div>
     </MailyProvider>

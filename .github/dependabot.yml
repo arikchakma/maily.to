@@ -11,8 +11,6 @@ updates:
       - "/apps/web"
     schedule:
       interval: "weekly"
-    reviewers:
-      - "thomasaelbrecht"
     
     groups:
       # Group all updates for devDependencies in one PR
@@ -41,8 +39,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    reviewers:
-      - "thomasaelbrecht"
     groups:
       # Group all updates for Docker in one PR
       docker-deps:
@@ -53,8 +49,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    reviewers:
-      - "thomasaelbrecht"
     groups:
       # Group all updates for GitHub Actions in one PR
       action-deps:

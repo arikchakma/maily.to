@@ -157,7 +157,7 @@
     "@tiptap/extension-dropcursor": "^2.12.0",
     "@tiptap/extension-focus": "^2.11.7",
     "@tiptap/extension-heading": "^2.11.7",
-    "@tiptap/extension-horizontal-rule": "^2.11.7",
+    "@tiptap/extension-horizontal-rule": "^2.12.0",
     "@tiptap/extension-image": "^2.11.7",
     "@tiptap/extension-link": "^2.11.7",
     "@tiptap/extension-list-item": "^2.11.7",

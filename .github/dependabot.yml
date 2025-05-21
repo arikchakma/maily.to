@@ -20,6 +20,8 @@ updates:
         dependency-type: "development"
         exclude-patterns:
           - "*react*"
+          - "@radix-ui/*"
+          - "@tiptap/*"
 
       patches:
         update-types:
@@ -33,6 +35,7 @@ updates:
         patterns:
           - "*react*"
           - "@radix-ui/*"
+          - "@tiptap/*"
 
   - package-ecosystem: "docker"
     directory: "/"

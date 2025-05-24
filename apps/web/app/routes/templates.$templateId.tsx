@@ -80,5 +80,7 @@ export default function TemplatePage(props: Route.ComponentProps) {
   const { loaderData } = props;
   const { template } = loaderData;
 
-  return <EmailEditorSandbox key={template.id} template={template} />;
+  return (
+    <EmailEditorSandbox key={template.id} template={template} autofocus="end" />
+  );
 }

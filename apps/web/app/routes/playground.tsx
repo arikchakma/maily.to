@@ -74,7 +74,7 @@ export default function Playground(props: Route.ComponentProps) {
         </div>
       </header>
 
-      <EmailEditorSandbox showSaveButton={false} />
+      <EmailEditorSandbox showSaveButton={false} autofocus={false} />
     </main>
   );
 }

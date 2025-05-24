@@ -995,6 +995,7 @@ export class Maily {
       <li
         style={{
           marginBottom: '8px',
+          marginTop: '8px',
           paddingLeft: '6px',
           ...antialiased,
         }}

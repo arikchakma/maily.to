@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { useCopyToClipboard } from '~/hooks/use-copy-to-clipboard';
 import { cn } from '~/lib/classname';
+import { isSafari } from '~/lib/detect-browser';
 import { httpPost } from '~/lib/http';
 
 type CopyEmailHtmlProps = {
@@ -47,6 +48,41 @@ export function CopyEmailHtml(props: CopyEmailHtmlProps) {
         }
 
         const data = await mutateAsync();
+
+        if (isSafari()) {
+          toast.custom(
+            (t) => (
+              <div className="rounded-md border border-gray-200 bg-white p-2 text-sm shadow-sm">
+                Please{' '}
+                <button
+                  className="inline-flex items-center rounded-md bg-black px-1 text-white"
+                  onClick={async () => {
+                    toast.dismiss(t);
+                    const success = await copy(data.html);
+                    toast[success ? 'success' : 'error'](
+                      success
+                        ? 'Email HTML copied to clipboard'
+                        : 'Failed to Copy'
+                    );
+                  }}
+                >
+                  <ClipboardIcon className="inline-block size-3 shrink-0" />
+                  &nbsp;click here
+                </button>{' '}
+                to copy the email HTML to clipboard.{' '}
+                <i>
+                  (Safari does not support copying HTML directly from async
+                  functions)
+                </i>
+              </div>
+            ),
+            {
+              duration: 10000,
+            }
+          );
+          return;
+        }
+
         await copy(data.html);
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);

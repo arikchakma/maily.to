@@ -936,11 +936,14 @@ export class Maily {
     );
 
     return (
-      <Container>
+      <Container
+        style={{
+          marginTop: '0px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
+        }}
+      >
         <ol
           style={{
-            marginTop: '0px',
-            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
@@ -968,12 +971,12 @@ export class Maily {
       <Container
         style={{
           maxWidth: '100%',
+          marginTop: '0px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
         }}
       >
         <ul
           style={{
-            marginTop: '0px',
-            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
@@ -992,6 +995,7 @@ export class Maily {
       <li
         style={{
           marginBottom: '8px',
+          marginTop: '8px',
           paddingLeft: '6px',
           ...antialiased,
         }}

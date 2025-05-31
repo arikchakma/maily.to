@@ -16,6 +16,7 @@ import {
   Column,
   Section,
   HtmlProps,
+  FontProps,
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
@@ -101,6 +102,9 @@ export interface ThemeOptions {
       lineHeight: string;
     }>;
   }>;
+  body?: Partial<CSSProperties>;
+  button?: Partial<CSSProperties>;
+  link?: Partial<CSSProperties>;
 }
 
 export interface MailyConfig {
@@ -153,46 +157,6 @@ export interface MailyConfig {
    */
   theme?: Partial<ThemeOptions>;
 }
-
-const DEFAULT_RENDER_OPTIONS: RenderOptions = {
-  pretty: false,
-  plainText: false,
-};
-
-const DEFAULT_THEME: ThemeOptions = {
-  colors: {
-    heading: '#111827',
-    paragraph: '#374151',
-    horizontal: '#EAEAEA',
-    footer: '#64748B',
-    blockquoteBorder: '#D1D5DB',
-    codeBackground: '#EFEFEF',
-    codeText: '#111827',
-    linkCardTitle: '#111827',
-    linkCardDescription: '#6B7280',
-    linkCardBadgeText: '#111827',
-    linkCardBadgeBackground: '#FEF08A',
-    linkCardSubTitle: '#6B7280',
-  },
-  container: {
-    maxWidth: '600px',
-    minWidth: '300px',
-    width: '100%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: '0.5rem',
-  },
-  fontSize: {
-    paragraph: {
-      size: '15px',
-      lineHeight: '26.25px',
-    },
-    footer: {
-      size: '14px',
-      lineHeight: '24px',
-    },
-  },
-};
 
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
@@ -262,10 +226,92 @@ export const DEFAULT_HTML_PROPS: HtmlProps = {
   dir: 'ltr',
 };
 
+export const DEFAULT_BUTTON_BACKGROUND_COLOR = '#000000';
 export const DEFAULT_BUTTON_PADDING_TOP = 10;
 export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
 export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
 export const DEFAULT_BUTTON_PADDING_LEFT = 32;
+export const DEFAULT_BUTTON_TEXT_COLOR = '#ffffff';
+
+export const DEFAULT_LINK_TEXT_COLOR = '#111827';
+export const DEFAULT_LINK_TEXT_DECORATION = 'underline';
+
+const DEFAULT_RENDER_OPTIONS: RenderOptions = {
+  pretty: false,
+  plainText: false,
+};
+
+export const DEFAULT_FONT: FontProps = {
+  fallbackFontFamily: 'sans-serif',
+  fontFamily: 'Inter',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  webFont: {
+    url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
+    format: 'woff2',
+  },
+};
+
+const DEFAULT_THEME: ThemeOptions = {
+  colors: {
+    heading: '#111827',
+    paragraph: '#374151',
+    horizontal: '#EAEAEA',
+    footer: '#64748B',
+    blockquoteBorder: '#D1D5DB',
+    codeBackground: '#EFEFEF',
+    codeText: '#111827',
+    linkCardTitle: '#111827',
+    linkCardDescription: '#6B7280',
+    linkCardBadgeText: '#111827',
+    linkCardBadgeBackground: '#FEF08A',
+    linkCardSubTitle: '#6B7280',
+  },
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
+  },
+  fontSize: {
+    paragraph: {
+      size: '15px',
+      lineHeight: '26.25px',
+    },
+    footer: {
+      size: '14px',
+      lineHeight: '24px',
+    },
+  },
+  body: {
+    backgroundColor: '#ffffff',
+    marginTop: '0',
+    marginRight: '0',
+    marginBottom: '0',
+    marginLeft: '0',
+
+    paddingTop: '0',
+    paddingRight: '0',
+    paddingBottom: '0',
+    paddingLeft: '0',
+  },
+
+  button: {
+    backgroundColor: DEFAULT_BUTTON_BACKGROUND_COLOR,
+    paddingTop: DEFAULT_BUTTON_PADDING_TOP,
+    paddingRight: DEFAULT_BUTTON_PADDING_RIGHT,
+    paddingBottom: DEFAULT_BUTTON_PADDING_BOTTOM,
+    paddingLeft: DEFAULT_BUTTON_PADDING_LEFT,
+    color: DEFAULT_BUTTON_TEXT_COLOR,
+  },
+
+  link: {
+    textDecoration: DEFAULT_LINK_TEXT_DECORATION,
+    color: DEFAULT_LINK_TEXT_COLOR,
+  },
+};
 
 export interface RenderOptions {
   /**
@@ -312,6 +358,7 @@ export class Maily {
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
   private meta: MetaDescriptors = DEFAULT_META_TAGS;
   private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
+  private font: FontProps = DEFAULT_FONT;
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -433,6 +480,13 @@ export class Maily {
     };
   }
 
+  setFont(font: Partial<FontProps>) {
+    this.font = {
+      ...this.font,
+      ...font,
+    };
+  }
+
   getAllLinks() {
     const nodes = this.content.content || [];
     const links = new Set<string>();
@@ -524,16 +578,7 @@ export class Maily {
     const markup = (
       <Html {...htmlProps}>
         <Head>
-          <Font
-            fallbackFontFamily="sans-serif"
-            fontFamily="Inter"
-            fontStyle="normal"
-            fontWeight={400}
-            webFont={{
-              url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
-              format: 'woff2',
-            }}
-          />
+          <Font {...this.font} />
           <style
             dangerouslySetInnerHTML={{
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
@@ -541,11 +586,7 @@ export class Maily {
           />
           {tags}
         </Head>
-        <Body
-          style={{
-            margin: 0,
-          }}
-        >
+        <Body style={this.config.theme?.body}>
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
@@ -1007,22 +1048,26 @@ export class Maily {
 
   private button(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
+
+    const buttonTheme = this.config.theme?.button;
     let {
       text: _text,
       isTextVariable,
       url,
       isUrlVariable,
       variant,
-      buttonColor,
-      textColor,
+      buttonColor = buttonTheme?.backgroundColor ||
+        DEFAULT_BUTTON_BACKGROUND_COLOR,
+      textColor = buttonTheme?.color || DEFAULT_BUTTON_TEXT_COLOR,
       borderRadius,
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
 
-      paddingTop = DEFAULT_BUTTON_PADDING_TOP,
-      paddingRight = DEFAULT_BUTTON_PADDING_RIGHT,
-      paddingBottom = DEFAULT_BUTTON_PADDING_BOTTOM,
-      paddingLeft = DEFAULT_BUTTON_PADDING_LEFT,
+      paddingTop = buttonTheme?.paddingTop || DEFAULT_BUTTON_PADDING_TOP,
+      paddingRight = buttonTheme?.paddingRight || DEFAULT_BUTTON_PADDING_RIGHT,
+      paddingBottom = buttonTheme?.paddingBottom ||
+        DEFAULT_BUTTON_PADDING_BOTTOM,
+      paddingLeft = buttonTheme?.paddingLeft || DEFAULT_BUTTON_PADDING_LEFT,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);

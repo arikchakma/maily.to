@@ -43,12 +43,16 @@
   --mly-container-border-color: transparent;
   --mly-container-border-width: 0;
 
+  /* Button */
   --mly-button-background-color: #000000;
   --mly-button-text-color: #ffffff;
   --mly-button-padding-top: 10px;
   --mly-button-padding-right: 32px;
   --mly-button-padding-bottom: 10px;
   --mly-button-padding-left: 32px;
+
+  /* Link */
+  --mly-link-color: #111827;
 }
 
 .mly-editor
@@ -308,6 +312,10 @@
   h2,
   h3 {
     --variable-icon-gap: 8px;
+  }
+
+  a {
+    color: var(--mly-link-color);
   }
 
   :where(.is-editor-empty:first-child, .is-empty):not(

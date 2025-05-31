@@ -40,8 +40,35 @@ export interface ThemeOptions {
     }>;
   }>;
 
-  container?: Partial<CSSProperties>;
-  body?: Partial<CSSProperties>;
+  container?: Partial<
+    Pick<
+      CSSProperties,
+      | 'backgroundColor'
+      | 'maxWidth'
+      | 'minWidth'
+      | 'width'
+      | 'marginLeft'
+      | 'marginRight'
+      | 'paddingTop'
+      | 'paddingRight'
+      | 'paddingBottom'
+      | 'paddingLeft'
+    >
+  >;
+  body?: Partial<
+    Pick<
+      CSSProperties,
+      | 'backgroundColor'
+      | 'marginTop'
+      | 'marginRight'
+      | 'marginBottom'
+      | 'marginLeft'
+      | 'paddingTop'
+      | 'paddingRight'
+      | 'paddingBottom'
+      | 'paddingLeft'
+    >
+  >;
   button?: Partial<
     Pick<
       CSSProperties,
@@ -53,7 +80,7 @@ export interface ThemeOptions {
       | 'color'
     >
   >;
-  link?: Partial<CSSProperties>;
+  link?: Partial<Pick<CSSProperties, 'color'>>;
 }
 
 export default function SkeletonEditor() {
@@ -69,25 +96,10 @@ export default function SkeletonEditor() {
     container: {
       backgroundColor: '#ffffff',
     },
+    link: {
+      color: '#111827',
+    },
   });
-
-  const sizes: Record<string, { paddingX: number; paddingY: number }> = useMemo(
-    () => ({
-      small: {
-        paddingX: 24,
-        paddingY: 6,
-      },
-      medium: {
-        paddingX: 32,
-        paddingY: 10,
-      },
-      large: {
-        paddingX: 40,
-        paddingY: 14,
-      },
-    }),
-    []
-  );
 
   return (
     <div
@@ -100,6 +112,7 @@ export default function SkeletonEditor() {
           '--mly-button-padding-right': editorTheme.button?.paddingRight,
           '--mly-button-padding-bottom': editorTheme.button?.paddingBottom,
           '--mly-button-padding-left': editorTheme.button?.paddingLeft,
+          '--mly-link-color': editorTheme.link?.color,
         } as CSSProperties
       }
     >
@@ -124,6 +137,12 @@ export default function SkeletonEditor() {
           buttonTheme={editorTheme.button}
           setButtonTheme={(buttonTheme) =>
             setEditorTheme({ ...editorTheme, button: buttonTheme })
+          }
+        />
+        <LinkSettings
+          linkTheme={editorTheme.link}
+          setLinkTheme={(linkTheme) =>
+            setEditorTheme({ ...editorTheme, link: linkTheme })
           }
         />
       </div>
@@ -255,11 +274,6 @@ function ButtonSettings(props: ButtonSettingsProps) {
     })?.[0];
   }, [buttonTheme, sizes]);
 
-  console.log('-'.repeat(20));
-  console.log(size);
-  console.log(buttonTheme);
-  console.log('-'.repeat(20));
-
   return (
     <div>
       <h3 className="text-sm font-medium">Button</h3>
@@ -311,6 +325,34 @@ function ButtonSettings(props: ButtonSettingsProps) {
               { value: 'medium', label: 'Medium' },
               { value: 'large', label: 'Large' },
             ]}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type LinkSettingsProps = {
+  linkTheme: ThemeOptions['link'];
+  setLinkTheme: (linkTheme: ThemeOptions['link']) => void;
+};
+
+function LinkSettings(props: LinkSettingsProps) {
+  const { linkTheme, setLinkTheme } = props;
+
+  return (
+    <div>
+      <h3 className="text-sm font-medium">Link</h3>
+
+      <div className="mt-2 space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="w-25 shrink-0 grow text-sm">
+            <label>Color</label>
+          </div>
+
+          <ColorInput
+            value={linkTheme?.color ?? '#000000'}
+            onChange={(value) => setLinkTheme({ ...linkTheme, color: value })}
           />
         </div>
       </div>

@@ -102,10 +102,44 @@ export interface ThemeOptions {
     }>;
   }>;
 
-  container?: Partial<CSSProperties>;
-  body?: Partial<CSSProperties>;
-  button?: Partial<CSSProperties>;
-  link?: Partial<CSSProperties>;
+  container?: Partial<
+    Pick<
+      CSSProperties,
+      | 'backgroundColor'
+      | 'maxWidth'
+      | 'minWidth'
+      | 'paddingTop'
+      | 'paddingRight'
+      | 'paddingBottom'
+      | 'paddingLeft'
+    >
+  >;
+  body?: Partial<
+    Pick<
+      CSSProperties,
+      | 'backgroundColor'
+      | 'marginTop'
+      | 'marginRight'
+      | 'marginBottom'
+      | 'marginLeft'
+      | 'paddingTop'
+      | 'paddingRight'
+      | 'paddingBottom'
+      | 'paddingLeft'
+    >
+  >;
+  button?: Partial<
+    Pick<
+      CSSProperties,
+      | 'paddingTop'
+      | 'paddingRight'
+      | 'paddingBottom'
+      | 'paddingLeft'
+      | 'backgroundColor'
+      | 'color'
+    >
+  >;
+  link?: Partial<Pick<CSSProperties, 'color'>>;
 }
 
 export interface MailyConfig {
@@ -282,9 +316,6 @@ const DEFAULT_THEME: ThemeOptions = {
   container: {
     maxWidth: '600px',
     minWidth: '300px',
-    width: '100%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
     paddingTop: '0.5rem',
     paddingRight: '0.5rem',
     paddingBottom: '0.5rem',
@@ -311,7 +342,6 @@ const DEFAULT_THEME: ThemeOptions = {
     color: DEFAULT_BUTTON_TEXT_COLOR,
   },
   link: {
-    textDecoration: DEFAULT_LINK_TEXT_DECORATION,
     color: DEFAULT_LINK_TEXT_COLOR,
   },
 };
@@ -593,7 +623,16 @@ export class Maily {
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container style={containerStyles}>{jsxNodes}</Container>
+          <Container
+            style={{
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              ...containerStyles,
+            }}
+          >
+            {jsxNodes}
+          </Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""

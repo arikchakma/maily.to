@@ -110,7 +110,7 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
 
   if (from === 'button-variable') {
     return (
-      <div className="mly-inline-grid mly-h-7 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-[var(--button-var-border-color)] mly-px-2 mly-font-mono mly-text-sm">
+      <div className="mly-inline-grid mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-[var(--button-var-border-color)] mly-px-2 mly-py-px mly-font-mono mly-text-xs">
         <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
         <span className="mly-min-w-0 mly-truncate mly-text-left">{name}</span>
       </div>
@@ -121,7 +121,7 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
     return (
       <div
         className={cn(
-          'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+          'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-gray-200 mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
           !valid &&
             'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
         )}

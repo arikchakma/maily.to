@@ -285,7 +285,10 @@ const DEFAULT_THEME: ThemeOptions = {
     width: '100%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    padding: '0.5rem',
+    paddingTop: '0.5rem',
+    paddingRight: '0.5rem',
+    paddingBottom: '0.5rem',
+    paddingLeft: '0.5rem',
   },
   body: {
     backgroundColor: '#ffffff',
@@ -857,6 +860,12 @@ export class Maily {
     const { payloadValue } = options || {};
     const linkWithoutProtocol = this.removeLinkProtocol(href);
 
+    if (!this.shouldReplaceVariableValues) {
+      return this.variableFormatter({
+        variable: linkWithoutProtocol,
+      });
+    }
+
     return (
       (typeof payloadValue === 'object'
         ? payloadValue[linkWithoutProtocol]
@@ -1052,25 +1061,46 @@ export class Maily {
     const { attrs } = node;
 
     const buttonTheme = this.config.theme?.button;
+    console.log('---'.repeat(20));
+    console.log(buttonTheme);
+    console.log('---'.repeat(20));
+
     let {
       text: _text,
       isTextVariable,
       url,
       isUrlVariable,
       variant,
-      buttonColor = buttonTheme?.backgroundColor ||
-        DEFAULT_BUTTON_BACKGROUND_COLOR,
-      textColor = buttonTheme?.color || DEFAULT_BUTTON_TEXT_COLOR,
+      buttonColor: _buttonColor,
+      textColor: _textColor,
       borderRadius,
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
 
-      paddingTop = buttonTheme?.paddingTop || DEFAULT_BUTTON_PADDING_TOP,
-      paddingRight = buttonTheme?.paddingRight || DEFAULT_BUTTON_PADDING_RIGHT,
-      paddingBottom = buttonTheme?.paddingBottom ||
-        DEFAULT_BUTTON_PADDING_BOTTOM,
-      paddingLeft = buttonTheme?.paddingLeft || DEFAULT_BUTTON_PADDING_LEFT,
+      paddingTop: _paddingTop,
+      paddingRight: _paddingRight,
+      paddingBottom: _paddingBottom,
+      paddingLeft: _paddingLeft,
     } = attrs || {};
+
+    const buttonColor =
+      _buttonColor ||
+      buttonTheme?.backgroundColor ||
+      DEFAULT_BUTTON_BACKGROUND_COLOR;
+    const textColor =
+      _textColor || buttonTheme?.color || DEFAULT_BUTTON_TEXT_COLOR;
+    let paddingTop =
+      _paddingTop || buttonTheme?.paddingTop || DEFAULT_BUTTON_PADDING_TOP;
+    const paddingRight =
+      _paddingRight ||
+      buttonTheme?.paddingRight ||
+      DEFAULT_BUTTON_PADDING_RIGHT;
+    let paddingBottom =
+      _paddingBottom ||
+      buttonTheme?.paddingBottom ||
+      DEFAULT_BUTTON_PADDING_BOTTOM;
+    const paddingLeft =
+      _paddingLeft || buttonTheme?.paddingLeft || DEFAULT_BUTTON_PADDING_LEFT;
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {

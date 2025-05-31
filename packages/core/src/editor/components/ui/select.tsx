@@ -19,6 +19,8 @@ type SelectProps = {
 
   icon?: LucideIcon | SVGIcon;
   iconClassName?: string;
+
+  placeholder?: string;
 };
 
 export function Select(props: SelectProps) {
@@ -31,6 +33,7 @@ export function Select(props: SelectProps) {
     className,
     icon: Icon,
     iconClassName,
+    placeholder,
   } = props;
 
   const selectId = `mly${useId()}`;
@@ -57,6 +60,12 @@ export function Select(props: SelectProps) {
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
       >
+        {placeholder && (
+          <option value="" disabled selected hidden>
+            {placeholder}
+          </option>
+        )}
+
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

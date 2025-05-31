@@ -96,19 +96,26 @@ export function ButtonView(props: NodeViewProps) {
               style={
                 {
                   backgroundColor:
-                    variant === 'filled' ? buttonColor : 'transparent',
-                  color: textColor,
+                    variant === 'filled'
+                      ? buttonColor || 'var(--mly-button-background-color)'
+                      : 'transparent',
+                  color: textColor || 'var(--mly-button-text-color)',
+
                   borderWidth: 2,
                   borderStyle: 'solid',
                   borderColor: buttonColor,
                   // decrease the border color opacity to 80%
                   // so that it's not too prominent
-                  '--button-var-border-color': `${textColor}80`,
+                  '--button-var-border-color': textColor
+                    ? `${textColor}80`
+                    : 'color-mix(in srgb, var(--mly-button-text-color) 80%, transparent)',
 
-                  paddingTop,
-                  paddingRight,
-                  paddingBottom,
-                  paddingLeft,
+                  paddingTop: paddingTop || 'var(--mly-button-padding-top)',
+                  paddingRight:
+                    paddingRight || 'var(--mly-button-padding-right)',
+                  paddingBottom:
+                    paddingBottom || 'var(--mly-button-padding-bottom)',
+                  paddingLeft: paddingLeft || 'var(--mly-button-padding-left)',
                 } as CSSProperties
               }
               onClick={(e) => {
@@ -209,6 +216,7 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Size"
+                  placeholder="Size"
                 />
               </div>
 
@@ -243,7 +251,7 @@ export function ButtonView(props: NodeViewProps) {
               <div className="mly-flex mly-space-x-0.5">
                 <BackgroundColorPickerPopup
                   variant={variant}
-                  color={buttonColor}
+                  color={buttonColor || 'transparent'}
                   onChange={(color) => {
                     updateAttributes({
                       buttonColor: color,
@@ -252,7 +260,7 @@ export function ButtonView(props: NodeViewProps) {
                 />
 
                 <TextColorPickerPopup
-                  color={textColor}
+                  color={textColor || 'transparent'}
                   onChange={(color) => {
                     updateAttributes({
                       textColor: color,

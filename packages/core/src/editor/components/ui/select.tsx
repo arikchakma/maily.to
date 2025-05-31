@@ -57,11 +57,11 @@ export function Select(props: SelectProps) {
           !!Icon && 'mly-pl-7',
           className
         )}
-        value={value}
+        value={value || ''}
         onChange={(event) => onValueChange(event.target.value)}
       >
         {placeholder && (
-          <option value="" disabled selected hidden>
+          <option value="" disabled hidden>
             {placeholder}
           </option>
         )}

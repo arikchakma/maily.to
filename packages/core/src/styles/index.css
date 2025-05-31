@@ -11,8 +11,7 @@
   --color-tag: #313233;
   --color-meta: #313233d6;
 
-  --mly-font-family: 'Inter';
-  --mly-fallback-font-family: 'sans-serif';
+  --mly-font-family: 'Inter', sans-serif;
   --mly-font-weight: 400;
   --mly-font-style: normal;
 
@@ -30,15 +29,19 @@
   --mly-body-padding-left: 0;
 
   /* Container */
+  --mly-container-background-color: #ffffff;
   --mly-container-max-width: 600px;
   --mly-container-min-width: 300px;
   --mly-container-width: 100%;
-  --mly-container-margin-left: auto;
-  --mly-container-margin-right: auto;
   --mly-container-padding-top: 0.5rem;
   --mly-container-padding-right: 0.5rem;
   --mly-container-padding-bottom: 0.5rem;
   --mly-container-padding-left: 0.5rem;
+
+  --mly-container-border-style: solid;
+  --mly-container-border-radius: 0;
+  --mly-container-border-color: transparent;
+  --mly-container-border-width: 0;
 
   --mly-button-background-color: #000000;
   --mly-button-text-color: #ffffff;

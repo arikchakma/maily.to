@@ -97,7 +97,7 @@ export default function SkeletonEditor() {
       paddingLeft: '32px',
     },
     container: {
-      backgroundColor: 'transparent',
+      backgroundColor: '#ffffff',
       paddingTop: '8px',
       paddingRight: '8px',
       paddingBottom: '8px',

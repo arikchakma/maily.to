@@ -112,6 +112,9 @@ export interface ThemeOptions {
       | 'paddingRight'
       | 'paddingBottom'
       | 'paddingLeft'
+      | 'borderRadius'
+      | 'borderWidth'
+      | 'borderColor'
     >
   >;
   body?: Partial<
@@ -314,24 +317,29 @@ const DEFAULT_THEME: ThemeOptions = {
   },
 
   container: {
+    backgroundColor: '#ffffff',
     maxWidth: '600px',
     minWidth: '300px',
     paddingTop: '0.5rem',
     paddingRight: '0.5rem',
     paddingBottom: '0.5rem',
     paddingLeft: '0.5rem',
+
+    borderRadius: '0px',
+    borderWidth: '0px',
+    borderColor: 'transparent',
   },
   body: {
     backgroundColor: '#ffffff',
-    marginTop: '0',
-    marginRight: '0',
-    marginBottom: '0',
-    marginLeft: '0',
+    marginTop: '0px',
+    marginRight: '0px',
+    marginBottom: '0px',
+    marginLeft: '0px',
 
-    paddingTop: '0',
-    paddingRight: '0',
-    paddingBottom: '0',
-    paddingLeft: '0',
+    paddingTop: '0px',
+    paddingRight: '0px',
+    paddingBottom: '0px',
+    paddingLeft: '0px',
   },
   button: {
     backgroundColor: '#000000',

@@ -103,7 +103,8 @@ export function ButtonView(props: NodeViewProps) {
 
                   borderWidth: 2,
                   borderStyle: 'solid',
-                  borderColor: buttonColor,
+                  borderColor:
+                    buttonColor || 'var(--mly-button-background-color)',
                   // decrease the border color opacity to 80%
                   // so that it's not too prominent
                   '--button-var-border-color': textColor

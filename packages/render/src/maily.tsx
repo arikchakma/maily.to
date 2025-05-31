@@ -334,12 +334,12 @@ const DEFAULT_THEME: ThemeOptions = {
     paddingLeft: '0',
   },
   button: {
-    backgroundColor: DEFAULT_BUTTON_BACKGROUND_COLOR,
-    paddingTop: DEFAULT_BUTTON_PADDING_TOP,
-    paddingRight: DEFAULT_BUTTON_PADDING_RIGHT,
-    paddingBottom: DEFAULT_BUTTON_PADDING_BOTTOM,
-    paddingLeft: DEFAULT_BUTTON_PADDING_LEFT,
-    color: DEFAULT_BUTTON_TEXT_COLOR,
+    backgroundColor: '#000000',
+    color: '#ffffff',
+    paddingTop: '10px',
+    paddingRight: '32px',
+    paddingBottom: '10px',
+    paddingLeft: '32px',
   },
   link: {
     color: DEFAULT_LINK_TEXT_COLOR,
@@ -1122,24 +1122,17 @@ export class Maily {
       paddingLeft: _paddingLeft,
     } = attrs || {};
 
-    const buttonColor =
-      _buttonColor ||
-      buttonTheme?.backgroundColor ||
-      DEFAULT_BUTTON_BACKGROUND_COLOR;
-    const textColor =
-      _textColor || buttonTheme?.color || DEFAULT_BUTTON_TEXT_COLOR;
+    const buttonColor = _buttonColor || buttonTheme?.backgroundColor;
+    const textColor = _textColor || buttonTheme?.color;
+
     let paddingTop =
-      _paddingTop || buttonTheme?.paddingTop || DEFAULT_BUTTON_PADDING_TOP;
+      parseInt(String(_paddingTop || buttonTheme?.paddingTop)) || 0;
     const paddingRight =
-      _paddingRight ||
-      buttonTheme?.paddingRight ||
-      DEFAULT_BUTTON_PADDING_RIGHT;
+      parseInt(String(_paddingRight || buttonTheme?.paddingRight)) || 0;
     let paddingBottom =
-      _paddingBottom ||
-      buttonTheme?.paddingBottom ||
-      DEFAULT_BUTTON_PADDING_BOTTOM;
+      parseInt(String(_paddingBottom || buttonTheme?.paddingBottom)) || 0;
     const paddingLeft =
-      _paddingLeft || buttonTheme?.paddingLeft || DEFAULT_BUTTON_PADDING_LEFT;
+      parseInt(String(_paddingLeft || buttonTheme?.paddingLeft)) || 0;
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {

@@ -33,10 +33,13 @@
   --mly-container-max-width: 600px;
   --mly-container-min-width: 300px;
   --mly-container-width: 100%;
-  --mly-container-padding-top: 0.5rem;
-  --mly-container-padding-right: 0.5rem;
-  --mly-container-padding-bottom: 0.5rem;
-  --mly-container-padding-left: 0.5rem;
+  --mly-container-padding-top: 8px;
+  --mly-container-padding-right: 8px;
+  --mly-container-padding-bottom: 8px;
+  --mly-container-padding-left: 8px;
+
+  --mly-container-margin-top: 0;
+  --mly-container-margin-bottom: 0;
 
   --mly-container-border-style: solid;
   --mly-container-border-radius: 0;

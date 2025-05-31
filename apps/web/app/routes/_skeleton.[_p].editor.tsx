@@ -53,6 +53,9 @@ export interface ThemeOptions {
       | 'paddingRight'
       | 'paddingBottom'
       | 'paddingLeft'
+      | 'borderRadius'
+      | 'borderWidth'
+      | 'borderColor'
     >
   >;
   body?: Partial<
@@ -94,10 +97,28 @@ export default function SkeletonEditor() {
       paddingLeft: '32px',
     },
     container: {
-      backgroundColor: '#ffffff',
+      backgroundColor: 'transparent',
+      paddingTop: '8px',
+      paddingRight: '8px',
+      paddingBottom: '8px',
+      paddingLeft: '8px',
+      borderRadius: '0px',
+      borderWidth: '0px',
+      borderColor: 'transparent',
     },
     link: {
       color: '#111827',
+    },
+    body: {
+      backgroundColor: '#ffffff',
+      marginTop: '0px',
+      marginRight: '0px',
+      marginBottom: '0px',
+      marginLeft: '0px',
+      paddingTop: '0px',
+      paddingRight: '0px',
+      paddingBottom: '0px',
+      paddingLeft: '0px',
     },
   });
 
@@ -106,6 +127,30 @@ export default function SkeletonEditor() {
       className="flex h-screen w-screen p-10"
       style={
         {
+          '--mly-body-background-color': editorTheme.body?.backgroundColor,
+          '--mly-body-margin-top': editorTheme.body?.marginTop,
+          '--mly-body-margin-right': editorTheme.body?.marginRight,
+          '--mly-body-margin-bottom': editorTheme.body?.marginBottom,
+          '--mly-body-margin-left': editorTheme.body?.marginLeft,
+          '--mly-body-padding-top': editorTheme.body?.paddingTop,
+          '--mly-body-padding-right': editorTheme.body?.paddingRight,
+          '--mly-body-padding-bottom': editorTheme.body?.paddingBottom,
+          '--mly-body-padding-left': editorTheme.body?.paddingLeft,
+
+          '--mly-container-background-color':
+            editorTheme.container?.backgroundColor,
+          '--mly-container-max-width': editorTheme.container?.maxWidth,
+          '--mly-container-min-width': editorTheme.container?.minWidth,
+          '--mly-container-width': editorTheme.container?.width,
+          '--mly-container-padding-top': editorTheme.container?.paddingTop,
+          '--mly-container-padding-right': editorTheme.container?.paddingRight,
+          '--mly-container-padding-bottom':
+            editorTheme.container?.paddingBottom,
+          '--mly-container-padding-left': editorTheme.container?.paddingLeft,
+          '--mly-container-border-radius': editorTheme.container?.borderRadius,
+          '--mly-container-border-width': editorTheme.container?.borderWidth,
+          '--mly-container-border-color': editorTheme.container?.borderColor,
+
           '--mly-button-background-color': editorTheme.button?.backgroundColor,
           '--mly-button-text-color': editorTheme.button?.color,
           '--mly-button-padding-top': editorTheme.button?.paddingTop,
@@ -120,9 +165,12 @@ export default function SkeletonEditor() {
         <Editor
           config={{
             hasMenuBar: false,
-            wrapClassName: cn('editor-wrap'),
-            bodyClassName: '!mt-0 !border-0 !p-0',
-            contentClassName: `editor-content mx-auto max-w-[calc(600px+80px)]! px-10! pb-10!`,
+            wrapClassName: cn(
+              'editor-wrap w-full bg-[var(--mly-body-background-color)] px-[var(--mly-body-padding-left)] py-[var(--mly-body-padding-top)]'
+            ),
+            bodyClassName:
+              'editor-body bg-transparent! !mt-0 !border-0 !p-0 w-full',
+            contentClassName: `editor-content mx-auto max-w-[var(--mly-container-max-width)]! bg-[var(--mly-container-background-color)] px-[var(--mly-container-padding-left)]! py-[var(--mly-container-padding-top)]! rounded-[var(--mly-container-border-radius)]! [border-width:var(--mly-container-border-width)]! [border-color:var(--mly-container-border-color)]!`,
             toolbarClassName: 'flex-wrap !items-start',
             spellCheck: false,
             autofocus: 'end',
@@ -132,7 +180,16 @@ export default function SkeletonEditor() {
         />
       </Suspense>
       <div className="mx-auto max-w-xs grow space-y-10 border-l border-gray-200 px-6">
-        <LayoutSettings />
+        <LayoutSettings
+          containerTheme={editorTheme.container}
+          setContainerTheme={(containerTheme) =>
+            setEditorTheme({ ...editorTheme, container: containerTheme })
+          }
+          bodyTheme={editorTheme.body}
+          setBodyTheme={(bodyTheme) =>
+            setEditorTheme({ ...editorTheme, body: bodyTheme })
+          }
+        />
         <ButtonSettings
           buttonTheme={editorTheme.button}
           setButtonTheme={(buttonTheme) =>
@@ -150,7 +207,25 @@ export default function SkeletonEditor() {
   );
 }
 
-function LayoutSettings() {
+type LayoutSettingsProps = {
+  containerTheme: ThemeOptions['container'];
+  setContainerTheme: (containerTheme: ThemeOptions['container']) => void;
+  bodyTheme: ThemeOptions['body'];
+  setBodyTheme: (bodyTheme: ThemeOptions['body']) => void;
+};
+
+function LayoutSettings(props: LayoutSettingsProps) {
+  const { containerTheme, setContainerTheme, bodyTheme, setBodyTheme } = props;
+
+  const bodyPaddingTop = parseInt(String(bodyTheme?.paddingTop ?? '0'));
+  const bodyPaddingRight = parseInt(String(bodyTheme?.paddingRight ?? '0'));
+
+  const paddingTop = parseInt(String(containerTheme?.paddingTop ?? '0'));
+  const paddingRight = parseInt(String(containerTheme?.paddingRight ?? '0'));
+
+  const borderRadius = parseInt(String(containerTheme?.borderRadius ?? '0'));
+  const borderWidth = parseInt(String(containerTheme?.borderWidth ?? '0'));
+
   return (
     <div>
       <h3 className="text-sm font-medium">Layout</h3>
@@ -158,53 +233,92 @@ function LayoutSettings() {
       <div className="mt-2 space-y-2">
         <div className="flex items-center gap-2">
           <div className="w-25 shrink-0 grow text-sm">
+            <label>Body</label>
+          </div>
+
+          <ColorInput
+            value={bodyTheme?.backgroundColor ?? '#000000'}
+            onChange={(value) =>
+              setBodyTheme({ ...bodyTheme, backgroundColor: value })
+            }
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-25 shrink-0 grow text-sm">
             <label>Padding</label>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <NumberInput
-              value={0}
-              onChange={() => {}}
+              value={paddingTop}
+              onChange={(value) => {
+                const padding = `${value}px`;
+                setContainerTheme({
+                  ...containerTheme,
+                  paddingTop: padding,
+                  paddingBottom: padding,
+                });
+              }}
               icon={AlignVerticalSpaceAroundIcon}
             />
             <NumberInput
-              value={0}
-              onChange={() => {}}
+              value={paddingRight}
+              onChange={(value) => {
+                const padding = `${value}px`;
+                setContainerTheme({
+                  ...containerTheme,
+                  paddingRight: padding,
+                  paddingLeft: padding,
+                });
+              }}
               icon={AlignHorizontalSpaceAroundIcon}
             />
           </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-25 shrink-0 grow text-sm">
-            <label>Margin</label>
+            <label>Gutter</label>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <NumberInput
-              value={0}
-              onChange={() => {}}
+              value={bodyPaddingTop}
+              onChange={(value) => {
+                const padding = `${value}px`;
+                setBodyTheme({
+                  ...bodyTheme,
+                  paddingTop: padding,
+                  paddingBottom: padding,
+                });
+              }}
               icon={AlignVerticalSpaceAroundIcon}
             />
             <NumberInput
-              value={0}
-              onChange={() => {}}
+              value={bodyPaddingRight}
+              onChange={(value) => {
+                const padding = `${value}px`;
+                setBodyTheme({
+                  ...bodyTheme,
+                  paddingRight: padding,
+                  paddingLeft: padding,
+                });
+              }}
               icon={AlignHorizontalSpaceAroundIcon}
             />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-25 shrink-0 grow text-sm">
-            <label>Body</label>
-          </div>
 
-          <ColorInput value="#000000" onChange={() => {}} />
-        </div>
         <div className="flex items-center gap-2">
           <div className="w-25 shrink-0 grow text-sm">
             <label>Container</label>
           </div>
 
-          <ColorInput value="#000000" onChange={() => {}} />
+          <ColorInput
+            value={containerTheme?.backgroundColor ?? '#000000'}
+            onChange={(value) =>
+              setContainerTheme({ ...containerTheme, backgroundColor: value })
+            }
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -213,8 +327,13 @@ function LayoutSettings() {
           </div>
 
           <NumberInput
-            value={0}
-            onChange={() => {}}
+            value={borderRadius}
+            onChange={(value) =>
+              setContainerTheme({
+                ...containerTheme,
+                borderRadius: `${value}px`,
+              })
+            }
             icon={SquareRoundCornerIcon}
           />
         </div>
@@ -223,14 +342,28 @@ function LayoutSettings() {
             <label>Border Width</label>
           </div>
 
-          <NumberInput value={0} onChange={() => {}} icon={MenuIcon} />
+          <NumberInput
+            value={borderWidth}
+            onChange={(value) =>
+              setContainerTheme({
+                ...containerTheme,
+                borderWidth: `${value}px`,
+              })
+            }
+            icon={MenuIcon}
+          />
         </div>
         <div className="flex items-center gap-2">
           <div className="w-25 shrink-0 grow text-sm">
             <label>Border Color</label>
           </div>
 
-          <ColorInput value="#000000" onChange={() => {}} />
+          <ColorInput
+            value={containerTheme?.borderColor ?? '#000000'}
+            onChange={(value) =>
+              setContainerTheme({ ...containerTheme, borderColor: value })
+            }
+          />
         </div>
       </div>
     </div>

@@ -91,7 +91,6 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
-  container?: Partial<CSSProperties>;
   fontSize?: Partial<{
     paragraph: Partial<{
       size: string;
@@ -102,6 +101,8 @@ export interface ThemeOptions {
       lineHeight: string;
     }>;
   }>;
+
+  container?: Partial<CSSProperties>;
   body?: Partial<CSSProperties>;
   button?: Partial<CSSProperties>;
   link?: Partial<CSSProperties>;
@@ -267,14 +268,6 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardBadgeBackground: '#FEF08A',
     linkCardSubTitle: '#6B7280',
   },
-  container: {
-    maxWidth: '600px',
-    minWidth: '300px',
-    width: '100%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: '0.5rem',
-  },
   fontSize: {
     paragraph: {
       size: '15px',
@@ -284,6 +277,15 @@ const DEFAULT_THEME: ThemeOptions = {
       size: '14px',
       lineHeight: '24px',
     },
+  },
+
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
   },
   body: {
     backgroundColor: '#ffffff',
@@ -297,7 +299,6 @@ const DEFAULT_THEME: ThemeOptions = {
     paddingBottom: '0',
     paddingLeft: '0',
   },
-
   button: {
     backgroundColor: DEFAULT_BUTTON_BACKGROUND_COLOR,
     paddingTop: DEFAULT_BUTTON_PADDING_TOP,
@@ -306,7 +307,6 @@ const DEFAULT_THEME: ThemeOptions = {
     paddingLeft: DEFAULT_BUTTON_PADDING_LEFT,
     color: DEFAULT_BUTTON_TEXT_COLOR,
   },
-
   link: {
     textDecoration: DEFAULT_LINK_TEXT_DECORATION,
     color: DEFAULT_LINK_TEXT_COLOR,
@@ -819,6 +819,8 @@ export class Maily {
   ): JSX.Element {
     const { attrs } = mark;
 
+    const linkTheme = this.config.theme?.link;
+
     let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
@@ -838,7 +840,7 @@ export class Maily {
         style={{
           fontWeight: 500,
           textDecoration: 'none',
-          color: this.config.theme?.colors?.heading,
+          color: linkTheme?.color || DEFAULT_LINK_TEXT_COLOR,
         }}
         target={target}
       >

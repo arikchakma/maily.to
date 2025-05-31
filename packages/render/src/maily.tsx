@@ -143,6 +143,7 @@ export interface ThemeOptions {
     >
   >;
   link?: Partial<Pick<CSSProperties, 'color'>>;
+  font?: Partial<FontProps>;
 }
 
 export interface MailyConfig {
@@ -279,7 +280,7 @@ const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   plainText: false,
 };
 
-export const DEFAULT_FONT: FontProps = {
+const DEFAULT_FONT: FontProps = {
   fallbackFontFamily: 'sans-serif',
   fontFamily: 'Inter',
   fontStyle: 'normal',
@@ -352,6 +353,7 @@ const DEFAULT_THEME: ThemeOptions = {
   link: {
     color: DEFAULT_LINK_TEXT_COLOR,
   },
+  font: DEFAULT_FONT,
 };
 
 export interface RenderOptions {
@@ -399,7 +401,6 @@ export class Maily {
   private marksOrder = ['underline', 'bold', 'italic', 'textStyle', 'link'];
   private meta: MetaDescriptors = DEFAULT_META_TAGS;
   private htmlProps: HtmlProps = DEFAULT_HTML_PROPS;
-  private font: FontProps = DEFAULT_FONT;
 
   constructor(content: JSONContent = { type: 'doc', content: [] }) {
     this.content = content;
@@ -521,13 +522,6 @@ export class Maily {
     };
   }
 
-  setFont(font: Partial<FontProps>) {
-    this.font = {
-      ...this.font,
-      ...font,
-    };
-  }
-
   getAllLinks() {
     const nodes = this.content.content || [];
     const links = new Set<string>();
@@ -616,10 +610,15 @@ export class Maily {
     const htmlProps = this.htmlProps;
     const containerStyles = this.config.theme?.container;
 
+    const font = {
+      ...DEFAULT_FONT,
+      ...this.config.theme?.font,
+    };
+
     const markup = (
       <Html {...htmlProps}>
         <Head>
-          <Font {...this.font} />
+          <Font {...font} />
           <style
             dangerouslySetInnerHTML={{
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,

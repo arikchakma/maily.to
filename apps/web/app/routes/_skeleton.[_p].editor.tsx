@@ -15,31 +15,6 @@ import { HexColorInput } from 'react-colorful';
 import { SelectNative } from '~/components/skeleton/select-native';
 
 export interface ThemeOptions {
-  colors?: Partial<{
-    heading: string;
-    paragraph: string;
-    horizontal: string;
-    footer: string;
-    blockquoteBorder: string;
-    codeBackground: string;
-    codeText: string;
-    linkCardTitle: string;
-    linkCardDescription: string;
-    linkCardBadgeText: string;
-    linkCardBadgeBackground: string;
-    linkCardSubTitle: string;
-  }>;
-  fontSize?: Partial<{
-    paragraph: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-    footer: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-  }>;
-
   container?: Partial<
     Pick<
       CSSProperties,

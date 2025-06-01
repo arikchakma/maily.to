@@ -1,6 +1,5 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
-// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],

@@ -496,6 +496,7 @@ export class Maily {
               width: '100%',
               marginLeft: 'auto',
               marginRight: 'auto',
+              borderStyle: 'solid',
               ...containerStyles,
             }}
           >

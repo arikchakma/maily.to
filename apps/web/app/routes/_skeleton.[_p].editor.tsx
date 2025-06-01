@@ -1,10 +1,12 @@
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useRef, useState } from 'react';
 import { Editor } from '@maily-to/core';
 import { cn } from '~/lib/classname';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
 import {
   AlignHorizontalSpaceAroundIcon,
   AlignVerticalSpaceAroundIcon,
+  EyeIcon,
+  Loader2Icon,
   MenuIcon,
   RectangleHorizontalIcon,
   SquareRoundCornerIcon,
@@ -14,66 +16,101 @@ import { ColorPicker } from '~/components/skeleton/color-picker';
 import { HexColorInput } from 'react-colorful';
 import { SelectNative } from '~/components/skeleton/select-native';
 import {
+  DEFAULT_EDITOR_THEME,
   getMailyCssVariables,
   type EditorThemeOptions,
 } from '@maily-to/shared';
+import type { Editor as TiptapEditor } from '@tiptap/core';
+import { useMutation } from '@tanstack/react-query';
+import { httpPost } from '~/lib/http';
+import { toast } from 'sonner';
 
 export default function SkeletonEditor() {
-  const [editorTheme, setEditorTheme] = useState<EditorThemeOptions>({
-    button: {
-      backgroundColor: '#000000',
-      color: '#ffffff',
-      paddingTop: '10px',
-      paddingRight: '32px',
-      paddingBottom: '10px',
-      paddingLeft: '32px',
+  const [editorTheme, setEditorTheme] =
+    useState<EditorThemeOptions>(DEFAULT_EDITOR_THEME);
+  const editorRef = useRef<TiptapEditor | null>(null);
+
+  const { mutateAsync: previewEmail, isPending } = useMutation({
+    mutationFn: async () => {
+      const json = editorRef.current?.getJSON();
+      return httpPost<{ html: string }>('/api/v1/emails/preview', {
+        content: JSON.stringify(json),
+        theme: editorTheme,
+      });
     },
-    container: {
-      backgroundColor: '#ffffff',
-      paddingTop: '8px',
-      paddingRight: '8px',
-      paddingBottom: '8px',
-      paddingLeft: '8px',
-      borderRadius: '0px',
-      borderWidth: '0px',
-      borderColor: 'transparent',
+    onSuccess: (data) => {
+      const newWindow = window.open('about:blank', '_blank');
+      newWindow?.focus();
+
+      const newDoc = newWindow?.document;
+      if (!newDoc) {
+        toast.error('Something went wrong.');
+        return;
+      }
+
+      const html = new DOMParser().parseFromString(data?.html, 'text/html');
+      const link = html.createElement('link');
+      link.rel = 'stylesheet';
+      link.href =
+        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
+      html.head.appendChild(link);
+
+      newDoc.open();
+      newDoc.write(html.documentElement.outerHTML);
+      newDoc.close();
     },
-    link: {
-      color: '#111827',
-    },
-    body: {
-      backgroundColor: '#ffffff',
-      paddingTop: '0px',
-      paddingRight: '0px',
-      paddingBottom: '0px',
-      paddingLeft: '0px',
+    onError: (error) => {
+      toast.error(error?.message || 'Failed to preview email');
     },
   });
 
   return (
     <div
-      className="flex h-screen w-screen p-10"
+      className="flex h-screen w-screen"
       style={getMailyCssVariables(editorTheme)}
     >
-      <Suspense>
-        <Editor
-          config={{
-            hasMenuBar: false,
-            wrapClassName: cn(
-              'editor-wrap w-full bg-[var(--mly-body-background-color)] px-[var(--mly-body-padding-left)] py-[var(--mly-body-padding-top)]'
-            ),
-            bodyClassName:
-              'editor-body bg-transparent! !mt-0 !border-0 !p-0 w-full',
-            contentClassName: `editor-content mx-auto max-w-[var(--mly-container-max-width)]! bg-[var(--mly-container-background-color)] px-[var(--mly-container-padding-left)]! py-[var(--mly-container-padding-top)]! rounded-[var(--mly-container-border-radius)]! [border-width:var(--mly-container-border-width)]! [border-color:var(--mly-container-border-color)]!`,
-            toolbarClassName: 'flex-wrap !items-start',
-            spellCheck: false,
-            autofocus: 'end',
-            immediatelyRender: false,
-          }}
-          contentJson={defaultEmailJSON}
-        />
-      </Suspense>
-      <div className="mx-auto max-w-xs grow space-y-10 border-l border-gray-200 px-6">
+      <div className="grow">
+        <div className="flex items-center border-b px-10 py-4">
+          <button
+            className="flex items-center gap-2 rounded-lg bg-black p-2 px-4 pr-5 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isPending}
+            onClick={() => {
+              previewEmail();
+            }}
+          >
+            {isPending && <Loader2Icon className="size-4 animate-spin" />}
+            {!isPending && <EyeIcon className="size-4" />}
+            Preview
+          </button>
+        </div>
+        <div className="px-10 py-6">
+          <Suspense>
+            <Editor
+              config={{
+                hasMenuBar: false,
+                wrapClassName: cn(
+                  'editor-wrap w-full bg-[var(--mly-body-background-color)] px-[var(--mly-body-padding-left)] py-[var(--mly-body-padding-top)]'
+                ),
+                bodyClassName:
+                  'editor-body bg-transparent! !mt-0 !border-0 !p-0 w-full',
+                contentClassName: `editor-content mx-auto max-w-[var(--mly-container-max-width)]! bg-[var(--mly-container-background-color)] px-[var(--mly-container-padding-left)]! py-[var(--mly-container-padding-top)]! rounded-[var(--mly-container-border-radius)]! [border-width:var(--mly-container-border-width)]! [border-color:var(--mly-container-border-color)]!`,
+                toolbarClassName: 'flex-wrap !items-start',
+                spellCheck: false,
+                autofocus: 'end',
+                immediatelyRender: false,
+              }}
+              contentJson={defaultEmailJSON}
+              onCreate={(editor) => {
+                editorRef.current = editor;
+              }}
+              onUpdate={(editor) => {
+                editorRef.current = editor;
+              }}
+            />
+          </Suspense>
+        </div>
+      </div>
+      <div className="w-xs space-y-10 border-l border-gray-200 px-6 pt-20">
         <LayoutSettings
           containerTheme={editorTheme.container}
           setContainerTheme={(containerTheme) =>

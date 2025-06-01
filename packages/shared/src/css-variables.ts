@@ -1,5 +1,5 @@
 import type * as CSS from 'csstype';
-import type { EditorThemeOptions } from './theme';
+import { DEFAULT_FONT, type EditorThemeOptions } from './theme';
 
 declare module 'csstype' {
   interface Properties {
@@ -47,6 +47,8 @@ export function getVariableValue(
 export function getMailyCssVariables(
   theme: EditorThemeOptions
 ): CSS.Properties {
+  const font = theme.font || DEFAULT_FONT;
+
   return {
     ...getVariableValue(
       '--mly-body-background-color',
@@ -111,5 +113,9 @@ export function getMailyCssVariables(
     ...getVariableValue('--mly-button-padding-left', theme.button?.paddingLeft),
 
     ...getVariableValue('--mly-link-color', theme.link?.color),
+
+    ...getVariableValue('--mly-font-family', font.fontFamily),
+    ...getVariableValue('--mly-font-fallback-family', font.fallbackFontFamily),
+    '--mly-font': `var(--mly-font-family), var(--mly-font-fallback-family)`,
   };
 }

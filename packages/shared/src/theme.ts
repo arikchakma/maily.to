@@ -1,23 +1,31 @@
 import type * as CSS from 'csstype';
 
-type FallbackFont =
-  | 'Arial'
-  | 'Helvetica'
-  | 'Verdana'
-  | 'Georgia'
-  | 'Times New Roman'
-  | 'serif'
-  | 'sans-serif'
-  | 'monospace'
-  | 'cursive'
-  | 'fantasy';
-type FontFormat =
-  | 'woff'
-  | 'woff2'
-  | 'truetype'
-  | 'opentype'
-  | 'embedded-opentype'
-  | 'svg';
+export const allowedFallbackFonts = [
+  'Arial',
+  'Helvetica',
+  'Verdana',
+  'Georgia',
+  'Times New Roman',
+  'serif',
+  'sans-serif',
+  'monospace',
+  'cursive',
+  'fantasy',
+] as const;
+
+export type FallbackFont = (typeof allowedFallbackFonts)[number];
+
+export const allowedFontFormats = [
+  'woff',
+  'woff2',
+  'truetype',
+  'opentype',
+  'embedded-opentype',
+  'svg',
+] as const;
+
+export type FontFormat = (typeof allowedFontFormats)[number];
+
 type FontWeight = CSS.Properties['fontWeight'];
 type FontStyle = CSS.Properties['fontStyle'];
 
@@ -25,7 +33,7 @@ export interface FontProps {
   /** The font you want to use. NOTE: Do not insert multiple fonts here, use fallbackFontFamily for that */
   fontFamily: string;
   /** An array is possible, but the order of the array is the priority order */
-  fallbackFontFamily: FallbackFont | FallbackFont[];
+  fallbackFontFamily: FallbackFont;
   /** Not all clients support web fonts. For support check: https://www.caniemail.com/features/css-at-font-face/ */
   webFont?: {
     url: string;
@@ -75,7 +83,10 @@ export interface BaseThemeOptions {
     >
   >;
   link?: Partial<Pick<CSS.Properties, 'color'>>;
-  font?: Partial<FontProps>;
+  font?: Pick<
+    FontProps,
+    'fontFamily' | 'fallbackFontFamily' | 'webFont'
+  > | null;
 }
 
 /**
@@ -120,8 +131,6 @@ export interface RendererThemeOptions extends BaseThemeOptions {
 export const DEFAULT_FONT: FontProps = {
   fallbackFontFamily: 'sans-serif',
   fontFamily: 'Inter',
-  fontStyle: 'normal',
-  fontWeight: 400,
   webFont: {
     url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
     format: 'woff2',
@@ -224,4 +233,36 @@ export const DEFAULT_EDITOR_THEME: EditorThemeOptions = {
   link: {
     color: DEFAULT_LINK_TEXT_COLOR,
   },
+  font: DEFAULT_FONT,
 };
+
+export function loadFont(
+  font: Pick<FontProps, 'fontFamily' | 'fallbackFontFamily' | 'webFont'>
+): void {
+  const style = fontStyle(font);
+
+  const styleElement = document.createElement('style');
+  styleElement.textContent = style;
+  document.head.appendChild(styleElement);
+}
+
+export function fontStyle(
+  font: Pick<FontProps, 'fontFamily' | 'fallbackFontFamily' | 'webFont'>
+): string {
+  const { fontFamily, fallbackFontFamily, webFont } = font;
+
+  const src = webFont
+    ? `src: url(${webFont.url}) format('${webFont.format}');`
+    : '';
+
+  const style = `
+  @font-face {
+    font-family: '${fontFamily}';
+    font-style: normal;
+    font-weight: 400;
+    mso-font-alt: '${fallbackFontFamily}';
+    ${src}
+  }`;
+
+  return style;
+}

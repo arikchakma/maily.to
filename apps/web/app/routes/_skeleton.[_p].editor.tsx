@@ -3,12 +3,14 @@ import { Editor } from '@maily-to/core';
 import { cn } from '~/lib/classname';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
 import {
+  ALargeSmallIcon,
   AlignHorizontalSpaceAroundIcon,
   AlignVerticalSpaceAroundIcon,
   EyeIcon,
   Loader2Icon,
   MenuIcon,
   RectangleHorizontalIcon,
+  RotateCwIcon,
   SquareRoundCornerIcon,
   type LucideIcon,
 } from 'lucide-react';
@@ -16,9 +18,14 @@ import { ColorPicker } from '~/components/skeleton/color-picker';
 import { HexColorInput } from 'react-colorful';
 import { SelectNative } from '~/components/skeleton/select-native';
 import {
+  allowedFallbackFonts,
   DEFAULT_EDITOR_THEME,
+  DEFAULT_FONT,
   getMailyCssVariables,
+  loadFont,
   type EditorThemeOptions,
+  type FallbackFont,
+  type FontFormat,
 } from '@maily-to/shared';
 import type { Editor as TiptapEditor } from '@tiptap/core';
 import { useMutation } from '@tanstack/react-query';
@@ -36,7 +43,12 @@ export function clientLoader(args: Route.ClientLoaderArgs) {
     return { theme: DEFAULT_EDITOR_THEME };
   }
 
-  return { theme: JSON.parse(atob(theme)) as EditorThemeOptions };
+  const themeOptions = JSON.parse(atob(theme)) as EditorThemeOptions;
+  if (themeOptions.font?.webFont) {
+    loadFont(themeOptions.font);
+  }
+
+  return { theme: themeOptions };
 }
 
 export default function SkeletonEditor(props: Route.ComponentProps) {
@@ -71,11 +83,6 @@ export default function SkeletonEditor(props: Route.ComponentProps) {
       }
 
       const html = new DOMParser().parseFromString(data?.html, 'text/html');
-      const link = html.createElement('link');
-      link.rel = 'stylesheet';
-      link.href =
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
-      html.head.appendChild(link);
 
       newDoc.open();
       newDoc.write(html.documentElement.outerHTML);
@@ -111,7 +118,7 @@ export default function SkeletonEditor(props: Route.ComponentProps) {
               config={{
                 hasMenuBar: false,
                 wrapClassName: cn(
-                  'editor-wrap w-full bg-[var(--mly-body-background-color)] px-[var(--mly-body-padding-left)] py-[var(--mly-body-padding-top)]'
+                  'editor-wrap w-full bg-[var(--mly-body-background-color)] px-[var(--mly-body-padding-left)] py-[var(--mly-body-padding-top)] [font-family:var(--mly-font)]'
                 ),
                 bodyClassName:
                   'editor-body bg-transparent! !mt-0 !border-0 !p-0 w-full',
@@ -133,6 +140,13 @@ export default function SkeletonEditor(props: Route.ComponentProps) {
         </div>
       </div>
       <div className="w-xs space-y-10 border-l border-gray-200 px-6 pt-20">
+        <TypographySettings
+          fontTheme={editorTheme.font}
+          setFontTheme={(fontTheme) =>
+            setEditorTheme({ ...editorTheme, font: fontTheme })
+          }
+        />
+
         <LayoutSettings
           containerTheme={editorTheme.container}
           setContainerTheme={(containerTheme) =>
@@ -155,6 +169,157 @@ export default function SkeletonEditor(props: Route.ComponentProps) {
             setEditorTheme({ ...editorTheme, link: linkTheme })
           }
         />
+      </div>
+    </div>
+  );
+}
+
+type TypographySettingsProps = {
+  fontTheme: EditorThemeOptions['font'];
+  setFontTheme: (fontTheme: EditorThemeOptions['font']) => void;
+};
+
+const loadedFonts: Set<string> = new Set();
+
+function TypographySettings(props: TypographySettingsProps) {
+  const { fontTheme, setFontTheme } = props;
+
+  const fonts: {
+    fontFamily: string;
+    webFont: {
+      url: string;
+      format: FontFormat;
+    };
+  }[] = [
+    {
+      fontFamily: 'Inter',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Roboto',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/roboto:vf@latest/latin-wght-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Open Sans',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/open-sans:vf@latest/latin-wght-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Lato',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/lato@latest/latin-400-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Montserrat',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/montserrat:vf@latest/latin-wght-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Poppins',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Raleway',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/raleway:vf@latest/latin-wght-normal.woff2',
+        format: 'woff2',
+      },
+    },
+    {
+      fontFamily: 'Ubuntu',
+      webFont: {
+        url: 'https://cdn.jsdelivr.net/fontsource/fonts/ubuntu@latest/latin-400-normal.woff2',
+        format: 'woff2',
+      },
+    },
+  ];
+
+  return (
+    <div>
+      <h3 className="text-sm font-medium">Typography</h3>
+
+      <div className="mt-2 space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="w-25 shrink-0 grow text-sm">
+            <label>Font</label>
+          </div>
+
+          <Select
+            icon={ALargeSmallIcon}
+            value={fontTheme?.fontFamily ?? ''}
+            onChange={async (value) => {
+              if (value === 'Default') {
+                setFontTheme(null);
+              } else {
+                const font = fonts.find((font) => font.fontFamily === value);
+                if (!font) {
+                  return;
+                }
+
+                const newFont = {
+                  fontFamily: value,
+                  fallbackFontFamily:
+                    fontTheme?.fallbackFontFamily ??
+                    DEFAULT_FONT.fallbackFontFamily,
+                  webFont: font.webFont,
+                };
+
+                const key = JSON.stringify(newFont);
+                if (!loadedFonts.has(key)) {
+                  loadedFonts.add(key);
+                  loadFont(newFont);
+                }
+
+                setFontTheme(newFont);
+              }
+            }}
+            options={[
+              { value: 'Default', label: 'Default' },
+              ...fonts.map((font) => ({
+                value: font.fontFamily,
+                label: font.fontFamily,
+              })),
+            ]}
+          />
+        </div>
+
+        {fontTheme?.fontFamily && (
+          <div className="flex items-center gap-2">
+            <div className="w-25 shrink-0 grow text-sm">
+              <label>Fallback</label>
+            </div>
+
+            <Select
+              icon={RotateCwIcon}
+              value={fontTheme?.fallbackFontFamily ?? ''}
+              onChange={(value) =>
+                setFontTheme({
+                  fontFamily: fontTheme?.fontFamily ?? DEFAULT_FONT.fontFamily,
+                  fallbackFontFamily: value as FallbackFont,
+                })
+              }
+              options={allowedFallbackFonts.map((font) => ({
+                value: font,
+                label: font,
+              }))}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

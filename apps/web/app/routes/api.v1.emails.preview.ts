@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { Route } from './+types/api.v1.emails.preview';
 import { render } from '@maily-to/render';
 import { serializeZodError } from '~/lib/errors';
+import { allowedFallbackFonts, allowedFontFormats } from '@maily-to/shared';
 
 export const DEFAULT_EDITOR_THEME_SCHEMA = z.object({
   container: z
@@ -44,6 +45,16 @@ export const DEFAULT_EDITOR_THEME_SCHEMA = z.object({
       color: z.string().optional(),
     })
     .optional(),
+  font: z
+    .object({
+      fontFamily: z.string(),
+      fallbackFontFamily: z.enum(allowedFallbackFonts),
+      webFont: z.object({
+        url: z.string(),
+        format: z.enum(allowedFontFormats),
+      }),
+    })
+    .nullable(),
 });
 
 export async function action(args: Route.ActionArgs) {

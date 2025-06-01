@@ -16,7 +16,6 @@ import {
   Column,
   Section,
   HtmlProps,
-  FontProps,
 } from '@react-email/components';
 import { renderAsync as reactEmailRenderAsync } from '@react-email/render';
 import type { JSONContent } from '@tiptap/core';
@@ -26,7 +25,10 @@ import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
 import juice from 'juice';
-import type { RendererThemeOptions as ThemeOptions } from '@maily-to/shared';
+import type {
+  FontProps,
+  RendererThemeOptions as ThemeOptions,
+} from '@maily-to/shared';
 import {
   DEFAULT_RENDERER_THEME as DEFAULT_THEME,
   DEFAULT_FONT,
@@ -268,7 +270,10 @@ export class Maily {
   }
 
   setTheme(theme: Partial<ThemeOptions>) {
-    this.config.theme = deepMerge(this.config.theme || DEFAULT_THEME, theme);
+    this.config.theme = deepMerge(
+      this.config.theme || DEFAULT_THEME,
+      theme
+    ) as ThemeOptions;
   }
 
   setVariableFormatter(formatter: VariableFormatter) {
@@ -466,11 +471,12 @@ export class Maily {
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
     const containerStyles = this.config.theme?.container;
-
-    const font = {
-      ...DEFAULT_FONT,
-      ...this.config.theme?.font,
+    const fontOptions: FontProps = {
+      ...(this.config.theme?.font || DEFAULT_FONT),
+      fontStyle: 'normal',
+      fontWeight: 400,
     };
+
     const bodyStyles: CSSProperties = {
       margin: '0px',
       ...this.config.theme?.body,
@@ -479,7 +485,8 @@ export class Maily {
     const markup = (
       <Html {...htmlProps}>
         <Head>
-          <Font {...font} />
+          <Font {...fontOptions} />
+
           <style
             dangerouslySetInnerHTML={{
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,

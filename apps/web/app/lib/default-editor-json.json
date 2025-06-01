@@ -52,12 +52,12 @@
         "alignment": "left",
         "variant": "filled",
         "borderRadius": "round",
-        "buttonColor": "#000000",
-        "textColor": "#ffffff",
-        "paddingTop": "10px",
-        "paddingRight": "32px",
-        "paddingBottom": "10px",
-        "paddingLeft": "32px"
+        "buttonColor": null,
+        "textColor": null,
+        "paddingTop": null,
+        "paddingRight": null,
+        "paddingBottom": null,
+        "paddingLeft": null
       }
     },
     { "type": "spacer", "attrs": { "height": "xl" } },

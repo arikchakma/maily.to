@@ -1,0 +1,9 @@
+{
+  "extends": "tsconfig/library.json",
+  "compilerOptions": {
+    "isolatedDeclarations": true,
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["src"],
+  "exclude": ["dist", "build", "node_modules"]
+}

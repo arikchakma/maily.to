@@ -39,109 +39,48 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export const meta: Route.MetaFunction = () => {
-  return [
-    { title: 'Maily - Open-source editor for crafting emails' },
-    {
-      name: 'description',
-      content:
-        'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
-    },
-    {
-      name: 'twitter:creator',
-      content: '@imarikchakma',
-    },
-    {
-      name: 'twitter:title',
-      content: 'Maily - Open-source editor for crafting emails',
-    },
-    {
-      name: 'twitter:card',
-      content: 'summary_large_image',
-    },
-    {
-      name: 'twitter:description',
-      content:
-        'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
-    },
-    {
-      name: 'twitter:image',
-      content: 'https://maily.to/og-image.png',
-    },
-    {
-      name: 'og:site_name',
-      content: 'Maily',
-    },
-    {
-      name: 'og:title',
-      content: 'Maily - Open-source editor for crafting emails',
-    },
-    {
-      name: 'og:description',
-      content:
-        'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
-    },
-    {
-      name: 'og:image',
-      content: 'https://maily.to/og-image.png',
-    },
-    {
-      name: 'og:image:width',
-      content: '1200',
-    },
-    {
-      name: 'og:image:height',
-      content: '630',
-    },
-    {
-      name: 'og:image:alt',
-      content: 'Maily Preview',
-    },
-    {
-      name: 'twitter:title',
-      content: 'Maily - Open-source editor for crafting emails',
-    },
-    {
-      name: 'twitter:card',
-      content: 'summary_large_image',
-    },
-    {
-      name: 'twitter:description',
-      content:
-        'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
-    },
-    {
-      name: 'twitter:image',
-      content: 'https://maily.to/og-image.png',
-    },
-    {
-      name: 'theme-color',
-      content: '#ffffff',
-    },
-
-    // Indexing
-    {
-      name: 'robots',
-      content: 'index, follow',
-    },
-    {
-      name: 'googlebot',
-      content: 'index, follow',
-    },
-    {
-      name: 'googlebot',
-      content: 'max-video-preview: -1',
-    },
-    {
-      name: 'googlebot',
-      content: 'max-image-preview: large',
-    },
-    {
-      name: 'googlebot',
-      content: 'max-snippet: -1',
-    },
-  ];
-};
+export const meta: Route.MetaFunction = () => [
+  { title: 'Maily - Open-source editor for crafting emails' },
+  {
+    name: 'description',
+    content:
+      'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
+  },
+  { name: 'twitter:creator', content: '@imarikchakma' },
+  {
+    name: 'twitter:title',
+    content: 'Maily - Open-source editor for crafting emails',
+  },
+  { name: 'twitter:card', content: 'summary_large_image' },
+  {
+    name: 'twitter:description',
+    content:
+      'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
+  },
+  { name: 'twitter:image', content: 'https://maily.to/og-image.png' },
+  { name: 'og:site_name', content: 'Maily' },
+  {
+    name: 'og:title',
+    content: 'Maily - Open-source editor for crafting emails',
+  },
+  {
+    name: 'og:description',
+    content:
+      'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
+  },
+  { name: 'og:image', content: 'https://maily.to/og-image.png' },
+  { name: 'og:image:width', content: '1200' },
+  { name: 'og:image:height', content: '630' },
+  { name: 'og:image:alt', content: 'Maily Preview' },
+  { name: 'theme-color', content: '#ffffff' },
+  // Indexing
+  { name: 'robots', content: 'index, follow' },
+  {
+    name: 'googlebot',
+    content:
+      'index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1',
+  },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -10,6 +10,52 @@
   --color-attribute: #ad46ff;
   --color-tag: #313233;
   --color-meta: #313233d6;
+
+  --mly-font-family: 'Inter', sans-serif;
+  --mly-font-weight: 400;
+  --mly-font-style: normal;
+
+  /* Body */
+  --mly-body-background-color: #ffffff;
+
+  --mly-body-margin-top: 0;
+  --mly-body-margin-right: 0;
+  --mly-body-margin-bottom: 0;
+  --mly-body-margin-left: 0;
+
+  --mly-body-padding-top: 0;
+  --mly-body-padding-right: 0;
+  --mly-body-padding-bottom: 0;
+  --mly-body-padding-left: 0;
+
+  /* Container */
+  --mly-container-background-color: #ffffff;
+  --mly-container-max-width: 600px;
+  --mly-container-min-width: 300px;
+  --mly-container-width: 100%;
+  --mly-container-padding-top: 8px;
+  --mly-container-padding-right: 8px;
+  --mly-container-padding-bottom: 8px;
+  --mly-container-padding-left: 8px;
+
+  --mly-container-margin-top: 0;
+  --mly-container-margin-bottom: 0;
+
+  --mly-container-border-style: solid;
+  --mly-container-border-radius: 0;
+  --mly-container-border-color: transparent;
+  --mly-container-border-width: 0;
+
+  /* Button */
+  --mly-button-background-color: #000000;
+  --mly-button-text-color: #ffffff;
+  --mly-button-padding-top: 10px;
+  --mly-button-padding-right: 32px;
+  --mly-button-padding-bottom: 10px;
+  --mly-button-padding-left: 32px;
+
+  /* Link */
+  --mly-link-color: #111827;
 }
 
 .mly-editor
@@ -269,6 +315,10 @@
   h2,
   h3 {
     --variable-icon-gap: 8px;
+  }
+
+  a {
+    color: var(--mly-link-color);
   }
 
   :where(.is-editor-empty:first-child, .is-empty):not(

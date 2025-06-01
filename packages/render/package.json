@@ -23,9 +23,9 @@
     }
   },
   "scripts": {
-    "dev": "tsup --watch",
+    "dev": "tsdown --watch",
     "clean": "rm -rf dist",
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:watch": "vitest",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "@antfu/utils": "^9.1.0",
     "@babel/preset-react": "^7.26.3",
+    "@maily-to/shared": "workspace:*",
     "@tiptap/core": "^2.11.5",
     "@types/react": "^19.0.12",
     "tsconfig": "workspace:*",

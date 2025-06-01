@@ -52,8 +52,12 @@
         "alignment": "left",
         "variant": "filled",
         "borderRadius": "round",
-        "buttonColor": "#000000",
-        "textColor": "#ffffff"
+        "buttonColor": null,
+        "textColor": null,
+        "paddingTop": null,
+        "paddingRight": null,
+        "paddingBottom": null,
+        "paddingLeft": null
       }
     },
     { "type": "spacer", "attrs": { "height": "xl" } },

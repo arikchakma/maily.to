@@ -6,12 +6,12 @@
 <br />
 
 <p align="center">
-  <a href="https://github.com/arikchakma/maily/blob/main/license">
-    <img src="https://img.shields.io/badge/License-Non--Commercial-222222.svg" />
+  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
+    <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
   </a>
-  <a href="https://maily.to">
-    	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
-    </a>
+  <a href="https://buymeacoffee.com/arikchakma">
+    	<img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-222222?logo=buy-me-a-coffee" alt="Buy me a coffee" />
+  </a>
 </p>
 
 <br>
@@ -114,4 +114,4 @@ Feel free to submit pull requests, create issues, or spread the word.
 
 ## License
 
-Non-Commercial Use Only. See `LICENSE` for more information.
+MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)

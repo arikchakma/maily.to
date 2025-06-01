@@ -1,4 +1,10 @@
-@import 'tailwindcss' prefix(mly);
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme) prefix(mly);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
+
+@plugin '@tailwindcss/typography';
+@plugin 'tailwind-scrollbar';
 
 @config '../../tailwind.config.ts';
 

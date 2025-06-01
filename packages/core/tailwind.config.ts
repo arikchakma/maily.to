@@ -1,10 +1,7 @@
 import type { Config } from 'tailwindcss';
-import sharedConfig from 'tailwind-config/tailwind.config';
 
-const config: Pick<
-  Config,
-  'prefix' | 'presets' | 'corePlugins' | 'theme' | 'plugins'
-> = {
+const config: Config = {
+  content: [],
   corePlugins: {
     // Disable preflight to avoid Tailwind overriding the styles of the editor.
     preflight: false,
@@ -17,7 +14,7 @@ const config: Pick<
       },
     },
   },
-  presets: [sharedConfig],
+  plugins: [require('tailwindcss-animate')],
 };
 
 export default config;

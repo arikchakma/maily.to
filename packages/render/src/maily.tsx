@@ -968,9 +968,6 @@ export class Maily {
     const { attrs } = node;
 
     const buttonTheme = this.config.theme?.button;
-    console.log('---'.repeat(20));
-    console.log(buttonTheme);
-    console.log('---'.repeat(20));
 
     let {
       text: _text,

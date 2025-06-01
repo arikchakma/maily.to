@@ -237,16 +237,6 @@
   content: none;
 }
 
-/* Chrome, Safari and Opera */
-.mly-no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.mly-no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
 .mly-editor .react-colorful__alpha {
   border-radius: 0;
 }

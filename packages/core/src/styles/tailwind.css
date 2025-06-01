@@ -5,8 +5,12 @@
 
 @plugin '@tailwindcss/typography';
 @plugin 'tailwind-scrollbar';
+@plugin 'tailwindcss-animate';
 
-@config '../../tailwind.config.ts';
+@theme {
+  --color-soft-gray: #f4f5f6;
+  --color-midnight-gray: #333333;
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,

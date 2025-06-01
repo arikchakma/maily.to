@@ -25,7 +25,7 @@ export const SelectionExtension = Extension.create({
             // when the editor is not focused (e.g. when trigger a popover or something similar)
             return DecorationSet.create(state.doc, [
               Decoration.inline(state.selection.from, state.selection.to, {
-                class: 'selection mly-bg-blue-200 mly-inline mly-py-1',
+                class: 'selection mly:bg-blue-200 mly:inline mly:py-1',
               }),
             ]);
           },

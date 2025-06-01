@@ -28,22 +28,22 @@ const BaseButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
     const baseClass =
-      'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 focus-visible:mly-relative focus-visible:mly-z-10 disabled:mly-opacity-50 ';
+      'mly:inline-flex mly:items-center mly:justify-center mly:rounded-md mly:text-sm mly:font-medium mly:ring-offset-white mly:transition-colors mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:focus-visible:relative mly:focus-visible:z-10 mly:disabled:opacity-50 ';
     const variantClasses = {
-      default: 'mly-bg-gray-900 mly-text-gray-50 hover:mly-bg-soft-gray',
-      destructive: 'mly-bg-red-500 mly-text-gray-50 hover:mly-bg-red-500/90',
+      default: 'mly:bg-gray-900 mly:text-gray-50 mly:hover:bg-soft-gray',
+      destructive: 'mly:bg-red-500 mly:text-gray-50 mly:hover:bg-red-500/90',
       outline:
-        'mly-border mly-border-gray-200 mly-bg-white hover:mly-bg-gray-100 hover:mly-text-gray-900',
-      secondary: 'mly-bg-gray-100 mly-text-gray-900 hover:mly-bg-gray-100/80',
+        'mly:border mly:border-gray-200 mly:bg-white mly:hover:bg-gray-100 mly:hover:text-gray-900',
+      secondary: 'mly:bg-gray-100 mly:text-gray-900 mly:hover:bg-gray-100/80',
       ghost:
-        'hover:mly-bg-soft-gray bg-transparent hover:mly-text-gray-900 data-[state=true]:mly-bg-soft-gray data-[state=true]:mly-text-gray-900',
-      link: 'mly-text-gray-900 mly-underline-offset-4 hover:mly-underline',
+        'mly:hover:bg-soft-gray bg-transparent mly:hover:text-gray-900 mly:data-[state=true]:bg-soft-gray mly:data-[state=true]:text-gray-900',
+      link: 'mly:text-gray-900 mly:underline-offset-4 mly:hover:underline',
     };
     const sizeClasses = {
-      default: 'mly-h-10 mly-px-4 mly-py-2',
-      sm: 'mly-h-9 mly-rounded-md mly-px-3',
-      lg: 'mly-h-11 mly-rounded-md mly-px-8',
-      icon: 'mly-h-10 mly-w-10',
+      default: 'mly:h-10 mly:px-4 mly:py-2',
+      sm: 'mly:h-9 mly:rounded-md mly:px-3',
+      lg: 'mly:h-11 mly:rounded-md mly:px-8',
+      icon: 'mly:h-10 mly:w-10',
     };
 
     const classes = cn(

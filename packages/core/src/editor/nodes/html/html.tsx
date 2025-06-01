@@ -74,7 +74,7 @@ export const HTMLCodeBlockExtension = CodeBlockLowlight.extend({
 
   addNodeView() {
     return ReactNodeViewRenderer(HTMLCodeBlockView, {
-      className: 'mly-relative',
+      className: 'mly:relative',
       attrs: ({ node }) => ({
         'data-active-tab': node?.attrs?.activeTab || 'code',
       }),

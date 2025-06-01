@@ -107,7 +107,7 @@ export const RepeatExtension = Node.create({
   addNodeView() {
     return ReactNodeViewRenderer(RepeatView, {
       contentDOMElementTag: 'div',
-      className: 'mly-relative',
+      className: 'mly:relative',
     });
   },
 });

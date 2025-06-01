@@ -43,10 +43,10 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
-        <div className="mly-flex mly-space-x-0.5">
+        <div className="mly:flex mly:space-x-0.5">
           <LinkInputPopover
             defaultValue={state?.src ?? ''}
             onValueChange={(value, isVariable) => {

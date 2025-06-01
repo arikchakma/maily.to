@@ -37,11 +37,11 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
         <TooltipTrigger asChild>
           <PopoverTrigger
             className={cn(
-              'mly-flex mly-aspect-square mly-h-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2'
+              'mly:flex mly:aspect-square mly:h-7 mly:items-center mly:justify-center mly:gap-1 mly:rounded-md mly:px-1.5 mly:text-sm mly:data-[state=open]:bg-soft-gray mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2'
             )}
           >
-            <ActiveIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
-            <ChevronDownIcon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
+            <ActiveIcon className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5]" />
+            <ChevronDownIcon className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent sideOffset={8}>Turn into</TooltipContent>
@@ -50,7 +50,7 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
         align="start"
         side="bottom"
         sideOffset={8}
-        className="mly-flex mly-w-[160px] mly-flex-col mly-rounded-md mly-p-1"
+        className="mly:flex mly:w-[160px] mly:flex-col mly:rounded-md mly:p-1"
       >
         {options.map((option, index) => {
           if (isOption(option)) {
@@ -59,9 +59,9 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
                 key={option.id}
                 onClick={option.onClick}
                 variant="ghost"
-                className="mly-mb-0.5 mly-h-auto mly-justify-start mly-gap-2 !mly-rounded mly-px-2 mly-py-1 mly-text-sm mly-font-normal mly-text-midnight-gray"
+                className="mly:mb-0.5 mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:px-2 mly:py-1 mly:text-sm mly:font-normal mly:text-midnight-gray"
               >
-                <option.icon className="mly-size-[15px] mly-shrink-0" />
+                <option.icon className="mly:size-[15px] mly:shrink-0" />
                 {option.label}
               </BaseButton>
             );
@@ -70,8 +70,8 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
               <label
                 key={option.id}
                 className={cn(
-                  'mly-px-2 mly-text-xs mly-font-medium mly-text-midnight-gray/60',
-                  index === 0 ? 'mly-mb-2 mly-mt-1' : 'mly-my-2'
+                  'mly:px-2 mly:text-xs mly:font-medium mly:text-midnight-gray/60',
+                  index === 0 ? 'mly:mb-2 mly:mt-1' : 'mly:my-2'
                 )}
               >
                 {option.label}

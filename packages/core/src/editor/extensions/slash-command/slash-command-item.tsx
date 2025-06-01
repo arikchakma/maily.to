@@ -54,17 +54,17 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
 
   let value = (
     <>
-      <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
+      <div className="mly:flex mly:h-6 mly:w-6 mly:shrink-0 mly:items-center mly:justify-center">
         {item.icon}
       </div>
-      <div className="mly-grow">
-        <p className="mly-font-medium">{item.title}</p>
-        <p className="mly-text-xs mly-text-gray-400">{item.description}</p>
+      <div className="mly:grow">
+        <p className="mly:font-medium">{item.title}</p>
+        <p className="mly:text-xs mly:text-gray-400">{item.description}</p>
       </div>
 
       {isSubCommand && (
-        <span className="mly-block mly-px-1 mly-text-gray-400">
-          <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
+        <span className="mly:block mly:px-1 mly:text-gray-400">
+          <ChevronRightIcon className="mly:size-3.5 mly:stroke-[2.5]" />
         </span>
       )}
     </>
@@ -108,10 +108,10 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
       <TooltipTrigger asChild>
         <button
           className={cn(
-            'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
+            'mly:flex mly:w-full mly:items-center mly:gap-2 mly:rounded-md mly:px-2 mly:py-1 mly:text-left mly:text-sm mly:text-gray-900 mly:hover:bg-gray-100 mly:hover:text-gray-900',
             isActive
-              ? 'mly-bg-gray-100 mly-text-gray-900'
-              : 'mly-bg-transparent'
+              ? 'mly:bg-gray-100 mly:text-gray-900'
+              : 'mly:bg-transparent'
           )}
           onClick={() => selectItem(groupIndex, commandIndex)}
           onMouseEnter={() => onHover(true)}
@@ -125,20 +125,20 @@ export function SlashCommandItem(props: SlashCommandItemProps) {
       <TooltipContent
         side="right"
         sideOffset={10}
-        className="mly-w-52 mly-rounded-lg mly-border-none mly-p-1 mly-shadow"
+        className="mly:w-52 mly:rounded-lg mly:border-none mly:p-1 mly:shadow"
       >
         {typeof item.preview === 'function' ? (
           item?.preview(editor)
         ) : (
           <>
-            <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
+            <figure className="mly:relative mly:aspect-[2.5] mly:w-full mly:overflow-hidden mly:rounded-md mly:border mly:border-gray-200">
               <img
                 src={item?.preview}
                 alt={item?.title}
-                className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
+                className="mly:absolute mly:inset-0 mly:h-full mly:w-full mly:object-cover"
               />
             </figure>
-            <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
+            <p className="mly:mt-2 mly:px-0.5 mly:text-gray-500">
               {item.description}
             </p>
           </>

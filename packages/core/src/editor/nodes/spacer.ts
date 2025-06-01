@@ -102,7 +102,7 @@ export const Spacer = Node.create<SpacerOptions>({
         this.options.HTMLAttributes,
         HTMLAttributes,
         {
-          class: 'spacer mly-relative mly-full mly-z-50',
+          class: 'spacer mly:relative mly:full mly:z-50',
           contenteditable: false,
           style: `height: ${height}px;--spacer-height: ${height}px;`,
         }

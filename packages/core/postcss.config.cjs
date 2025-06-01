@@ -3,8 +3,7 @@
 
 module.exports = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    '@tailwindcss/postcss': {},
     'postcss-replace': {
       pattern: /(--tw|\*, ::before, ::after)/g,
       data: {

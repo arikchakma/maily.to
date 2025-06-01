@@ -87,19 +87,19 @@ export const VariableSuggestionsPopover: VariableSuggestionsPopoverType =
     }));
 
     return (
-      <div className="mly-z-50 mly-w-64 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
-        <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-b mly-border-gray-200 mly-bg-soft-gray/40 mly-px-1 mly-py-1.5 mly-text-gray-500">
-          <span className="mly-text-xs mly-uppercase">Variables</span>
+      <div className="mly:z-50 mly:w-64 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:shadow-md mly:transition-all">
+        <div className="mly:flex mly:items-center mly:justify-between mly:gap-2 mly:border-b mly:border-gray-200 mly:bg-soft-gray/40 mly:px-1 mly:py-1.5 mly:text-gray-500">
+          <span className="mly:text-xs mly:uppercase">Variables</span>
           <VariableIcon>
-            <Braces className="mly-size-3 mly-stroke-[2.5]" />
+            <Braces className="mly:size-3 mly:stroke-[2.5]" />
           </VariableIcon>
         </div>
 
         <div
           ref={scrollContainerRef}
-          className="mly-max-h-52 mly-overflow-y-auto mly-scrollbar-thin mly-scrollbar-track-transparent mly-scrollbar-thumb-gray-200"
+          className="mly:max-h-52 mly:overflow-y-auto mly:scrollbar-thin mly:scrollbar-track-transparent mly:scrollbar-thumb-gray-200"
         >
-          <div className="mly-flex mly-w-fit mly-min-w-full mly-flex-col mly-gap-0.5 mly-p-1">
+          <div className="mly:flex mly:w-fit mly:min-w-full mly:flex-col mly:gap-0.5 mly:p-1">
             {items?.length ? (
               items?.map((item, index: number) => (
                 <button
@@ -107,36 +107,36 @@ export const VariableSuggestionsPopover: VariableSuggestionsPopoverType =
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => onSelectItem(item)}
                   className={cn(
-                    'mly-flex mly-w-fit mly-min-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-sm mly-text-gray-900 hover:mly-bg-soft-gray',
+                    'mly:flex mly:w-fit mly:min-w-full mly:items-center mly:gap-2 mly:rounded-md mly:px-2 mly:py-1 mly:text-left mly:font-mono mly:text-sm mly:text-gray-900 mly:hover:bg-soft-gray',
                     index === selectedIndex
-                      ? 'mly-bg-soft-gray'
-                      : 'mly-bg-white'
+                      ? 'mly:bg-soft-gray'
+                      : 'mly:bg-white'
                   )}
                 >
-                  <Braces className="mly-size-3 mly-stroke-[2.5] mly-text-rose-600" />
+                  <Braces className="mly:size-3 mly:stroke-[2.5] mly:text-rose-600" />
                   {item.name}
                 </button>
               ))
             ) : (
-              <div className="mly-flex mly-h-7 mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-font-mono mly-text-[13px] mly-text-gray-900 hover:mly-bg-soft-gray">
+              <div className="mly:flex mly:h-7 mly:w-full mly:items-center mly:gap-2 mly:rounded-md mly:px-2 mly:py-1 mly:text-left mly:font-mono mly:text-[13px] mly:text-gray-900 mly:hover:bg-soft-gray">
                 No result
               </div>
             )}
           </div>
         </div>
 
-        <div className="mly-flex mly-items-center mly-justify-between mly-gap-2 mly-border-t mly-border-gray-200 mly-px-1 mly-py-1.5 mly-text-gray-500">
-          <div className="mly-flex mly-items-center mly-gap-1">
+        <div className="mly:flex mly:items-center mly:justify-between mly:gap-2 mly:border-t mly:border-gray-200 mly:px-1 mly:py-1.5 mly:text-gray-500">
+          <div className="mly:flex mly:items-center mly:gap-1">
             <VariableIcon>
-              <ArrowDownIcon className="mly-size-3 mly-stroke-[2.5]" />
+              <ArrowDownIcon className="mly:size-3 mly:stroke-[2.5]" />
             </VariableIcon>
             <VariableIcon>
-              <ArrowUpIcon className="mly-size-3 mly-stroke-[2.5]" />
+              <ArrowUpIcon className="mly:size-3 mly:stroke-[2.5]" />
             </VariableIcon>
-            <span className="mly-text-xs mly-text-gray-500">Navigate</span>
+            <span className="mly:text-xs mly:text-gray-500">Navigate</span>
           </div>
           <VariableIcon>
-            <CornerDownLeftIcon className="mly-size-3 mly-stroke-[2.5]" />
+            <CornerDownLeftIcon className="mly:size-3 mly:stroke-[2.5]" />
           </VariableIcon>
         </div>
       </div>
@@ -154,7 +154,7 @@ function VariableIcon(props: VariableIconProps) {
   return (
     <div
       className={cn(
-        'mly-flex mly-size-5 mly-items-center mly-justify-center mly-rounded-md mly-border',
+        'mly:flex mly:size-5 mly:items-center mly:justify-center mly:rounded-md mly:border',
         className
       )}
     >

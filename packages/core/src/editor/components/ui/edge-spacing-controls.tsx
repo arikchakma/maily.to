@@ -30,11 +30,11 @@ export function EdgeSpacingControl(props: EdgeSpacingControlProps) {
 
   return (
     <Popover>
-      <PopoverTrigger className="mly-rounded hover:mly-bg-gray-100">
+      <PopoverTrigger className="mly:rounded mly:hover:bg-gray-100">
         <ChevronUp size={14} />
       </PopoverTrigger>
       <PopoverContent
-        className="mly-flex mly-max-w-max mly-gap-0.5 mly-rounded-md mly-border mly-border-gray-200 !mly-p-0.5 mly-shadow-none"
+        className="mly:flex mly:max-w-max mly:gap-0.5 mly:rounded-md mly:border mly:border-gray-200 mly:p-0.5! mly:shadow-none"
         side="top"
         sideOffset={8}
       >
@@ -42,25 +42,25 @@ export function EdgeSpacingControl(props: EdgeSpacingControlProps) {
           label="T"
           value={top ?? 0}
           onChange={(value) => onTopValueChange?.(value)}
-          inputClassName="mly-rounded"
+          inputClassName="mly:rounded"
         />
         <InputWithLabel
           label="R"
           value={right ?? 0}
           onChange={(value) => onRightValueChange?.(value)}
-          inputClassName="mly-rounded"
+          inputClassName="mly:rounded"
         />
         <InputWithLabel
           label="B"
           value={bottom ?? 0}
           onChange={(value) => onBottomValueChange?.(value)}
-          inputClassName="mly-rounded"
+          inputClassName="mly:rounded"
         />
         <InputWithLabel
           label="L"
           value={left ?? 0}
           onChange={(value) => onLeftValueChange?.(value)}
-          inputClassName="mly-rounded"
+          inputClassName="mly:rounded"
         />
       </PopoverContent>
     </Popover>
@@ -83,7 +83,7 @@ function InputWithLabel(props: InputWithLabelProps) {
   return (
     <div
       className={cn(
-        'mly-flex mly-flex-col mly-items-center mly-gap-1',
+        'mly:flex mly:flex-col mly:items-center mly:gap-1',
         className
       )}
     >
@@ -97,12 +97,12 @@ function InputWithLabel(props: InputWithLabelProps) {
         value={value + ''}
         onChange={(e) => onChange(Number(e.target.value))}
         className={cn(
-          'hide-number-controls focus-visible:outline-none mly-size-5 mly-border-0 mly-border-none mly-bg-gray-200 mly-p-0.5 mly-text-center mly-text-xs mly-tabular-nums mly-outline-none',
+          'hide-number-controls mly:size-5 mly:border-0 mly:border-none mly:bg-gray-200 mly:p-0.5 mly:text-center mly:text-xs mly:tabular-nums mly:outline-hidden focus-visible:outline-none',
           inputClassName
         )}
       />
       <label
-        className="mly-text-[10px] mly-leading-none mly-text-gray-500"
+        className="mly:text-[10px] mly:leading-none mly:text-gray-500"
         htmlFor={id}
       >
         {label}

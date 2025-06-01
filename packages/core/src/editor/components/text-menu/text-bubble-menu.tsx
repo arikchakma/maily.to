@@ -95,12 +95,12 @@ export function TextBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:gap-0.5 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         <TurnIntoBlock options={turnIntoBlockOptions} />
 
-        <Divider className="mly-mx-0" />
+        <Divider className="mly:mx-0" />
 
         <TextBubbleContent editor={editor} />
       </TooltipProvider>

@@ -32,7 +32,7 @@ export function ColumnsBubbleMenuContent(props: ColumnsBubbleMenuProps) {
 
   return (
     <TooltipProvider>
-      <div className="mly-flex mly-items-stretch">
+      <div className="mly:flex mly:items-stretch">
         {state.isColumnActive && (
           <>
             <ColumnsWidthConfig

@@ -11,12 +11,12 @@ export function ColumnsWidth(props: ColumnsWidthProps) {
   const { selectedValue, onValueChange, tooltip } = props;
 
   const content = (
-    <label className="mly-relative mly-flex mly-items-center">
-      <span className="mly-absolute mly-inset-y-0 mly-left-2 mly-flex mly-items-center mly-text-xs mly-leading-none mly-text-gray-400">
+    <label className="mly:relative mly:flex mly:items-center">
+      <span className="mly:absolute mly:inset-y-0 mly:left-2 mly:flex mly:items-center mly:text-xs mly:leading-none mly:text-gray-400">
         W
       </span>
       <select
-        className="mly-h-auto mly-max-w-28 mly-appearance-none mly-border-0 mly-border-none mly-p-1 mly-pl-[26px] mly-text-sm mly-tabular-nums mly-outline-none focus-visible:mly-outline-none"
+        className="mly:h-auto mly:max-w-28 mly:appearance-none mly:border-0 mly:border-none mly:p-1 mly:pl-[26px] mly:text-sm mly:tabular-nums mly:outline-hidden mly:focus-visible:outline-hidden"
         value={selectedValue}
         onChange={(e) => onValueChange(e.target.value)}
       >

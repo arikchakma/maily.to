@@ -31,7 +31,7 @@ export function VariableBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-slate-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:gap-0.5 mly:rounded-lg mly:border mly:border-slate-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         <TextBubbleContent showListMenu={false} editor={editor} />

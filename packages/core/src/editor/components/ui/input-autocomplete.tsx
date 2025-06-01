@@ -49,8 +49,8 @@ export const InputAutocomplete = forwardRef<
   const isTriggeringVariable = value.startsWith(triggerChar);
 
   return (
-    <div className={cn('mly-relative')} ref={containerRef}>
-      <label className="mly-relative">
+    <div className={cn('mly:relative')} ref={containerRef}>
+      <label className="mly:relative">
         <input
           {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
           placeholder="e.g. items"
@@ -62,7 +62,7 @@ export const InputAutocomplete = forwardRef<
             onValueChange(e.target.value);
           }}
           className={cn(
-            'mly-h-7 mly-w-40 mly-rounded-md mly-bg-white mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray hover:mly-bg-soft-gray focus:mly-bg-soft-gray focus:mly-outline-none',
+            'mly:h-7 mly:w-40 mly:rounded-md mly:bg-white mly:px-2 mly:pr-6 mly:text-sm mly:text-midnight-gray mly:hover:bg-soft-gray mly:focus:bg-soft-gray mly:focus:outline-hidden',
             className
           )}
           onKeyDown={(e) => {
@@ -84,13 +84,13 @@ export const InputAutocomplete = forwardRef<
           }}
           spellCheck={false}
         />
-        <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-          <CornerDownLeft className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+        <div className="mly:absolute mly:inset-y-0 mly:right-1 mly:flex mly:items-center">
+          <CornerDownLeft className="mly:h-3 mly:w-3 mly:stroke-[2.5] mly:text-midnight-gray" />
         </div>
       </label>
 
       {isTriggeringVariable && (
-        <div className="mly-absolute mly-left-0 mly-top-8">
+        <div className="mly:absolute mly:left-0 mly:top-8">
           <VariableSuggestionPopoverComponent
             items={autoCompleteOptions.map((option) => {
               return {

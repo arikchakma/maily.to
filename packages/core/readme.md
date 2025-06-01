@@ -224,7 +224,7 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
         // now you can replace the default
         // VariableView with your custom view
         return ReactNodeViewRenderer(VariableView, {
-          className: 'mly-relative mly-inline-block',
+          className: 'mly:relative mly:inline-block',
           as: 'div',
         });
       },

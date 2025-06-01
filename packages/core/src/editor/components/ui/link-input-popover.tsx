@@ -65,10 +65,10 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="!mly-size-7"
+        className="!mly:size-7"
         data-state={!!defaultValue}
       >
-        <Icon className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-midnight-gray" />
+        <Icon className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5] mly:text-midnight-gray" />
       </BaseButton>
     </PopoverTrigger>
   );
@@ -97,7 +97,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
       <PopoverContent
         align="end"
         side="top"
-        className="mly-w-max mly-rounded-none mly-border-none mly-bg-transparent !mly-p-0 mly-shadow-none"
+        className="mly:w-max mly:rounded-none mly:border-none mly:bg-transparent mly:p-0! mly:shadow-none"
         sideOffset={8}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
@@ -113,9 +113,9 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
             setIsOpen(false);
           }}
         >
-          <div className="mly-isolate mly-flex mly-rounded-lg">
+          <div className="mly:isolate mly:flex mly:rounded-lg">
             {!isEditing && (
-              <div className="mly-flex mly-h-8 mly-items-center mly-rounded-lg mly-border mly-border-gray-300 mly-bg-white mly-px-0.5">
+              <div className="mly:flex mly:h-8 mly:items-center mly:rounded-lg mly:border mly:border-gray-300 mly:bg-white mly:px-0.5">
                 <button
                   onClick={() => {
                     setIsEditing(true);
@@ -138,9 +138,9 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
             )}
 
             {isEditing && (
-              <div className="mly-relative">
-                <div className="mly-absolute mly-inset-y-0 mly-left-1.5 mly-z-10 mly-flex mly-items-center">
-                  <LinkIcon className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+              <div className="mly:relative">
+                <div className="mly:absolute mly:inset-y-0 mly:left-1.5 mly:z-10 mly:flex mly:items-center">
+                  <LinkIcon className="mly:h-3 mly:w-3 mly:stroke-[2.5] mly:text-midnight-gray" />
                 </div>
 
                 <InputAutocomplete
@@ -152,7 +152,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                   autoCompleteOptions={autoCompleteOptions}
                   ref={linkInputRef}
                   placeholder={placeholderUrl}
-                  className="-mly-ms-px mly-block mly-h-8 mly-w-56 mly-rounded-lg mly-border mly-border-gray-300 mly-px-2 mly-py-1.5 mly-pl-6 mly-pr-6 mly-text-sm mly-shadow-sm mly-outline-none placeholder:mly-text-gray-400"
+                  className="-mly:ms-px mly:block mly:h-8 mly:w-56 mly:rounded-lg mly:border mly:border-gray-300 mly:px-2 mly:py-1.5 mly:pl-6 mly:pr-6 mly:text-sm mly:shadow-sm mly:outline-hidden mly:placeholder:text-gray-400"
                   triggerChar={variableTriggerCharacter}
                   onSelectOption={(value) => {
                     const isVariable =

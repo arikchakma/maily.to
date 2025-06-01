@@ -185,7 +185,7 @@ export function LogoView(props: NodeViewProps) {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="mly-absolute mly-inset-0 mly-opacity-0"
+          className="mly:absolute mly:inset-0 mly:opacity-0"
           multiple={false}
         />
       )}

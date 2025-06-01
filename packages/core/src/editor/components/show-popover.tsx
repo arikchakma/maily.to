@@ -48,18 +48,18 @@ function _ShowPopover(props: ShowPopoverProps) {
         <TooltipTrigger asChild>
           <PopoverTrigger
             className={cn(
-              'mly-flex mly-size-7 mly-items-center mly-justify-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2',
+              'mly:flex mly:size-7 mly:items-center mly:justify-center mly:gap-1 mly:rounded-md mly:px-1.5 mly:text-sm mly:data-[state=open]:bg-soft-gray mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2',
               showIfKey &&
-                'mly-bg-rose-100 mly-text-rose-800 data-[state=open]:mly-bg-rose-100 hover:mly-bg-rose-100'
+                'mly:bg-rose-100 mly:text-rose-800 mly:data-[state=open]:bg-rose-100 mly:hover:bg-rose-100'
             )}
           >
-            <Eye className="mly-h-3 mly-w-3 mly-stroke-[2.5]" />
+            <Eye className="mly:h-3 mly:w-3 mly:stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent sideOffset={8}>Show block conditionally</TooltipContent>
       </Tooltip>
       <PopoverContent
-        className="mly-flex mly-w-max mly-rounded-lg !mly-p-0.5"
+        className="mly:flex mly:w-max mly:rounded-lg mly:p-0.5!"
         side="top"
         sideOffset={8}
         align="end"
@@ -70,17 +70,17 @@ function _ShowPopover(props: ShowPopoverProps) {
           e.preventDefault();
         }}
       >
-        <div className="mly-flex mly-items-center mly-gap-1.5 mly-px-1.5 mly-text-sm mly-leading-none">
+        <div className="mly:flex mly:items-center mly:gap-1.5 mly:px-1.5 mly:text-sm mly:leading-none">
           Show if
           <Tooltip>
             <TooltipTrigger>
               <InfoIcon
-                className={cn('mly-size-3 mly-stroke-[2.5] mly-text-gray-500')}
+                className={cn('mly:size-3 mly:stroke-[2.5] mly:text-gray-500')}
               />
             </TooltipTrigger>
             <TooltipContent
               sideOffset={14}
-              className="mly-max-w-[285px]"
+              className="mly:max-w-[285px]"
               align="start"
             >
               Show the block if the selected variable is true.

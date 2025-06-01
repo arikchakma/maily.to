@@ -142,14 +142,14 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
           variant="ghost"
           size="sm"
           type="button"
-          className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
+          className="!mly:h-7 mly:w-7 mly:shrink-0 mly:p-0"
         >
-          <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
-            <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-slate-700">
+          <div className="mly:flex mly:flex-col mly:items-center mly:justify-center mly:gap-px">
+            <span className="mly:font-bolder mly:font-mono mly:text-xs mly:text-slate-700">
               A
             </span>
             <div
-              className="mly-h-[2px] mly-w-3"
+              className="mly:h-[2px] mly:w-3"
               style={{ backgroundColor: state.currentTextColor }}
             />
           </div>

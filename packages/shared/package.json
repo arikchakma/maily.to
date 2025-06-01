@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/shared",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "Shared utilities for Maily",
   "sideEffects": false,

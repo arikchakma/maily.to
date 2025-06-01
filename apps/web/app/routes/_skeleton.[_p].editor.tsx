@@ -52,17 +52,18 @@ export function clientLoader(args: Route.ClientLoaderArgs) {
 }
 
 export default function SkeletonEditor(props: Route.ComponentProps) {
-  const { loaderData } = props;
+  // const { loaderData } = props;
   const [editorTheme, setEditorTheme] = useState<EditorThemeOptions>(
-    loaderData.theme
+    // loaderData.theme
+    DEFAULT_EDITOR_THEME
   );
   const editorRef = useRef<TiptapEditor | null>(null);
 
-  const [_, setSearchParams] = useSearchParams();
-  useEffect(() => {
-    const base64 = btoa(JSON.stringify(editorTheme));
-    setSearchParams({ [THEME_KEY]: base64 }, { replace: true });
-  }, [editorTheme]);
+  // const [_, setSearchParams] = useSearchParams();
+  // useEffect(() => {
+  //   const base64 = btoa(JSON.stringify(editorTheme));
+  //   setSearchParams({ [THEME_KEY]: base64 }, { replace: true });
+  // }, [editorTheme]);
 
   const { mutateAsync: previewEmail, isPending } = useMutation({
     mutationFn: async () => {

@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Editor } from '@maily-to/core';
 import { cn } from '~/lib/classname';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
@@ -24,11 +24,33 @@ import type { Editor as TiptapEditor } from '@tiptap/core';
 import { useMutation } from '@tanstack/react-query';
 import { httpPost } from '~/lib/http';
 import { toast } from 'sonner';
+import { useSearchParams } from 'react-router';
+import type { Route } from './+types/_skeleton.[_p].editor';
 
-export default function SkeletonEditor() {
-  const [editorTheme, setEditorTheme] =
-    useState<EditorThemeOptions>(DEFAULT_EDITOR_THEME);
+const THEME_KEY = 't';
+
+export function clientLoader(args: Route.ClientLoaderArgs) {
+  const searchParams = new URL(args.request.url).searchParams;
+  const theme = searchParams.get(THEME_KEY);
+  if (!theme) {
+    return { theme: DEFAULT_EDITOR_THEME };
+  }
+
+  return { theme: JSON.parse(atob(theme)) as EditorThemeOptions };
+}
+
+export default function SkeletonEditor(props: Route.ComponentProps) {
+  const { loaderData } = props;
+  const [editorTheme, setEditorTheme] = useState<EditorThemeOptions>(
+    loaderData.theme
+  );
   const editorRef = useRef<TiptapEditor | null>(null);
+
+  const [_, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const base64 = btoa(JSON.stringify(editorTheme));
+    setSearchParams({ [THEME_KEY]: base64 }, { replace: true });
+  }, [editorTheme]);
 
   const { mutateAsync: previewEmail, isPending } = useMutation({
     mutationFn: async () => {

@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, type CSSProperties } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { Editor } from '@maily-to/core';
 import { cn } from '~/lib/classname';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
@@ -13,56 +13,13 @@ import {
 import { ColorPicker } from '~/components/skeleton/color-picker';
 import { HexColorInput } from 'react-colorful';
 import { SelectNative } from '~/components/skeleton/select-native';
-
-export interface ThemeOptions {
-  container?: Partial<
-    Pick<
-      CSSProperties,
-      | 'backgroundColor'
-      | 'maxWidth'
-      | 'minWidth'
-      | 'width'
-      | 'marginLeft'
-      | 'marginRight'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'borderRadius'
-      | 'borderWidth'
-      | 'borderColor'
-    >
-  >;
-  body?: Partial<
-    Pick<
-      CSSProperties,
-      | 'backgroundColor'
-      | 'marginTop'
-      | 'marginRight'
-      | 'marginBottom'
-      | 'marginLeft'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-    >
-  >;
-  button?: Partial<
-    Pick<
-      CSSProperties,
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'backgroundColor'
-      | 'color'
-    >
-  >;
-  link?: Partial<Pick<CSSProperties, 'color'>>;
-}
+import {
+  getMailyCssVariables,
+  type EditorThemeOptions,
+} from '@maily-to/shared';
 
 export default function SkeletonEditor() {
-  const [editorTheme, setEditorTheme] = useState<ThemeOptions>({
+  const [editorTheme, setEditorTheme] = useState<EditorThemeOptions>({
     button: {
       backgroundColor: '#000000',
       color: '#ffffff',
@@ -86,10 +43,6 @@ export default function SkeletonEditor() {
     },
     body: {
       backgroundColor: '#ffffff',
-      marginTop: '0px',
-      marginRight: '0px',
-      marginBottom: '0px',
-      marginLeft: '0px',
       paddingTop: '0px',
       paddingRight: '0px',
       paddingBottom: '0px',
@@ -100,41 +53,7 @@ export default function SkeletonEditor() {
   return (
     <div
       className="flex h-screen w-screen p-10"
-      style={
-        {
-          '--mly-body-background-color': editorTheme.body?.backgroundColor,
-          '--mly-body-margin-top': editorTheme.body?.marginTop,
-          '--mly-body-margin-right': editorTheme.body?.marginRight,
-          '--mly-body-margin-bottom': editorTheme.body?.marginBottom,
-          '--mly-body-margin-left': editorTheme.body?.marginLeft,
-          '--mly-body-padding-top': editorTheme.body?.paddingTop,
-          '--mly-body-padding-right': editorTheme.body?.paddingRight,
-          '--mly-body-padding-bottom': editorTheme.body?.paddingBottom,
-          '--mly-body-padding-left': editorTheme.body?.paddingLeft,
-
-          '--mly-container-background-color':
-            editorTheme.container?.backgroundColor,
-          '--mly-container-max-width': editorTheme.container?.maxWidth,
-          '--mly-container-min-width': editorTheme.container?.minWidth,
-          '--mly-container-width': editorTheme.container?.width,
-          '--mly-container-padding-top': editorTheme.container?.paddingTop,
-          '--mly-container-padding-right': editorTheme.container?.paddingRight,
-          '--mly-container-padding-bottom':
-            editorTheme.container?.paddingBottom,
-          '--mly-container-padding-left': editorTheme.container?.paddingLeft,
-          '--mly-container-border-radius': editorTheme.container?.borderRadius,
-          '--mly-container-border-width': editorTheme.container?.borderWidth,
-          '--mly-container-border-color': editorTheme.container?.borderColor,
-
-          '--mly-button-background-color': editorTheme.button?.backgroundColor,
-          '--mly-button-text-color': editorTheme.button?.color,
-          '--mly-button-padding-top': editorTheme.button?.paddingTop,
-          '--mly-button-padding-right': editorTheme.button?.paddingRight,
-          '--mly-button-padding-bottom': editorTheme.button?.paddingBottom,
-          '--mly-button-padding-left': editorTheme.button?.paddingLeft,
-          '--mly-link-color': editorTheme.link?.color,
-        } as CSSProperties
-      }
+      style={getMailyCssVariables(editorTheme)}
     >
       <Suspense>
         <Editor
@@ -183,10 +102,10 @@ export default function SkeletonEditor() {
 }
 
 type LayoutSettingsProps = {
-  containerTheme: ThemeOptions['container'];
-  setContainerTheme: (containerTheme: ThemeOptions['container']) => void;
-  bodyTheme: ThemeOptions['body'];
-  setBodyTheme: (bodyTheme: ThemeOptions['body']) => void;
+  containerTheme: EditorThemeOptions['container'];
+  setContainerTheme: (containerTheme: EditorThemeOptions['container']) => void;
+  bodyTheme: EditorThemeOptions['body'];
+  setBodyTheme: (bodyTheme: EditorThemeOptions['body']) => void;
 };
 
 function LayoutSettings(props: LayoutSettingsProps) {
@@ -346,8 +265,8 @@ function LayoutSettings(props: LayoutSettingsProps) {
 }
 
 type ButtonSettingsProps = {
-  buttonTheme: ThemeOptions['button'];
-  setButtonTheme: (buttonTheme: ThemeOptions['button']) => void;
+  buttonTheme: EditorThemeOptions['button'];
+  setButtonTheme: (buttonTheme: EditorThemeOptions['button']) => void;
 };
 
 function ButtonSettings(props: ButtonSettingsProps) {
@@ -441,8 +360,8 @@ function ButtonSettings(props: ButtonSettingsProps) {
 }
 
 type LinkSettingsProps = {
-  linkTheme: ThemeOptions['link'];
-  setLinkTheme: (linkTheme: ThemeOptions['link']) => void;
+  linkTheme: EditorThemeOptions['link'];
+  setLinkTheme: (linkTheme: EditorThemeOptions['link']) => void;
 };
 
 function LinkSettings(props: LinkSettingsProps) {

@@ -26,6 +26,12 @@ import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
 import juice from 'juice';
+import type { RendererThemeOptions as ThemeOptions } from '@maily-to/shared';
+import {
+  DEFAULT_RENDERER_THEME as DEFAULT_THEME,
+  DEFAULT_FONT,
+  DEFAULT_LINK_TEXT_COLOR,
+} from '@maily-to/shared';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -75,76 +81,6 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
   md: '48px',
   lg: '64px',
 };
-
-export interface ThemeOptions {
-  colors?: Partial<{
-    heading: string;
-    paragraph: string;
-    horizontal: string;
-    footer: string;
-    blockquoteBorder: string;
-    codeBackground: string;
-    codeText: string;
-    linkCardTitle: string;
-    linkCardDescription: string;
-    linkCardBadgeText: string;
-    linkCardBadgeBackground: string;
-    linkCardSubTitle: string;
-  }>;
-  fontSize?: Partial<{
-    paragraph: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-    footer: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-  }>;
-
-  container?: Partial<
-    Pick<
-      CSSProperties,
-      | 'backgroundColor'
-      | 'maxWidth'
-      | 'minWidth'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'borderRadius'
-      | 'borderWidth'
-      | 'borderColor'
-    >
-  >;
-  body?: Partial<
-    Pick<
-      CSSProperties,
-      | 'backgroundColor'
-      | 'marginTop'
-      | 'marginRight'
-      | 'marginBottom'
-      | 'marginLeft'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-    >
-  >;
-  button?: Partial<
-    Pick<
-      CSSProperties,
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'backgroundColor'
-      | 'color'
-    >
-  >;
-  link?: Partial<Pick<CSSProperties, 'color'>>;
-  font?: Partial<FontProps>;
-}
 
 export interface MailyConfig {
   /**
@@ -272,88 +208,9 @@ export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
 export const DEFAULT_BUTTON_PADDING_LEFT = 32;
 export const DEFAULT_BUTTON_TEXT_COLOR = '#ffffff';
 
-export const DEFAULT_LINK_TEXT_COLOR = '#111827';
-export const DEFAULT_LINK_TEXT_DECORATION = 'underline';
-
 const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   pretty: false,
   plainText: false,
-};
-
-const DEFAULT_FONT: FontProps = {
-  fallbackFontFamily: 'sans-serif',
-  fontFamily: 'Inter',
-  fontStyle: 'normal',
-  fontWeight: 400,
-  webFont: {
-    url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
-    format: 'woff2',
-  },
-};
-
-const DEFAULT_THEME: ThemeOptions = {
-  colors: {
-    heading: '#111827',
-    paragraph: '#374151',
-    horizontal: '#EAEAEA',
-    footer: '#64748B',
-    blockquoteBorder: '#D1D5DB',
-    codeBackground: '#EFEFEF',
-    codeText: '#111827',
-    linkCardTitle: '#111827',
-    linkCardDescription: '#6B7280',
-    linkCardBadgeText: '#111827',
-    linkCardBadgeBackground: '#FEF08A',
-    linkCardSubTitle: '#6B7280',
-  },
-  fontSize: {
-    paragraph: {
-      size: '15px',
-      lineHeight: '26.25px',
-    },
-    footer: {
-      size: '14px',
-      lineHeight: '24px',
-    },
-  },
-
-  container: {
-    backgroundColor: '#ffffff',
-    maxWidth: '600px',
-    minWidth: '300px',
-    paddingTop: '0.5rem',
-    paddingRight: '0.5rem',
-    paddingBottom: '0.5rem',
-    paddingLeft: '0.5rem',
-
-    borderRadius: '0px',
-    borderWidth: '0px',
-    borderColor: 'transparent',
-  },
-  body: {
-    backgroundColor: '#ffffff',
-    marginTop: '0px',
-    marginRight: '0px',
-    marginBottom: '0px',
-    marginLeft: '0px',
-
-    paddingTop: '0px',
-    paddingRight: '0px',
-    paddingBottom: '0px',
-    paddingLeft: '0px',
-  },
-  button: {
-    backgroundColor: '#000000',
-    color: '#ffffff',
-    paddingTop: '10px',
-    paddingRight: '32px',
-    paddingBottom: '10px',
-    paddingLeft: '32px',
-  },
-  link: {
-    color: DEFAULT_LINK_TEXT_COLOR,
-  },
-  font: DEFAULT_FONT,
 };
 
 export interface RenderOptions {
@@ -614,6 +471,10 @@ export class Maily {
       ...DEFAULT_FONT,
       ...this.config.theme?.font,
     };
+    const bodyStyles: CSSProperties = {
+      margin: '0px',
+      ...this.config.theme?.body,
+    };
 
     const markup = (
       <Html {...htmlProps}>
@@ -626,7 +487,7 @@ export class Maily {
           />
           {tags}
         </Head>
-        <Body style={this.config.theme?.body}>
+        <Body style={bodyStyles}>
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}

@@ -1,5 +1,3 @@
-'use client';
-
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import {
   Popover,

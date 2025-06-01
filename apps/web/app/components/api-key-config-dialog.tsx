@@ -1,4 +1,4 @@
-import { Cog, Loader2, Loader2Icon, PlugZap, PlugZapIcon } from 'lucide-react';
+import { Cog, Loader2Icon, PlugZapIcon } from 'lucide-react';
 import { useState } from 'react';
 import {
   Dialog,

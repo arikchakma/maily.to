@@ -31,8 +31,8 @@ import type { Editor as TiptapEditor } from '@tiptap/core';
 import { useMutation } from '@tanstack/react-query';
 import { httpPost } from '~/lib/http';
 import { toast } from 'sonner';
-import { useSearchParams } from 'react-router';
 import type { Route } from './+types/_skeleton.[_p].editor';
+import { Base64 } from 'js-base64';
 
 const THEME_KEY = 't';
 
@@ -43,7 +43,7 @@ export function clientLoader(args: Route.ClientLoaderArgs) {
     return { theme: DEFAULT_EDITOR_THEME };
   }
 
-  const themeOptions = JSON.parse(atob(theme)) as EditorThemeOptions;
+  const themeOptions = JSON.parse(Base64.decode(theme)) as EditorThemeOptions;
   if (themeOptions.font?.webFont) {
     loadFont(themeOptions.font);
   }
@@ -59,7 +59,7 @@ export default function SkeletonEditor(props: Route.ComponentProps) {
   const editorRef = useRef<TiptapEditor | null>(null);
 
   useEffect(() => {
-    const base64 = btoa(JSON.stringify(editorTheme));
+    const base64 = Base64.encodeURI(JSON.stringify(editorTheme));
     window.history.replaceState(
       {},
       '',

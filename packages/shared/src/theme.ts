@@ -235,4 +235,3 @@ export const DEFAULT_EDITOR_THEME: EditorThemeOptions = {
   },
   font: DEFAULT_FONT,
 };
-

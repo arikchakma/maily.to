@@ -203,13 +203,6 @@ export const DEFAULT_HTML_PROPS: HtmlProps = {
   dir: 'ltr',
 };
 
-export const DEFAULT_BUTTON_BACKGROUND_COLOR = '#000000';
-export const DEFAULT_BUTTON_PADDING_TOP = 10;
-export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
-export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
-export const DEFAULT_BUTTON_PADDING_LEFT = 32;
-export const DEFAULT_BUTTON_TEXT_COLOR = '#ffffff';
-
 const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   pretty: false,
   plainText: false,

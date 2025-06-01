@@ -20,9 +20,7 @@
   "scripts": {
     "dev": "tsdown --watch",
     "clean": "rm -rf dist",
-    "build": "tsdown",
-    "test:watch": "vitest",
-    "test": "vitest run"
+    "build": "tsdown"
   },
   "repository": {
     "type": "git",

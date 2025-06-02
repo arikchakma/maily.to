@@ -626,7 +626,7 @@ function NumberInput(props: NumberInputProps) {
 
   return (
     <div className="relative max-w-full">
-      <div className="mly-absolute mly-left-1 pointer-events-none inset-y-0 flex items-center justify-center px-2">
+      <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center justify-center px-2">
         {Icon && <Icon className="size-3.5 text-gray-500" />}
       </div>
       <input

@@ -78,7 +78,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           </>
         )}
 
-        <div className="mly:flex mly:space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <AlignmentSwitch
             alignment={state.alignment}
             onAlignmentChange={(alignment) => {
@@ -164,7 +164,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               className="mly:capitalize"
             />
 
-            <div className="mly:flex mly:space-x-0.5">
+            <div className="mly:flex mly:gap-x-0.5">
               <ImageSize
                 dimension="width"
                 value={state?.width ?? ''}

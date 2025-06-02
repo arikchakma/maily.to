@@ -1,4 +1,4 @@
-.mly-editor .mly-prose {
+/* .mly-editor .mly-prose {
   p:where([class~='text-sm']):not(
       :where([class~='mly-not-prose'], [class~='mly-not-prose'] *)
     ) {
@@ -143,4 +143,4 @@
   code::after {
     content: none;
   }
-}
+} */

@@ -65,7 +65,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="!mly:size-7"
+        className="mly:h-7! mly:w-7!"
         data-state={!!defaultValue}
       >
         <Icon className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5] mly:text-midnight-gray" />

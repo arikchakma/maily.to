@@ -108,7 +108,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider />
 
-        <div className="mly:flex mly:space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <Select
             label="Border Radius"
             value={String(state.currentBorderRadius)}
@@ -197,7 +197,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider />
 
-        <div className="mly:flex mly:space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <ColorPicker
             color={state.currentBorderColor}
             onColorChange={(color) => {

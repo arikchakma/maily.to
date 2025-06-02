@@ -314,8 +314,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(postcss@8.5.3)
       tailwind-merge:
-        specifier: ^2.5.4
-        version: 2.5.4
+        specifier: ^3.3.0
+        version: 3.3.0
       tailwind-scrollbar:
         specifier: ^4.0.2
         version: 4.0.2(react@19.0.0)(tailwindcss@4.1.8)
@@ -3992,9 +3992,6 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
-
-  tailwind-merge@2.5.4:
-    resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
 
   tailwind-merge@3.3.0:
     resolution: {integrity: sha512-fyW/pEfcQSiigd5SNn0nApUOxx0zB/dm6UDU/rEwc2c3sX2smWUNbapHv+QRqLGVp9GWX3THIa7MUGPo+YkDzQ==}
@@ -8107,8 +8104,6 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
-
-  tailwind-merge@2.5.4: {}
 
   tailwind-merge@3.3.0: {}
 

@@ -1,5 +1,4 @@
 import './styles/index.css';
-import './styles/preflight.css';
-import './styles/tailwind.css';
+// import './styles/_editor.css';
 
 export * from './editor/index';

@@ -164,7 +164,7 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <Select
                   label="Border Radius"
                   value={_radius}
@@ -223,7 +223,7 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <AlignmentSwitch
                   alignment={alignment}
                   onAlignmentChange={(alignment) => {
@@ -249,7 +249,7 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <BackgroundColorPickerPopup
                   variant={variant}
                   color={buttonColor || 'transparent'}

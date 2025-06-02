@@ -1,4 +1,6 @@
-@import 'tailwindcss' prefix(mly);
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme) prefix(mly);
 
 @plugin '@tailwindcss/typography';
 @plugin 'tailwind-scrollbar';
@@ -64,3 +66,10 @@
     display: none;
   }
 }
+
+#mly-editor {
+  @import 'tailwindcss/preflight.css' layer(base) prefix(mly);
+  @import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
+}
+
+@import './_editor.css';

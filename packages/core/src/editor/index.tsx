@@ -130,6 +130,7 @@ export function Editor(props: EditorProps) {
   return (
     <MailyProvider placeholderUrl={placeholderUrl}>
       <div
+        id="mly-editor"
         className={cn(
           'mly-editor mly:antialiased',
           editor.isEditable ? 'mly-editable' : 'mly-not-editable',

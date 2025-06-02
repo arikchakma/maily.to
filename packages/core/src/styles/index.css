@@ -6,6 +6,13 @@
 @plugin 'tailwind-scrollbar';
 @plugin 'tailwindcss-animate';
 
+#mly-editor {
+  @import 'tailwindcss/preflight.css' layer(base) prefix(mly);
+}
+
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
+@import './_editor.css';
+
 @theme {
   --color-soft-gray: #f4f5f6;
   --color-midnight-gray: #333333;
@@ -66,10 +73,3 @@
     display: none;
   }
 }
-
-#mly-editor {
-  @import 'tailwindcss/preflight.css' layer(base) prefix(mly);
-  @import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
-}
-
-@import './_editor.css';

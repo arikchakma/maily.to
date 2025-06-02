@@ -58,197 +58,135 @@
   --mly-link-color: #111827;
 }
 
-#mly-editor
-  .mly\:prose
-  p:where([class~='text-sm']):not(
-    :where([class~='not-prose'], [class~='not-prose'] *)
-  ) {
-  font-size: 16px;
-}
+#mly-editor {
+  /* Content */
+  .mly\:prose {
+    strong {
+      color: currentColor;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h1, h2, h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: 0;
-  margin-bottom: 12px;
-}
+    p:where([class~='text-sm']):not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      font-size: 16px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-size: 36px;
-}
+    :where(h1, h2, h3):not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-size: 30px;
-}
+    :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      font-size: 36px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-size: 24px;
-}
+    :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      font-size: 30px;
+    }
 
-#mly-editor
-  .mly\:prose
-  p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  font-size: 15px;
-  margin-bottom: 20px;
-}
+    :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      font-size: 24px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h1, h2, h3, hr, table)
-  + p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: 0;
-}
+    p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(ol, ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
+    :where(h1, h2, h3, hr, table)
+      + p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-top: 0;
+    }
 
-#mly-editor
-  .mly\:prose
-  li:not(:last-child):not(
-    :where([class~='not-prose'], [class~='not-prose'] *)
-  ) {
-  margin-bottom: 8px;
-}
+    :where(ol, ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
 
-#mly-editor
-  .mly\:prose
-  li
-  > p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin: 0;
-}
+    li:not(:last-child):not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      margin-bottom: 8px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(img, .node-logo):not(
-    :where([class~='not-prose'], [class~='not-prose'] *)
-  ) {
-  margin-top: 0;
-  margin-bottom: 32px;
-}
+    li > p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin: 0;
+    }
 
-#mly-editor
-  .mly\:prose
-  hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-block: 32px;
-}
+    :where(img, .node-logo):not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      margin-top: 0;
+      margin-bottom: 32px;
+    }
 
-#mly-editor
-  .mly\:prose
-  .footer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 20px;
-  color: rgb(100, 116, 139);
-}
+    hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-block: 32px;
+    }
 
-#mly-editor
-  .mly\:prose
-  .spacer
-  + *:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: 0;
-}
+    .footer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 20px;
+      color: rgb(100, 116, 139);
+    }
 
-#mly-editor
-  .mly\:prose
-  p
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -20px;
-}
+    :where(.node-button, .node-linkCard):not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
 
-#mly-editor
-  .mly\:prose
-  blockquote
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -16px;
-}
+    .node-image:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      line-height: 0;
+      margin-top: 0;
+      margin-bottom: 32px;
+      outline: none;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(h1, h2, h3)
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -12px;
-}
+    .node-image
+      + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-top: -32px;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(ol, ul)
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -20px;
-}
+    code::before,
+    code::after {
+      content: none;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(img, .node-logo)
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -32px;
-}
+    /* Spacer */
+    .spacer + *:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-top: 0;
+    }
 
-#mly-editor
-  .mly\:prose
-  :where(.node-button, .node-linkCard, footer)
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -20px;
-}
+    *:has(+ .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *))) {
+      margin-bottom: 0 !important;
+    }
+  }
 
-#mly-editor
-  .mly\:prose
-  :where(.node-button, .node-linkCard):not(
-    :where([class~='not-prose'], [class~='not-prose'] *)
-  ) {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
+  /* React Colorful */
+  .react-colorful__alpha {
+    border-radius: 0;
+  }
 
-#mly-editor
-  .mly\:prose
-  .node-image:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  line-height: 0;
-  margin-top: 0;
-  margin-bottom: 32px;
-  outline: none;
-}
+  .react-colorful__saturation,
+  .react-colorful__hue,
+  .react-colorful__alpha {
+    border-radius: 8px;
+  }
 
-#mly-editor
-  .mly\:prose
-  .node-image
-  + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-  margin-top: -32px;
-}
+  .react-colorful__hue,
+  .react-colorful__alpha {
+    height: 16px;
+  }
 
-/* Remove code ::before and ::after */
-#mly-editor .mly\:prose code::before,
-#mly-editor .mly\:prose code::after {
-  content: none;
-}
-
-#mly-editor .react-colorful__alpha {
-  border-radius: 0;
-}
-
-#mly-editor .react-colorful__saturation,
-#mly-editor .react-colorful__hue,
-#mly-editor .react-colorful__alpha {
-  border-radius: 8px;
-}
-
-#mly-editor .react-colorful__hue,
-#mly-editor .react-colorful__alpha {
-  height: 16px;
-}
-
-#mly-editor .react-colorful__pointer {
-  width: 16px;
-  height: 16px;
+  .react-colorful__pointer {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .mly-editable .ProseMirror-selectednode::after {
@@ -260,13 +198,7 @@
   background: rgba(35, 131, 226, 0.14);
 }
 
-.mly\:prose {
-  strong {
-    color: currentColor;
-  }
-}
-
-.ProseMirror {
+#mly-editor .ProseMirror {
   position: relative;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -494,7 +426,8 @@
 
     .hljs-string,
     .hljs-symbol,
-    .hljs-bullet {
+    .hljs-bullet,
+    .hljs-selector-tag {
       color: var(--color-meta-string);
     }
 
@@ -513,10 +446,6 @@
 
     .hljs-attr {
       color: var(--color-attribute);
-    }
-
-    .hljs-selector-tag {
-      color: var(--color-meta-string);
     }
   }
 }

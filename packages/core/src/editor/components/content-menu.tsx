@@ -132,7 +132,7 @@ export function ContentMenu(props: ContentMenuProps) {
               <BaseButton
                 variant="ghost"
                 size="icon"
-                className="!mly:size-5 mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
+                className="mly:size-5! mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
                 onClick={handleAddNewNode}
                 type="button"
               >

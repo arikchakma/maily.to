@@ -48,11 +48,11 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.28.0",
     "@react-router/dev": "^7.6.1",
-    "@tailwindcss/vite": "^4.1.7",
+    "@tailwindcss/vite": "^4.1.8",
     "@types/express": "^5.0.2",
-    "@types/node": "^22.15.23",
+    "@types/node": "^22.15.29",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
@@ -60,14 +60,14 @@
     "@types/swagger-ui-react": "^5.18.0",
     "cross-env": "^7.0.3",
     "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-prettier": "^5.4.1",
     "globals": "^16.2.0",
     "openapi-typescript": "^7.8.0",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "tailwindcss": "^4.0.15",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.0",
+    "typescript-eslint": "^8.33.1",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4"
   }

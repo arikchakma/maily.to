@@ -185,7 +185,7 @@
   },
   "devDependencies": {
     "@types/react": "^19.1.5",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "postcss-replace": "^2.0.1",
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",

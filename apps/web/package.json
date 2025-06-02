@@ -25,7 +25,7 @@
     "@react-router/node": "^7.6.1",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.8",
-    "@tanstack/react-query": "^5.77.2",
+    "@tanstack/react-query": "^5.79.2",
     "@tiptap/core": "^2.12.0",
     "@vercel/node": "^5.1.16",
     "@vercel/react-router": "^1.1.0",

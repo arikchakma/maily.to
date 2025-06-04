@@ -33,11 +33,11 @@ export function meta(meta: MetaDescriptors) {
       // only filter unique meta tags
       // so that we don't have duplicate meta tags
       .filter((meta, index, self) => {
-        const meta_hash = has(meta);
+        const meta_hash = hash(meta);
         return (
           index ===
           self.findIndex((t) => {
-            return has(t) === meta_hash;
+            return hash(t) === meta_hash;
           })
         );
       })
@@ -70,7 +70,7 @@ function process(props: MetaDescriptor) {
  * for that we have to sort the object keys
  * and then stringify it and hash it
  */
-function has(meta: MetaDescriptor) {
+function hash(meta: MetaDescriptor) {
   const sortedMeta = Object.keys(meta)
     .sort()
     .reduce((acc, key) => {

@@ -7,3 +7,6 @@
 
 # Vercel
 /.vercel/
+
+# Chrome DevTools
+/public/.well-known/

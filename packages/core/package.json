@@ -1,7 +1,7 @@
 {
   "name": "@maily-to/core",
   "type": "module",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
   "main": "./dist/index.cjs",
@@ -177,7 +177,6 @@
     "lowlight": "^3.3.0",
     "lucide-react": "^0.511.0",
     "react-colorful": "^5.6.1",
-    "tailwind-merge": "^2.5.4",
     "tailwindcss": "^3.4.14",
     "tippy.js": "^6.3.7",
     "uuid": "^11.1.0",
@@ -188,6 +187,7 @@
     "postcss": "^8.5.4",
     "postcss-replace": "^2.0.1",
     "tailwind-config": "workspace:*",
+    "tailwind-merge": "^2.5.4",
     "tsconfig": "workspace:*",
     "typescript": "^5.8.3"
   },

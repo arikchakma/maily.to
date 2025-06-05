@@ -1,7 +1,6 @@
 import { useEffect, type RefObject, useRef } from 'react';
 import { MailOpenIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { isSafari } from '~/lib/detect-browser';
 import { cn } from '~/lib/classname';
 import { Button } from './ui/button';
 
@@ -20,17 +19,26 @@ function renderHTMLToIFrame(
     return;
   }
 
-  const iframeDocument = ref.current.contentDocument;
-  if (!iframeDocument) {
+  const doc = ref.current.contentDocument;
+  if (!doc) {
     return;
   }
 
-  const fontLink = iframeDocument.createElement('link');
-  fontLink.rel = 'stylesheet';
-  fontLink.href =
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
-  iframeDocument.head.appendChild(fontLink);
-  iframeDocument.body.innerHTML = html;
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+      </head>
+      <body>
+        ${html}
+      </body>
+    </html>
+  `);
+  doc.close();
 }
 
 export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
@@ -45,7 +53,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (!isSafari() || !iframeRef.current || isServer) {
+    if (!iframeRef.current || isServer) {
       return;
     }
 
@@ -78,7 +86,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
         title="Email preview"
         {...defaultProps}
         onLoad={() => {
-          if (isSafari() || isServer) {
+          if (isServer) {
             return;
           }
 

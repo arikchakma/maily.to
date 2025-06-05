@@ -25,6 +25,15 @@ import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
 import juice from 'juice';
+import type {
+  FontProps,
+  RendererThemeOptions as ThemeOptions,
+} from '@maily-to/shared';
+import {
+  DEFAULT_RENDERER_THEME as DEFAULT_THEME,
+  DEFAULT_FONT,
+  DEFAULT_LINK_TEXT_COLOR,
+} from '@maily-to/shared';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -74,34 +83,6 @@ const logoSizes: Record<AllowedLogoSizes, string> = {
   md: '48px',
   lg: '64px',
 };
-
-export interface ThemeOptions {
-  colors?: Partial<{
-    heading: string;
-    paragraph: string;
-    horizontal: string;
-    footer: string;
-    blockquoteBorder: string;
-    codeBackground: string;
-    codeText: string;
-    linkCardTitle: string;
-    linkCardDescription: string;
-    linkCardBadgeText: string;
-    linkCardBadgeBackground: string;
-    linkCardSubTitle: string;
-  }>;
-  container?: Partial<CSSProperties>;
-  fontSize?: Partial<{
-    paragraph: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-    footer: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-  }>;
-}
 
 export interface MailyConfig {
   /**
@@ -153,46 +134,6 @@ export interface MailyConfig {
    */
   theme?: Partial<ThemeOptions>;
 }
-
-const DEFAULT_RENDER_OPTIONS: RenderOptions = {
-  pretty: false,
-  plainText: false,
-};
-
-const DEFAULT_THEME: ThemeOptions = {
-  colors: {
-    heading: '#111827',
-    paragraph: '#374151',
-    horizontal: '#EAEAEA',
-    footer: '#64748B',
-    blockquoteBorder: '#D1D5DB',
-    codeBackground: '#EFEFEF',
-    codeText: '#111827',
-    linkCardTitle: '#111827',
-    linkCardDescription: '#6B7280',
-    linkCardBadgeText: '#111827',
-    linkCardBadgeBackground: '#FEF08A',
-    linkCardSubTitle: '#6B7280',
-  },
-  container: {
-    maxWidth: '600px',
-    minWidth: '300px',
-    width: '100%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    padding: '0.5rem',
-  },
-  fontSize: {
-    paragraph: {
-      size: '15px',
-      lineHeight: '26.25px',
-    },
-    footer: {
-      size: '14px',
-      lineHeight: '24px',
-    },
-  },
-};
 
 const CODE_FONT_FAMILY =
   'SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
@@ -262,10 +203,10 @@ export const DEFAULT_HTML_PROPS: HtmlProps = {
   dir: 'ltr',
 };
 
-export const DEFAULT_BUTTON_PADDING_TOP = 10;
-export const DEFAULT_BUTTON_PADDING_RIGHT = 32;
-export const DEFAULT_BUTTON_PADDING_BOTTOM = 10;
-export const DEFAULT_BUTTON_PADDING_LEFT = 32;
+const DEFAULT_RENDER_OPTIONS: RenderOptions = {
+  pretty: false,
+  plainText: false,
+};
 
 export interface RenderOptions {
   /**
@@ -322,7 +263,10 @@ export class Maily {
   }
 
   setTheme(theme: Partial<ThemeOptions>) {
-    this.config.theme = deepMerge(this.config.theme || DEFAULT_THEME, theme);
+    this.config.theme = deepMerge(
+      this.config.theme || DEFAULT_THEME,
+      theme
+    ) as ThemeOptions;
   }
 
   setVariableFormatter(formatter: VariableFormatter) {
@@ -520,20 +464,22 @@ export class Maily {
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
     const containerStyles = this.config.theme?.container;
+    const fontOptions: FontProps = {
+      ...(this.config.theme?.font || DEFAULT_FONT),
+      fontStyle: 'normal',
+      fontWeight: 400,
+    };
+
+    const bodyStyles: CSSProperties = {
+      margin: '0px',
+      ...this.config.theme?.body,
+    };
 
     const markup = (
       <Html {...htmlProps}>
         <Head>
-          <Font
-            fallbackFontFamily="sans-serif"
-            fontFamily="Inter"
-            fontStyle="normal"
-            fontWeight={400}
-            webFont={{
-              url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
-              format: 'woff2',
-            }}
-          />
+          <Font {...fontOptions} />
+
           <style
             dangerouslySetInnerHTML={{
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
@@ -541,15 +487,21 @@ export class Maily {
           />
           {tags}
         </Head>
-        <Body
-          style={{
-            margin: 0,
-          }}
-        >
+        <Body style={bodyStyles}>
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container style={containerStyles}>{jsxNodes}</Container>
+          <Container
+            style={{
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              borderStyle: 'solid',
+              ...containerStyles,
+            }}
+          >
+            {jsxNodes}
+          </Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""
@@ -778,6 +730,8 @@ export class Maily {
   ): ReactElement {
     const { attrs } = mark;
 
+    const linkTheme = this.config.theme?.link;
+
     let href = attrs?.href || '#';
     const target = attrs?.target || '_blank';
     const rel = attrs?.rel || 'noopener noreferrer nofollow';
@@ -797,7 +751,7 @@ export class Maily {
         style={{
           fontWeight: 500,
           textDecoration: 'none',
-          color: this.config.theme?.colors?.heading,
+          color: linkTheme?.color || DEFAULT_LINK_TEXT_COLOR,
         }}
         target={target}
       >
@@ -813,6 +767,12 @@ export class Maily {
   private variableUrlValue(href: string, options?: NodeOptions) {
     const { payloadValue } = options || {};
     const linkWithoutProtocol = this.removeLinkProtocol(href);
+
+    if (!this.shouldReplaceVariableValues) {
+      return this.variableFormatter({
+        variable: linkWithoutProtocol,
+      });
+    }
 
     return (
       (typeof payloadValue === 'object'
@@ -936,11 +896,14 @@ export class Maily {
     );
 
     return (
-      <Container>
+      <Container
+        style={{
+          marginTop: '0px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
+        }}
+      >
         <ol
           style={{
-            marginTop: '0px',
-            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'decimal',
           }}
@@ -968,12 +931,12 @@ export class Maily {
       <Container
         style={{
           maxWidth: '100%',
+          marginTop: '0px',
+          marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
         }}
       >
         <ul
           style={{
-            marginTop: '0px',
-            marginBottom: shouldRemoveBottomMargin ? '0' : '20px',
             paddingLeft: '26px',
             listStyleType: 'disc',
           }}
@@ -992,6 +955,7 @@ export class Maily {
       <li
         style={{
           marginBottom: '8px',
+          marginTop: '8px',
           paddingLeft: '6px',
           ...antialiased,
         }}
@@ -1003,23 +967,38 @@ export class Maily {
 
   private button(node: JSONContent, options?: NodeOptions): ReactElement {
     const { attrs } = node;
+
+    const buttonTheme = this.config.theme?.button;
+
     let {
       text: _text,
       isTextVariable,
       url,
       isUrlVariable,
       variant,
-      buttonColor,
-      textColor,
+      buttonColor: _buttonColor,
+      textColor: _textColor,
       borderRadius,
       // @TODO: Update the attribute to `textAlign`
       alignment = 'left',
 
-      paddingTop = DEFAULT_BUTTON_PADDING_TOP,
-      paddingRight = DEFAULT_BUTTON_PADDING_RIGHT,
-      paddingBottom = DEFAULT_BUTTON_PADDING_BOTTOM,
-      paddingLeft = DEFAULT_BUTTON_PADDING_LEFT,
+      paddingTop: _paddingTop,
+      paddingRight: _paddingRight,
+      paddingBottom: _paddingBottom,
+      paddingLeft: _paddingLeft,
     } = attrs || {};
+
+    const buttonColor = _buttonColor || buttonTheme?.backgroundColor;
+    const textColor = _textColor || buttonTheme?.color;
+
+    let paddingTop =
+      parseInt(String(_paddingTop || buttonTheme?.paddingTop)) || 0;
+    const paddingRight =
+      parseInt(String(_paddingRight || buttonTheme?.paddingRight)) || 0;
+    let paddingBottom =
+      parseInt(String(_paddingBottom || buttonTheme?.paddingBottom)) || 0;
+    const paddingLeft =
+      parseInt(String(_paddingLeft || buttonTheme?.paddingLeft)) || 0;
 
     const shouldShow = this.shouldShow(node, options);
     if (!shouldShow) {

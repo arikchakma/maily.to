@@ -1,4 +1,4 @@
-import type { Editor as TiptapEditor } from '@tiptap/core';
+import type { FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
 import { Loader2Icon } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { cn } from '~/lib/classname';
@@ -13,10 +13,11 @@ const Editor = lazy(() =>
 type EmailEditorProps = {
   defaultContent: Database['public']['Tables']['mails']['Row']['content'];
   setEditor: (editor: TiptapEditor) => void;
+  autofocus?: FocusPosition;
 };
 
 export function EmailEditor(props: EmailEditorProps) {
-  const { defaultContent, setEditor } = props;
+  const { defaultContent, setEditor, autofocus } = props;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,7 +38,7 @@ export function EmailEditor(props: EmailEditorProps) {
             contentClassName: `editor-content mx-auto max-w-[calc(600px+80px)]! px-10! pb-10!`,
             toolbarClassName: 'flex-wrap !items-start',
             spellCheck: false,
-            autofocus: 'end',
+            autofocus,
             immediatelyRender: false,
           }}
           contentJson={

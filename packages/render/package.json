@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/render",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "private": false,
   "description": "A transformer that converts Maily content into HTML email templates.",
   "sideEffects": false,
@@ -23,9 +23,9 @@
     }
   },
   "scripts": {
-    "dev": "tsup --watch",
+    "dev": "tsdown --watch",
     "clean": "rm -rf dist",
-    "build": "tsup",
+    "build": "tsdown",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:watch": "vitest",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "@antfu/utils": "^9.2.0",
     "@babel/preset-react": "^7.27.1",
+    "@maily-to/shared": "workspace:*",
     "@tiptap/core": "^2.12.0",
     "@types/react": "^19.1.5",
     "tsconfig": "workspace:*",

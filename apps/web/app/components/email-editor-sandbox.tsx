@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Editor } from '@tiptap/core';
+import type { Editor, FocusPosition } from '@tiptap/core';
 import {
   FileCogIcon,
   Loader2Icon,
@@ -39,10 +39,11 @@ type SaveTemplateResponse = {
 type EmailEditorSandboxProps = {
   template?: Database['public']['Tables']['mails']['Row'];
   showSaveButton?: boolean;
+  autofocus?: FocusPosition;
 };
 
 export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
-  const { template, showSaveButton = true } = props;
+  const { template, showSaveButton = true, autofocus } = props;
 
   const navigate = useNavigate();
   const revalidator = useRevalidator();
@@ -318,6 +319,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
       <EmailEditor
         defaultContent={template?.content || JSON.stringify(defaultEmailJSON)}
         setEditor={setEditor}
+        autofocus={autofocus}
       />
     </>
   );

@@ -67,6 +67,13 @@ export type VariableOptions = {
    * @default VariableSuggestionPopover
    */
   variableSuggestionsPopover: VariableSuggestionsPopoverType;
+
+  /**
+   * Disable input is the boolean that will be used to disable the input of the variable
+   * when the variable is selected.
+   * @default false
+   */
+  disableInput: boolean;
 };
 
 export type VariableStorage = {
@@ -93,6 +100,7 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
       variables: DEFAULT_VARIABLES,
       variableSuggestionsPopover: DEFAULT_VARIABLE_SUGGESTION_POPOVER,
       renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
+      disableInput: false,
 
       renderLabel(props) {
         const { node } = props;

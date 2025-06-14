@@ -30,6 +30,12 @@ export function VariableView(props: NodeViewProps) {
     return variableRender;
   }, [editor]);
 
+  const disableInput = useMemo(() => {
+    return (
+      getNodeOptions<VariableOptions>(editor, 'variable')?.disableInput ?? false
+    );
+  }, [editor]);
+
   return (
     <NodeViewWrapper
       className="react-component mly-inline-block mly-leading-none"
@@ -64,6 +70,7 @@ export function VariableView(props: NodeViewProps) {
                 </span>
                 <input
                   {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
+                  disabled={disableInput}
                   value={id ?? ''}
                   onChange={(e) => {
                     updateAttributes({
@@ -71,7 +78,7 @@ export function VariableView(props: NodeViewProps) {
                     });
                   }}
                   placeholder="ie. name..."
-                  className="mly-h-7 mly-w-36 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+                  className="mly-h-7 mly-w-36 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none disabled:mly-cursor-not-allowed"
                 />
               </label>
 

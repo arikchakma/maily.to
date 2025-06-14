@@ -103,7 +103,7 @@ export function Editor(props: EditorProps) {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: cn(`mly:prose mly:w-full`, contentClassName),
+        class: cn('mly:prose mly:w-full', contentClassName),
         spellCheck: spellCheck ? 'true' : 'false',
       },
     },

@@ -71,7 +71,7 @@ export function VariableView(props: NodeViewProps) {
                     });
                   }}
                   placeholder="ie. name..."
-                  className="mly:h-7 mly:w-36 mly:rounded-md mly:bg-soft-gray mly:px-2 mly:text-sm mly:text-midnight-gray mly:focus:bg-soft-gray mly:focus:outline-hidden"
+                  className="mly:h-7 mly:w-36 mly:rounded-md mly:bg-soft-gray mly:px-2 mly:text-sm mly:text-midnight-gray mly:focus:bg-soft-gray mly:focus:outline-hidden mly:disabled:cursor-not-allowed"
                 />
               </label>
 

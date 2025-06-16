@@ -154,7 +154,7 @@ function VariableIcon(props: VariableIconProps) {
   return (
     <div
       className={cn(
-        'mly:flex mly:size-5 mly:items-center mly:justify-center mly:rounded-md mly:border',
+        'mly:flex mly:size-5 mly:items-center mly:justify-center mly:rounded-md mly:border mly:border-gray-200',
         className
       )}
     >

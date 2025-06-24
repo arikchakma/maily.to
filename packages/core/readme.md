@@ -156,7 +156,7 @@ You can pass variables to the editor in two ways:
    <Editor
      extensions={[
        VariableExtension.configure({
-         suggestions: getVariableSuggestions('@'),
+         suggestion: getVariableSuggestions('@'),
          variables: [{
             name: 'currentTime',
             required: false,
@@ -177,7 +177,7 @@ You can pass variables to the editor in two ways:
    <Editor
      extensions={[
        VariableExtension.configure({
-         suggestions: getVariableSuggestions('@'),
+         suggestion: getVariableSuggestions('@'),
          variables: ({ query, from, editor }) => {
            // magic goes here
            // query: the text after the trigger character
@@ -229,7 +229,7 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
         });
       },
     }).configure({
-      suggestions: getVariableSuggestions(variableTriggerCharacter),
+      suggestion: getVariableSuggestions(variableTriggerCharacter),
     }),
   ]}
 />

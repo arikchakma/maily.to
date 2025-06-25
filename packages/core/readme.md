@@ -1,4 +1,4 @@
-<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> @maily.to/core</h1>
+<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> @maily-to/core</h1>
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/license">

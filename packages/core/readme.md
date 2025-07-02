@@ -194,6 +194,13 @@ You can pass variables to the editor in two ways:
            return [
              { name: 'currentDate' },
              { name: 'currentTime', required: false },
+             {
+               name: 'first_name',
+               required: false,
+               // if you want to hide the default value
+               // input in the popover
+               hideDefaultValue: true,
+             },
            ];
          },
        }),

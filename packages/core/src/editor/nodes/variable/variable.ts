@@ -207,12 +207,6 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
 
       hideDefaultValue: {
         default: false,
-        parseHTML: (element) => element.hasAttribute('data-hide-default-value'),
-        renderHTML: (attributes) => {
-          return {
-            'data-hide-default-value': attributes?.hideDefaultValue ?? false,
-          };
-        },
       },
     };
   },

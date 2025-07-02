@@ -15,6 +15,9 @@ export type Variable = {
   required?: boolean;
   // default is true
   valid?: boolean;
+  // should hide default value
+  // default is false
+  hideDefaultValue?: boolean;
 };
 
 export type VariableFunctionOptions = {
@@ -198,6 +201,16 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
         renderHTML: (attributes) => {
           return {
             'data-required': attributes?.required ?? true,
+          };
+        },
+      },
+
+      hideDefaultValue: {
+        default: false,
+        parseHTML: (element) => element.hasAttribute('data-hide-default-value'),
+        renderHTML: (attributes) => {
+          return {
+            'data-hide-default-value': attributes?.hideDefaultValue ?? false,
           };
         },
       },

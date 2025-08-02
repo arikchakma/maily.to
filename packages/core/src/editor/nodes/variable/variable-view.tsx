@@ -30,15 +30,9 @@ export function VariableView(props: NodeViewProps) {
     return variableRender;
   }, [editor]);
 
-  const disableInput = useMemo(() => {
-    return (
-      getNodeOptions<VariableOptions>(editor, 'variable')?.disableInput ?? false
-    );
-  }, [editor]);
-
   return (
     <NodeViewWrapper
-      className="react-component mly-inline-block mly-leading-none"
+      className="react-component mly:inline-block mly:leading-none"
       draggable="false"
     >
       <Popover
@@ -57,20 +51,19 @@ export function VariableView(props: NodeViewProps) {
         <PopoverContent
           align="start"
           side="bottom"
-          className="mly-w-max mly-rounded-lg !mly-p-0.5"
+          className="mly:w-max mly:rounded-lg mly:p-0.5!"
           sideOffset={8}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <TooltipProvider>
-            <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
-              <label className="mly-relative">
-                <span className="mly-inline-block mly-px-2 mly-text-xs mly-text-midnight-gray">
+            <div className="mly:flex mly:items-stretch mly:text-midnight-gray">
+              <label className="mly:relative">
+                <span className="mly:inline-block mly:px-2 mly:text-xs mly:text-midnight-gray">
                   Variable
                 </span>
                 <input
                   {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
-                  disabled={disableInput}
                   value={id ?? ''}
                   onChange={(e) => {
                     updateAttributes({
@@ -78,16 +71,16 @@ export function VariableView(props: NodeViewProps) {
                     });
                   }}
                   placeholder="ie. name..."
-                  className="mly-h-7 mly-w-36 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none disabled:mly-cursor-not-allowed"
+                  className="mly:h-7 mly:w-36 mly:rounded-md mly:bg-soft-gray mly:px-2 mly:text-sm mly:text-midnight-gray mly:focus:bg-soft-gray mly:focus:outline-hidden mly:disabled:cursor-not-allowed"
                 />
               </label>
 
               {!hideDefaultValue && (
                 <>
-                  <Divider className="mly-mx-1.5" />
+                  <Divider className="mly:mx-1.5" />
 
-                  <label className="mly-relative">
-                    <span className="mly-inline-block mly-px-2 mly-pl-1 mly-text-xs mly-text-midnight-gray">
+                  <label className="mly:relative">
+                    <span className="mly:inline-block mly:px-2 mly:pl-1 mly:text-xs mly:text-midnight-gray">
                       Default
                     </span>
                     <input
@@ -99,10 +92,10 @@ export function VariableView(props: NodeViewProps) {
                         });
                       }}
                       placeholder="ie. John Doe..."
-                      className="mly-h-7 mly-w-32 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none"
+                      className="mly:h-7 mly:w-32 mly:rounded-md mly:bg-soft-gray mly:px-2 mly:pr-6 mly:text-sm mly:text-midnight-gray mly:focus:bg-soft-gray mly:focus:outline-none"
                     />
-                    <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
-                      <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+                    <div className="mly:absolute mly:inset-y-0 mly:right-1 mly:flex mly:items-center">
+                      <Pencil className="mly:h-3 mly:w-3 mly:stroke-[2.5] mly:text-midnight-gray" />
                     </div>
                   </label>
                 </>
@@ -121,9 +114,9 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
 
   if (from === 'button-variable') {
     return (
-      <div className="mly-inline-grid mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-[var(--button-var-border-color)] mly-px-2 mly-py-px mly-font-mono mly-text-xs">
-        <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5]" />
-        <span className="mly-min-w-0 mly-truncate mly-text-left">{name}</span>
+      <div className="mly:inline-grid mly:max-w-xs mly:grid-cols-[12px_1fr] mly:items-center mly:gap-1.5 mly:rounded-md mly:border mly:border-(--button-var-border-color) mly:px-2 mly:py-px mly:font-mono mly:text-xs">
+        <Braces className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5]" />
+        <span className="mly:min-w-0 mly:truncate mly:text-left">{name}</span>
       </div>
     );
   }
@@ -132,13 +125,13 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
     return (
       <div
         className={cn(
-          'mly-inline-grid mly-h-7 mly-min-w-28 mly-max-w-xs mly-grid-cols-[12px_1fr] mly-items-center mly-gap-1.5 mly-rounded-md mly-border mly-border-gray-200 mly-px-2 mly-font-mono mly-text-sm hover:mly-bg-soft-gray',
+          'mly:inline-grid mly:h-7 mly:min-w-28 mly:max-w-xs mly:grid-cols-[12px_1fr] mly:items-center mly:gap-1.5 mly:rounded-md mly:border mly:border-gray-200 mly:px-2 mly:font-mono mly:text-sm mly:hover:bg-soft-gray',
           !valid &&
-            'mly-border-rose-400 mly-bg-rose-50 mly-text-rose-600 hover:mly-bg-rose-100'
+            'mly:border-rose-400 mly:bg-rose-50 mly:text-rose-600 mly:hover:bg-rose-100'
         )}
       >
-        <Braces className="mly-h-3 mly-w-3 mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
-        <span className="mly-min-w-0 mly-truncate mly-text-left">{name}</span>
+        <Braces className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5] mly:text-rose-600" />
+        <span className="mly:min-w-0 mly:truncate mly:text-left">{name}</span>
       </div>
     );
   }
@@ -146,12 +139,12 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
   return (
     <span
       tabIndex={-1}
-      className="mly-inline-flex mly-items-center mly-gap-[var(--variable-icon-gap)] mly-rounded-full mly-border mly-border-gray-200 mly-px-1.5 mly-py-0.5 mly-leading-none"
+      className="mly:inline-flex mly:items-center mly:gap-(--variable-icon-gap) mly:rounded-full mly:border mly:border-gray-200 mly:px-1.5 mly:py-0.5 mly:leading-none"
     >
-      <Braces className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5] mly-text-rose-600" />
+      <Braces className="mly:size-[var(--variable-icon-size)] mly:shrink-0 mly:stroke-[2.5] mly:text-rose-600" />
       {name}
       {required && !fallback && (
-        <AlertTriangle className="mly-size-[var(--variable-icon-size)] mly-shrink-0 mly-stroke-[2.5]" />
+        <AlertTriangle className="mly:size-[var(--variable-icon-size)] mly:shrink-0 mly:stroke-[2.5]" />
       )}
     </span>
   );

@@ -24,7 +24,7 @@ export const HorizontalRule = TipTapHorizontalRule.extend({
   addOptions() {
     return {
       HTMLAttributes: {
-        class: 'mly-relative',
+        class: 'mly:relative',
       },
     };
   },

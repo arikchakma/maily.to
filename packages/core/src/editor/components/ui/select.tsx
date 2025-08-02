@@ -39,22 +39,22 @@ export function Select(props: SelectProps) {
   const selectId = `mly${useId()}`;
 
   const content = (
-    <div className="mly-relative">
-      <label htmlFor={selectId} className="mly-sr-only">
+    <div className="mly:relative">
+      <label htmlFor={selectId} className="mly:sr-only">
         {label}
       </label>
 
       {Icon && (
-        <div className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-left-2 mly-z-20 mly-flex mly-items-center">
-          <Icon className={cn('mly-size-3', iconClassName)} />
+        <div className="mly:pointer-events-none mly:absolute mly:inset-y-0 mly:left-2 mly:z-20 mly:flex mly:items-center">
+          <Icon className={cn('mly:size-3', iconClassName)} />
         </div>
       )}
 
       <select
         id={selectId}
         className={cn(
-          'mly-flex mly-min-h-7 mly-max-w-max mly-appearance-none mly-items-center mly-rounded-md mly-bg-white mly-px-1.5 mly-py-0.5 mly-pr-7 mly-text-sm mly-text-midnight-gray mly-ring-offset-white mly-transition-colors hover:mly-bg-soft-gray focus-visible:mly-relative focus-visible:mly-z-10 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 active:mly-bg-soft-gray',
-          !!Icon && 'mly-pl-7',
+          'mly:flex mly:min-h-7 mly:max-w-max mly:appearance-none mly:items-center mly:rounded-md mly:bg-white mly:px-1.5 mly:py-0.5 mly:pr-7 mly:text-sm mly:text-midnight-gray mly:ring-offset-white mly:transition-colors mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:active:bg-soft-gray',
+          !!Icon && 'mly:pl-7',
           className
         )}
         value={value || ''}
@@ -73,7 +73,7 @@ export function Select(props: SelectProps) {
         ))}
       </select>
 
-      <span className="mly-pointer-events-none mly-absolute mly-inset-y-0 mly-right-0 mly-z-10 mly-flex mly-h-full mly-w-7 mly-items-center mly-justify-center mly-text-gray-600 peer-disabled:mly-opacity-50">
+      <span className="mly:pointer-events-none mly:absolute mly:inset-y-0 mly:right-0 mly:z-10 mly:flex mly:h-full mly:w-7 mly:items-center mly:justify-center mly:text-gray-600 mly:peer-disabled:opacity-50">
         <ChevronDownIcon
           size={16}
           strokeWidth={2}

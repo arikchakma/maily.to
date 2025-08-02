@@ -94,7 +94,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-items-stretch mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:items-stretch mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         <AlignmentSwitch
@@ -108,7 +108,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider />
 
-        <div className="mly-flex mly-space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <Select
             label="Border Radius"
             value={String(state.currentBorderRadius)}
@@ -119,7 +119,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
               });
             }}
             tooltip="Border Radius"
-            className="mly-capitalize"
+            className="mly:capitalize"
           />
 
           <Select
@@ -137,7 +137,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
               });
             }}
             tooltip="Border Width"
-            className="mly-capitalize"
+            className="mly:capitalize"
           />
         </div>
 
@@ -145,7 +145,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Select
           icon={MarginIcon}
-          iconClassName="mly-stroke-[1.2] mly-size-3.5"
+          iconClassName="mly:stroke-[1.2] mly:size-3.5"
           label="Margin"
           value={String(state.currentMarginTop)}
           options={[
@@ -165,14 +165,14 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             });
           }}
           tooltip="Margin"
-          className="mly-capitalize"
+          className="mly:capitalize"
         />
 
         <Divider />
 
         <Select
           icon={PaddingIcon}
-          iconClassName="mly-stroke-[1]"
+          iconClassName="mly:stroke-[1]"
           label="Padding"
           value={String(state.currentPaddingTop)}
           options={[
@@ -192,12 +192,12 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             });
           }}
           tooltip="Padding"
-          className="mly-capitalize"
+          className="mly:capitalize"
         />
 
         <Divider />
 
-        <div className="mly-flex mly-space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <ColorPicker
             color={state.currentBorderColor}
             onColorChange={(color) => {
@@ -209,13 +209,13 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           >
             <BaseButton
               variant="ghost"
-              className="!mly-size-7 mly-shrink-0"
+              className="!mly:size-7 mly:shrink-0"
               size="sm"
               type="button"
             >
               <BorderColor
-                className="mly-size-3 mly-shrink-0"
-                topBarClassName="mly-stroke-midnight-gray"
+                className="mly:size-3 mly:shrink-0"
+                topBarClassName="mly:stroke-midnight-gray"
                 style={{
                   color: state.currentBorderColor,
                 }}
@@ -231,7 +231,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
             }}
             backgroundColor={state.currentBackgroundColor}
             tooltip="Background Color"
-            className="mly-rounded-full mly-border-[1.5px] mly-border-white mly-shadow"
+            className="mly:rounded-full mly:border-[1.5px] mly:border-white mly:shadow"
           />
         </div>
 
@@ -261,12 +261,12 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           <>
             <Divider />
             <Popover>
-              <PopoverTrigger className="mly-flex mly-items-center mly-gap-1 mly-rounded-md mly-px-1.5 mly-text-sm data-[state=open]:mly-bg-soft-gray hover:mly-bg-soft-gray">
+              <PopoverTrigger className="mly:flex mly:items-center mly:gap-1 mly:rounded-md mly:px-1.5 mly:text-sm mly:data-[state=open]:bg-soft-gray mly:hover:bg-soft-gray">
                 Column
-                <ChevronUp className="mly-h-3 mly-w-3" />
+                <ChevronUp className="mly:h-3 mly:w-3" />
               </PopoverTrigger>
               <PopoverContent
-                className="mly-w-max mly-rounded-lg !mly-p-0.5"
+                className="mly:w-max mly:rounded-lg mly:p-0.5!"
                 side="top"
                 sideOffset={8}
                 align="end"

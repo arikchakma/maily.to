@@ -190,23 +190,23 @@ const CommandList = forwardRef<unknown, CommandListProps>((props, ref) => {
 
   return (
     <TooltipProvider>
-      <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
+      <div className="mly:z-50 mly:w-72 mly:overflow-hidden mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:shadow-md mly:transition-all">
         <div
           id="slash-command"
           ref={commandListContainer}
-          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto"
+          className="mly:no-scrollbar mly:h-auto mly:max-h-[330px] mly:overflow-y-auto"
         >
           {groups.map((group, groupIndex) => (
             <Fragment key={groupIndex}>
               <span
                 className={cn(
-                  'mly-block mly-border-b mly-border-gray-200 mly-bg-soft-gray mly-p-2 mly-text-xs mly-uppercase mly-text-gray-400',
-                  groupIndex > 0 ? 'mly-border-t' : ''
+                  'mly:block mly:border-b mly:border-gray-200 mly:bg-soft-gray mly:p-2 mly:text-xs mly:uppercase mly:text-gray-400',
+                  groupIndex > 0 ? 'mly:border-t' : ''
                 )}
               >
                 {group.title}
               </span>
-              <div className="mly-space-y-0.5 mly-p-1">
+              <div className="mly:space-y-0.5 mly:p-1">
                 {group.commands.map((item, commandIndex) => {
                   const itemKey = `${groupIndex}-${commandIndex}`;
                   return (
@@ -231,22 +231,22 @@ const CommandList = forwardRef<unknown, CommandListProps>((props, ref) => {
             </Fragment>
           ))}
         </div>
-        <div className="mly-border-t mly-border-gray-200 mly-px-1 mly-py-3 mly-pl-4">
-          <div className="mly-flex mly-items-center">
-            <p className="mly-text-center mly-text-xs mly-text-gray-400">
-              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
+        <div className="mly:border-t mly:border-gray-200 mly:px-1 mly:py-3 mly:pl-4">
+          <div className="mly:flex mly:items-center">
+            <p className="mly:text-center mly:text-xs mly:text-gray-400">
+              <kbd className="mly:rounded mly:border mly:border-gray-200 mly:p-1 mly:px-2 mly:font-medium">
                 ↑
               </kbd>
-              <kbd className="mly-ml-1 mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-2 mly-font-medium">
+              <kbd className="mly:ml-1 mly:rounded mly:border mly:border-gray-200 mly:p-1 mly:px-2 mly:font-medium">
                 ↓
               </kbd>{' '}
               to navigate
             </p>
-            <span aria-hidden="true" className="mly-select-none mly-px-1">
+            <span aria-hidden="true" className="mly:select-none mly:px-1">
               ·
             </span>
-            <p className="mly-text-center mly-text-xs mly-text-gray-400">
-              <kbd className="mly-rounded mly-border mly-border-gray-200 mly-p-1 mly-px-1.5 mly-font-medium">
+            <p className="mly:text-center mly:text-xs mly:text-gray-400">
+              <kbd className="mly:rounded mly:border mly:border-gray-200 mly:p-1 mly:px-1.5 mly:font-medium">
                 Enter
               </kbd>{' '}
               to select

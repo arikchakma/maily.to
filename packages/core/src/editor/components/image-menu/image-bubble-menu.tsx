@@ -52,7 +52,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         {state.isLogoActive && state.imageSrc && (
@@ -78,7 +78,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           </>
         )}
 
-        <div className="mly-flex mly-space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <AlignmentSwitch
             alignment={state.alignment}
             onAlignmentChange={(alignment) => {
@@ -161,10 +161,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   .run();
               }}
               tooltip="Border Radius"
-              className="mly-capitalize"
+              className="mly:capitalize"
             />
 
-            <div className="mly-flex mly-space-x-0.5">
+            <div className="mly:flex mly:gap-x-0.5">
               <ImageSize
                 dimension="width"
                 value={state?.width ?? ''}

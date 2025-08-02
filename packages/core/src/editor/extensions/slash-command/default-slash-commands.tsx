@@ -60,7 +60,7 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
         title: 'Headers',
         description: 'Add pre-designed headers block',
         searchTerms: ['header', 'headers'],
-        icon: <Heading1 className="mly-h-4 mly-w-4" />,
+        icon: <Heading1 className="mly:h-4 mly:w-4" />,
         preview: 'https://cdn.usemaily.com/previews/header-preview-xyz.png',
         commands: [
           headerLogoWithTextVertical,
@@ -73,7 +73,7 @@ export const DEFAULT_SLASH_COMMANDS: BlockGroupItem[] = [
         title: 'Footers',
         description: 'Add pre-designed footers block',
         searchTerms: ['footers'],
-        icon: <FootprintsIcon className="mly-h-4 mly-w-4" />,
+        icon: <FootprintsIcon className="mly:h-4 mly:w-4" />,
         commands: [
           footerCopyrightText,
           footerCommunityFeedbackCta,

@@ -26,14 +26,14 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'focus:mly-bg-accent data-[state=open]:mly-bg-accent mly-flex mly-cursor-default mly-select-none mly-items-center mly-rounded-sm mly-px-2 mly-py-1.5 mly-text-sm mly-outline-none',
+      'mly:focus:bg-white mly:data-[state=open]:bg-gray-100 mly:flex mly:cursor-default mly:select-none mly:items-center mly:rounded-sm mly:px-2 mly:py-1.5 mly:text-sm mly:outline-hidden',
       inset && 'pl-8',
       className
     )}
     {...props}
   >
     {children}
-    <ChevronRight className="ml-auto h-4 w-4" />
+    <ChevronRight className="mly:ml-auto mly:h-4 mly:w-4" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName =
@@ -46,7 +46,7 @@ const DropdownMenuSubContent = React.forwardRef<
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     className={cn(
-      'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 mly-z-50 mly-min-w-[8rem] mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-p-1 mly-shadow-lg',
+      'mly:bg-white mly:text-midnight-gray mly:data-[state=open]:animate-in mly:data-[state=closed]:animate-out mly:data-[state=closed]:fade-out-0 mly:data-[state=open]:fade-in-0 mly:data-[state=closed]:zoom-out-95 mly:data-[state=open]:zoom-in-95 mly:data-[side=bottom]:slide-in-from-top-2 mly:data-[side=left]:slide-in-from-right-2 mly:data-[side=right]:slide-in-from-left-2 mly:data-[side=top]:slide-in-from-bottom-2 mly:z-50 mly:min-w-32 mly:overflow-hidden mly:rounded-md mly:border mly:border-gray-200 mly:p-1 mly:shadow-lg',
       className
     )}
     {...props}
@@ -64,7 +64,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'bg-white mly-z-50 mly-min-w-[8rem] mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-p-1 mly-shadow-md',
+        'mly:z-50 mly:min-w-32 mly:overflow-hidden mly:rounded-md mly:border mly:border-gray-200 mly:p-1 mly:shadow-md mly:bg-white',
         className
       )}
       {...props}
@@ -82,7 +82,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'mly-relative mly-flex mly-cursor-default mly-select-none mly-items-center mly-gap-2 mly-rounded-sm mly-px-2 mly-py-1 mly-text-sm mly-outline-none mly-transition-colors data-[disabled]:mly-pointer-events-none data-[disabled]:mly-opacity-50 focus:mly-bg-gray-100 [&_svg]:mly-pointer-events-none',
+      'mly:relative mly:flex mly:cursor-default mly:select-none mly:items-center mly:gap-2 mly:rounded-sm mly:px-2 mly:py-1 mly:text-sm mly:outline-hidden mly:transition-colors mly:data-disabled:pointer-events-none mly:data-disabled:opacity-50 mly:focus:bg-gray-100 mly:[&_svg]:pointer-events-none',
       inset && 'pl-8',
       className
     )}
@@ -100,8 +100,8 @@ const DropdownMenuLabel = React.forwardRef<
   <DropdownMenuPrimitive.Label
     ref={ref}
     className={cn(
-      'mly-px-2 mly-py-1.5 mly-text-sm mly-font-semibold',
-      inset && 'mly-pl-8',
+      'mly:px-2 mly:py-1.5 mly:text-sm mly:font-semibold',
+      inset && 'mly:pl-8',
       className
     )}
     {...props}
@@ -115,7 +115,7 @@ const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={cn('mly--mx-1 mly-my-1 mly-h-px mly-bg-gray-200', className)}
+    className={cn('mly:-mx-1 mly:my-1 mly:h-px mly:bg-gray-200', className)}
     {...props}
   />
 ));
@@ -128,7 +128,7 @@ const DropdownMenuShortcut = ({
   return (
     <span
       className={cn(
-        'mly-ml-auto mly-text-xs mly-tracking-widest mly-opacity-60',
+        'mly:ml-auto mly:text-xs mly:tracking-widest mly:opacity-60',
         className
       )}
       {...props}

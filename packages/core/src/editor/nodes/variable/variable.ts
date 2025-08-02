@@ -278,7 +278,7 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
 
   addNodeView() {
     return ReactNodeViewRenderer(VariableView, {
-      className: 'mly-relative mly-inline-block',
+      className: 'mly:relative mly:inline-block',
       as: 'div',
     });
   },

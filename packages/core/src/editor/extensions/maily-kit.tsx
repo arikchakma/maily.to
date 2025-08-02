@@ -50,7 +50,7 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         HTMLAttributes: {
           target: '_blank',
           rel: 'noopener noreferrer nofollow',
-          class: 'mly-no-underline',
+          class: 'mly:no-underline',
         },
         openOnClick: false,
       },
@@ -66,23 +66,23 @@ export const MailyKit = Extension.create<MailyKitOptions>({
         code: {
           HTMLAttributes: {
             class:
-              'mly-px-1 mly-relative mly-py-0.5 mly-bg-[#efefef] mly-text-sm mly-rounded-md mly-tracking-normal mly-font-normal',
+              'mly:px-1 mly:relative mly:py-0.5 mly:bg-[#efefef] mly:text-sm mly:rounded-md mly:tracking-normal mly:font-normal',
           },
         },
         blockquote: {
           HTMLAttributes: {
             class:
-              'mly-not-prose mly-border-l-4 mly-border-gray-300 mly-pl-4 mly-mt-4 mly-mb-4 mly-relative',
+              'mly:not-prose mly:border-l-4 mly:border-gray-300 mly:pl-4 mly:mt-4 mly:mb-4 mly:relative',
           },
         },
         bulletList: {
           HTMLAttributes: {
-            class: 'mly-relative',
+            class: 'mly:relative',
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: 'mly-relative',
+            class: 'mly:relative',
           },
         },
         heading: false,
@@ -108,12 +108,12 @@ export const MailyKit = Extension.create<MailyKitOptions>({
       HeadingExtension.configure({
         levels: [1, 2, 3],
         HTMLAttributes: {
-          class: 'mly-relative',
+          class: 'mly:relative',
         },
       }),
       ParagraphExtension.configure({
         HTMLAttributes: {
-          class: 'mly-relative',
+          class: 'mly:relative',
         },
       }),
     ];

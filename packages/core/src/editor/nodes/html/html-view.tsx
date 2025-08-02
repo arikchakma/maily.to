@@ -47,7 +47,7 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       data-type="htmlCodeBlock"
     >
       {activeTab === 'code' && (
-        <pre className="mly-my-0 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-2 mly-text-black">
+        <pre className="mly:my-0 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-2 mly:text-black">
           <NodeViewContent
             as="code"
             className={cn('is-editable', languageClass)}
@@ -58,8 +58,8 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       {activeTab === 'preview' && (
         <div
           className={cn(
-            'mly-not-prose mly-rounded-lg mly-border mly-border-gray-200 mly-p-2',
-            isEmpty && 'mly-min-h-[42px]'
+            'mly:not-prose mly:rounded-lg mly:border mly:border-gray-200 mly:p-2',
+            isEmpty && 'mly:min-h-[42px]'
           )}
           ref={(node) => {
             if (!node || node?.shadowRoot) {

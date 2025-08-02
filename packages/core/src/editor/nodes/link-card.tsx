@@ -27,38 +27,38 @@ export function LinkCardComponent(props: NodeViewProps) {
               editor.commands.setNodeSelection(pos);
             }}
           >
-            <div className="mly-no-prose mly-flex mly-flex-col mly-rounded-lg mly-border mly-border-gray-300">
+            <div className="mly:no-prose mly:flex mly:flex-col mly:rounded-lg mly:border mly:border-gray-300">
               {image && (
-                <div className="mly-relative mly-mb-1.5 mly-w-full mly-shrink-0">
+                <div className="mly:relative mly:mb-1.5 mly:w-full mly:shrink-0">
                   <img
                     src={image}
                     alt="link-card"
-                    className="mly-no-prose !mly-mb-0 mly-h-full mly-w-full mly-rounded-t-lg"
+                    className="mly:no-prose mly:mb-0! mly:h-full mly:w-full mly:rounded-t-lg"
                     draggable={editor.isEditable}
                   />
                 </div>
               )}
-              <div className="mly-flex mly-items-stretch mly-p-3">
-                <div className={cn('mly-flex mly-flex-col')}>
-                  <div className="!mly-mb-1.5 mly-flex mly-items-center mly-gap-1.5">
-                    <h2 className="!mly-mb-0 !mly-text-lg mly-font-semibold">
+              <div className="mly:flex mly:items-stretch mly:p-3">
+                <div className={cn('mly:flex mly:flex-col')}>
+                  <div className="!mly:mb-1.5 mly:flex mly:items-center mly:gap-1.5">
+                    <h2 className="!mly:mb-0 mly:text-lg! mly:font-semibold">
                       {title}
                     </h2>
                     {badgeText && (
-                      <span className="!mly-font-base text-xs mly-rounded-md mly-bg-yellow-200 mly-px-2 mly-py-1 mly-font-semibold mly-leading-none">
+                      <span className="!mly:font-base mly:rounded-md mly:bg-yellow-200 mly:px-2 mly:py-1 mly:font-semibold mly:leading-none text-xs">
                         {badgeText}
                       </span>
                     )}{' '}
                     {subTitle && !badgeText && (
-                      <span className="!mly-font-base text-xs mly-font-regular mly-rounded-md mly-leading-none mly-text-gray-400">
+                      <span className="!mly:font-base mly:font-regular mly:rounded-md mly:leading-none mly:text-gray-400 text-xs">
                         {subTitle}
                       </span>
                     )}
                   </div>
-                  <p className="!mly-my-0 !mly-text-base mly-text-gray-500">
+                  <p className="!mly:my-0 mly:text-base! mly:text-gray-500">
                     {description}{' '}
                     {linkTitle ? (
-                      <a href={link} className="mly-font-semibold">
+                      <a href={link} className="mly:font-semibold">
                         {linkTitle}
                       </a>
                     ) : null}
@@ -70,13 +70,13 @@ export function LinkCardComponent(props: NodeViewProps) {
         </PopoverTrigger>
         <PopoverContent
           align="end"
-          className="mly-flex mly-w-96 mly-flex-col mly-gap-2"
+          className="mly:flex mly:w-96 mly:flex-col mly:gap-2"
           sideOffset={10}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <label className="mly-w-full mly-space-y-1">
-            <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+          <label className="mly:w-full mly:space-y-1">
+            <span className="mly:text-xs mly:font-normal mly:text-slate-400">
               Image
             </span>
             <Input
@@ -91,8 +91,8 @@ export function LinkCardComponent(props: NodeViewProps) {
             />
           </label>
 
-          <label className="mly-w-full mly-space-y-1">
-            <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+          <label className="mly:w-full mly:space-y-1">
+            <span className="mly:text-xs mly:font-normal mly:text-slate-400">
               Title
             </span>
             <Input
@@ -106,8 +106,8 @@ export function LinkCardComponent(props: NodeViewProps) {
             />
           </label>
 
-          <label className="mly-w-full mly-space-y-1">
-            <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+          <label className="mly:w-full mly:space-y-1">
+            <span className="mly:text-xs mly:font-normal mly:text-slate-400">
               Description
             </span>
             <Textarea
@@ -121,9 +121,9 @@ export function LinkCardComponent(props: NodeViewProps) {
             />
           </label>
 
-          <div className="mly-grid mly-grid-cols-2 mly-gap-2">
-            <label className="mly-w-full mly-space-y-1">
-              <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+          <div className="mly:grid mly:grid-cols-2 mly:gap-2">
+            <label className="mly:w-full mly:space-y-1">
+              <span className="mly:text-xs mly:font-normal mly:text-slate-400">
                 Link Title
               </span>
               <Input
@@ -137,8 +137,8 @@ export function LinkCardComponent(props: NodeViewProps) {
               />
             </label>
 
-            <label className="mly-w-full mly-space-y-1">
-              <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+            <label className="mly:w-full mly:space-y-1">
+              <span className="mly:text-xs mly:font-normal mly:text-slate-400">
                 Link
               </span>
               <Input
@@ -153,9 +153,9 @@ export function LinkCardComponent(props: NodeViewProps) {
             </label>
           </div>
 
-          <div className="mly-grid mly-grid-cols-2 mly-gap-2">
-            <label className="mly-w-full mly-space-y-1">
-              <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+          <div className="mly:grid mly:grid-cols-2 mly:gap-2">
+            <label className="mly:w-full mly:space-y-1">
+              <span className="mly:text-xs mly:font-normal mly:text-slate-400">
                 Badge Text
               </span>
               <Input
@@ -169,8 +169,8 @@ export function LinkCardComponent(props: NodeViewProps) {
               />
             </label>
 
-            <label className="mly-w-full mly-space-y-1">
-              <span className="mly-text-xs mly-font-normal mly-text-slate-400">
+            <label className="mly:w-full mly:space-y-1">
+              <span className="mly:text-xs mly:font-normal mly:text-slate-400">
                 Sub Title
               </span>
               <Input

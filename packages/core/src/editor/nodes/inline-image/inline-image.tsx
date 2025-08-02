@@ -108,7 +108,7 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
   renderHTML({ HTMLAttributes }) {
     const attrs = mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
       'data-type': this.name,
-      class: 'mly-inline mly-relative',
+      class: 'mly:inline mly:relative',
       style: `--mly-inline-image-height: ${HTMLAttributes.height}px; --mly-inline-image-width: ${HTMLAttributes.width}px; margin:0; vertical-align: middle;`,
       draggable: 'false',
       loading: 'lazy',

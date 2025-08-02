@@ -220,7 +220,7 @@ export const ButtonExtension = Node.create({
   addNodeView() {
     return ReactNodeViewRenderer(ButtonView, {
       contentDOMElementTag: 'div',
-      className: 'mly-relative',
+      className: 'mly:relative',
     });
   },
 });

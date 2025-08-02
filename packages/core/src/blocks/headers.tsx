@@ -7,7 +7,7 @@ export const headerLogoWithTextHorizontal: BlockItem = {
   title: 'Logo with Text (Horizontal)',
   description: 'Logo and a text horizontally',
   searchTerms: ['logo', 'text'],
-  icon: <LogoWithTextHorizonIcon className="mly-h-4 mly-w-4" />,
+  icon: <LogoWithTextHorizonIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
@@ -76,7 +76,7 @@ export const headerLogoWithTextVertical: BlockItem = {
   title: 'Logo with Text (Vertical)',
   description: 'Logo and a text vertically',
   searchTerms: ['logo', 'text'],
-  icon: <LogoWithTextVerticalIcon className="mly-h-4 mly-w-4" />,
+  icon: <LogoWithTextVerticalIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
@@ -112,7 +112,7 @@ export const headerLogoWithCoverImage: BlockItem = {
   title: 'Logo with Cover Image',
   description: 'Logo and a cover image',
   searchTerms: ['logo', 'cover', 'image'],
-  icon: <LogoWithCoverImageIcon className="mly-h-4 mly-w-4" />,
+  icon: <LogoWithCoverImageIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     const todayFormatted = new Date().toLocaleDateString('en-US', {
       year: 'numeric',

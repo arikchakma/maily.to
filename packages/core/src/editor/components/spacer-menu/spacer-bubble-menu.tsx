@@ -45,7 +45,7 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
     },
     tippyOptions: {
       maxWidth: '100%',
-      moveTransition: 'mly-transform 0.15s mly-ease-out',
+      moveTransition: 'mly:transform 0.15s mly:ease-out',
     },
   };
 
@@ -54,15 +54,15 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-gap-0.5 mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:gap-0.5 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         {items.map((item, index) => (
           <BubbleMenuButton
             key={index}
-            className="!mly-h-7 mly-w-7 mly-shrink-0 mly-p-0"
-            iconClassName="mly-w-3 mly-h-3"
-            nameClassName="mly-text-xs"
+            className="!mly:h-7 mly:w-7 mly:shrink-0 mly:p-0"
+            iconClassName="mly:w-3 mly:h-3"
+            nameClassName="mly:text-xs"
             {...item}
           />
         ))}

@@ -21,10 +21,10 @@ export const NumberInput = forwardRef<HTMLLabelElement, NumberInputProps>(
     const content = (
       <label
         ref={ref}
-        className="mly-relative mly-flex mly-items-center mly-justify-center"
+        className="mly:relative mly:flex mly:items-center mly:justify-center"
       >
         {Icon ? (
-          <Icon className="mly-absolute mly-left-1.5 mly-size-3.5" />
+          <Icon className="mly:absolute mly:left-1.5 mly:size-3.5" />
         ) : null}
         <input
           {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
@@ -36,8 +36,8 @@ export const NumberInput = forwardRef<HTMLLabelElement, NumberInputProps>(
           value={value + ''}
           onChange={(e) => onValueChange(Number(e.target.value))}
           className={cn(
-            'hide-number-controls focus-visible:outline-none mly-h-auto mly-max-w-12 mly-border-0 mly-border-none mly-p-1 mly-text-center mly-text-sm mly-tabular-nums mly-outline-none',
-            Icon ? 'mly-pl-[26px]' : ''
+            'hide-number-controls mly:h-auto mly:max-w-12 mly:border-0 mly:border-none mly:p-1 mly:text-center mly:text-sm mly:tabular-nums mly:outline-hidden focus-visible:outline-none',
+            Icon ? 'mly:pl-[26px]' : ''
           )}
         />
       </label>

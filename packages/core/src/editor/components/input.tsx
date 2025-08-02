@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
         type={type}
         className={cn(
-          'mly-flex mly-h-10 mly-w-full mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-px-3 mly-py-2 mly-text-sm mly-ring-offset-white file:mly-border-0 file:mly-bg-transparent file:mly-text-sm file:mly-font-medium placeholder:mly-text-gray-500 focus-visible:mly-outline-none focus-visible:mly-ring-2 focus-visible:mly-ring-gray-400 focus-visible:mly-ring-offset-2 disabled:mly-cursor-not-allowed disabled:mly-opacity-50',
+          'mly:flex mly:h-10 mly:w-full mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:px-3 mly:py-2 mly:text-sm mly:ring-offset-white mly:file:border-0 mly:file:bg-transparent mly:file:text-sm mly:file:font-medium mly:placeholder:text-gray-500 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:disabled:cursor-not-allowed mly:disabled:opacity-50',
           'mly-editor',
           className
         )}

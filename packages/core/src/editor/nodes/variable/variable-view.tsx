@@ -20,7 +20,7 @@ import {
 
 export function VariableView(props: NodeViewProps) {
   const { node, updateAttributes, editor } = props;
-  const { id, fallback, required } = node.attrs;
+  const { id, fallback, required, hideDefaultValue = false } = node.attrs;
 
   const renderVariable = useMemo(() => {
     const variableRender =
@@ -75,10 +75,12 @@ export function VariableView(props: NodeViewProps) {
                 />
               </label>
 
-              <Divider className="mly:mx-1.5" />
+              {!hideDefaultValue && (
+                <>
+              <Divider className="mly-mx-1.5" />
 
-              <label className="mly:relative">
-                <span className="mly:inline-block mly:px-2 mly:pl-1 mly:text-xs mly:text-midnight-gray">
+              <label className="mly-relative">
+                <span className="mly-inline-block mly-px-2 mly-pl-1 mly-text-xs mly-text-midnight-gray">
                   Default
                 </span>
                 <input
@@ -90,12 +92,14 @@ export function VariableView(props: NodeViewProps) {
                     });
                   }}
                   placeholder="ie. John Doe..."
-                  className="mly:h-7 mly:w-32 mly:rounded-md mly:bg-soft-gray mly:px-2 mly:pr-6 mly:text-sm mly:text-midnight-gray mly:focus:bg-soft-gray mly:focus:outline-hidden"
+                  className="mly-h-7 mly-w-32 mly-rounded-md mly-bg-soft-gray mly-px-2 mly-pr-6 mly-text-sm mly-text-midnight-gray focus:mly-bg-soft-gray focus:mly-outline-none"
                 />
-                <div className="mly:absolute mly:inset-y-0 mly:right-1 mly:flex mly:items-center">
-                  <Pencil className="mly:h-3 mly:w-3 mly:stroke-[2.5] mly:text-midnight-gray" />
-                </div>
-              </label>
+                <div className="mly-absolute mly-inset-y-0 mly-right-1 mly-flex mly-items-center">
+                  <Pencil className="mly-h-3 mly-w-3 mly-stroke-[2.5] mly-text-midnight-gray" />
+                    </div>
+                  </label>
+                </>
+              )}
             </div>
           </TooltipProvider>
         </PopoverContent>

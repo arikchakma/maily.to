@@ -1,9 +1,9 @@
 import type { Route } from './+types/playground';
-import { Link, redirect } from 'react-router';
+import { redirect } from 'react-router';
 import { LogInIcon } from 'lucide-react';
-import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
 import { mergeRouteModuleMeta } from '~/lib/merge-meta';
+import { isLoggedIn } from '~/lib/jwt';
 
 export const meta = mergeRouteModuleMeta(() => {
   const title = 'Playground | Maily';
@@ -38,19 +38,13 @@ export const meta = mergeRouteModuleMeta(() => {
 export async function loader(args: Route.LoaderArgs) {
   const { request } = args;
 
-  const headers = new Headers();
-  const supabase = createSupabaseServerClient(request, headers);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    return redirect('/templates', { headers });
+  if (!isLoggedIn(request)) {
+    return;
   }
 
-  return new Response(null, {
-    headers,
+  return redirect('https://app.maily.to', {
+    headers: new Headers(),
+    status: 301,
   });
 }
 
@@ -64,13 +58,13 @@ export default function Playground(props: Route.ComponentProps) {
         </p>
 
         <div className="mt-5 flex items-stretch gap-2">
-          <Link
+          <a
             className="flex items-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
-            to="/login"
+            href="https://app.maily.to/auth/login"
           >
             <LogInIcon className="mr-1 inline-block size-4" />
             Login / Register
-          </Link>
+          </a>
         </div>
       </header>
 

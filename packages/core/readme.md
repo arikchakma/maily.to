@@ -1,4 +1,4 @@
-<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> @maily.to/core</h1>
+<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> @maily-to/core</h1>
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/license">
@@ -156,7 +156,7 @@ You can pass variables to the editor in two ways:
    <Editor
      extensions={[
        VariableExtension.configure({
-         suggestions: getVariableSuggestions('@'),
+         suggestion: getVariableSuggestions('@'),
          variables: [{
             name: 'currentTime',
             required: false,
@@ -177,7 +177,7 @@ You can pass variables to the editor in two ways:
    <Editor
      extensions={[
        VariableExtension.configure({
-         suggestions: getVariableSuggestions('@'),
+         suggestion: getVariableSuggestions('@'),
          variables: ({ query, from, editor }) => {
            // magic goes here
            // query: the text after the trigger character
@@ -194,6 +194,13 @@ You can pass variables to the editor in two ways:
            return [
              { name: 'currentDate' },
              { name: 'currentTime', required: false },
+             {
+               name: 'first_name',
+               required: false,
+               // if you want to hide the default value
+               // input in the popover
+               hideDefaultValue: true,
+             },
            ];
          },
        }),
@@ -229,7 +236,7 @@ import { MailyKit, VariableExtension, getVariableSuggestions } from '@maily-to/c
         });
       },
     }).configure({
-      suggestions: getVariableSuggestions(variableTriggerCharacter),
+      suggestion: getVariableSuggestions(variableTriggerCharacter),
     }),
   ]}
 />

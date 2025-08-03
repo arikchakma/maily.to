@@ -440,10 +440,12 @@ export class Maily {
   }
 
   /**
-   * `markup` will render the JSON content into React Email markup.
-   * and return the raw React Tree.
+   * `children` will return the children of the content.
+   * this is useful for rendering the content in a custom component.
+   *
+   * @returns The children of the content as JSX elements
    */
-  markup() {
+  children() {
     const nodes = this.content.content || [];
     const jsxNodes = nodes.map((node, index) => {
       const nodeOptions: NodeOptions = {
@@ -459,6 +461,16 @@ export class Maily {
 
       return <Fragment key={generateKey()}>{component}</Fragment>;
     });
+
+    return jsxNodes;
+  }
+
+  /**
+   * `markup` will render the JSON content into React Email markup.
+   * and return the raw React Tree.
+   */
+  markup() {
+    const jsxNodes = this.children();
 
     const { preview } = this.config;
     const tags = meta(this.meta);

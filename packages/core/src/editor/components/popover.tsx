@@ -15,25 +15,35 @@ const PopoverTrigger: React.FC<
 
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = 'center', sideOffset = 4, ...props }, ref) => (
-  <PopoverPrimitive.Portal>
-    <PopoverPrimitive.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
-      className={cn(
-        'mly:z-9999 mly:w-72 mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:p-4 mly:text-gray-950 mly:shadow-md mly:outline-hidden',
-        'mly-editor',
-        className
-      )}
-      {...props}
-    />
-  </PopoverPrimitive.Portal>
-)) as React.ForwardRefExoticComponent<
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> &
-    React.RefAttributes<React.ElementRef<typeof PopoverPrimitive.Content>>
->;
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
+    portal?: boolean;
+  }
+>(
+  (
+    { className, align = 'center', sideOffset = 4, portal = false, ...props },
+    ref
+  ) => {
+    const content = (
+      <PopoverPrimitive.Content
+        ref={ref}
+        align={align}
+        sideOffset={sideOffset}
+        className={cn(
+          'mly:z-9999 mly:w-72 mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:p-4 mly:text-gray-950 mly:shadow-md mly:outline-hidden',
+          'mly-editor',
+          className
+        )}
+        {...props}
+      />
+    );
+
+    if (!portal) {
+      return content;
+    }
+
+    return <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal>;
+  }
+);
 
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 

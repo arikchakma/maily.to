@@ -49,6 +49,8 @@ export type EditorProps = {
     immediatelyRender?: boolean;
   };
   editable?: boolean;
+  scrollThreshold?: number;
+  scrollMargin?: number;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -71,6 +73,8 @@ export function Editor(props: EditorProps) {
     blocks = DEFAULT_SLASH_COMMANDS,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
+    scrollThreshold = 40,
+    scrollMargin = 40,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -102,6 +106,8 @@ export function Editor(props: EditorProps) {
   const menuContainerRef = useRef(null);
   const editor = useEditor({
     editorProps: {
+      scrollThreshold,
+      scrollMargin,
       attributes: {
         class: cn('mly:prose mly:w-full', contentClassName),
         spellCheck: spellCheck ? 'true' : 'false',

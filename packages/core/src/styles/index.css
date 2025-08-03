@@ -4,7 +4,7 @@
 
 @plugin '@tailwindcss/typography';
 @plugin 'tailwind-scrollbar';
-@plugin 'tailwindcss-animate';
+@import 'tw-animate-css';
 
 #mly-editor {
   @import 'tailwindcss/preflight.css' layer(base) prefix(mly);

@@ -147,11 +147,6 @@
       outline: none;
     }
 
-    .node-image
-      + .spacer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-      margin-top: -32px;
-    }
-
     code::before,
     code::after {
       content: none;

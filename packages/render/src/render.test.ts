@@ -1,4 +1,5 @@
 import { Maily, render } from './index';
+import { Preheader } from './preheader';
 
 describe('render', () => {
   it('should replace variables with values', async () => {
@@ -221,5 +222,160 @@ describe('render', () => {
     expect(result).toContain('color:rgb(255, 0, 0)');
     expect(result).toContain('color:rgb(0, 255, 0)');
     expect(result).toContain('font-size:18px');
+  });
+
+  describe('preheader', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Email content' }],
+        },
+      ],
+    };
+
+    it('should render preheader with string content', async () => {
+      const preheaderText = 'This is a preview text';
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      const result = preheader.render(preheaderText);
+
+      expect(result).toBe('This is a preview text');
+    });
+
+    it('should render preheader with JSONContent', async () => {
+      const preheaderContent = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'JSON preview text' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      const result = preheader.render(preheaderContent);
+
+      expect(result).toBe('JSON preview text');
+    });
+
+    it('should render preheader with variables', async () => {
+      const preheaderContent = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'Hello ' },
+              {
+                type: 'variable',
+                attrs: {
+                  id: 'name',
+                  fallback: 'there',
+                },
+              },
+              { type: 'text', text: '!' },
+            ],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      maily.setVariableValue('name', 'John');
+      const result = preheader.render(preheaderContent);
+
+      expect(result).toBe('Hello John!');
+    });
+
+    it('should render preheader with variable fallback', async () => {
+      const preheaderContent = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'Welcome ' },
+              {
+                type: 'variable',
+                attrs: {
+                  id: 'username',
+                  fallback: 'valued customer',
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      maily.setShouldReplaceVariableValues(true);
+      const result = preheader.render(preheaderContent);
+
+      expect(result).toBe('Welcome valued customer');
+    });
+
+    it('should not render preheader when preview is not set', async () => {
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      const result = preheader.render('');
+
+      expect(result).toBe('');
+    });
+
+    it('should handle empty preheader content', async () => {
+      const emptyPreheaderContent = {
+        type: 'doc',
+        content: [],
+      };
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      const result = preheader.render(emptyPreheaderContent);
+
+      expect(result).toBe('');
+    });
+
+    it('should handle complex nested preheader content', async () => {
+      const complexPreheaderContent = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'Order #' },
+              {
+                type: 'variable',
+                attrs: {
+                  id: 'order_id',
+                  fallback: '12345',
+                },
+              },
+              { type: 'text', text: ' for ' },
+              {
+                type: 'variable',
+                attrs: {
+                  id: 'customer_name',
+                  fallback: 'customer',
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const preheader = new Preheader(maily);
+      maily.setVariableValue('order_id', 'ORD-789');
+      maily.setVariableValue('customer_name', 'Alice Smith');
+      const result = preheader.render(complexPreheaderContent);
+
+      expect(result).toBe('Order #ORD-789 for Alice Smith');
+    });
   });
 });

@@ -14,12 +14,20 @@ export class Preheader {
 
   private renderNode(node: JSONContent): string {
     const type = node.type || '';
-    if (type in this) {
-      // @ts-expect-error - `this` is not assignable to type 'never'
-      return this[type]?.(node);
+    switch (type) {
+      case 'doc':
+        return this.doc(node);
+      case 'paragraph':
+        return this.paragraph(node);
+      case 'text':
+        return this.text(node);
+      case 'variable':
+        return this.variable(node);
+      default:
+        // it's fine to ignore unknown nodes
+        // because we don't want to break the rendering process
+        return '';
     }
-
-    throw new Error(`Node type "${type}" is not supported.`);
   }
 
   private doc(node: JSONContent): string {

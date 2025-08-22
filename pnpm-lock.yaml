@@ -357,8 +357,8 @@ importers:
         specifier: workspace:*
         version: link:../shared
       '@tiptap/core':
-        specifier: ^3.2.1
-        version: 3.2.1(@tiptap/pm@2.11.5)
+        specifier: ^2.11.5
+        version: 2.11.5(@tiptap/pm@2.11.5)
       '@types/react':
         specifier: ^19.1.10
         version: 19.1.10
@@ -1956,11 +1956,6 @@ packages:
     resolution: {integrity: sha512-jb0KTdUJaJY53JaN7ooY3XAxHQNoMYti/H6ANo707PsLXVeEqJ9o8+eBup1JU5CuwzrgnDc2dECt2WIGX9f8Jw==}
     peerDependencies:
       '@tiptap/pm': ^2.7.0
-
-  '@tiptap/core@3.2.1':
-    resolution: {integrity: sha512-ZLQbzGLxf3Jw7K+cqWb1fFvKcKQkYvaBuOwASnPG98DrGPyKSnI2jby8/PTXHdjeBq4LbENrSIuQDHQAminrQg==}
-    peerDependencies:
-      '@tiptap/pm': ^3.2.1
 
   '@tiptap/extension-blockquote@2.11.5':
     resolution: {integrity: sha512-MZfcRIzKRD8/J1hkt/eYv49060GTL6qGR3NY/oTDuw2wYzbQXXLEbjk8hxAtjwNn7G+pWQv3L+PKFzZDxibLuA==}
@@ -5982,10 +5977,6 @@ snapshots:
       react: 19.0.0
 
   '@tiptap/core@2.11.5(@tiptap/pm@2.11.5)':
-    dependencies:
-      '@tiptap/pm': 2.11.5
-
-  '@tiptap/core@3.2.1(@tiptap/pm@2.11.5)':
     dependencies:
       '@tiptap/pm': 2.11.5
 

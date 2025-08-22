@@ -224,6 +224,35 @@ describe('render', () => {
     expect(result).toContain('font-size:18px');
   });
 
+  it('should remove preview header from text', async () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'heading',
+          attrs: { level: 1 },
+          content: [{ type: 'text', text: 'Empty Content' }],
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'You will see me with the preview text' },
+          ],
+        },
+      ],
+    };
+
+    const maily = new Maily(content);
+    maily.setPreviewText('You will not see me!');
+
+    const html = await maily.render();
+    const text = await maily.render({ plainText: true });
+
+    expect(text).toBe('EMPTY CONTENT\n\nYou will see me with the preview text');
+    expect(html).toContain('You will not see me!');
+    expect(html).toContain('data-skip-in-text="true"');
+  });
+
   describe('preheader', () => {
     const content = {
       type: 'doc',
@@ -376,6 +405,86 @@ describe('render', () => {
       const result = preheader.render(complexPreheaderContent);
 
       expect(result).toBe('Order #ORD-789 for Alice Smith');
+    });
+
+    it('delete me', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          { type: 'spacer', attrs: { height: 32, showIfKey: null } },
+          {
+            type: 'heading',
+            attrs: { textAlign: 'left', level: 3, showIfKey: null },
+            content: [
+              {
+                type: 'text',
+                marks: [{ type: 'bold' }],
+                text: 'Confirm your account',
+              },
+            ],
+          },
+          {
+            type: 'paragraph',
+            attrs: { textAlign: 'left', showIfKey: null },
+            content: [
+              {
+                type: 'text',
+                text: "We're happy you made an account on our platform. Please use the link below to verify and start using your account.",
+              },
+            ],
+          },
+          {
+            type: 'paragraph',
+            attrs: { textAlign: 'left', showIfKey: null },
+            content: [
+              {
+                type: 'text',
+                marks: [
+                  {
+                    type: 'link',
+                    attrs: {
+                      href: 'verificationLink',
+                      target: '_blank',
+                      rel: 'noopener noreferrer nofollow',
+                      class: 'mly-no-underline',
+                      isUrlVariable: true,
+                    },
+                  },
+                  { type: 'underline' },
+                ],
+                text: 'Click here to Verify your email',
+              },
+            ],
+          },
+          {
+            type: 'paragraph',
+            attrs: { textAlign: 'left', showIfKey: null },
+            content: [
+              {
+                type: 'text',
+                text: "If you didn't try to log in, you can safely ignore this email.",
+              },
+            ],
+          },
+          {
+            type: 'paragraph',
+            attrs: { textAlign: 'left', showIfKey: null },
+            content: [
+              { type: 'text', text: 'Cheers,' },
+              { type: 'hardBreak' },
+              { type: 'text', text: 'Arik' },
+            ],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      maily.setPreviewText('You will not see me!');
+      const result = await maily.render({ plainText: true });
+
+      console.log('-'.repeat(20));
+      console.log(result);
+      console.log('-'.repeat(20));
     });
   });
 });

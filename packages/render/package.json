@@ -46,17 +46,17 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@antfu/utils": "^9.1.0",
-    "@babel/preset-react": "^7.26.3",
+    "@antfu/utils": "^9.2.0",
+    "@babel/preset-react": "^7.27.1",
     "@maily-to/shared": "workspace:*",
     "@tiptap/core": "^2.11.5",
-    "@types/react": "^19.0.12",
+    "@types/react": "^19.1.10",
     "tsconfig": "workspace:*",
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@react-email/components": "^0.0.34",
-    "@react-email/render": "^1.0.5",
+    "@react-email/components": "^0.5.1",
+    "@react-email/render": "^1.2.1",
     "juice": "^11.0.1",
     "node-html-parser": "^7.0.1"
   },

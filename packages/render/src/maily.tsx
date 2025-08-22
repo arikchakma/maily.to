@@ -505,9 +505,7 @@ export class Maily {
           {tags}
         </Head>
         <Body style={bodyStyles}>
-          {preheader ? (
-            <Preview id="__react-email-preview">{preheader}</Preview>
-          ) : null}
+          {preheader ? <Preview>{preheader}</Preview> : null}
           <Container
             style={{
               width: '100%',

@@ -20,7 +20,13 @@ import {
 
 export function VariableView(props: NodeViewProps) {
   const { node, updateAttributes, editor } = props;
-  const { id, fallback, required, hideDefaultValue = false } = node.attrs;
+  const {
+    id,
+    fallback,
+    required,
+    hideDefaultValue = false,
+    label,
+  } = node.attrs;
 
   const renderVariable = useMemo(() => {
     const variableRender =
@@ -42,7 +48,12 @@ export function VariableView(props: NodeViewProps) {
       >
         <PopoverTrigger>
           {renderVariable({
-            variable: { name: id, required: required, valid: true },
+            variable: {
+              name: id,
+              required: required,
+              valid: true,
+              label,
+            },
             fallback,
             editor,
             from: 'content-variable',
@@ -110,13 +121,16 @@ export function VariableView(props: NodeViewProps) {
 
 export const DefaultRenderVariable: RenderVariableFunction = (props) => {
   const { variable, fallback, from } = props;
-  const { name, required, valid } = variable;
+  const { name, required, valid, label } = variable;
+  const variableLabel = label || name;
 
   if (from === 'button-variable') {
     return (
       <div className="mly:inline-grid mly:max-w-xs mly:grid-cols-[12px_1fr] mly:items-center mly:gap-1.5 mly:rounded-md mly:border mly:border-(--button-var-border-color) mly:px-2 mly:py-px mly:font-mono mly:text-xs">
         <Braces className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5]" />
-        <span className="mly:min-w-0 mly:truncate mly:text-left">{name}</span>
+        <span className="mly:min-w-0 mly:truncate mly:text-left">
+          {variableLabel}
+        </span>
       </div>
     );
   }
@@ -131,7 +145,9 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
         )}
       >
         <Braces className="mly:h-3 mly:w-3 mly:shrink-0 mly:stroke-[2.5] mly:text-rose-600" />
-        <span className="mly:min-w-0 mly:truncate mly:text-left">{name}</span>
+        <span className="mly:min-w-0 mly:truncate mly:text-left">
+          {variableLabel}
+        </span>
       </div>
     );
   }
@@ -142,7 +158,7 @@ export const DefaultRenderVariable: RenderVariableFunction = (props) => {
       className="mly:inline-flex mly:items-center mly:gap-(--variable-icon-gap) mly:rounded-full mly:border mly:border-gray-200 mly:px-1.5 mly:py-0.5 mly:leading-none"
     >
       <Braces className="mly:size-[var(--variable-icon-size)] mly:shrink-0 mly:stroke-[2.5] mly:text-rose-600" />
-      {name}
+      {variableLabel}
       {required && !fallback && (
         <AlertTriangle className="mly:size-[var(--variable-icon-size)] mly:shrink-0 mly:stroke-[2.5]" />
       )}

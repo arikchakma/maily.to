@@ -114,7 +114,7 @@ export const VariableSuggestionsPopover: VariableSuggestionsPopoverType =
                   )}
                 >
                   <Braces className="mly:size-3 mly:stroke-[2.5] mly:text-rose-600" />
-                  {item.name}
+                  {item?.label || item.name}
                 </button>
               ))
             ) : (

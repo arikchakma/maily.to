@@ -54,7 +54,7 @@ export function ColorPicker(props: ColorPickerProps) {
       {children || (
         <BaseButton
           variant="ghost"
-          className="!mly:size-7 mly:shrink-0"
+          className="mly:h-7 mly:w-7 mly:shrink-0"
           size="sm"
           type="button"
         >

@@ -13,16 +13,6 @@
         ".vercel/**"
       ]
     },
-    "web#build": {
-      "dependsOn": ["^build"],
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_GA_TRACKING_ID",
-        "NEXT_PUBLIC_SUPABASE_URL",
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
-      ],
-      "outputs": [".next/**", "!.next/cache/**"]
-    },
     "@maily-to/web#build": {
       "dependsOn": ["^build"],
       "env": [
@@ -46,6 +36,11 @@
       "cache": false
     },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "@maily-to/web#dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }

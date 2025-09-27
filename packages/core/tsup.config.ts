@@ -3,7 +3,6 @@ import { defineConfig, Options } from 'tsup';
 const packageOptions: Options = {
   splitting: false,
   sourcemap: true,
-  clean: true,
   treeshake: false,
   dts: true,
   format: ['esm', 'cjs'],

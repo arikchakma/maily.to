@@ -1,0 +1,25 @@
+{
+    "name": "maily/php-backend",
+    "description": "PHP Backend for Maily Email Editor",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Maily\\": "src/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t public",
+        "build": "cd ../apps/web && npm run build",
+        "dev": "cd ../apps/web && npm run dev"
+    }
+}

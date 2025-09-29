@@ -4,8 +4,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Maily\Core\Router;
 use Maily\Core\Database;
-use Maily\Core\Auth;
-use Maily\Core\EmailRenderer;
 
 // Initialize database
 $db = new Database();
@@ -34,21 +32,12 @@ $path = ltrim($path, '/');
 
 // Route handling
 try {
-    // Serve static files (built React app)
-    if (file_exists(__DIR__ . '/../dist' . $path) && !is_dir(__DIR__ . '/../dist' . $path)) {
-        $filePath = __DIR__ . '/../dist' . $path;
-        $mimeType = mime_content_type($filePath);
-        header('Content-Type: ' . $mimeType);
-        readfile($filePath);
-        exit;
-    }
-
-    // API Routes
+    // API Routes - handle all API requests
     if (strpos($path, 'api/') === 0) {
         $router->handleApiRequest($path, $requestMethod);
     } else {
-        // Serve React app for all other routes
-        $router->serveReactApp();
+        // For non-API routes, serve the built React app
+        $router->serveReactApp($path);
     }
 } catch (Exception $e) {
     http_response_code(500);

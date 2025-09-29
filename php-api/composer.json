@@ -1,6 +1,6 @@
 {
-    "name": "maily/php-backend",
-    "description": "PHP Backend for Maily Email Editor",
+    "name": "maily/php-api",
+    "description": "PHP API Backend for Maily Email Editor",
     "type": "project",
     "require": {
         "php": ">=8.1",
@@ -18,8 +18,7 @@
         }
     },
     "scripts": {
-        "serve": "php -S localhost:8000 -t public",
-        "build": "cd ../apps/web && npm run build",
-        "dev": "cd ../apps/web && npm run dev"
+        "serve": "php -S localhost:8001 -t public",
+        "build-frontend": "cd ../apps/web && npm run build"
     }
 }

@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Handle API routes
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^api/(.*)$ index.php [QSA,L]
+
+# Handle static files
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Handle React Router (SPA)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]

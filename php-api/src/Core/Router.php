@@ -97,44 +97,82 @@ class Router
         }
     }
 
-    public function serveReactApp(): void
+    public function serveReactApp(string $path): void
     {
+        // Check if it's a static file request
+        $staticPath = __DIR__ . '/../../dist' . ($path ? '/' . $path : '');
+        
+        if (file_exists($staticPath) && !is_dir($staticPath)) {
+            $this->serveStaticFile($staticPath);
+            return;
+        }
+
+        // For SPA routing, always serve index.html
         $indexPath = __DIR__ . '/../../dist/index.html';
         
         if (file_exists($indexPath)) {
             header('Content-Type: text/html');
             readfile($indexPath);
         } else {
-            // Fallback to development mode
-            $this->serveDevelopmentApp();
+            // Development mode - serve a simple page that explains how to run the dev server
+            $this->serveDevelopmentPage();
         }
     }
 
-    private function serveDevelopmentApp(): void
+    private function serveStaticFile(string $filePath): void
     {
-        // In development, redirect to the React dev server
-        $devServerUrl = 'http://localhost:3000' . $_SERVER['REQUEST_URI'];
-        
-        // For development, we'll serve a simple HTML that loads the React app
+        $mimeType = mime_content_type($filePath);
+        header('Content-Type: ' . $mimeType);
+        readfile($filePath);
+    }
+
+    private function serveDevelopmentPage(): void
+    {
+        header('Content-Type: text/html');
         echo '<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maily Editor</title>
-    <script>
-        // Redirect to React dev server in development
-        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-            window.location.href = "http://localhost:3000";
-        }
-    </script>
+    <title>Maily Editor - PHP Backend</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .step { margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+        code { background: #e9ecef; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .highlight { background: #fff3cd; padding: 10px; border-radius: 4px; border-left: 4px solid #ffc107; }
+    </style>
 </head>
 <body>
-    <div id="root">
-        <h1>Maily Editor</h1>
-        <p>Loading...</p>
-        <p>If you see this message, please run the React development server:</p>
-        <code>cd apps/web && npm run dev</code>
+    <div class="container">
+        <h1>🚀 Maily Editor - PHP Backend</h1>
+        <p>This is the PHP backend for the Maily email editor. To run the full application:</p>
+        
+        <div class="step">
+            <h3>1. Build the React Frontend</h3>
+            <code>cd apps/web && npm run build</code>
+        </div>
+        
+        <div class="step">
+            <h3>2. Copy built files to PHP backend</h3>
+            <code>cp -r apps/web/build/* php-api/dist/</code>
+        </div>
+        
+        <div class="step">
+            <h3>3. Install PHP dependencies</h3>
+            <code>cd php-api && composer install</code>
+        </div>
+        
+        <div class="step">
+            <h3>4. Start PHP server</h3>
+            <code>cd php-api && composer run serve</code>
+        </div>
+        
+        <div class="highlight">
+            <strong>Development Mode:</strong> For development, you can run the React dev server on port 3000 
+            and the PHP API on port 8001, then proxy API requests from the React app to the PHP backend.
+        </div>
     </div>
 </body>
 </html>';

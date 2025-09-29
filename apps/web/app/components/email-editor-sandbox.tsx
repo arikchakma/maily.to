@@ -5,9 +5,10 @@ import {
   Loader2Icon,
   SaveIcon,
   XIcon,
-  AsteriskIcon,
+  DownloadIcon,
+  UploadIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useRevalidator } from 'react-router';
 import { toast } from 'sonner';
 import { cn } from '~/lib/classname';
@@ -21,10 +22,6 @@ import { PreviewTextInfo } from './preview-text-info';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import defaultEmailJSON from '~/lib/default-editor-json.json';
-import {
-  ApiKeyConfigDialog,
-  apiKeyQueryOptions,
-} from './api-key-config-dialog';
 
 type UpdateTemplateData = {
   title: string;
@@ -47,15 +44,10 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
 
   const navigate = useNavigate();
   const revalidator = useRevalidator();
-  const { data: apiKeyConfig } = useQuery(apiKeyQueryOptions());
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [subject, setSubject] = useState(template?.title || '');
   const [previewText, setPreviewText] = useState(template?.preview_text || '');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-
-  const [showReplyTo, setShowReplyTo] = useState(false);
-  const [replyTo, setReplyTo] = useState('');
   const [editor, setEditor] = useState<Editor | null>(null);
 
   const { mutateAsync: updateTemplate, isPending: isUpdateTemplatePending } =
@@ -78,33 +70,77 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
       },
     });
 
-  const { mutateAsync: sendTestEmail, isPending: isSendTestEmailPending } =
-    useMutation({
-      mutationFn: async () => {
-        const json = editor?.getJSON();
-        if (!json) {
-          throw new FetchError(400, 'Editor content is empty');
+  const handleExportTemplate = () => {
+    if (!editor) {
+      toast.error('No content to export');
+      return;
+    }
+
+    const json = editor.getJSON();
+    const exportData = {
+      title: subject,
+      previewText: previewText,
+      content: json,
+      exportedAt: new Date().toISOString(),
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${subject || 'email-template'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success('Template exported successfully');
+  };
+
+  const handleImportTemplate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importData = JSON.parse(e.target?.result as string);
+        
+        if (!importData.content) {
+          toast.error('Invalid template file: missing content');
+          return;
         }
 
-        return httpPost(`/api/v1/emails/send`, {
-          subject,
-          previewText,
-          from,
-          to,
-          replyTo,
-          content: JSON.stringify(json),
-        });
-      },
-    });
+        // Update the editor content
+        editor?.commands.setContent(importData.content);
+        
+        // Update form fields if they exist in the import data
+        if (importData.title) {
+          setSubject(importData.title);
+        }
+        if (importData.previewText) {
+          setPreviewText(importData.previewText);
+        }
+
+        toast.success('Template imported successfully');
+      } catch (error) {
+        toast.error('Failed to parse template file');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   return (
     <>
       <div className="max-w-[calc(600px+80px)]! mx-auto mb-8 flex items-center justify-between gap-1.5 px-10 pt-5">
         <div className="flex items-center gap-1.5">
-          <ApiKeyConfigDialog
-            apiKey={apiKeyConfig?.apiKey}
-            provider={apiKeyConfig?.provider}
-          />
           <PreviewEmailDialog
             subject={subject}
             previewText={previewText}
@@ -113,23 +149,27 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
           <CopyEmailHtml previewText={previewText} editor={editor} />
           <button
             className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            type="submit"
-            disabled={isSendTestEmailPending}
-            onClick={() => {
-              toast.promise(sendTestEmail(), {
-                loading: 'Sending Test Email...',
-                success: 'Test Email has been sent',
-                error: (err) => err?.message || 'Failed to send test email',
-              });
-            }}
+            type="button"
+            onClick={handleExportTemplate}
           >
-            {isSendTestEmailPending ? (
-              <Loader2Icon className="mr-1 inline-block size-4 animate-spin" />
-            ) : (
-              <AsteriskIcon className="mr-1 inline-block size-4" />
-            )}
-            Send Email
+            <DownloadIcon className="mr-1 inline-block size-4" />
+            Export
           </button>
+          <button
+            className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <UploadIcon className="mr-1 inline-block size-4" />
+            Import
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportTemplate}
+            className="hidden"
+          />
         </div>
 
         {!template?.id && showSaveButton && (
@@ -235,70 +275,6 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             type="text"
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
-          />
-        </Label>
-        <div className="flex items-center gap-1.5">
-          <Label className="flex grow items-center font-normal">
-            <span className="w-20 shrink-0 font-normal text-gray-600">
-              From
-            </span>
-            <Input
-              className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-              placeholder="Arik Chakma <hello@maily.to>"
-              type="text"
-              value={from}
-              onChange={(event) => setFrom(event.target.value)}
-            />
-          </Label>
-
-          {!showReplyTo && (
-            <button
-              className="inline-block h-full shrink-0 bg-transparent px-1 text-sm text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:text-gray-400 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-gray-400"
-              type="button"
-              onClick={() => {
-                setShowReplyTo(true);
-              }}
-            >
-              Reply-To
-            </button>
-          )}
-        </div>
-
-        {showReplyTo && (
-          <Label className="flex items-center font-normal">
-            <span className="w-20 shrink-0 font-normal text-gray-600">
-              Reply-To
-            </span>
-            <div className="align-content-stretch flex grow items-center">
-              <Input
-                className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-                placeholder="noreply@maily.to"
-                type="text"
-                value={replyTo}
-                onChange={(event) => setReplyTo(event.target.value)}
-              />
-              <button
-                className="flex h-10 shrink-0 items-center bg-transparent px-1 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
-                type="button"
-                onClick={() => {
-                  setReplyTo('');
-                  setShowReplyTo(false);
-                }}
-              >
-                <XIcon className="inline-block size-4" />
-              </button>
-            </div>
-          </Label>
-        )}
-
-        <Label className="flex items-center font-normal">
-          <span className="w-20 shrink-0 font-normal text-gray-600">To</span>
-          <Input
-            className="h-auto rounded-none border-none py-2.5 font-normal focus-visible:ring-0 focus-visible:ring-offset-0"
-            placeholder="Email Recipient(s)"
-            type="text"
-            value={to}
-            onChange={(event) => setTo(event.target.value)}
           />
         </Label>
 

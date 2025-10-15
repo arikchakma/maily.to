@@ -79,7 +79,7 @@ export function ContentMenu(props: ContentMenuProps) {
         : insertPos + 2;
       editor
         .chain()
-        .command(({ dispatch, tr, state }: any) => {
+        .command(({ dispatch, tr, state }) => {
           if (dispatch) {
             if (currentNodeIsEmptyParagraph) {
               tr.insertText('/', currentNodePos, currentNodePos + 1);

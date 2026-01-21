@@ -89,7 +89,13 @@ export function ImageView(props: NodeViewProps) {
 
         // If aspect ratio is locked, calculate height based on aspect ratio
         if (node.attrs.lockAspectRatio) {
-          newHeight = getNewHeight(newWidth, node.attrs.aspectRatio);
+          const aspectRatio =
+            node.attrs.aspectRatio &&
+            isFinite(node.attrs.aspectRatio) &&
+            node.attrs.aspectRatio > 0
+              ? node.attrs.aspectRatio
+              : currentWidth / currentHeight;
+          newHeight = getNewHeight(newWidth, aspectRatio);
         }
 
         setResizingStyle({ width: newWidth, height: newHeight });
@@ -295,8 +301,8 @@ export function ImageView(props: NodeViewProps) {
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
-              width: width ? `${width}px` : undefined,
-              height: height ? `${height}px` : undefined,
+              width: width && width !== 'auto' ? `${width}px` : undefined,
+              height: height && height !== 'auto' ? `${height}px` : undefined,
               ...resizingStyle,
             }
           : {}),
@@ -367,12 +373,12 @@ export function ImageView(props: NodeViewProps) {
               borderRadius,
               width: resizingStyle?.width
                 ? `${resizingStyle.width}px`
-                : width
+                : width && width !== 'auto'
                   ? `${width}px`
                   : 'auto',
               height: resizingStyle?.height
                 ? `${resizingStyle.height}px`
-                : height
+                : height && height !== 'auto'
                   ? `${height}px`
                   : 'auto',
             }}

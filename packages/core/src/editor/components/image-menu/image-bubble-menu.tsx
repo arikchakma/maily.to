@@ -172,14 +172,27 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   const width = Math.min(Number(value) || 0, IMAGE_MAX_WIDTH);
                   const currentHeight = Number(state.height) || 0;
                   const currentWidth = Number(state.width) || 0;
-                  const currentAspectRatio =
-                    state.aspectRatio || currentWidth / currentHeight || 1;
+                  const hasValidAspectRatio =
+                    state.aspectRatio &&
+                    isFinite(state.aspectRatio) &&
+                    state.aspectRatio > 0;
+                  const currentAspectRatio = hasValidAspectRatio
+                    ? state.aspectRatio
+                    : currentHeight > 0
+                      ? currentWidth / currentHeight
+                      : 1;
+                  const isHeightAuto =
+                    !state.height || state.height === 'auto';
+                  const shouldUpdateHeight =
+                    (lockAspectRatio || isHeightAuto) &&
+                    value &&
+                    (hasValidAspectRatio || currentHeight > 0);
 
                   editor
                     ?.chain()
                     .updateAttributes('image', {
                       width: String(width),
-                      ...(lockAspectRatio && value
+                      ...(shouldUpdateHeight
                         ? {
                             height: String(
                               getNewHeight(width, currentAspectRatio)
@@ -197,14 +210,26 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   const height = Number(value) || 0;
                   const currentHeight = Number(state.height) || 0;
                   const currentWidth = Number(state.width) || 0;
-                  const currentAspectRatio =
-                    state.aspectRatio || currentWidth / currentHeight || 1;
+                  const hasValidAspectRatio =
+                    state.aspectRatio &&
+                    isFinite(state.aspectRatio) &&
+                    state.aspectRatio > 0;
+                  const currentAspectRatio = hasValidAspectRatio
+                    ? state.aspectRatio
+                    : currentHeight > 0
+                      ? currentWidth / currentHeight
+                      : 1;
+                  const isWidthAuto = !state.width || state.width === 'auto';
+                  const shouldUpdateWidth =
+                    (lockAspectRatio || isWidthAuto) &&
+                    value &&
+                    (hasValidAspectRatio || currentWidth > 0);
 
                   editor
                     ?.chain()
                     .updateAttributes('image', {
                       height: String(height),
-                      ...(lockAspectRatio && value
+                      ...(shouldUpdateWidth
                         ? {
                             width: String(
                               getNewWidth(height, currentAspectRatio)

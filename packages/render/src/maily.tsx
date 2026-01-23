@@ -804,7 +804,10 @@ export class Maily {
     const { attrs } = node;
 
     const level = `h${Number(attrs?.level) || 1}`;
-    const alignment = attrs?.textAlign || 'left';
+    const textDirection = attrs?.textDirection || 'ltr';
+    const isRtl = textDirection === 'rtl';
+    const defaultAlignment = isRtl ? 'right' : 'left';
+    const alignment = attrs?.textAlign || defaultAlignment;
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
       options
@@ -822,7 +825,8 @@ export class Maily {
         // @ts-expect-error - `this` is not assignable to type 'never'
         as={level}
         style={{
-          textAlign: alignment,
+          ...(alignment !== 'left' ? { textAlign: alignment } : {}),
+          ...(isRtl ? { direction: textDirection } : {}),
           color: this.config.theme?.colors?.heading,
           fontSize,
           lineHeight,

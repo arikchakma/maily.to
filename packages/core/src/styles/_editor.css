@@ -206,6 +206,10 @@
     outline: none;
   }
 
+  [dir='rtl'] {
+    text-align: right;
+  }
+
   p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0;
   }

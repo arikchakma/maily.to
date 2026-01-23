@@ -88,6 +88,12 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
         onDirectionChange={(direction) => {
           if (state.isFooterActive) {
             editor?.chain().focus().setFooterTextDirection(direction).run();
+          } else if (state.isHeadingActive) {
+            editor
+              ?.chain()
+              .focus()
+              .updateAttributes('heading', { textDirection: direction })
+              .run();
           } else {
             editor?.chain().focus().setTextDirection(direction).run();
           }

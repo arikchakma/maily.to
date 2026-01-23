@@ -28,6 +28,7 @@ export const useTextMenuState = (editor: Editor) => {
                 : 'left') as AllowedLogoAlignment,
 
         textDirection: (ctx.editor.getAttributes('paragraph')?.textDirection ||
+          ctx.editor.getAttributes('heading')?.textDirection ||
           ctx.editor.getAttributes('footer')?.textDirection ||
           DEFAULT_TEXT_DIRECTION) as AllowedTextDirection,
 

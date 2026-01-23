@@ -15,7 +15,7 @@
     { "type": "spacer", "attrs": { "height": "xl" } },
     {
       "type": "heading",
-      "attrs": { "textAlign": "left", "level": 2 },
+      "attrs": { "level": 2 },
       "content": [
         {
           "type": "text",

@@ -253,6 +253,105 @@ describe('render', () => {
     expect(html).toContain('data-skip-in-text="true"');
   });
 
+  describe('paragraph text direction', () => {
+    it('should render paragraph with RTL direction', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            attrs: {
+              textDirection: 'rtl',
+            },
+            content: [{ type: 'text', text: 'مرحبا بالعالم' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const result = await maily.render();
+
+      expect(result).toContain('direction:rtl');
+    });
+
+    it('should render paragraph with LTR direction by default', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: 'Hello World' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const result = await maily.render();
+
+      expect(result).not.toContain('direction:rtl');
+    });
+
+    it('should not add direction style for explicit LTR', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            attrs: {
+              textDirection: 'ltr',
+            },
+            content: [{ type: 'text', text: 'Hello World' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const result = await maily.render();
+
+      expect(result).not.toContain('direction:rtl');
+      expect(result).not.toContain('direction:ltr');
+    });
+  });
+
+  describe('footer text direction', () => {
+    it('should render footer with RTL direction', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          {
+            type: 'footer',
+            attrs: {
+              textDirection: 'rtl',
+            },
+            content: [{ type: 'text', text: 'تذييل الصفحة' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const result = await maily.render();
+
+      expect(result).toContain('direction:rtl');
+    });
+
+    it('should render footer with LTR direction by default', async () => {
+      const content = {
+        type: 'doc',
+        content: [
+          {
+            type: 'footer',
+            content: [{ type: 'text', text: 'Footer text' }],
+          },
+        ],
+      };
+
+      const maily = new Maily(content);
+      const result = await maily.render();
+
+      expect(result).not.toContain('direction:rtl');
+    });
+  });
+
   describe('preheader', () => {
     const content = {
       type: 'doc',

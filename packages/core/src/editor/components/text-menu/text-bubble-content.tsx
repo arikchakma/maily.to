@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { AlignmentSwitch } from '../alignment-switch';
+import { TextDirectionSwitch } from '../text-direction-switch';
 import { useTextMenuState } from './use-text-menu-state';
 import { LinkInputPopover } from '../ui/link-input-popover';
 import { Divider } from '../ui/divider';
@@ -79,6 +80,17 @@ export function TextBubbleContent(props: TextBubbleContentProps) {
         alignment={state.textAlign}
         onAlignmentChange={(alignment) => {
           editor?.chain().focus().setTextAlign(alignment).run();
+        }}
+      />
+
+      <TextDirectionSwitch
+        direction={state.textDirection}
+        onDirectionChange={(direction) => {
+          if (state.isFooterActive) {
+            editor?.chain().focus().setFooterTextDirection(direction).run();
+          } else {
+            editor?.chain().focus().setTextDirection(direction).run();
+          }
         }}
       />
 

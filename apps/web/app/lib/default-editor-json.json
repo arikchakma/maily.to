@@ -15,7 +15,7 @@
     { "type": "spacer", "attrs": { "height": "xl" } },
     {
       "type": "heading",
-      "attrs": { "textAlign": "left", "level": 2 },
+      "attrs": { "level": 2 },
       "content": [
         {
           "type": "text",
@@ -26,7 +26,6 @@
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",
@@ -36,7 +35,6 @@
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",
@@ -63,7 +61,6 @@
     { "type": "spacer", "attrs": { "height": "xl" } },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",
@@ -93,7 +90,6 @@
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         { "type": "text", "text": "Regards," },
         { "type": "hardBreak" },

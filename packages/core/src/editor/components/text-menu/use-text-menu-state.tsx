@@ -1,4 +1,8 @@
 import { AllowedLogoAlignment } from '@/editor/nodes/logo/logo';
+import {
+  AllowedTextDirection,
+  DEFAULT_TEXT_DIRECTION,
+} from '@/editor/nodes/paragraph/paragraph';
 import { Editor, useEditorState } from '@tiptap/react';
 import deepEql from 'fast-deep-equal';
 
@@ -22,6 +26,15 @@ export const useTextMenuState = (editor: Editor) => {
               : ctx.editor?.isActive({ textAlign: 'justify' })
                 ? 'justify'
                 : 'left') as AllowedLogoAlignment,
+
+        textDirection: (ctx.editor.getAttributes('paragraph')?.textDirection ||
+          ctx.editor.getAttributes('heading')?.textDirection ||
+          ctx.editor.getAttributes('footer')?.textDirection ||
+          DEFAULT_TEXT_DIRECTION) as AllowedTextDirection,
+
+        isFooterActive: ctx.editor.isActive('footer'),
+        footerTextDirection: (ctx.editor.getAttributes('footer')
+          ?.textDirection || DEFAULT_TEXT_DIRECTION) as AllowedTextDirection,
 
         isListActive:
           ctx.editor.isActive('bulletList') ||

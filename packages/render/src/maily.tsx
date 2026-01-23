@@ -652,6 +652,7 @@ export class Maily {
   private paragraph(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
     const alignment = attrs?.textAlign || 'left';
+    const textDirection = attrs?.textDirection || 'ltr';
     const { isParentListItem, shouldRemoveBottomMargin } =
       this.getMarginOverrideConditions(node, options);
 
@@ -666,6 +667,7 @@ export class Maily {
       <Text
         style={{
           ...(alignment !== 'left' ? { textAlign: alignment } : {}),
+          ...(textDirection !== 'ltr' ? { direction: textDirection } : {}),
           ...antialiased,
           fontSize: this.config.theme?.fontSize?.paragraph?.size,
           lineHeight: this.config.theme?.fontSize?.paragraph?.lineHeight,
@@ -802,7 +804,10 @@ export class Maily {
     const { attrs } = node;
 
     const level = `h${Number(attrs?.level) || 1}`;
-    const alignment = attrs?.textAlign || 'left';
+    const textDirection = attrs?.textDirection || 'ltr';
+    const isRtl = textDirection === 'rtl';
+    const defaultAlignment = isRtl ? 'right' : 'left';
+    const alignment = attrs?.textAlign || defaultAlignment;
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
       options
@@ -820,7 +825,8 @@ export class Maily {
         // @ts-expect-error - `this` is not assignable to type 'never'
         as={level}
         style={{
-          textAlign: alignment,
+          ...(alignment !== 'left' ? { textAlign: alignment } : {}),
+          ...(isRtl ? { direction: textDirection } : {}),
           color: this.config.theme?.colors?.heading,
           fontSize,
           lineHeight,
@@ -1221,7 +1227,7 @@ export class Maily {
 
   private footer(node: JSONContent, options?: NodeOptions): JSX.Element {
     const { attrs } = node;
-    const { textAlign = 'left' } = attrs || {};
+    const { textAlign = 'left', textDirection = 'ltr' } = attrs || {};
 
     const { shouldRemoveBottomMargin } = this.getMarginOverrideConditions(
       node,
@@ -1237,6 +1243,7 @@ export class Maily {
           marginTop: '0px',
           marginBottom: shouldRemoveBottomMargin ? '0px' : '20px',
           textAlign,
+          ...(textDirection !== 'ltr' ? { direction: textDirection } : {}),
           ...antialiased,
         }}
       >

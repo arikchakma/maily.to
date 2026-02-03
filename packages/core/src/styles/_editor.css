@@ -364,8 +364,7 @@
     opacity: 1;
   }
 
-  /* Remove margin before and after of Gap Cursor */
-  *:has(+ .ProseMirror-gapcursor) {
+  *:has(+ .ProseMirror-gapcursor + .spacer) {
     margin-bottom: 0 !important;
   }
 
@@ -373,10 +372,6 @@
     &::after {
       border: 1.5px solid gray;
       width: 24px;
-    }
-
-    & + * {
-      margin-top: 0 !important;
     }
   }
 

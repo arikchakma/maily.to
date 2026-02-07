@@ -352,6 +352,55 @@ describe('render', () => {
     });
   });
 
+  it('should resolve link URL variables from repeat item payload', async () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'repeat',
+          attrs: {
+            each: 'links',
+          },
+          content: [
+            {
+              type: 'paragraph',
+              attrs: {
+                textAlign: 'left',
+              },
+              content: [
+                {
+                  type: 'text',
+                  marks: [
+                    {
+                      type: 'link',
+                      attrs: {
+                        href: 'https://url',
+                        target: '_blank',
+                        rel: 'noopener noreferrer nofollow',
+                        isUrlVariable: true,
+                      },
+                    },
+                  ],
+                  text: 'Click here',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const maily = new Maily(content);
+    maily.setPayloadValue('links', [
+      { url: 'https://example.com/first' },
+      { url: 'https://example.com/second' },
+    ]);
+    const result = await maily.render({ plainText: true });
+
+    expect(result).toContain('https://example.com/first');
+    expect(result).toContain('https://example.com/second');
+  });
+
   describe('preheader', () => {
     const content = {
       type: 'doc',

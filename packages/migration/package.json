@@ -1,0 +1,52 @@
+{
+  "name": "@maily-to/migration",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Migration utilities for converting Maily v1 JSON to v2 format",
+  "keywords": [
+    "email",
+    "maily.to",
+    "migration"
+  ],
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/migration"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "clean": "rm -rf dist",
+    "dev": "vp pack --watch",
+    "release": "bumpp",
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@maily-to/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@maily-to/tsconfig": "workspace:*",
+    "bumpp": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  }
+}

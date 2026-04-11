@@ -1,0 +1,3 @@
+:where(mark):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:box-decoration-clone mly:py-[2.5px];
+}

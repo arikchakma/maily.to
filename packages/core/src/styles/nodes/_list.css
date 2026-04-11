@@ -1,0 +1,27 @@
+:where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:mt-0 mly:mb-5 mly:ps-6.5 mly:text-(--mly-bullets-color);
+
+  li {
+    @apply mly:ps-1.5;
+  }
+
+  li:not(:last-child) {
+    @apply mly:mb-2;
+  }
+
+  li > p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mly:mt-0 mly:mb-0;
+  }
+}
+
+:where(ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:list-disc;
+}
+
+:where(ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:list-decimal;
+}
+
+li > p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:mt-0 mly:mb-0;
+}

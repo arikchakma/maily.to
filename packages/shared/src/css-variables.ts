@@ -1,5 +1,7 @@
-import type * as CSS from 'csstype';
-import { DEFAULT_FONT, type EditorThemeOptions } from './theme';
+import type { Properties } from 'csstype';
+
+import { DEFAULT_FONT } from './font';
+import type { EditorThemeOptions } from './theme';
 
 declare module 'csstype' {
   interface Properties {
@@ -8,45 +10,32 @@ declare module 'csstype' {
 }
 
 /**
- * if the value is undefined, it will return an empty object
- * so that we don't override the default value
- * @param name - The name of the CSS variable
- * @param value - The value of the CSS variable
- * @returns The CSS variable value
+ * Returns a CSS variable object for the given name and value.
+ * If the value is nullish or empty, returns an empty object so that
+ * the default CSS variable value is not overridden. Numbers are
+ * automatically suffixed with "px".
  */
 export function getVariableValue(
   name: `--mly-${string}`,
-  value: any
-): CSS.Properties {
+  value: unknown
+): Properties {
   if (value === undefined || value === null || value === '') {
     return {};
   }
 
   return {
-    [name]: value,
+    [name]: typeof value === 'number' ? `${value}px` : value,
   };
 }
 
 /**
- * Get the CSS variables for the theme
- * @param theme - The theme
- * @returns The CSS variables
- * @example
- * ```ts
- * const theme = {
- *   body: {
- *     backgroundColor: 'red',
- *   },
- * };
- *
- * const cssVariables = getCssVariables(theme);
- *
- * console.log(cssVariables);
- * // { '--mly-body-background-color': 'red' }
+ * Converts an EditorThemeOptions object into a flat map of Maily CSS
+ * custom properties (--mly-*). Used to apply theme overrides as inline
+ * styles on the editor or renderer root element. Covers body background,
+ * container dimensions and borders, button colors, link color, and
+ * font family settings.
  */
-export function getMailyCssVariables(
-  theme: EditorThemeOptions
-): CSS.Properties {
+export function getMailyCssVariables(theme: EditorThemeOptions): Properties {
   const font = theme.font || DEFAULT_FONT;
 
   return {

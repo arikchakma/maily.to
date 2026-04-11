@@ -1,8 +1,13 @@
 @import 'tailwindcss';
+@import '@maily-to/core/style.css';
 
 @theme {
-  --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-inter:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-ink: #ff503e;
+  --color-ink-dim: #fae8e5;
 }
 
 @utility no-scrollbar {
@@ -25,4 +30,9 @@
   &[type='number'] {
     -moz-appearance: textfield;
   }
+}
+
+::selection {
+  background: var(--color-ink-dim);
+  color: var(--color-ink);
 }

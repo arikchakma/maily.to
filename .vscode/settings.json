@@ -1,7 +1,28 @@
 {
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "oxc.fmt.configPath": "./vite.config.ts",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "never"
+    "source.fixAll.oxc": "explicit"
   },
   "files.associations": {
     "*.css": "tailwindcss"
@@ -13,6 +34,14 @@
     ["[\\w]+[cC]lassName[\"']?\\s*:\\s*`([^`]*)`"],
     ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ]
+    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    "class:\\s*?[\"'`]([^\"'`]*).*?,"
+  ],
+  "typescript.preferences.autoImportFileExcludePatterns": ["lucide-react"],
+  "tailwindCSS.experimental.configFile": {
+    "packages/core/src/styles/index.css": "packages/core/src/**",
+    "apps/app/src/global.css": "apps/app/src/**",
+    "apps/web/app/app.css": "apps/web/app/**",
+    "apps/enterprise/src/styles/global.css": "apps/enterprise/src/**"
+  }
 }

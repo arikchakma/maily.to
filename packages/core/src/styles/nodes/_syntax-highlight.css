@@ -1,0 +1,60 @@
+.hljs-comment,
+.hljs-quote {
+  color: #616161;
+}
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-regexp,
+.hljs-link,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: var(--mly-hljs-token-tag);
+}
+
+.hljs-tag {
+  color: var(--mly-hljs-tag);
+}
+
+.hljs-name {
+  color: var(--mly-hljs-token-tag);
+}
+
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+  color: var(--mly-hljs-meta-string);
+}
+
+.hljs-meta,
+.hljs-keyword {
+  color: var(--mly-hljs-meta);
+}
+
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-selector-tag {
+  color: var(--mly-hljs-meta-string);
+}
+
+.hljs-title,
+.hljs-section {
+  color: #faf594;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+.hljs-attr {
+  color: var(--mly-hljs-attribute);
+}

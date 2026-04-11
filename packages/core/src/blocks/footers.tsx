@@ -1,11 +1,13 @@
+import { TEXT_ALIGNMENTS } from '@maily-to/shared';
 import {
   CopyrightIcon,
   LayoutTemplateIcon,
   RectangleHorizontalIcon,
 } from 'lucide-react';
-import { BlockItem } from './types';
 
-export const footerCopyrightText: BlockItem = {
+import type { SlashCommandItem } from '~/utils/slash-command';
+
+export const footerCopyrightText: SlashCommandItem = {
   title: 'Footer Copyright',
   description: 'Copyright text for the footer.',
   searchTerms: ['footer', 'copyright'],
@@ -19,12 +21,12 @@ export const footerCopyrightText: BlockItem = {
       .deleteRange(range)
       .insertContent({
         type: 'paragraph',
-        attrs: { textAlign: 'center', showIfKey: null },
+        attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
         content: [
           {
             type: 'text',
             marks: [{ type: 'textStyle', attrs: { color: '#AAAAAA' } }],
-            text: `Maily © ${currentYear}. All rights reserved.`,
+            text: `Maily \u00A9 ${currentYear}. All rights reserved.`,
           },
         ],
       })
@@ -32,8 +34,8 @@ export const footerCopyrightText: BlockItem = {
   },
 };
 
-export const footerCommunityFeedbackCta: BlockItem = {
-  title: 'Footer Community Feedback CTA',
+export const footerCommunityFeedbackCta: SlashCommandItem = {
+  title: 'Footer Community Feedback',
   description: 'Community feedback CTA for the footer.',
   searchTerms: ['footer', 'community', 'feedback', 'cta'],
   icon: <RectangleHorizontalIcon className="mly:h-4 mly:w-4" />,
@@ -49,30 +51,26 @@ export const footerCommunityFeedbackCta: BlockItem = {
             src: 'https://maily.to/brand/logo.png',
             alt: null,
             title: null,
-            width: '42',
-            height: '42',
-            alignment: 'left',
+            width: '8%',
+            alignment: TEXT_ALIGNMENTS.LEFT,
             externalLink: null,
-            isExternalLinkVariable: false,
-            isSrcVariable: false,
-            showIfKey: null,
           },
         },
-        { type: 'spacer', attrs: { height: 16, showIfKey: null } },
+        { type: 'spacer', attrs: { height: 16 } },
         {
           type: 'footer',
-          attrs: { textAlign: null, 'maily-component': 'footer' },
+          attrs: { textAlign: null },
           content: [
             {
               type: 'text',
-              marks: [{ type: 'textStyle', attrs: { color: '' } }],
-              text: 'Enjoyed this month’s update?',
+              marks: [],
+              text: "Enjoyed this month's update?",
             },
             { type: 'hardBreak' },
             {
               type: 'text',
-              marks: [{ type: 'textStyle', attrs: { color: '' } }],
-              text: "And, as always, we'd love your feedback – simply reply to the email or reach out via the Discord community!",
+              marks: [],
+              text: "And, as always, we'd love your feedback \u2013 simply reply to the email or reach out via the Discord community!",
             },
           ],
         },
@@ -81,7 +79,7 @@ export const footerCommunityFeedbackCta: BlockItem = {
   },
 };
 
-export const footerCompanySignature: BlockItem = {
+export const footerCompanySignature: SlashCommandItem = {
   title: 'Footer Company Signature',
   description: 'Company signature for the footer.',
   searchTerms: ['footer', 'company', 'signature'],
@@ -99,29 +97,28 @@ export const footerCompanySignature: BlockItem = {
             src: 'https://maily.to/brand/logo.png',
             alt: null,
             title: null,
-            width: '48',
-            height: '48',
-            alignment: 'center',
+            width: '8%',
+            align: TEXT_ALIGNMENTS.CENTER,
             externalLink: null,
-            isExternalLinkVariable: false,
-            isSrcVariable: false,
-            showIfKey: null,
           },
         },
-        { type: 'spacer', attrs: { height: 16, showIfKey: null } },
+        { type: 'spacer', attrs: { height: 16 } },
         {
           type: 'heading',
-          attrs: { textAlign: 'center', level: 3, showIfKey: null },
+          attrs: {
+            textAlign: TEXT_ALIGNMENTS.CENTER,
+            level: 3,
+          },
           content: [{ type: 'text', text: 'Maily' }],
         },
-        { type: 'spacer', attrs: { height: 4, showIfKey: null } },
+        { type: 'spacer', attrs: { height: 4 } },
         {
           type: 'footer',
-          attrs: { textAlign: 'center', 'maily-component': 'footer' },
+          attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
           content: [
             {
               type: 'text',
-              marks: [{ type: 'textStyle', attrs: { color: '' } }],
+              marks: [],
               text: '1234 Example Street, Example, DE 19801, United States',
             },
             { type: 'hardBreak' },
@@ -135,7 +132,6 @@ export const footerCompanySignature: BlockItem = {
                     target: '_blank',
                     rel: 'noopener noreferrer nofollow',
                     class: 'mly:no-underline',
-                    isUrlVariable: false,
                   },
                 },
                 { type: 'textStyle', attrs: { color: '#64748b' } },
@@ -158,7 +154,6 @@ export const footerCompanySignature: BlockItem = {
                     target: '_blank',
                     rel: 'noopener noreferrer nofollow',
                     class: 'mly:no-underline',
-                    isUrlVariable: false,
                   },
                 },
                 { type: 'textStyle', attrs: { color: '#64748b' } },
@@ -181,7 +176,6 @@ export const footerCompanySignature: BlockItem = {
                     target: '_blank',
                     rel: 'noopener noreferrer nofollow',
                     class: 'mly:no-underline',
-                    isUrlVariable: false,
                   },
                 },
                 { type: 'textStyle', attrs: { color: '#64748b' } },
@@ -193,7 +187,7 @@ export const footerCompanySignature: BlockItem = {
         },
         {
           type: 'paragraph',
-          attrs: { textAlign: 'center', showIfKey: null },
+          attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
           content: [
             {
               type: 'inlineImage',
@@ -201,11 +195,9 @@ export const footerCompanySignature: BlockItem = {
                 height: 20,
                 width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/linkedin.png',
-                isSrcVariable: false,
                 alt: null,
                 title: null,
                 externalLink: 'https://www.linkedin.com/in/arikchakma/',
-                isExternalLinkVariable: false,
               },
             },
             { type: 'text', text: '  ' },
@@ -215,11 +207,9 @@ export const footerCompanySignature: BlockItem = {
                 height: 20,
                 width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/youtube.png',
-                isSrcVariable: false,
                 alt: null,
                 title: null,
                 externalLink: 'https://www.youtube.com/arikchakma',
-                isExternalLinkVariable: false,
               },
             },
             { type: 'text', text: '  ' },
@@ -229,11 +219,9 @@ export const footerCompanySignature: BlockItem = {
                 height: 20,
                 width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/twitter.png',
-                isSrcVariable: false,
                 alt: null,
                 title: null,
                 externalLink: 'https://x.com/imarikchakma',
-                isExternalLinkVariable: false,
               },
             },
           ],

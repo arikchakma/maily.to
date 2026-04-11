@@ -1,0 +1,3 @@
+:where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:relative mly:my-5 mly:border-l-4 mly:border-(--mly-blockquote-border-color) mly:pl-4 mly:italic mly:font-medium mly:text-(--mly-paragraph-color);
+}

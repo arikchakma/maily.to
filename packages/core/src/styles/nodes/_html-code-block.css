@@ -1,0 +1,13 @@
+.is-empty:where(.node-htmlCodeBlock):not([data-active-tab='preview'])::before,
+.is-editor-empty:first-child:where(.node-htmlCodeBlock):not(
+    [data-active-tab='preview']
+  )::before {
+  @apply mly:text-sm mly:absolute mly:float-none! mly:left-[9px] mly:top-[9px];
+}
+
+.is-empty:where(.node-htmlCodeBlock):not([data-active-tab='code'])::before,
+.is-editor-empty:first-child:where(.node-htmlCodeBlock):not(
+    [data-active-tab='code']
+  )::before {
+  content: '';
+}

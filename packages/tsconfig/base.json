@@ -17,8 +17,7 @@
     "strict": true,
     "strictNullChecks": true,
     "noEmit": true,
+    "verbatimModuleSyntax": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

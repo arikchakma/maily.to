@@ -1,0 +1,7 @@
+[data-node-type='button'] {
+  @apply mly:text-sm mly:font-semibold;
+
+  &[dir='rtl'] [data-node-view-content-react] {
+    direction: rtl;
+  }
+}

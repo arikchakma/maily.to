@@ -1,31 +1,31 @@
 {
   "name": "maily",
   "private": true,
-  "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "clean": "turbo run clean",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "format:write": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
-    "test": "turbo run test",
-    "test:watch": "turbo run test:watch"
+    "build": "vp run build -r",
+    "check": "vp check",
+    "clean": "vp run clean -r",
+    "dev": "vp run build -r && pnpm -r --parallel dev",
+    "format:check": "vp fmt --check",
+    "format:write": "vp fmt",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix --fix-suggestions --fix-dangerously",
+    "prepare": "vp config",
+    "release:core": "pnpm --filter @maily-to/core release",
+    "release:migration": "pnpm --filter @maily-to/migration release",
+    "release:render": "pnpm --filter @maily-to/render release",
+    "release:shared": "pnpm --filter @maily-to/shared release",
+    "release:ui": "pnpm --filter @maily-to/ui release",
+    "test": "vp run test -r"
   },
   "devDependencies": {
-    "@types/node": "^22.10.7",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "eslint": "^9.18.0",
-    "happy-dom": "^16.6.0",
-    "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.12",
-    "tsconfig": "workspace:*",
-    "tsdown": "^0.12.5",
-    "tsup": "^8.3.5",
-    "turbo": "latest",
-    "vite": "^6.0.7",
-    "vitest": "^3.0.2"
-  }
+    "@typescript/native-preview": "latest",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.32.1"
 }

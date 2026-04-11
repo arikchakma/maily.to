@@ -1,0 +1,3 @@
+:where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:relative mly:mt-0 mly:mb-5 mly:text-[15px] mly:leading-[1.75] mly:text-(--mly-paragraph-color);
+}

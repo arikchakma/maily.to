@@ -1,0 +1,5 @@
+:where(small[data-node-type='footer']):not(
+  :where([class~='not-prose'], [class~='not-prose'] *)
+) {
+  @apply mly:relative mly:block mly:mt-0 mly:mb-5 mly:text-[14px] mly:leading-[1.714] mly:text-(--mly-footer-color);
+}

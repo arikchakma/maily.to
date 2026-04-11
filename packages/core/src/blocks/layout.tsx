@@ -1,70 +1,75 @@
-import type { BlockItem } from './types';
 import {
+  CodeXmlIcon,
   ColumnsIcon,
-  Repeat2,
-  MoveVertical,
-  RectangleHorizontal,
-  Minus,
+  MinusIcon,
+  MoveVerticalIcon,
+  Repeat2Icon,
+  SquareIcon,
 } from 'lucide-react';
 
-export const columns: BlockItem = {
-  title: 'Columns',
-  description: 'Add columns to email.',
-  searchTerms: ['layout', 'columns'],
-  icon: <ColumnsIcon className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range }) => {
-    // @ts-ignore
-    editor
-      .chain()
-      .focus()
-      .deleteRange(range)
-      // @ts-ignore
-      .setColumns()
-      .focus(editor.state.selection.head - 2)
-      .run();
-  },
-};
+import type { SlashCommandItem } from '~/utils/slash-command';
 
-export const section: BlockItem = {
-  title: 'Section',
-  description: 'Add a section to email.',
-  searchTerms: ['layout', 'section'],
-  icon: <RectangleHorizontal className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setSection().run();
-  },
-};
-
-export const repeat: BlockItem = {
-  title: 'Repeat',
-  description: 'Loop over an array of items.',
-  searchTerms: ['repeat', 'for', 'loop'],
-  icon: <Repeat2 className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setRepeat().run();
-  },
-};
-
-export const spacer: BlockItem = {
+export const spacer: SlashCommandItem = {
   title: 'Spacer',
   description: 'Add space between blocks.',
   searchTerms: ['space', 'gap', 'divider'],
-  icon: <MoveVertical className="mly:h-4 mly:w-4" />,
+  icon: <MoveVerticalIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setSpacer({ height: 'sm' }).run();
+    return editor.chain().focus().deleteRange(range).setSpacer().run();
   },
 };
 
-export const divider: BlockItem = {
+export const divider: SlashCommandItem = {
   title: 'Divider',
   description: 'Add a horizontal divider.',
   searchTerms: ['divider', 'line'],
-  icon: <Minus className="mly:h-4 mly:w-4" />,
+  icon: <MinusIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+    return editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+  },
+};
+
+export const section: SlashCommandItem = {
+  title: 'Section',
+  description: 'Add a section container.',
+  searchTerms: ['section', 'container', 'box', 'wrapper'],
+  icon: <SquareIcon className="mly:h-4 mly:w-4" />,
+  command: ({ editor, range }) => {
+    return editor.chain().focus().deleteRange(range).setSection().run();
+  },
+};
+
+export const columns: SlashCommandItem = {
+  title: 'Columns',
+  description: 'Add a multi-column layout.',
+  searchTerms: ['columns', 'layout', 'grid', 'two', 'split'],
+  icon: <ColumnsIcon className="mly:h-4 mly:w-4" />,
+  command: ({ editor, range }) => {
+    return editor.chain().focus().deleteRange(range).setColumns(2).run();
+  },
+};
+
+export const repeat: SlashCommandItem = {
+  title: 'Repeat',
+  description: 'Repeat content for each item in a list.',
+  searchTerms: ['repeat', 'loop', 'iterate', 'for', 'each', 'array'],
+  icon: <Repeat2Icon className="mly:h-4 mly:w-4" />,
+  command: ({ editor, range }) => {
+    return editor.chain().focus().deleteRange(range).setRepeat().run();
+  },
+};
+
+export const htmlCodeBlock: SlashCommandItem = {
+  title: 'Custom HTML',
+  description: 'Insert a custom HTML block.',
+  searchTerms: ['html', 'code', 'custom'],
+  icon: <CodeXmlIcon className="mly:h-4 mly:w-4" />,
+  command: ({ editor, range }) => {
+    return editor
+      .chain()
+      .focus()
+      .deleteRange(range)
+      .setHtmlCodeBlock({ language: 'html' })
+      .run();
   },
 };

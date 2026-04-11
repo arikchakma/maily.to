@@ -1,11 +1,15 @@
-<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> @maily-to/core</h1>
+[![MAILY](../../_static/maily.jpg)](https://maily.to)
 
 <p align="center">
-  <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
+  AI-powered powerful editor for creating beautiful,<br /> pre-designed with flexibility, mobile-ready emails.
+</p>
+
+<p align="center">
+  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
     <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
   </a>
   <a href="https://maily.to">
-    <img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=0a0a0a" alt="Get Maily Editor" />
+    	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=222222" alt="Get Maily Editor" />
   </a>
 </p>
 

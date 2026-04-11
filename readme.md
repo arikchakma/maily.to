@@ -1,23 +1,21 @@
-<h1 align="center"><img height="150" src="https://maily.to/brand/icon.svg" /><br> maily.to</h1>
+[![MAILY](_static/maily.jpg)](https://maily.to)
 
 <p align="center">
-  <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
+  AI-powered powerful editor for creating beautiful,<br /> pre-designed with flexibility, mobile-ready emails.
+</p>
+
+<p align="center">
+  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
     <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
-  </a>
-  <a href="https://buymeacoffee.com/arikchakma">
-    	<img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-222222?logo=buy-me-a-coffee" alt="Buy me a coffee" />
   </a>
   <a href="https://maily.to">
     	<img src="https://img.shields.io/badge/%E2%9C%A8-Get%20Editor-0a0a0a.svg?style=flat&colorA=222222" alt="Get Maily Editor" />
   </a>
 </p>
 
-<p align="center">
-  <b>Powerful editor for creating beautiful, pre-designed, mobile-ready emails.</b></br>
-  <sub>Just bring your text, use our pre-designed components, and be done.</sub><br>
-</p>
+Maily is a powerful editor with opinionated default design for creating beautiful, pre-designed, mobile-ready emails. It is built with flexibility in mind, so you can easily customize it to your needs. It is also AI-powered, so you can easily create emails with the help of AI.
 
-<br />
+> v2 is in public beta, feel free to try it out and give us your feedback.
 
 ### Start Using
 
@@ -71,12 +69,7 @@ Sponsorship at any level is appreciated and encouraged. If you built a paid prod
 
 ### Contributions
 
-Feel free to submit pull requests, create issues, or spread the word. For getting a development version of it up & running, go through the following steps.
-
-1. Clone the repo: `git clone https://github.com/arikchakma/maily.to`
-2. Change directory: `cd maily.to`
-3. `pnpm install` to install all the dependencies.
-4. `pnpm dev` to start the development server.
+Feel free to submit pull requests, create issues, or spread the word.
 
 ### License
 

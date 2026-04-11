@@ -52,7 +52,7 @@ export default function Home(_props: Route.ComponentProps) {
               </p>
               <div className="mt-4 flex flex-col items-stretch gap-2 sm:flex-row md:mt-8 lg:mt-10">
                 <Link
-                  className="hover:bg-ink flex min-h-[72px] items-center justify-center gap-3 bg-black px-7 py-3 text-2xl font-medium text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  className="flex min-h-[72px] items-center justify-center gap-3 bg-black px-7 py-3 text-2xl font-medium text-white transition-colors hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   to="/playground"
                 >
                   <Icons.pencil aria-hidden="true" />
@@ -60,7 +60,7 @@ export default function Home(_props: Route.ComponentProps) {
                 </Link>
 
                 <a
-                  className="hover:border-ink hover:bg-ink flex items-center justify-center gap-2 border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  className="flex items-center justify-center gap-2 border-4 border-black bg-white px-5 py-3 text-2xl font-medium text-black transition-colors hover:border-ink hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   href="https://github.com/arikchakma/maily.to"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -124,7 +124,7 @@ export default function Home(_props: Route.ComponentProps) {
               return (
                 <li key={component.name}>
                   <span className="flex items-center gap-2 border-2 border-black px-4 py-2 text-base font-medium md:px-5 md:py-2.5 md:text-lg">
-                    <Icon className="text-ink size-4 shrink-0 md:size-5" />
+                    <Icon className="size-4 shrink-0 text-ink md:size-5" />
                     {component.name}
                   </span>
                 </li>
@@ -176,7 +176,7 @@ export default function Home(_props: Route.ComponentProps) {
           <p className="mb-7 text-xl leading-relaxed sm:text-3xl sm:leading-relaxed">
             Please do{' '}
             <a
-              className="hover:text-ink underline underline-offset-8 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+              className="underline underline-offset-8 transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
               href="https://github.com/arikchakma/maily.to"
               rel="noopener noreferrer"
               target="_blank"
@@ -189,7 +189,7 @@ export default function Home(_props: Route.ComponentProps) {
 
           <div className="flex flex-col gap-3 md:flex-row">
             <a
-              className="hover:bg-ink bg-ink/40 inline-flex min-h-[56px] items-center justify-center border-black px-5 py-2 text-lg font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:text-xl lg:py-4 lg:text-2xl"
+              className="inline-flex min-h-[56px] items-center justify-center border-black bg-ink/40 px-5 py-2 text-lg font-medium transition-colors hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:text-xl lg:py-4 lg:text-2xl"
               href="https://github.com/arikchakma/maily.to"
               rel="noopener noreferrer"
               target="_blank"

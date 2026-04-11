@@ -44,10 +44,13 @@ export default defineConfig({
   },
   lint: {
     plugins: ['typescript', 'import'],
+    jsPlugins: ['./plugins/no-param-destructure.ts'],
     rules: {
       'typescript/consistent-type-imports': 'error',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       curly: ['error', 'all'],
+      'maily/no-param-destructure': 'error',
+      'maily/no-inline-props-type': 'error',
     },
     options: {
       typeCheck: true,

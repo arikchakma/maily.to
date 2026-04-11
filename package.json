@@ -19,6 +19,7 @@
     "test": "vp run test -r"
   },
   "devDependencies": {
+    "@oxlint/plugins": "catalog:",
     "@typescript/native-preview": "latest",
     "typescript": "catalog:",
     "vite-plus": "catalog:",

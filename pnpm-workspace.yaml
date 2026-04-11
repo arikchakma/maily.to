@@ -7,6 +7,7 @@ catalog:
   '@tiptap/react': ^3.20.1
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
+  '@oxlint/plugins': ^1.57.0
   bumpp: ^10.4.1
   react: ^19.2.4
   react-dom: ^19.2.4
@@ -24,8 +25,3 @@ peerDependencyRules:
   allowedVersions:
     vite: '*'
     vitest: '*'
-
-# minimumReleaseAge: 7200
-# minimumReleaseAgeExclude:
-#   - react
-#   - react-dom

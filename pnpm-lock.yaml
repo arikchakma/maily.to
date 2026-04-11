@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@oxlint/plugins':
+      specifier: ^1.57.0
+      version: 1.59.0
     '@tiptap/core':
       specifier: ^3.20.1
       version: 3.20.1
@@ -45,6 +48,9 @@ importers:
 
   .:
     devDependencies:
+      '@oxlint/plugins':
+        specifier: 'catalog:'
+        version: 1.59.0
       '@typescript/native-preview':
         specifier: latest
         version: 7.0.0-dev.20260326.1
@@ -1447,6 +1453,10 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
+
+  '@oxlint/plugins@1.59.0':
+    resolution: {integrity: sha512-KIEedExMc60HKrkZi79403NbSgnJUyC9w6dCsqrY45ygIPzEyFdpxboiTyI8ZjeEw6Os03bspgZBfm6/fZbkOg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   '@parcel/watcher-android-arm64@2.5.6':
     resolution: {integrity: sha512-YQxSS34tPF/6ZG7r/Ih9xy+kP/WwediEUsqmtf0cuCV5TPPKw/PQHRhueUo6JdeFJaqV3pyjm0GdYjZotbRt/A==}
@@ -4842,6 +4852,8 @@ snapshots:
 
   '@oxlint/binding-win32-x64-msvc@1.57.0':
     optional: true
+
+  '@oxlint/plugins@1.59.0': {}
 
   '@parcel/watcher-android-arm64@2.5.6':
     optional: true

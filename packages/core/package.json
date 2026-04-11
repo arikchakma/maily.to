@@ -106,6 +106,7 @@
     "@maily-to/extension-inline-suggestion": "workspace:*",
     "@maily-to/extension-variable": "workspace:*",
     "@maily-to/tsconfig": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:",
     "@tailwindcss/cli": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
     "@types/react": "catalog:",

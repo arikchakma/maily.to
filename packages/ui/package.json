@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:",
     "@types/react": "catalog:",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "bumpp": "catalog:",

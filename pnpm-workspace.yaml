@@ -8,6 +8,7 @@ catalog:
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
   '@oxlint/plugins': ^1.59.0
+  '@rolldown/plugin-babel': ^0.2.2
   bumpp: ^11.0.1
   react: ^19.2.5
   react-dom: ^19.2.5

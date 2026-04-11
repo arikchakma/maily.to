@@ -20,6 +20,16 @@ export default defineConfig({
           },
         },
       },
+      {
+        files: ['apps/web/**/*.{ts,tsx}'],
+        options: {
+          experimentalTailwindcss: {
+            stylesheet: './apps/web/app/app.css',
+            attributes: ['class', 'className'],
+            functions: ['cn', 'clsx', 'cva'],
+          },
+        },
+      },
     ],
     printWidth: 80,
     experimentalSortPackageJson: {

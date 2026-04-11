@@ -140,7 +140,7 @@ export const VariableSuggestionsPopover: VariableSuggestionsPopoverType =
                     )}
                   >
                     <BracesIcon className="mly:size-3 mly:text-rose-600" />
-                    {item?.label || item.name}
+                    {item?.label || item.id || item.name}
                   </button>
                 );
               })}

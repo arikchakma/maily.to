@@ -98,9 +98,10 @@ export function App() {
       LinkCardExtension,
       VariableExtension.configure({
         variables: [
-          { id: 'name', label: 'Name' },
-          { id: 'email', label: 'Email' },
-          { id: 'phone', label: 'Phone' },
+          { id: 'first_name' },
+          { id: 'last_name' },
+          { id: 'email' },
+          { id: 'phone_number' },
         ],
       }),
     ],

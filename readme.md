@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/arikchakma/maily.to/blob/main/license">
+  <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-222222.svg" />
   </a>
   <a href="https://maily.to">
@@ -73,4 +73,4 @@ Feel free to submit pull requests, create issues, or spread the word.
 
 ### License
 
-[MIT](/LICENSE) &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+[MIT](/LICENSE) &copy; [Arik Chakma](https://x.com/imarikchakma)

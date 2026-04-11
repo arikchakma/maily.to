@@ -41,4 +41,4 @@ Feel free to submit pull requests, create issues, or spread the word.
 
 ### License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+MIT &copy; [Arik Chakma](https://x.com/imarikchakma)

@@ -15,7 +15,8 @@
 
 Maily is a powerful editor with opinionated default design for creating beautiful, pre-designed, mobile-ready emails. It is built with flexibility in mind, so you can easily customize it to your needs. It is also AI-powered, so you can easily create emails with the help of AI.
 
-> v2 is in public beta, feel free to try it out and give us your feedback.
+> [!NOTE]
+> `v2` is in public beta, feel free to try it out and give us your feedback. Looking for `v1`? Check out the [`v1` branch](https://github.com/arikchakma/maily.to/tree/v1) for the v1 codebase and documentation.
 
 ### Start Using
 

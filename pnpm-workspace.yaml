@@ -2,16 +2,16 @@ packages:
   - 'apps/*'
   - 'packages/*'
 catalog:
-  '@tiptap/core': ^3.20.1
-  '@tiptap/pm': ^3.20.1
-  '@tiptap/react': ^3.20.1
+  '@tiptap/core': ^3.22.3
+  '@tiptap/pm': ^3.22.3
+  '@tiptap/react': ^3.22.3
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
-  '@oxlint/plugins': ^1.57.0
-  bumpp: ^10.4.1
-  react: ^19.2.4
-  react-dom: ^19.2.4
-  typescript: ^5.9.3
+  '@oxlint/plugins': ^1.59.0
+  bumpp: ^11.0.1
+  react: ^19.2.5
+  react-dom: ^19.2.5
+  typescript: ^6.0.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plus: latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest

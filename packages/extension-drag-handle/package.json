@@ -40,8 +40,8 @@
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
     "@maily-to/shared": "workspace:*",
-    "@tiptap/extension-collaboration": "^3.20.1",
-    "@tiptap/y-tiptap": "^3.0.2"
+    "@tiptap/extension-collaboration": "^3.22.3",
+    "@tiptap/y-tiptap": "^3.0.3"
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",

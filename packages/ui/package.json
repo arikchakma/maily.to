@@ -39,7 +39,7 @@
     "@base-ui/react": "1.0.0",
     "@base-ui/utils": "0.2.3",
     "@maily-to/shared": "workspace:*",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "cromia": "^0.0.1",
     "unit-field": "^0.0.1"
   },

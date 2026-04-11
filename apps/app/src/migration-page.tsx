@@ -133,7 +133,10 @@ function ViewToggle(props: ViewToggleProps) {
   );
 }
 
-function Warnings({ warnings }: { warnings: MigrationWarning[] }) {
+type WarningsProps = { warnings: MigrationWarning[] };
+
+function Warnings(props: WarningsProps) {
+  const { warnings } = props;
   if (warnings.length === 0) {
     return null;
   }

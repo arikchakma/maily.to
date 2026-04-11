@@ -11,7 +11,9 @@ import { useCallback, useState } from 'react';
 
 import { cn } from '../utils/classname';
 
-function Root(props: { children: React.ReactNode; className?: string }) {
+type FieldContainerProps = { children: React.ReactNode; className?: string };
+
+function Root(props: FieldContainerProps) {
   const { children, className } = props;
 
   return (
@@ -23,7 +25,7 @@ function Root(props: { children: React.ReactNode; className?: string }) {
   );
 }
 
-function Label(props: { children: React.ReactNode; className?: string }) {
+function Label(props: FieldContainerProps) {
   const { children, className } = props;
 
   return (
@@ -148,7 +150,7 @@ function ColorField(props: ColorFieldProps) {
   );
 }
 
-function FieldGroup(props: { children: React.ReactNode; className?: string }) {
+function FieldGroup(props: FieldContainerProps) {
   const { children, className } = props;
 
   return (

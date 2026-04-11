@@ -7,33 +7,32 @@ import { cn } from '~/utils/classname';
 
 import { buttonVariants } from './button';
 
-function Select({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+function Select(props: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
-function SelectGroup({
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Group>) {
+function SelectGroup(
+  props: React.ComponentProps<typeof SelectPrimitive.Group>
+) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />;
 }
 
-function SelectValue({
-  placeholder,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Value> & {
-  placeholder?: string;
-}) {
+function SelectValue(
+  props: React.ComponentProps<typeof SelectPrimitive.Value> & {
+    placeholder?: string;
+  }
+) {
+  const { placeholder, ...rest } = props;
+
   if (!placeholder) {
-    return <SelectPrimitive.Value data-slot="select-value" {...props} />;
+    return <SelectPrimitive.Value data-slot="select-value" {...rest} />;
   }
 
   return (
     <SelectPrimitive.Value
       render={(_, { value }) => {
         if (value) {
-          return <SelectPrimitive.Value data-slot="select-value" {...props} />;
+          return <SelectPrimitive.Value data-slot="select-value" {...rest} />;
         }
 
         // Placeholder
@@ -43,16 +42,16 @@ function SelectValue({
           </span>
         );
       }}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SelectTrigger({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
+function SelectTrigger(
+  props: React.ComponentProps<typeof SelectPrimitive.Trigger>
+) {
+  const { className, children, ...rest } = props;
+
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -64,7 +63,7 @@ function SelectTrigger({
           className
         )
       }
-      {...props}
+      {...rest}
     >
       {children}
       <div className="mly:ml-auto mly:flex mly:size-7 mly:shrink-0 mly:items-center mly:justify-center mly:border-l mly:border-white">
@@ -95,11 +94,11 @@ function SelectPositioner(
   );
 }
 
-function SelectContent({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Popup>) {
+function SelectContent(
+  props: React.ComponentProps<typeof SelectPrimitive.Popup>
+) {
+  const { className, children, ...rest } = props;
+
   return (
     <>
       <SelectScrollUpButton />
@@ -109,7 +108,7 @@ function SelectContent({
           'mly:relative mly:z-99 mly:max-h-(--available-height) mly:min-w-(--anchor-width) mly:origin-(--transform-origin) mly:cursor-default mly:overflow-x-hidden mly:overflow-y-auto mly:rounded-xl mly:border mly:border-gray-200 mly:bg-white mly:p-1 mly:shadow-md mly:outline-none',
           className
         )}
-        {...props}
+        {...rest}
       >
         {children}
       </SelectPrimitive.Popup>
@@ -118,10 +117,11 @@ function SelectContent({
   );
 }
 
-function SelectLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.GroupLabel>) {
+function SelectLabel(
+  props: React.ComponentProps<typeof SelectPrimitive.GroupLabel>
+) {
+  const { className, ...rest } = props;
+
   return (
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
@@ -129,7 +129,7 @@ function SelectLabel({
         'mly:px-2 mly:py-1.5 mly:text-xs mly:opacity-60',
         className
       )}
-      {...props}
+      {...rest}
     />
   );
 }
@@ -162,10 +162,11 @@ function SelectItem(props: SelectItemProps) {
   );
 }
 
-function SelectSeparator({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+function SelectSeparator(
+  props: React.ComponentProps<typeof SelectPrimitive.Separator>
+) {
+  const { className, ...rest } = props;
+
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
@@ -173,15 +174,16 @@ function SelectSeparator({
         'mly:pointer-events-none mly:-mx-1 mly:my-1 mly:h-px mly:bg-gray-200',
         className
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SelectScrollUpButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollUpArrow>) {
+function SelectScrollUpButton(
+  props: React.ComponentProps<typeof SelectPrimitive.ScrollUpArrow>
+) {
+  const { className, ...rest } = props;
+
   return (
     <SelectPrimitive.ScrollUpArrow
       data-slot="select-scroll-up-button"
@@ -190,16 +192,17 @@ function SelectScrollUpButton({
         "mly:before:absolute mly:before:left-0 mly:before:h-full mly:before:w-full mly:before:content-[''] mly:data-[direction=down]:bottom-0 mly:data-[direction=down]:before:-bottom-full mly:data-[direction=up]:before:top-full",
         className
       )}
-      {...props}
+      {...rest}
     >
       <ChevronUpIcon className="mly:size-4" />
     </SelectPrimitive.ScrollUpArrow>
   );
 }
-function SelectScrollDownButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.ScrollDownArrow>) {
+function SelectScrollDownButton(
+  props: React.ComponentProps<typeof SelectPrimitive.ScrollDownArrow>
+) {
+  const { className, ...rest } = props;
+
   return (
     <SelectPrimitive.ScrollDownArrow
       data-slot="select-scroll-down-button"
@@ -208,7 +211,7 @@ function SelectScrollDownButton({
         "mly:before:absolute mly:before:left-0 mly:before:h-full mly:before:w-full mly:before:content-[''] mly:data-[direction=down]:bottom-0 mly:data-[direction=down]:before:-bottom-full mly:data-[direction=up]:before:top-full",
         className
       )}
-      {...props}
+      {...rest}
     >
       <ChevronDownIcon className="mly:size-4" />
     </SelectPrimitive.ScrollDownArrow>

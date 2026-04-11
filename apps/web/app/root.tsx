@@ -82,7 +82,10 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+type LayoutProps = { children: React.ReactNode };
+
+export function Layout(props: LayoutProps) {
+  const { children } = props;
   return (
     <html lang="en">
       <head>
@@ -112,7 +115,8 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary(props: Route.ErrorBoundaryProps) {
+  const { error } = props;
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;

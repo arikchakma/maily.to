@@ -15,7 +15,9 @@ type ReactEmailPreviewProps = {
   json: string;
 };
 
-function CopyButton(props: { html: string }) {
+type CopyButtonProps = { html: string };
+
+function CopyButton(props: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {

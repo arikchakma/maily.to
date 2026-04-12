@@ -16,50 +16,51 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: true
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
 
-      - run: vp install
-      - run: vp run build -r
-      - run: vp run @maily-to/web#typegen
-      - run: vp check
-      - run: vp test
-        continue-on-error: true
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - run: pnpm run --filter @maily-to/web typegen
+      - run: pnpm run check
 
       - name: Publish @maily-to/shared
-        run: npm publish --access public --provenance
+        run: pnpm publish --access public --no-git-checks
         working-directory: packages/shared
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - name: Publish @maily-to/ui
-      #   run: npm publish --access public --provenance
+      #   run: pnpm publish --access public --no-git-checks
       #   working-directory: packages/ui
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # - name: Publish @maily-to/migration
-      #   run: npm publish --access public --provenance
+      #   run: pnpm publish --access public --no-git-checks
       #   working-directory: packages/migration
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @maily-to/render
-        run: npm publish --access public --provenance
+        run: pnpm publish --access public --no-git-checks
         working-directory: packages/render
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @maily-to/core
-        run: npm publish --access public --provenance
+        run: pnpm publish --access public --no-git-checks
         working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Generate GitHub Changelog
-        run: npx changelogithub
+        run: pnpx changelogithub
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

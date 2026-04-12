@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/migration",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "private": false,
   "description": "Migration utilities for converting Maily v1 JSON to v2 format",
   "keywords": [

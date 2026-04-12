@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: https://registry.npmjs.org
           cache: pnpm
 
@@ -30,34 +30,24 @@ jobs:
       - run: pnpm run check
 
       - name: Publish @maily-to/shared
-        run: pnpm publish --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks
         working-directory: packages/shared
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # - name: Publish @maily-to/ui
-      #   run: pnpm publish --access public --no-git-checks
-      #   working-directory: packages/ui
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish @maily-to/ui
+        run: pnpm publish --provenance --access public --no-git-checks
+        working-directory: packages/ui
 
-      # - name: Publish @maily-to/migration
-      #   run: pnpm publish --access public --no-git-checks
-      #   working-directory: packages/migration
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish @maily-to/migration
+        run: pnpm publish --provenance --access public --no-git-checks
+        working-directory: packages/migration
 
       - name: Publish @maily-to/render
-        run: pnpm publish --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks
         working-directory: packages/render
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @maily-to/core
-        run: pnpm publish --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks
         working-directory: packages/core
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Generate GitHub Changelog
         run: pnpx changelogithub

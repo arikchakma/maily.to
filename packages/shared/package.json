@@ -36,7 +36,6 @@
     "build": "vp pack",
     "clean": "rm -rf dist",
     "dev": "vp pack --watch",
-    "prepublishOnly": "pnpm run build",
     "release": "bumpp",
     "test": "vp test run",
     "test:watch": "vp test"

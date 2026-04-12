@@ -47,7 +47,6 @@
     "dev": "pnpm --filter @maily-to/core --parallel \"/^dev:.*/\"",
     "dev:lib": "vp pack --watch",
     "dev:style": "tailwindcss -i ./src/styles/index.css -o ./dist/index.css --watch",
-    "prepublishOnly": "pnpm run build",
     "release": "bumpp"
   },
   "dependencies": {

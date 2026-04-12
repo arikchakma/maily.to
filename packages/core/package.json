@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/core",
-  "version": "2.0.0-beta.5",
+  "version": "2.0.0-beta.6",
   "private": false,
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "author": "Arik Chakma <arikchangma@gmail.com>",

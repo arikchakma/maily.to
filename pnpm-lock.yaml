@@ -57,6 +57,9 @@ importers:
       '@typescript/native-preview':
         specifier: latest
         version: 7.0.0-dev.20260326.1
+      bumpp:
+        specifier: 'catalog:'
+        version: 11.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.2

@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+
+      - run: vp install
+
+      - run: vp run build -r
+
+      - run: vp check
+
+      - run: vp test
+        continue-on-error: true
+
+      - name: Publish @maily-to/shared
+        run: npm publish --access public --provenance
+        working-directory: packages/shared
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @maily-to/ui
+        run: npm publish --access public --provenance
+        working-directory: packages/ui
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @maily-to/migration
+        run: npm publish --access public --provenance
+        working-directory: packages/migration
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @maily-to/render
+        run: npm publish --access public --provenance
+        working-directory: packages/render
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @maily-to/core
+        run: npm publish --access public --provenance
+        working-directory: packages/core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Generate GitHub Changelog
+        run: npx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

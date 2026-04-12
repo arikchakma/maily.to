@@ -11,6 +11,7 @@
     "lint": "vp lint",
     "lint:fix": "vp lint --fix --fix-suggestions --fix-dangerously",
     "prepare": "vp config",
+    "release": "bumpp",
     "release:core": "pnpm --filter @maily-to/core release",
     "release:migration": "pnpm --filter @maily-to/migration release",
     "release:render": "pnpm --filter @maily-to/render release",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@oxlint/plugins": "catalog:",
     "@typescript/native-preview": "latest",
+    "bumpp": "catalog:",
     "typescript": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"

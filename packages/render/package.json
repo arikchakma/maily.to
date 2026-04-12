@@ -38,6 +38,7 @@
     "dev": "vp pack --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "prepublishOnly": "pnpm run build",
     "release": "bumpp",
     "test": "vp test run"
   },

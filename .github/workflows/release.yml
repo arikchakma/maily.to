@@ -29,24 +29,34 @@ jobs:
       - run: pnpm run --filter @maily-to/web typegen
       - run: pnpm run check
 
+      - name: Determine npm tag
+        id: npm-tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "tag=--tag beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish @maily-to/shared
-        run: pnpm publish --provenance --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/shared
 
       - name: Publish @maily-to/ui
-        run: pnpm publish --provenance --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/ui
 
       - name: Publish @maily-to/migration
-        run: pnpm publish --provenance --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/migration
 
       - name: Publish @maily-to/render
-        run: pnpm publish --provenance --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/render
 
       - name: Publish @maily-to/core
-        run: pnpm publish --provenance --access public --no-git-checks
+        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/core
 
       - name: Generate GitHub Changelog

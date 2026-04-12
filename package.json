@@ -11,7 +11,7 @@
     "lint": "vp lint",
     "lint:fix": "vp lint --fix --fix-suggestions --fix-dangerously",
     "prepare": "vp config",
-    "release": "bumpp",
+    "release": "bumpp packages/shared/package.json packages/ui/package.json packages/migration/package.json packages/render/package.json packages/core/package.json --commit 'release: v%s' --tag 'v%s' --all",
     "release:core": "pnpm --filter @maily-to/core release",
     "release:migration": "pnpm --filter @maily-to/migration release",
     "release:render": "pnpm --filter @maily-to/render release",

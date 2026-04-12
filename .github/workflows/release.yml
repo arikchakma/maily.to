@@ -22,11 +22,9 @@ jobs:
           cache: true
 
       - run: vp install
-
       - run: vp run build -r
-
+      - run: vp run @maily-to/web#typegen
       - run: vp check
-
       - run: vp test
         continue-on-error: true
 
@@ -36,17 +34,17 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @maily-to/ui
-        run: npm publish --access public --provenance
-        working-directory: packages/ui
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish @maily-to/ui
+      #   run: npm publish --access public --provenance
+      #   working-directory: packages/ui
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @maily-to/migration
-        run: npm publish --access public --provenance
-        working-directory: packages/migration
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish @maily-to/migration
+      #   run: npm publish --access public --provenance
+      #   working-directory: packages/migration
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @maily-to/render
         run: npm publish --access public --provenance

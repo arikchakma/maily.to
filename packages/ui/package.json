@@ -3,6 +3,12 @@
   "version": "2.0.0-beta.6",
   "private": false,
   "description": "UI components for Maily.",
+  "keywords": [
+    "email",
+    "maily.to",
+    "react",
+    "ui"
+  ],
   "author": "Arik Chakma <arikchangma@gmail.com>",
   "repository": {
     "type": "git",

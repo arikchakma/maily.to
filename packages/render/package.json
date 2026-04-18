@@ -5,6 +5,8 @@
   "description": "A transformer that converts Maily content into HTML email templates.",
   "keywords": [
     "email",
+    "email-render",
+    "html-email",
     "maily.to",
     "react"
   ],

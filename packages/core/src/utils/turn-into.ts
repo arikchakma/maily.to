@@ -19,9 +19,7 @@ type TurnIntoCategory = {
 export type TurnIntoItem = TurnIntoOption | TurnIntoCategory;
 export type TurnIntoItems = Array<TurnIntoItem>;
 
-export function isTurnIntoOption(
-  option: TurnIntoItem
-): option is TurnIntoOption {
+function isTurnIntoOption(option: TurnIntoItem): option is TurnIntoOption {
   return option.type === 'option';
 }
 

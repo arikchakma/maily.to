@@ -18,6 +18,7 @@ export * from './math';
 export * from './node';
 export * from './object';
 export * from './padding';
+export * from './prettify';
 export * from './promise';
 export * from './text-direction';
 export * from './theme';

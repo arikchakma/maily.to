@@ -170,10 +170,11 @@ Import pre-built blocks from `@maily-to/core/blocks`:
 Define a command with an `id` and a `commands` array to create nested menus. Typing `/headers.` will show the subcommands.
 
 ```tsx
+import { SlashCommandExtension } from '@maily-to/core/extensions';
+
 <Editor.Root
-  blocks={[
-    {
-      title: 'Formatting',
+  extensions={[
+    SlashCommandExtension.configure({
       commands: [
         {
           title: 'Headers',
@@ -194,9 +195,11 @@ Define a command with an `id` and a `commands` array to create nested menus. Typ
           ],
         },
       ],
-    },
+    }),
   ]}
-/>
+>
+  ...
+</Editor.Root>;
 ```
 
 > Currently supports one level of depth for subcommands.

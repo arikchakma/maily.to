@@ -6,7 +6,7 @@ type ToolbarDirectionProps = {
   className?: string;
 };
 
-export function ToolbarDirection(props: ToolbarDirectionProps) {
+export function ToolbarDirection(props: ToolbarDirection.Props) {
   const { className: _className } = props;
 
   const { container } = useToolbarContext();
@@ -19,4 +19,8 @@ export function ToolbarDirection(props: ToolbarDirectionProps) {
       onDirectionChange={setTextDirection}
     />
   );
+}
+
+export namespace ToolbarDirection {
+  export type Props = ToolbarDirectionProps;
 }

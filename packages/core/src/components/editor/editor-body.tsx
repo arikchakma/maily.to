@@ -11,7 +11,7 @@ type EditorBodyProps = {
   className?: string;
 };
 
-export function EditorBody(props: EditorBodyProps) {
+export function EditorBody(props: EditorBody.Props) {
   const { children, className } = props;
   const editor = useEditorInstance();
   const { theme } = useEditorRootContext();
@@ -34,4 +34,8 @@ export function EditorBody(props: EditorBodyProps) {
       {children}
     </div>
   );
+}
+
+export namespace EditorBody {
+  export type Props = EditorBodyProps;
 }

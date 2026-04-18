@@ -3,12 +3,13 @@ import {
   deepMerge,
   DEFAULT_EDITOR_THEME,
   DEFAULT_TEXT_DIRECTION,
+  invariant,
 } from '@maily-to/shared';
-import type { AnyExtension, JSONContent } from '@tiptap/core';
+import type { AnyExtension, Editor, JSONContent } from '@tiptap/core';
 import { NodeSelection } from '@tiptap/pm/state';
 import type { EditorEvents, UseEditorOptions } from '@tiptap/react';
 import { EditorContext as TiptapEditorContext } from '@tiptap/react';
-import { useMemo } from 'react';
+import { useImperativeHandle, useMemo } from 'react';
 
 import { useControllableState } from '~/hooks/use-controllable-state';
 import { useMailyEditor } from '~/hooks/use-maily-editor';
@@ -29,14 +30,29 @@ type EditorRootProps = {
 
   theme?: EditorThemeOptions;
 
+  ref?: React.Ref<EditorRootHandle>;
+
   children: React.ReactNode;
 } & Pick<
   UseEditorOptions,
   'immediatelyRender' | 'autofocus' | 'editable' | 'editorProps'
 >;
 
-export function EditorRoot(props: EditorRootProps) {
+/**
+ * Imperative handle exposed by `Editor.Root` via `ref`. `getEditorHTML`
+ * returns the ProseMirror-serialized HTML for the editor view — for
+ * email HTML output use `@maily-to/render` with `getJSON()`.
+ */
+type EditorRootHandle = {
+  getEditor: () => Editor;
+  getJSON: () => JSONContent;
+  getEditorHTML: () => string;
+  getText: () => string;
+};
+
+export function EditorRoot(props: EditorRoot.Props) {
   const {
+    ref,
     content,
     onUpdate,
     onCreate,
@@ -119,6 +135,41 @@ export function EditorRoot(props: EditorRootProps) {
     [textDirection, setTextDirection, theme]
   );
 
+  useImperativeHandle(
+    ref,
+    () => ({
+      getEditor: () => {
+        invariant(
+          editor,
+          'Editor.Root ref accessed before the editor was ready'
+        );
+        return editor;
+      },
+      getJSON: () => {
+        invariant(
+          editor,
+          'Editor.Root ref accessed before the editor was ready'
+        );
+        return editor.getJSON();
+      },
+      getEditorHTML: () => {
+        invariant(
+          editor,
+          'Editor.Root ref accessed before the editor was ready'
+        );
+        return editor.getHTML();
+      },
+      getText: () => {
+        invariant(
+          editor,
+          'Editor.Root ref accessed before the editor was ready'
+        );
+        return editor.getText();
+      },
+    }),
+    [editor]
+  );
+
   if (!editor) {
     return null;
   }
@@ -130,4 +181,9 @@ export function EditorRoot(props: EditorRootProps) {
       </EditorRootContext.Provider>
     </TiptapEditorContext.Provider>
   );
+}
+
+export namespace EditorRoot {
+  export type Props = EditorRootProps;
+  export type Handle = EditorRootHandle;
 }

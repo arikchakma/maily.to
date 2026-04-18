@@ -5,7 +5,7 @@ type ToolbarGroupProps = {
   className?: string;
 };
 
-export function ToolbarGroup(props: ToolbarGroupProps) {
+export function ToolbarGroup(props: ToolbarGroup.Props) {
   const { children, className } = props;
 
   return (
@@ -18,4 +18,8 @@ export function ToolbarGroup(props: ToolbarGroupProps) {
       {children}
     </div>
   );
+}
+
+export namespace ToolbarGroup {
+  export type Props = ToolbarGroupProps;
 }

@@ -12,7 +12,7 @@ type ToolbarAlignProps = {
   className?: string;
 };
 
-export function ToolbarAlign(props: ToolbarAlignProps) {
+export function ToolbarAlign(props: ToolbarAlign.Props) {
   const { className: _className } = props;
 
   const editor = useEditorInstance();
@@ -48,4 +48,8 @@ export function ToolbarAlign(props: ToolbarAlignProps) {
       onAlignChange={handleAlignChange}
     />
   );
+}
+
+export namespace ToolbarAlign {
+  export type Props = ToolbarAlignProps;
 }

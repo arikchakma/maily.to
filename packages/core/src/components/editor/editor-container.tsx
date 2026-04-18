@@ -5,7 +5,7 @@ type EditorContainerProps = {
   className?: string;
 };
 
-export function EditorContainer(props: EditorContainerProps) {
+export function EditorContainer(props: EditorContainer.Props) {
   const { children, className } = props;
 
   return (
@@ -23,4 +23,8 @@ export function EditorContainer(props: EditorContainerProps) {
       {children}
     </div>
   );
+}
+
+export namespace EditorContainer {
+  export type Props = EditorContainerProps;
 }

@@ -10,7 +10,7 @@ type ToolbarRootProps = {
   className?: string;
 };
 
-export function ToolbarRoot(props: ToolbarRootProps) {
+export function ToolbarRoot(props: ToolbarRoot.Props) {
   const { children, className } = props;
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -30,4 +30,8 @@ export function ToolbarRoot(props: ToolbarRootProps) {
       </TooltipProvider>
     </ToolbarContext>
   );
+}
+
+export namespace ToolbarRoot {
+  export type Props = ToolbarRootProps;
 }

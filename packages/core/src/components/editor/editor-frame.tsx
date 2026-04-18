@@ -6,7 +6,7 @@ type EditorFrameProps = {
   className?: string;
 };
 
-export function EditorFrame(props: EditorFrameProps) {
+export function EditorFrame(props: EditorFrame.Props) {
   const { children, className } = props;
 
   return (
@@ -14,4 +14,8 @@ export function EditorFrame(props: EditorFrameProps) {
       <EditorContainer>{children}</EditorContainer>
     </EditorBody>
   );
+}
+
+export namespace EditorFrame {
+  export type Props = EditorFrameProps;
 }

@@ -23,7 +23,7 @@ type ToolbarActionProps = {
   className?: string;
 };
 
-export function ToolbarUndo(props: ToolbarActionProps) {
+export function ToolbarUndo(props: ToolbarUndo.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -46,7 +46,7 @@ export function ToolbarUndo(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarRedo(props: ToolbarActionProps) {
+export function ToolbarRedo(props: ToolbarRedo.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -69,7 +69,7 @@ export function ToolbarRedo(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarBold(props: ToolbarActionProps) {
+export function ToolbarBold(props: ToolbarBold.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -92,7 +92,7 @@ export function ToolbarBold(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarItalic(props: ToolbarActionProps) {
+export function ToolbarItalic(props: ToolbarItalic.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -115,7 +115,7 @@ export function ToolbarItalic(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarUnderline(props: ToolbarActionProps) {
+export function ToolbarUnderline(props: ToolbarUnderline.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -138,7 +138,7 @@ export function ToolbarUnderline(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarStrikethrough(props: ToolbarActionProps) {
+export function ToolbarStrikethrough(props: ToolbarStrikethrough.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -161,7 +161,7 @@ export function ToolbarStrikethrough(props: ToolbarActionProps) {
   );
 }
 
-export function ToolbarCode(props: ToolbarActionProps) {
+export function ToolbarCode(props: ToolbarCode.Props) {
   const { className } = props;
   const editor = useEditorInstance();
   const { container } = useToolbarContext();
@@ -204,4 +204,26 @@ export function ToolbarCommonActions() {
       </Group>
     </>
   );
+}
+
+export namespace ToolbarUndo {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarRedo {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarBold {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarItalic {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarUnderline {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarStrikethrough {
+  export type Props = ToolbarActionProps;
+}
+export namespace ToolbarCode {
+  export type Props = ToolbarActionProps;
 }

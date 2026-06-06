@@ -8,7 +8,6 @@ export const useImageState = (editor: Editor) => {
     selector: ({ editor }) => {
       return {
         width: String(editor.getAttributes('image').width),
-        height: String(editor.getAttributes('image').height),
         isImageActive: editor.isActive('image'),
         isLogoActive: editor.isActive('logo'),
         alignment:
@@ -28,9 +27,6 @@ export const useImageState = (editor: Editor) => {
         imageExternalLink: editor.getAttributes('image')?.externalLink || '',
         isExternalLinkVariable:
           editor.getAttributes('image')?.isExternalLinkVariable,
-
-        lockAspectRatio: editor.getAttributes('image')?.lockAspectRatio,
-        aspectRatio: editor.getAttributes('image')?.aspectRatio,
 
         currentShowIfKey:
           editor.getAttributes('image')?.showIfKey ||

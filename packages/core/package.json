@@ -41,15 +41,7 @@
     "./style.css": "./dist/index.css"
   },
   "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
-      },
-      "./package.json": "./package.json",
-      "./style.css": "./dist/index.css"
-    }
+    "access": "public"
   },
   "scripts": {
     "build": "pnpm run clean && pnpm run build:style && pnpm run build:lib",

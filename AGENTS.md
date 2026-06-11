@@ -86,3 +86,32 @@ For GitHub Actions, consider using [`voidzero-dev/setup-vp`](https://github.com/
 - [ ] Run `vp install` after pulling remote changes and before getting started.
 - [ ] Run `vp check` and `vp test` to validate changes.
 <!--VITE PLUS END-->
+
+# Releasing
+
+Releases are tag-driven. Agents must never run release or publish commands (`pnpm release`, `bumpp`, `pnpm publish`) — the maintainer runs them.
+
+Five packages are published to npm: `@maily-to/shared`, `@maily-to/ui`, `@maily-to/migration`, `@maily-to/render`, and `@maily-to/core`. The `extension-*` packages are bundled into core and not published.
+
+## Flow
+
+1. `pnpm release` from the repo root — `bumpp` prompts for the next version, bumps the five package manifests, commits as `release: v%s`, tags `v%s`, and pushes the branch and tag.
+2. The tag push triggers `.github/workflows/release.yml`, which installs, builds, runs `pnpm run check`, and publishes each package with `pnpm publish --provenance`.
+3. Prerelease versions (containing `-`, e.g. `2.0.0-beta.7`) are published under the npm `beta` dist-tag automatically; stable versions go to `latest`.
+4. `changelogithub` generates the GitHub release changelog from conventional commits.
+
+Single-package releases exist as `pnpm release:core`, `release:ui`, etc., but the normal path is the root `pnpm release` which keeps all five versions in sync.
+
+## Packaging rules
+
+- Publishing must go through `pnpm publish` (the workflow does this) so `workspace:*` dependencies are rewritten to real versions.
+- Keep the export map in the top-level `exports` field only. Never add a `publishConfig.exports` override — pnpm substitutes it at publish time, and a stale copy shipped broken packages in `2.0.0-beta.6` (issue #236).
+- Build output is `dist/index.mjs` / `dist/index.cjs` (via `vp pack`); there is no `dist/index.js`. Export maps must reference the real filenames.
+
+## Verifying a release
+
+```bash
+npm view @maily-to/core@beta exports
+node -e "import('@maily-to/core')"
+node --input-type=module -e "import.meta.resolve('@maily-to/core/extensions')"
+```

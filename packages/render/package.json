@@ -1,69 +1,65 @@
 {
   "name": "@maily-to/render",
-  "version": "0.2.3",
+  "version": "2.0.0-beta.7",
   "private": false,
   "description": "A transformer that converts Maily content into HTML email templates.",
-  "sideEffects": false,
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**"
+  "keywords": [
+    "email",
+    "email-render",
+    "html-email",
+    "maily.to",
+    "react"
   ],
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
-    }
-  },
-  "scripts": {
-    "dev": "tsdown --watch",
-    "clean": "rm -rf dist",
-    "build": "tsdown",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test:watch": "vitest",
-    "test": "vitest run"
-  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arikchakma/maily.to.git",
     "directory": "packages/render"
   },
-  "author": "Arik Chakma <arikchangma@gmail.com>",
-  "keywords": [
-    "maily.to",
-    "react",
-    "email"
+  "files": [
+    "dist/**"
   ],
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "devDependencies": {
-    "@antfu/utils": "^9.2.0",
-    "@babel/preset-react": "^7.27.1",
-    "@maily-to/shared": "workspace:*",
-    "@tiptap/core": "^2.11.5",
-    "@types/react": "^19.1.10",
-    "tsconfig": "workspace:*",
-    "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "@react-email/components": "^0.5.1",
-    "@react-email/render": "^1.2.1",
-    "juice": "^11.0.1",
-    "node-html-parser": "^7.0.1"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0"
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "clean": "rm -rf dist",
+    "dev": "vp pack --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "release": "bumpp",
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@maily-to/migration": "workspace:*",
+    "@maily-to/shared": "workspace:*",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.6",
+    "juice": "^11.1.1",
+    "node-html-parser": "^7.1.0"
+  },
+  "devDependencies": {
+    "@maily-to/tsconfig": "workspace:*",
+    "@types/react": "catalog:",
+    "bumpp": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "catalog:",
+    "react": "catalog:"
   }
 }

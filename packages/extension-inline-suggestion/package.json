@@ -1,0 +1,53 @@
+{
+  "name": "@maily-to/extension-inline-suggestion",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Inline suggestion extension for Maily",
+  "keywords": [
+    "autocomplete",
+    "email",
+    "inline-suggestion",
+    "maily.to"
+  ],
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/extension-inline-suggestion"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "clean": "rm -rf dist",
+    "dev": "vp pack --watch"
+  },
+  "dependencies": {
+    "@maily-to/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@maily-to/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "catalog:",
+    "@tiptap/pm": "catalog:"
+  }
+}

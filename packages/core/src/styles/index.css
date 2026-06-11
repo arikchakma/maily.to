@@ -2,43 +2,20 @@
 
 @import 'tailwindcss/theme.css' layer(theme) prefix(mly);
 
-@plugin '@tailwindcss/typography';
-@plugin 'tailwind-scrollbar';
-@import 'tw-animate-css';
-
 #mly-editor {
   @import 'tailwindcss/preflight.css' layer(base) prefix(mly);
 }
 
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
-@import './_editor.css';
 
+@import './_editor.css';
+@import './_skeleton-editor.css';
 @theme {
   --color-soft-gray: #f4f5f6;
   --color-midnight-gray: #333333;
-}
+  --radius-bubble-button: 10px;
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
-
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
-    cursor: pointer;
-  }
+  --container-resizable-image: 150px;
 }
 
 /* Hide Number Count */
@@ -55,7 +32,7 @@
   }
 }
 
-@utility hide-scrollbars {
+@utility hide-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -64,12 +41,50 @@
   }
 }
 
-/* Chrome, Safari and Opera */
-@utility no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+@utility tiny-border {
+  box-shadow: var(--mly-tiny-border-left, 0) var(--mly-tiny-border-right, 0)
+    var(--mly-tiny-border-top, 0) var(--mly-tiny-border-bottom, 0)
+    var(--mly-tiny-border-color, rgba(0, 0, 0, 0.1));
+}
 
-  &::-webkit-scrollbar {
-    display: none;
+@utility tiny-border-b {
+  --mly-tiny-border-bottom: 1px;
+  --mly-tiny-border-color: color-mix(
+    in srgb,
+    var(--mly-color-gray-200) 70%,
+    transparent
+  );
+}
+
+@utility tiny-border-t {
+  --mly-tiny-border-bottom: 1px;
+  --mly-tiny-border-color: color-mix(
+    in srgb,
+    var(--mly-color-gray-200) 70%,
+    transparent
+  );
+}
+
+@utility dynamic-text-color {
+  /* This swaps between white or black based on the background color. */
+  /* After testing against all RGB background colors, 49.44 minimizes the number of WCAG 4.5:1 contrast failures. */
+  color: lch(
+    from var(--mly-dynamic-text-color-background) calc((49.44 - l) * infinity) 0
+      0
+  );
+}
+
+@utility node-highlight-border {
+  @apply mly:outline-2 mly:-outline-offset-2 mly:outline-rose-400;
+}
+
+@utility bubble-container-border {
+  @apply mly:border mly:border-gray-200/70;
+}
+
+body:has(#mly-unit-field[data-dragging='true']) {
+  @apply mly:cursor-ew-resize! mly:select-none!;
+  & * {
+    @apply mly:pointer-events-none! mly:cursor-ew-resize!;
   }
 }

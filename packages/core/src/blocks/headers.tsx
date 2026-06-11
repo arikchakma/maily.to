@@ -1,9 +1,11 @@
-import { LogoWithCoverImageIcon } from '@/editor/components/icons/logo-with-cover-image';
-import { BlockItem } from './types';
-import { LogoWithTextHorizonIcon } from '@/editor/components/icons/logo-with-text-horizon';
-import { LogoWithTextVerticalIcon } from '@/editor/components/icons/logo-with-text-vertical';
+import { TEXT_ALIGNMENTS } from '@maily-to/shared';
 
-export const headerLogoWithTextHorizontal: BlockItem = {
+import { LogoWithCoverImageIcon } from '~/components/icons/logo-with-cover-image';
+import { LogoWithTextHorizonIcon } from '~/components/icons/logo-with-text-horizon';
+import { LogoWithTextVerticalIcon } from '~/components/icons/logo-with-text-vertical';
+import type { SlashCommandItem } from '~/utils/slash-command';
+
+export const headerLogoWithTextHorizontal: SlashCommandItem = {
   title: 'Logo with Text (Horizontal)',
   description: 'Logo and a text horizontally',
   searchTerms: ['logo', 'text'],
@@ -14,7 +16,6 @@ export const headerLogoWithTextHorizontal: BlockItem = {
       .deleteRange(range)
       .insertContent({
         type: 'columns',
-        attrs: { showIfKey: null, gap: 8 },
         content: [
           {
             type: 'column',
@@ -32,11 +33,10 @@ export const headerLogoWithTextHorizontal: BlockItem = {
                   title: null,
                   width: '32',
                   height: '32',
-                  alignment: 'left',
+                  alignment: TEXT_ALIGNMENTS.LEFT,
                   externalLink: null,
                   isExternalLinkVariable: false,
                   isSrcVariable: false,
-                  showIfKey: null,
                 },
               },
             ],
@@ -52,9 +52,8 @@ export const headerLogoWithTextHorizontal: BlockItem = {
               {
                 type: 'heading',
                 attrs: {
-                  textAlign: 'right',
+                  textAlign: TEXT_ALIGNMENTS.RIGHT,
                   level: 3,
-                  showIfKey: null,
                 },
                 content: [
                   {
@@ -72,7 +71,7 @@ export const headerLogoWithTextHorizontal: BlockItem = {
   },
 };
 
-export const headerLogoWithTextVertical: BlockItem = {
+export const headerLogoWithTextVertical: SlashCommandItem = {
   title: 'Logo with Text (Vertical)',
   description: 'Logo and a text vertically',
   searchTerms: ['logo', 'text'],
@@ -90,17 +89,19 @@ export const headerLogoWithTextVertical: BlockItem = {
             title: null,
             width: '48',
             height: '48',
-            alignment: 'center',
+            alignment: TEXT_ALIGNMENTS.CENTER,
             externalLink: null,
             isExternalLinkVariable: false,
             isSrcVariable: false,
-            showIfKey: null,
           },
         },
-        { type: 'spacer', attrs: { height: 8, showIfKey: null } },
+        { type: 'spacer', attrs: { height: 8 } },
         {
           type: 'heading',
-          attrs: { textAlign: 'center', level: 2, showIfKey: null },
+          attrs: {
+            textAlign: TEXT_ALIGNMENTS.CENTER,
+            level: 2,
+          },
           content: [{ type: 'text', text: 'Maily' }],
         },
       ])
@@ -108,7 +109,7 @@ export const headerLogoWithTextVertical: BlockItem = {
   },
 };
 
-export const headerLogoWithCoverImage: BlockItem = {
+export const headerLogoWithCoverImage: SlashCommandItem = {
   title: 'Logo with Cover Image',
   description: 'Logo and a cover image',
   searchTerms: ['logo', 'cover', 'image'],
@@ -132,16 +133,14 @@ export const headerLogoWithCoverImage: BlockItem = {
             title: null,
             width: 600,
             height: 314,
-            alignment: 'center',
+            alignment: TEXT_ALIGNMENTS.CENTER,
             externalLink: null,
             isExternalLinkVariable: false,
             isSrcVariable: false,
-            showIfKey: null,
           },
         },
         {
           type: 'columns',
-          attrs: { showIfKey: null, gap: 8 },
           content: [
             {
               type: 'column',
@@ -159,11 +158,10 @@ export const headerLogoWithCoverImage: BlockItem = {
                     title: null,
                     width: '48',
                     height: '48',
-                    alignment: 'left',
+                    alignment: TEXT_ALIGNMENTS.LEFT,
                     externalLink: null,
                     isExternalLinkVariable: false,
                     isSrcVariable: false,
-                    showIfKey: null,
                   },
                 },
               ],
@@ -178,7 +176,7 @@ export const headerLogoWithCoverImage: BlockItem = {
               content: [
                 {
                   type: 'paragraph',
-                  attrs: { textAlign: 'right', showIfKey: null },
+                  attrs: { textAlign: TEXT_ALIGNMENTS.RIGHT },
                   content: [
                     {
                       type: 'text',

@@ -1,23 +1,22 @@
-import type { FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
+import { Editor } from '@maily-to/core';
+import type {
+  FocusPosition,
+  JSONContent,
+  Editor as TiptapEditor,
+} from '@tiptap/core';
 import { Loader2Icon } from 'lucide-react';
-import { lazy, Suspense, useState } from 'react';
-import { cn } from '~/lib/classname';
-import type { Database } from '~/types/database';
+import { useState } from 'react';
 
-const Editor = lazy(() =>
-  import('@maily-to/core').then((module) => ({
-    default: module.Editor,
-  }))
-);
+import { cn } from '~/lib/classname';
 
 type EmailEditorProps = {
-  defaultContent: Database['public']['Tables']['mails']['Row']['content'];
+  defaultContent?: JSONContent;
   setEditor: (editor: TiptapEditor) => void;
   autofocus?: FocusPosition;
 };
 
 export function EmailEditor(props: EmailEditorProps) {
-  const { defaultContent, setEditor, autofocus } = props;
+  const { defaultContent, setEditor } = props;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,30 +28,19 @@ export function EmailEditor(props: EmailEditorProps) {
         </div>
       )}
 
-      <Suspense>
-        <Editor
-          config={{
-            hasMenuBar: false,
-            wrapClassName: cn('editor-wrap', isLoading && 'hidden'),
-            bodyClassName: '!mt-0 !border-0 !p-0',
-            contentClassName: `editor-content mx-auto max-w-[calc(600px+80px)]! px-10! pb-10!`,
-            toolbarClassName: 'flex-wrap !items-start',
-            spellCheck: false,
-            autofocus,
-            immediatelyRender: false,
-          }}
-          contentJson={
-            defaultContent ? JSON.parse(defaultContent as string) : null
-          }
-          onCreate={(editor) => {
-            setIsLoading(false);
-            setEditor(editor);
-          }}
-          onUpdate={(editor) => {
-            setEditor(editor);
-          }}
-        />
-      </Suspense>
+      <Editor.Root
+        content={defaultContent}
+        immediatelyRender={false}
+        autofocus={false}
+        onCreate={({ editor }) => {
+          setIsLoading(false);
+          setEditor(editor);
+        }}
+      >
+        <Editor.Frame className={cn(isLoading && 'hidden')}>
+          <Editor.Content />
+        </Editor.Frame>
+      </Editor.Root>
     </>
   );
 }

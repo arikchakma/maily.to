@@ -1,3 +1,6 @@
-export * from './maily';
+export * from './context';
+export * from './lib/link';
+export * from './node';
 export * from './render';
-export type { JSONContent } from '@tiptap/core';
+export * from './config';
+export type { MetaDescriptor } from './lib/meta';

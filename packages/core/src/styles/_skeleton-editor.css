@@ -1,0 +1,16 @@
+#mly-editor {
+  #mly-skeleton-editor {
+    --placeholder-color: #9ca3af;
+    :where(.is-editor-empty:first-child, .is-empty)::before {
+      @apply mly:pointer-events-none mly:float-left mly:h-0 mly:text-(--placeholder-color) mly:content-[attr(data-placeholder)];
+    }
+
+    p * {
+      @apply mly:inline mly:whitespace-nowrap!;
+    }
+
+    p br {
+      @apply mly:sr-only!;
+    }
+  }
+}

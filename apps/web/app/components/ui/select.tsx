@@ -1,5 +1,7 @@
+import { ChevronDownIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useId } from 'react';
-import { ChevronDownIcon, type LucideIcon } from 'lucide-react';
+
 import { cn } from '~/lib/classname';
 
 type SelectProps = {

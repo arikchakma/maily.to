@@ -1,0 +1,13 @@
+:where(.is-editor-empty:first-child, .is-empty):not(
+    :where([data-node-type='columns'], [data-node-type='section'], ul, li, ol)
+  )::before {
+  @apply mly:pointer-events-none mly:float-start mly:h-0 mly:text-gray-400 mly:content-[attr(data-placeholder)];
+}
+
+[data-inline-suggestion]::after {
+  @apply mly:pointer-events-none mly:content-[attr(data-inline-suggestion)] mly:text-gray-400;
+}
+
+[data-node-type='columns'] .is-empty::before {
+  @apply mly:whitespace-nowrap!;
+}

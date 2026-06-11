@@ -16,7 +16,7 @@
 
 <br>
 
-## Install
+### Install
 
 Install `@maily-to/render` from your command line.
 
@@ -26,9 +26,9 @@ pnpm add @maily-to/render
 
 <br>
 
-## Getting started
+### Getting started
 
-Convert React components into a HTML string.
+Convert Maily editor JSON into an HTML string.
 
 ```ts
 import { render } from '@maily-to/render';
@@ -49,69 +49,33 @@ const html = await render({
 });
 ```
 
-### Variables
+#### Variables
 
-You can replace variables in the content.
-
-```ts
-import { Maily } from '@maily-to/render';
-
-const maily = new Maily({
-  type: 'doc',
-  content: [
-    {
-      type: 'paragraph',
-      attrs: { textAlign: 'left' },
-      content: [
-        {
-          type: 'variable',
-          attrs: {
-            id: 'currentDate',
-            fallback: 'now',
-            showIfKey: null,
-          },
-        },
-      ],
-    },
-  ],
-});
-
-maily.setVariableValue('currentDate', new Date().toISOString());
-const html = await maily.render();
-```
-
-### Payloads
-
-Payload values are used for the `Repeat` and `Show If` blocks.
+All user-provided data lives under a single `variables` key — string substitution, visibility checks, repeat arrays, and link overrides.
 
 ```ts
-// (Omitted repeated imports)
+import { render } from '@maily-to/render';
 
-const maily = new Maily({
-  type: 'doc',
-  content: [
-    {
-      type: 'repeat',
-      attrs: { each: 'items', showIfKey: null },
-      content: [
-        {
-          type: 'paragraph',
-          attrs: { textAlign: 'left' },
-          content: [{ type: 'text', text: 'Hello' }],
-        },
-      ],
-    },
-  ],
+const html = await render(doc, {
+  variables: {
+    name: 'Alice', // string → variable substitution
+    active: true, // boolean → visibility rules
+    items: [{ id: 1 }], // array → repeat iteration
+    cta: 'https://example.com', // string → link href override
+  },
 });
-
-maily.setPayloadValue('items', ['Alice', 'Bob', 'Charlie']);
-const html = await maily.render();
 ```
 
-## Contributions
+Variable resolution follows a 3-stage priority chain:
+
+1. `item` — per-iteration data set by repeat nodes
+2. `variables` — the map above
+3. `variableFormatter` — fallback that produces a placeholder string
+
+### Contributions
 
 Feel free to submit pull requests, create issues, or spread the word.
 
-## License
+### License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+MIT &copy; [Arik Chakma](https://x.com/imarikchakma)

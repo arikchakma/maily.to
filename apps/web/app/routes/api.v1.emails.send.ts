@@ -1,10 +1,12 @@
-import { z } from 'zod';
-import type { Route } from './+types/api.v1.emails.preview';
-import { serializeZodError } from '~/lib/errors';
-import { apiConfigCookie } from '~/lib/api-config.server';
-import { json } from '~/lib/response';
 import { render } from '@maily-to/render';
 import { Resend } from 'resend';
+import { z } from 'zod';
+
+import { apiConfigCookie } from '~/lib/api-config.server';
+import { serializeZodError } from '~/lib/errors';
+import { json } from '~/lib/response';
+
+import type { Route } from './+types/api.v1.emails.send';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;

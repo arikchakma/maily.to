@@ -1,0 +1,9 @@
+:where(code):not(
+  :where(
+    [class~='not-prose'],
+    [class~='not-prose'] *,
+    [data-node-type='htmlCodeBlock'] *
+  )
+) {
+  @apply mly:rounded-lg mly:bg-(--mly-code-background-color) mly:px-(--mly-code-padding-x) mly:py-0.5 mly:text-[85%];
+}

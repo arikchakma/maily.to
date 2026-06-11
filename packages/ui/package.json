@@ -1,0 +1,62 @@
+{
+  "name": "@maily-to/ui",
+  "version": "2.0.0-beta.7",
+  "private": false,
+  "description": "UI components for Maily.",
+  "keywords": [
+    "email",
+    "maily.to",
+    "react",
+    "ui"
+  ],
+  "author": "Arik Chakma <arikchangma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arikchakma/maily.to.git",
+    "directory": "packages/ui"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "clean": "rm -rf dist",
+    "dev": "vp pack --watch",
+    "release": "bumpp"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.0.0",
+    "@base-ui/utils": "0.2.3",
+    "@maily-to/shared": "workspace:*",
+    "@vitejs/plugin-react": "^6.0.1",
+    "cromia": "^0.0.1",
+    "unit-field": "^0.0.1"
+  },
+  "devDependencies": {
+    "@maily-to/tsconfig": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:",
+    "@types/react": "catalog:",
+    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "bumpp": "catalog:",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  }
+}

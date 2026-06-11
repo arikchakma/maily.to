@@ -1,0 +1,25 @@
+[data-node-type='section'] {
+  @apply mly:m-0 mly:p-0;
+
+  [data-node-type='section-cell'] {
+    @apply mly:p-0;
+
+    & > *:first-child {
+      @apply mly:mt-0;
+    }
+
+    & > *:last-child {
+      @apply mly:mb-0;
+    }
+  }
+}
+
+[data-node-type='section'] .is-empty::before {
+  --l-threshold: 0.66;
+  --diff: calc(var(--l-threshold) - l);
+  color: oklch(
+    from var(--bg-color)
+      clamp(0.05, max(min(var(--diff) * infinity, 1), 0), 0.95) c h
+  ) !important;
+  opacity: 0.6;
+}

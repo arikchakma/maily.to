@@ -1,82 +1,43 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { Editor, FocusPosition } from '@tiptap/core';
-import {
-  FileCogIcon,
-  Loader2Icon,
-  SaveIcon,
-  XIcon,
-  AsteriskIcon,
-} from 'lucide-react';
+import { AsteriskIcon, Loader2Icon, LogInIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate, useRevalidator } from 'react-router';
+import { Link } from 'react-router';
 import { toast } from 'sonner';
-import { cn } from '~/lib/classname';
+
+import { Icons } from '~/components/icons';
+import defaultEmailJSON from '~/lib/default-editor-json.json';
 import { FetchError, httpPost } from '~/lib/http';
-import type { Database } from '~/types/database';
+
+import {
+  ApiKeyConfigDialog,
+  apiKeyQueryOptions,
+} from './api-key-config-dialog';
+import { Container } from './container';
 import { CopyEmailHtml } from './copy-email-html';
-import { DeleteEmailDialog } from './delete-email-dialog';
 import { EmailEditor } from './email-editor';
 import { PreviewEmailDialog } from './preview-email-dialog';
 import { PreviewTextInfo } from './preview-text-info';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import defaultEmailJSON from '~/lib/default-editor-json.json';
-import {
-  ApiKeyConfigDialog,
-  apiKeyQueryOptions,
-} from './api-key-config-dialog';
-
-type UpdateTemplateData = {
-  title: string;
-  previewText: string;
-  content: string;
-};
-
-type SaveTemplateResponse = {
-  template: Database['public']['Tables']['mails']['Row'];
-};
 
 type EmailEditorSandboxProps = {
-  template?: Database['public']['Tables']['mails']['Row'];
-  showSaveButton?: boolean;
   autofocus?: FocusPosition;
 };
 
 export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
-  const { template, showSaveButton = true, autofocus } = props;
+  const { autofocus } = props;
 
-  const navigate = useNavigate();
-  const revalidator = useRevalidator();
   const { data: apiKeyConfig } = useQuery(apiKeyQueryOptions());
 
-  const [subject, setSubject] = useState(template?.title || '');
-  const [previewText, setPreviewText] = useState(template?.preview_text || '');
+  const [subject, setSubject] = useState('');
+  const [previewText, setPreviewText] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
 
   const [showReplyTo, setShowReplyTo] = useState(false);
   const [replyTo, setReplyTo] = useState('');
   const [editor, setEditor] = useState<Editor | null>(null);
-
-  const { mutateAsync: updateTemplate, isPending: isUpdateTemplatePending } =
-    useMutation({
-      mutationFn: (data: UpdateTemplateData) => {
-        return httpPost(`/api/v1/templates/${template?.id}`, data);
-      },
-      onSettled: () => {
-        revalidator.revalidate();
-      },
-    });
-
-  const { mutateAsync: saveTemplate, isPending: isSaveTemplatePending } =
-    useMutation({
-      mutationFn: (data: UpdateTemplateData) => {
-        return httpPost<SaveTemplateResponse>(`/api/v1/templates`, data);
-      },
-      onSuccess: (data) => {
-        navigate(`/templates/${data.template.id}`);
-      },
-    });
 
   const { mutateAsync: sendTestEmail, isPending: isSendTestEmailPending } =
     useMutation({
@@ -99,132 +60,71 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
 
   return (
     <>
-      <div className="max-w-[calc(600px+80px)]! mx-auto mb-8 flex items-center justify-between gap-1.5 px-10 pt-5">
-        <div className="flex items-center gap-1.5">
-          <ApiKeyConfigDialog
-            apiKey={apiKeyConfig?.apiKey}
-            provider={apiKeyConfig?.provider}
-          />
-          <PreviewEmailDialog
-            subject={subject}
-            previewText={previewText}
-            editor={editor}
-          />
-          <CopyEmailHtml previewText={previewText} editor={editor} />
-          <button
-            className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            type="submit"
-            disabled={isSendTestEmailPending}
-            onClick={() => {
-              toast.promise(sendTestEmail(), {
-                loading: 'Sending Test Email...',
-                success: 'Test Email has been sent',
-                error: (err) => err?.message || 'Failed to send test email',
-              });
-            }}
+      <header className="py-5">
+        <Container className="flex items-center justify-between">
+          <Link className="text-xl font-semibold tracking-tight" to="/">
+            maily.to
+          </Link>
+
+          <a
+            className="text-zinc-300 transition-colors hover:text-black"
+            href="https://github.com/arikchakma/maily.to"
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            {isSendTestEmailPending ? (
-              <Loader2Icon className="mr-1 inline-block size-4 animate-spin" />
-            ) : (
-              <AsteriskIcon className="mr-1 inline-block size-4" />
-            )}
-            Send Email
-          </button>
-        </div>
+            <Icons.github className="size-6" aria-hidden="true" />
+            <span className="sr-only">GitHub</span>
+          </a>
+        </Container>
+      </header>
 
-        {!template?.id && showSaveButton && (
-          <button
-            className={cn(
-              'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7'
-            )}
-            disabled={isSaveTemplatePending}
-            onClick={() => {
-              const json = editor?.getJSON();
+      <Container className="mb-6 border-b border-zinc-200 py-6">
+        <p className="text-lg text-balance">
+          You can create an account to save email templates as well. It&apos;s
+          free and easy to use.
+        </p>
+        <a
+          className="mt-4 inline-flex items-center gap-1.5 border border-black bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-black hover:text-white"
+          href="/login"
+        >
+          <LogInIcon className="size-4" aria-hidden="true" />
+          Login / Register
+        </a>
+      </Container>
 
-              const trimmedSubject = subject.trim();
-              const trimmedPreviewText = previewText.trim();
-              if (!trimmedSubject || !json) {
-                toast.error('Subject, Preview Text and Content are required');
-                return;
-              }
+      <Container className="mb-5 flex items-center gap-1.5">
+        <ApiKeyConfigDialog
+          apiKey={apiKeyConfig?.apiKey}
+          provider={apiKeyConfig?.provider}
+        />
+        <PreviewEmailDialog
+          subject={subject}
+          previewText={previewText}
+          editor={editor}
+        />
+        <CopyEmailHtml previewText={previewText} editor={editor} />
+        <button
+          className="flex items-center border border-black bg-white px-2 py-1 text-sm text-black transition-colors hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+          type="button"
+          disabled={isSendTestEmailPending}
+          onClick={() => {
+            toast.promise(sendTestEmail(), {
+              loading: 'Sending Test Email...',
+              success: 'Test Email has been sent',
+              error: (err) => err?.message || 'Failed to send test email',
+            });
+          }}
+        >
+          {isSendTestEmailPending ? (
+            <Loader2Icon className="mr-1 inline-block size-4 animate-spin" />
+          ) : (
+            <AsteriskIcon className="mr-1 inline-block size-4" />
+          )}
+          Send Email
+        </button>
+      </Container>
 
-              if (trimmedSubject.length < 3) {
-                toast.error('Subject must be at least 3 characters');
-                return;
-              }
-
-              toast.promise(
-                saveTemplate({
-                  title: trimmedSubject,
-                  previewText: trimmedPreviewText,
-                  content: JSON.stringify(json),
-                }),
-                {
-                  loading: 'Saving Template...',
-                  success: 'Template has been saved',
-                  error: (err) => err?.message || 'Failed to save email',
-                }
-              );
-            }}
-          >
-            {isSaveTemplatePending ? (
-              <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
-            ) : (
-              <SaveIcon className="inline-block size-4 shrink-0 lg:mr-1" />
-            )}
-            <span className="hidden lg:inline-block">Save</span>
-          </button>
-        )}
-
-        {template?.id && (
-          <div className="flex items-center gap-1.5">
-            <DeleteEmailDialog templateId={template.id} />
-            <button
-              className={cn(
-                'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7'
-              )}
-              disabled={isUpdateTemplatePending}
-              onClick={() => {
-                const json = editor?.getJSON();
-
-                const trimmedSubject = subject.trim();
-                const trimmedPreviewText = previewText.trim();
-                if (!trimmedSubject || !json) {
-                  toast.error('Subject, Preview Text and Content are required');
-                  return;
-                }
-
-                if (trimmedSubject.length < 3) {
-                  toast.error('Subject must be at least 3 characters');
-                  return;
-                }
-
-                toast.promise(
-                  updateTemplate({
-                    title: trimmedSubject,
-                    previewText: trimmedPreviewText,
-                    content: JSON.stringify(json),
-                  }),
-                  {
-                    loading: 'Updating Template...',
-                    success: 'Template has been updated',
-                    error: (err) => err?.message || 'Failed to update email',
-                  }
-                );
-              }}
-            >
-              {isUpdateTemplatePending ? (
-                <Loader2Icon className="inline-block size-4 shrink-0 animate-spin lg:mr-1" />
-              ) : (
-                <FileCogIcon className="inline-block size-4 shrink-0 lg:mr-1" />
-              )}
-              <span className="hidden lg:inline-block">Update</span>
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="max-w-[calc(600px+80px)]! mx-auto px-10">
+      <Container>
         <Label className="flex items-center font-normal">
           <span className="w-20 shrink-0 font-normal text-gray-600 after:ml-0.5 after:text-red-400 after:content-['*']">
             Subject
@@ -278,6 +178,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
                 onChange={(event) => setReplyTo(event.target.value)}
               />
               <button
+                aria-label="Remove reply-to"
                 className="flex h-10 shrink-0 items-center bg-transparent px-1 text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 onClick={() => {
@@ -285,7 +186,7 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
                   setShowReplyTo(false);
                 }}
               >
-                <XIcon className="inline-block size-4" />
+                <XIcon className="inline-block size-4" aria-hidden="true" />
               </button>
             </div>
           </Label>
@@ -310,14 +211,14 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             value={previewText}
             onChange={(event) => setPreviewText(event.target.value)}
           />
-          <span className="absolute right-0 top-0 flex h-full items-center">
+          <span className="absolute top-0 right-0 flex h-full items-center">
             <PreviewTextInfo />
           </span>
         </div>
-      </div>
+      </Container>
 
       <EmailEditor
-        defaultContent={template?.content || JSON.stringify(defaultEmailJSON)}
+        defaultContent={defaultEmailJSON}
         setEditor={setEditor}
         autofocus={autofocus}
       />

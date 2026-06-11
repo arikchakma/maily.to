@@ -1,3 +1,4 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
   isRouteErrorResponse,
   Links,
@@ -6,15 +7,14 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router';
+import { Toaster } from 'sonner';
 
 import type { Route } from './+types/root';
-import '@maily-to/core/style.css';
-import stylesheet from './app.css?url';
-import { Toaster } from 'sonner';
-import { NavigationLoadingBar } from './components/navigation-loader';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from './lib/query-client';
 import { GoogleAnalytics } from './components/google-analytics';
+import { NavigationLoadingBar } from './components/navigation-loader';
+import { queryClient } from './lib/query-client';
+
+import stylesheet from './app.css?url';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -25,7 +25,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+    href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
   { rel: 'stylesheet', href: stylesheet },
   {
@@ -58,20 +58,20 @@ export const meta: Route.MetaFunction = () => [
       'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
   },
   { name: 'twitter:image', content: 'https://maily.to/og-image.png' },
-  { name: 'og:site_name', content: 'Maily' },
+  { property: 'og:site_name', content: 'Maily' },
   {
-    name: 'og:title',
+    property: 'og:title',
     content: 'Maily - Open-source editor for crafting emails',
   },
   {
-    name: 'og:description',
+    property: 'og:description',
     content:
       'Craft beautiful emails effortlessly with Maily, the powerful email editor that ensures impeccable communication across all major clients.',
   },
-  { name: 'og:image', content: 'https://maily.to/og-image.png' },
-  { name: 'og:image:width', content: '1200' },
-  { name: 'og:image:height', content: '630' },
-  { name: 'og:image:alt', content: 'Maily Preview' },
+  { property: 'og:image', content: 'https://maily.to/og-image.png' },
+  { property: 'og:image:width', content: '1200' },
+  { property: 'og:image:height', content: '630' },
+  { property: 'og:image:alt', content: 'Maily Preview' },
   { name: 'theme-color', content: '#ffffff' },
   // Indexing
   { name: 'robots', content: 'index, follow' },
@@ -82,17 +82,19 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+type LayoutProps = { children: React.ReactNode };
+
+export function Layout(props: LayoutProps) {
+  const { children } = props;
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <GoogleAnalytics />
-
         <Meta />
         <Links />
+        <GoogleAnalytics />
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
@@ -113,7 +115,8 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary(props: Route.ErrorBoundaryProps) {
+  const { error } = props;
   let message = 'Oops!';
   let details = 'An unexpected error occurred.';
   let stack: string | undefined;

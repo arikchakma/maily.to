@@ -1,7 +1,10 @@
-import { useEffect, type RefObject, useRef } from 'react';
 import { MailOpenIcon } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import type { RefObject } from 'react';
 import { toast } from 'sonner';
+
 import { cn } from '~/lib/classname';
+
 import { Button } from './ui/button';
 
 type EmailPreviewIFrameProps = {
@@ -58,7 +61,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
     }
 
     renderHTMLToIFrame(iframeRef, innerHTML);
-  }, [innerHTML, iframeRef, isServer]);
+  }, [innerHTML, isServer]);
 
   function handleOpen() {
     if (innerHTML.trim().length === 0) {
@@ -84,6 +87,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
     <div className={cn('relative', wrapperClassName)}>
       <iframe
         title="Email preview"
+        sandbox="allow-same-origin"
         {...defaultProps}
         onLoad={() => {
           if (isServer) {
@@ -98,7 +102,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
 
       {showOpenInNewTab ? (
         <Button
-          className="absolute bottom-0 right-0 h-8 cursor-pointer gap-1.5 rounded-none rounded-tl-md border-l border-t border-gray-200 text-sm font-normal hover:bg-gray-50"
+          className="absolute right-0 bottom-0 h-8 cursor-pointer gap-1.5 rounded-none rounded-tl-md border-t border-l border-gray-200 text-sm font-normal hover:bg-gray-50"
           onClick={handleOpen}
           type="button"
           variant="secondary"

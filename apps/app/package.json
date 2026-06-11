@@ -1,0 +1,48 @@
+{
+  "name": "@maily-to/app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b && vp build",
+    "clean": "rm -rf dist",
+    "dev": "vp dev",
+    "preview": "vp preview"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.0.0",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/language": "^6.12.3",
+    "@lezer/highlight": "^1.2.3",
+    "@maily-to/core": "workspace:*",
+    "@maily-to/migration": "workspace:*",
+    "@maily-to/render": "workspace:*",
+    "@maily-to/shared": "workspace:*",
+    "@maily-to/ui": "workspace:*",
+    "@pierre/diffs": "^1.1.13",
+    "@tiptap/react": "catalog:",
+    "@uiw/react-codemirror": "^4.25.9",
+    "acorn": "^8.16.0",
+    "acorn-jsx": "^5.3.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.8.0",
+    "prettier": "^3.8.2",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-element-to-jsx-string": "^17.0.1",
+    "react-router": "^7.14.0",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.1",
+    "globals": "^17.4.0",
+    "shiki": "^4.0.2",
+    "tailwindcss": "^4.2.2",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

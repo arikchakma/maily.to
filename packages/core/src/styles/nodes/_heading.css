@@ -1,0 +1,15 @@
+:where(h1, h2, h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  --mly-code-padding-x: 10px;
+
+  @apply mly:relative mly:mt-0 mly:mb-3 mly:text-(--mly-heading-color);
+
+  &:is(h1) {
+    @apply mly:text-[36px] mly:leading-[1.1111111] mly:font-extrabold;
+  }
+  &:is(h2) {
+    @apply mly:text-[30px] mly:leading-[1.3333333] mly:font-bold;
+  }
+  &:is(h3) {
+    @apply mly:text-[24px] mly:leading-[1.6] mly:font-semibold;
+  }
+}

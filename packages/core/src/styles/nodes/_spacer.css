@@ -1,0 +1,18 @@
+:where([data-node-type='spacer']):not(
+  :where([class~='not-prose'], [class~='not-prose'] *)
+) {
+  @apply mly:relative mly:z-10 mly:w-full;
+}
+
+:where([data-node-type='spacer'])
+  + *:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  @apply mly:mt-0!;
+}
+
+*:has(
+  + :where([data-node-type='spacer']):not(
+      :where([class~='not-prose'], [class~='not-prose'] *)
+    )
+) {
+  @apply mly:mb-0!;
+}

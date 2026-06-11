@@ -16,7 +16,7 @@
 
 <br>
 
-## Install
+### Install
 
 Install `@maily-to/shared` from your command line.
 
@@ -24,10 +24,10 @@ Install `@maily-to/shared` from your command line.
 pnpm add @maily-to/shared
 ```
 
-## Contributions
+### Contributions
 
 Feel free to submit pull requests, create issues, or spread the word.
 
-## License
+### License
 
-MIT &copy; [Arik Chakma](https://twitter.com/imarikchakma)
+MIT &copy; [Arik Chakma](https://x.com/imarikchakma)

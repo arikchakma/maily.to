@@ -177,9 +177,9 @@ export function resolveSitemap(data: SitemapFile): string {
           video.tag && `<video:tag>${video.tag}</video:tag>`,
           video.rating && `<video:rating>${video.rating}</video:rating>`,
           video.expiration_date &&
-            `<video:expiration_date>${video.expiration_date}</video:expiration_date>`,
+            `<video:expiration_date>${video.expiration_date instanceof Date ? video.expiration_date.toISOString() : video.expiration_date}</video:expiration_date>`,
           video.publication_date &&
-            `<video:publication_date>${video.publication_date}</video:publication_date>`,
+            `<video:publication_date>${video.publication_date instanceof Date ? video.publication_date.toISOString() : video.publication_date}</video:publication_date>`,
           video.family_friendly &&
             `<video:family_friendly>${video.family_friendly}</video:family_friendly>`,
           video.requires_subscription &&

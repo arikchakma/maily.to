@@ -1,0 +1,5 @@
+:where([data-node-type='linkCard']):not(
+  :where([class~='not-prose'], [class~='not-prose'] *)
+) {
+  @apply mly:mb-5;
+}

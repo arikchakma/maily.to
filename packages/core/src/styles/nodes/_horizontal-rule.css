@@ -1,0 +1,9 @@
+:where([data-node-type='horizontalRule']):not(
+  :where([class~='not-prose'], [class~='not-prose'] *)
+) {
+  @apply mly:relative mly:my-8 mly:cursor-default;
+
+  hr {
+    @apply mly:border-t mly:border-(--mly-horizontal-rule-color);
+  }
+}

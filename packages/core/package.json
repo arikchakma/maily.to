@@ -1,203 +1,130 @@
 {
   "name": "@maily-to/core",
-  "type": "module",
-  "version": "0.3.7",
-  "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
+  "version": "2.0.0-beta.7",
   "private": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**"
+  "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
+  "keywords": [
+    "email",
+    "email-editor",
+    "maily.to",
+    "react",
+    "tiptap"
   ],
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "node": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.mjs"
-        },
-        "require": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.cjs"
-        }
-      },
-      "browser": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.mjs"
-        },
-        "require": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.cjs"
-        }
-      },
-      "default": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.mjs"
-        },
-        "require": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/index.cjs"
-        }
-      }
-    },
-    "./blocks": {
-      "node": {
-        "import": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.mjs"
-        },
-        "require": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.cjs"
-        }
-      },
-      "browser": {
-        "import": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.mjs"
-        },
-        "require": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.cjs"
-        }
-      },
-      "default": {
-        "import": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.mjs"
-        },
-        "require": {
-          "types": "./dist/blocks/index.d.ts",
-          "default": "./dist/blocks/index.cjs"
-        }
-      }
-    },
-    "./extensions": {
-      "node": {
-        "import": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.mjs"
-        },
-        "require": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.cjs"
-        }
-      },
-      "browser": {
-        "import": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.mjs"
-        },
-        "require": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.cjs"
-        }
-      },
-      "default": {
-        "import": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.mjs"
-        },
-        "require": {
-          "types": "./dist/extensions/index.d.ts",
-          "default": "./dist/extensions/index.cjs"
-        }
-      }
-    },
-    "./style.css": "./dist/index.css"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ],
-      "blocks": [
-        "dist/blocks/index.d.ts"
-      ],
-      "extensions": [
-        "dist/extensions/index.d.ts"
-      ]
-    }
-  },
-  "scripts": {
-    "dev": "tsup --watch",
-    "clean": "rm -rf dist",
-    "build": "tsup"
-  },
+  "author": "Arik Chakma <arikchangma@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arikchakma/maily.to.git",
     "directory": "packages/core"
   },
-  "author": "Arik Chakma <arikchangma@gmail.com>",
-  "keywords": [
-    "tiptap",
-    "wysiwyg",
-    "maily.to",
-    "editor",
-    "react",
-    "email"
+  "files": [
+    "dist/**"
   ],
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "dependencies": {
-    "@radix-ui/react-dropdown-menu": "^2.1.6",
-    "@radix-ui/react-popover": "^1.1.6",
-    "@radix-ui/react-slot": "^1.1.2",
-    "@radix-ui/react-tooltip": "^1.1.8",
-    "@tailwindcss/postcss": "^4.1.8",
-    "@tiptap/core": "^2.11.5",
-    "@tiptap/extension-code-block-lowlight": "^2.11.5",
-    "@tiptap/extension-color": "^2.11.5",
-    "@tiptap/extension-document": "^2.11.5",
-    "@tiptap/extension-dropcursor": "^2.11.5",
-    "@tiptap/extension-focus": "^2.11.5",
-    "@tiptap/extension-heading": "^2.11.5",
-    "@tiptap/extension-horizontal-rule": "^2.11.5",
-    "@tiptap/extension-image": "^2.11.5",
-    "@tiptap/extension-link": "^2.11.5",
-    "@tiptap/extension-list-item": "^2.11.5",
-    "@tiptap/extension-mention": "^2.11.5",
-    "@tiptap/extension-paragraph": "^2.11.5",
-    "@tiptap/extension-placeholder": "^2.11.5",
-    "@tiptap/extension-text-align": "^2.11.5",
-    "@tiptap/extension-text-style": "^2.11.5",
-    "@tiptap/extension-underline": "^2.11.5",
-    "@tiptap/pm": "^2.11.5",
-    "@tiptap/react": "^2.11.5",
-    "@tiptap/starter-kit": "^2.11.5",
-    "@tiptap/suggestion": "^2.11.5",
-    "clsx": "^2.1.1",
-    "fast-deep-equal": "^3.1.3",
-    "highlight.js": "^11.11.1",
-    "lowlight": "^3.3.0",
-    "lucide-react": "^0.483.0",
-    "react-colorful": "^5.6.1",
-    "tailwindcss": "^4.1.8",
-    "tippy.js": "^6.3.7",
-    "uuid": "^11.1.0",
-    "y-prosemirror": "^1.3.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/typography": "^0.5.16",
-    "@types/react": "^18.3.18",
-    "postcss": "^8.5.3",
-    "postcss-replace": "^2.0.1",
-    "tailwind-merge": "^3.3.0",
-    "tailwind-scrollbar": "^4.0.2",
-    "tsconfig": "workspace:*",
-    "tw-animate-css": "^1.3.6",
-    "typescript": "^5.8.2"
-  },
-  "peerDependencies": {
-    "react": "^18 || ^19"
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./blocks": {
+      "import": "./dist/blocks/index.mjs",
+      "require": "./dist/blocks/index.cjs"
+    },
+    "./extensions": {
+      "import": "./dist/extensions/index.mjs",
+      "require": "./dist/extensions/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./style.css": "./dist/index.css"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "pnpm run clean && pnpm run build:style && pnpm run build:lib",
+    "build:lib": "vp pack",
+    "build:style": "tailwindcss -i ./src/styles/index.css -o ./dist/index.css",
+    "clean": "rm -rf dist",
+    "dev": "pnpm --filter @maily-to/core --parallel \"/^dev:.*/\"",
+    "dev:lib": "vp pack --watch",
+    "dev:style": "tailwindcss -i ./src/styles/index.css -o ./dist/index.css --watch",
+    "release": "bumpp"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.0.0",
+    "@floating-ui/react": "^0.27.19",
+    "@floating-ui/utils": "^0.2.11",
+    "@maily-to/migration": "workspace:*",
+    "@maily-to/shared": "workspace:*",
+    "@maily-to/ui": "workspace:*",
+    "@tiptap/core": "catalog:",
+    "@tiptap/extension-blockquote": "^3.22.3",
+    "@tiptap/extension-bold": "^3.22.3",
+    "@tiptap/extension-bubble-menu": "^3.22.3",
+    "@tiptap/extension-code": "^3.22.3",
+    "@tiptap/extension-code-block-lowlight": "^3.22.3",
+    "@tiptap/extension-collaboration": "^3.22.3",
+    "@tiptap/extension-document": "^3.22.3",
+    "@tiptap/extension-file-handler": "^3.22.3",
+    "@tiptap/extension-hard-break": "^3.22.3",
+    "@tiptap/extension-heading": "^3.22.3",
+    "@tiptap/extension-highlight": "^3.22.3",
+    "@tiptap/extension-horizontal-rule": "^3.22.3",
+    "@tiptap/extension-image": "^3.22.3",
+    "@tiptap/extension-italic": "^3.22.3",
+    "@tiptap/extension-link": "^3.22.3",
+    "@tiptap/extension-list": "^3.22.3",
+    "@tiptap/extension-node-range": "^3.22.3",
+    "@tiptap/extension-paragraph": "^3.22.3",
+    "@tiptap/extension-strike": "^3.22.3",
+    "@tiptap/extension-table": "^3.22.3",
+    "@tiptap/extension-text": "^3.22.3",
+    "@tiptap/extension-text-align": "^3.22.3",
+    "@tiptap/extension-text-style": "^3.22.3",
+    "@tiptap/extension-typography": "^3.22.3",
+    "@tiptap/extension-underline": "^3.22.3",
+    "@tiptap/extension-unique-id": "^3.22.3",
+    "@tiptap/extensions": "^3.22.3",
+    "@tiptap/pm": "catalog:",
+    "@tiptap/react": "catalog:",
+    "@tiptap/suggestion": "^3.22.3",
+    "@tiptap/y-tiptap": "^3.0.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "highlight.js": "^11.11.1",
+    "lowlight": "^3.3.0",
+    "lucide-react": "^1.8.0",
+    "stylecast": "^0.0.6",
+    "tailwind-merge": "^3.5.0",
+    "y-protocols": "^1.0.7",
+    "yjs": "^13.6.30",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@maily-to/extension-ai-actions": "workspace:*",
+    "@maily-to/extension-drag-handle": "workspace:*",
+    "@maily-to/extension-inline-suggestion": "workspace:*",
+    "@maily-to/extension-variable": "workspace:*",
+    "@maily-to/tsconfig": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:",
+    "@tailwindcss/cli": "^4.2.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/react": "catalog:",
+    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "bumpp": "catalog:",
+    "tailwindcss": "^4.2.2",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "inlinedDependencies": {
+    "@floating-ui/core": "1.7.5",
+    "@floating-ui/dom": "1.7.6"
   }
 }

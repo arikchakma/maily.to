@@ -1,0 +1,35 @@
+[data-node-type='columns'] {
+  @apply mly:m-0 mly:flex mly:p-0;
+
+  &.has-focus [data-node-type='column'],
+  &:hover [data-node-type='column'] {
+    outline: 1.5px solid #e9ecef;
+    outline-style: dashed;
+  }
+
+  [data-node-type='column'].has-focus {
+    outline-style: solid;
+  }
+}
+
+[data-node-type='column'] {
+  @apply mly:grow mly:basis-0 mly:overflow-hidden;
+
+  & > *:first-child {
+    @apply mly:mt-0;
+  }
+
+  & > *:last-child {
+    @apply mly:mb-0;
+  }
+}
+
+[data-node-type='columns'] .is-empty::before {
+  --l-threshold: 0.66;
+  --diff: calc(var(--l-threshold) - l);
+  color: oklch(
+    from var(--bg-color)
+      clamp(0.05, max(min(var(--diff) * infinity, 1), 0), 0.95) c h
+  ) !important;
+  opacity: 0.6;
+}

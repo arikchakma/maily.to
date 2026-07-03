@@ -1,8 +1,9 @@
-import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/api.v1.templates.$templateId.duplicate';
 import { z } from 'zod';
 import { serializeZodError } from '~/lib/errors';
 import { json } from '~/lib/response';
+import { validateApiToken } from '~/lib/api-auth';
+import { duplicateMockTemplate } from '~/lib/mock-templates';
 
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
@@ -10,25 +11,9 @@ export async function action(args: Route.ActionArgs) {
     return { status: 405, message: 'Method Not Allowed', errors: [] };
   }
 
-  const headers = new Headers();
-  const supabase = createSupabaseServerClient(request, headers);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return json(
-      {
-        status: 401,
-        message: 'Unauthorized',
-        errors: ['Unauthorized'],
-      },
-      {
-        status: 401,
-      }
-    );
-  }
+  // Validate bearer token
+  const authError = validateApiToken(request);
+  if (authError) return authError;
 
   const paramsSchema = z.object({
     templateId: z.string(),
@@ -40,42 +25,12 @@ export async function action(args: Route.ActionArgs) {
   }
 
   const { templateId } = paramsData;
+  const duplicatedTemplate = duplicateMockTemplate(templateId);
 
-  const { data: template } = await supabase
-    .from('mails')
-    .select('*')
-    .eq('id', templateId)
-    .eq('user_id', user.id)
-    .single();
-
-  if (!template) {
+  if (!duplicatedTemplate) {
     return json(
       { errors: [], message: 'Template not found', status: 404 },
       { status: 404 }
-    );
-  }
-
-  const { data: duplicatedTemplate, error: duplicateError } = await supabase
-    .from('mails')
-    .insert({
-      title: `[DUPLICATE] ${template.title}`,
-      preview_text: template.preview_text,
-      content: template.content,
-      user_id: user.id,
-    })
-    .select()
-    .single();
-
-  if (duplicateError) {
-    return json(
-      {
-        status: 500,
-        message: 'Failed to duplicate template',
-        errors: [duplicateError],
-      },
-      {
-        status: 500,
-      }
     );
   }
 

@@ -214,8 +214,9 @@
 import { redirect } from 'react-router';
 
 export async function loader() {
-  return redirect('https://app.maily.to/auth/login', {
+  // Auth disabled for local development. Go straight to templates.
+  return redirect('/templates', {
     headers: new Headers(),
-    status: 301,
+    status: 302,
   });
 }

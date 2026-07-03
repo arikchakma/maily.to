@@ -1,8 +1,13 @@
-import { createSupabaseServerClient } from '~/lib/supabase/server';
 import type { Route } from './+types/api.v1.templates.$templateId';
 import { z } from 'zod';
 import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
+import { validateApiToken } from '~/lib/api-auth';
+import {
+  getMockTemplateById,
+  updateMockTemplate,
+  deleteMockTemplate,
+} from '~/lib/mock-templates';
 
 export async function action(args: Route.ActionArgs) {
   const { request, params } = args;
@@ -10,25 +15,9 @@ export async function action(args: Route.ActionArgs) {
     return { status: 405, message: 'Method Not Allowed', errors: [] };
   }
 
-  const headers = new Headers();
-  const supabase = createSupabaseServerClient(request, headers);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return json(
-      {
-        status: 401,
-        message: 'Unauthorized',
-        errors: ['Unauthorized'],
-      },
-      {
-        status: 401,
-      }
-    );
-  }
+  // Validate bearer token
+  const authError = validateApiToken(request);
+  if (authError) return authError;
 
   const paramsSchema = z.object({
     templateId: z.string(),
@@ -54,14 +43,8 @@ export async function action(args: Route.ActionArgs) {
       return serializeZodError(error);
     }
 
-    const { data: template } = await supabase
-      .from('mails')
-      .select('*')
-      .eq('id', templateId)
-      .eq('user_id', user.id)
-      .single();
-
-    if (!template) {
+    const existing = getMockTemplateById(templateId);
+    if (!existing) {
       return json(
         { errors: [], message: 'Template not found', status: 404 },
         { status: 404 }
@@ -69,14 +52,9 @@ export async function action(args: Route.ActionArgs) {
     }
 
     const { title, previewText, content } = data;
-    const { error: updateError } = await supabase
-      .from('mails')
-      .update({ title, preview_text: previewText, content })
-      .eq('id', templateId)
-      .eq('user_id', user.id)
-      .single();
+    const updated = updateMockTemplate(templateId, { title, previewText, content });
 
-    if (updateError) {
+    if (!updated) {
       return json(
         { errors: [], message: 'Failed to update template', status: 500 },
         { status: 500 }
@@ -85,13 +63,9 @@ export async function action(args: Route.ActionArgs) {
 
     return { status: 'ok' };
   } else if (request.method === 'DELETE') {
-    const { error } = await supabase
-      .from('mails')
-      .delete()
-      .eq('id', templateId)
-      .eq('user_id', user.id);
+    const deleted = deleteMockTemplate(templateId);
 
-    if (error) {
+    if (!deleted) {
       return json(
         { errors: [], message: 'Failed to delete template', status: 500 },
         { status: 500 }

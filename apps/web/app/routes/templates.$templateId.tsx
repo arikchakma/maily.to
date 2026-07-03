@@ -1,8 +1,8 @@
 import type { Route } from './+types/templates.$templateId';
-import { redirect, type MetaFunction } from 'react-router';
-import { createSupabaseServerClient } from '~/lib/supabase/server';
+import { redirect } from 'react-router';
 import { EmailEditorSandbox } from '~/components/email-editor-sandbox';
 import { mergeRouteModuleMeta } from '~/lib/merge-meta';
+import { getMockTemplateById } from '~/lib/mock-templates';
 
 export const meta: Route.MetaFunction = mergeRouteModuleMeta((args) => {
   const { template } = args.data;
@@ -48,26 +48,11 @@ export const meta: Route.MetaFunction = mergeRouteModuleMeta((args) => {
 });
 
 export async function loader(args: Route.LoaderArgs) {
-  const { request, params } = args;
+  const { params } = args;
   const { templateId } = params;
 
-  const headers = new Headers();
-  const supabase = createSupabaseServerClient(request, headers);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw redirect('/login', { headers });
-  }
-
-  const { data: template } = await supabase
-    .from('mails')
-    .select('*')
-    .eq('id', templateId)
-    .eq('user_id', user.id)
-    .single();
+  // Auth/Supabase disabled for local development. Load from mock templates.
+  const template = getMockTemplateById(templateId);
 
   if (!template) {
     throw redirect('/templates');

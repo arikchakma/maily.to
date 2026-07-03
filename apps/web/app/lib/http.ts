@@ -41,6 +41,12 @@ export async function httpCall<ResponseType = AppResponse>(
       headers.set('Content-Type', 'application/json');
     }
 
+    // Add bearer token for API auth (local dev)
+    const apiToken = import.meta.env.VITE_API_ACCESS_TOKEN;
+    if (apiToken) {
+      headers.set('Authorization', `Bearer ${apiToken}`);
+    }
+
     const response = await fetch(url, {
       credentials: 'include',
       ...options,

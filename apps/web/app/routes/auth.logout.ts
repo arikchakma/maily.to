@@ -1,21 +1,10 @@
-import { createSupabaseServerClient } from '~/lib/supabase/server';
-import type { Route } from './+types/auth.logout';
 import { redirect } from 'react-router';
+import type { Route } from './+types/auth.logout';
 
-export async function action(args: Route.ActionArgs) {
-  const { request } = args;
-
-  const headers = new Headers();
-  const supabase = createSupabaseServerClient(request, headers);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect('/login', { headers });
-  }
-
-  await supabase.auth.signOut();
-  return redirect('/templates', { headers });
+export async function action(_args: Route.ActionArgs) {
+  // Auth disabled for local development. Just send the user back to templates.
+  return redirect('/templates', {
+    headers: new Headers(),
+    status: 302,
+  });
 }

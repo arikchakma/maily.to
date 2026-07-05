@@ -222,29 +222,83 @@ Single source of truth for all customer email communication with proper threadin
 
 ```sql
 -- Already exists in your system
-CREATE TABLE email_messages (
-  id SERIAL PRIMARY KEY,
-  campaign_id INTEGER NOT NULL REFERENCES email_campaigns(id),
-  campaign_recipient_id INTEGER NOT NULL REFERENCES email_campaign_recipients(id),
-  user_id UUID,
-  user_email TEXT,
-  direction TEXT NOT NULL CHECK (direction IN ('outbound', 'inbound')),
-  message_type TEXT NOT NULL,
-  sequence_step INTEGER,
-  subject TEXT,
-  body_text TEXT,
-  status TEXT NOT NULL DEFAULT 'queued',
-  sent_at TIMESTAMPTZ,
-  delivered_at TIMESTAMPTZ,
-  bounced_at TIMESTAMPTZ,
-  failed_at TIMESTAMPTZ,
-  complained_at TIMESTAMPTZ,
-  received_at TIMESTAMPTZ,
-  metadata JSONB NOT NULL DEFAULT '{}',
-  raw_payload JSONB NOT NULL DEFAULT '{}',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+create table public.email_messages (
+  id serial not null,
+  campaign_id integer not null,
+  campaign_recipient_id integer not null,
+  user_id uuid null,
+  user_email text null,
+  direction text not null,
+  message_type text not null,
+  sequence_step integer null,
+  subject text null,
+  body_text text null,
+  status text not null default 'queued'::text,
+  sent_at timestamp with time zone null,
+  delivered_at timestamp with time zone null,
+  bounced_at timestamp with time zone null,
+  failed_at timestamp with time zone null,
+  complained_at timestamp with time zone null,
+  received_at timestamp with time zone null,
+  metadata jsonb not null default '{}'::jsonb,
+  raw_payload jsonb not null default '{}'::jsonb,
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone not null default now(),
+  constraint email_messages_pkey primary key (id),
+  constraint email_messages_campaign_id_fkey foreign KEY (campaign_id) references email_campaigns (id),
+  constraint email_messages_campaign_recipient_id_fkey foreign KEY (campaign_recipient_id) references email_campaign_recipients (id),
+  constraint email_messages_direction_check check (
+    (
+      direction = any (array['outbound'::text, 'inbound'::text])
+    )
+  ),
+  constraint email_messages_message_type_check check (
+    (
+      message_type = any (
+        array[
+          'paid_user_feedback_initial'::text,
+          'paid_user_feedback_followup'::text,
+          'post_purchase_initial'::text,
+          'post_purchase_followup'::text,
+          'user_reply'::text
+        ]
+      )
+    )
+  ),
+  constraint email_messages_status_check check (
+    (
+      status = any (
+        array[
+          'queued'::text,
+          'sending'::text,
+          'sent'::text,
+          'delivered'::text,
+          'bounced'::text,
+          'failed'::text,
+          'complained'::text,
+          'received'::text,
+          'processed'::text,
+          'ignored'::text
+        ]
+      )
+    )
+  )
+) TABLESPACE pg_default;
+
+create unique INDEX IF not exists email_messages_recipient_step_uidx on public.email_messages using btree (campaign_recipient_id, sequence_step) TABLESPACE pg_default
+where
+  (
+    (direction = 'outbound'::text)
+    and (status <> 'failed'::text)
+  );
+
+create index IF not exists email_messages_direction_idx on public.email_messages using btree (direction) TABLESPACE pg_default;
+
+create index IF not exists idx_email_messages_recipient on public.email_messages using btree (campaign_recipient_id, created_at) TABLESPACE pg_default;
+
+create index IF not exists idx_email_messages_inbound_status on public.email_messages using btree (direction, status) TABLESPACE pg_default
+where
+  (direction = 'inbound'::text);
 ```
 
 ### Recommended Schema Addition
@@ -263,6 +317,17 @@ WHERE direction = 'inbound';
 -- Add body_html column if not exists (for storing rendered HTML)
 ALTER TABLE email_messages 
 ADD COLUMN IF NOT EXISTS body_html TEXT;
+
+-- Add open/click tracking timestamps (delivered_at, bounced_at, failed_at
+-- already exist on the table above — this only adds opened_at/clicked_at)
+ALTER TABLE email_messages
+ADD COLUMN IF NOT EXISTS opened_at TIMESTAMP WITH TIME ZONE,
+ADD COLUMN IF NOT EXISTS clicked_at TIMESTAMP WITH TIME ZONE;
+
+-- Index to support "needs follow-up" queries (e.g. sent but never opened/clicked)
+CREATE INDEX IF NOT EXISTS idx_email_messages_engagement
+ON email_messages(direction, opened_at, clicked_at)
+WHERE direction = 'outbound';
 ```
 
 ### Required Schema Change: `manual_reply` message_type
@@ -921,6 +986,8 @@ apps/web/app/
 docs/
 └── TECHNICAL_HANDOFF_EMAIL_ADMIN_PANEL.md  # This document
 ```
+
+> **Note — `import-email-html.tsx` follow-up:** the current import flow should be updated so that pasted/imported HTML is converted into Maily's native block structure (e.g. Text, Heading, Bullet List blocks — see the editor's Blocks panel) rather than dropped in as opaque raw HTML. Preserving the block structure on import is what allows the imported content to be edited afterward in the visual editor, instead of only being viewable/read-only.
 
 ---
 

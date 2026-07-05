@@ -17,6 +17,8 @@ import { CopyEmailHtml } from './copy-email-html';
 import { DeleteEmailDialog } from './delete-email-dialog';
 import { EmailEditor } from './email-editor';
 import { PreviewEmailDialog } from './preview-email-dialog';
+import { ViewEmailHtml } from './view-email-html';
+import { ImportEmailHtml } from './import-email-html';
 import { PreviewTextInfo } from './preview-text-info';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -111,6 +113,8 @@ export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
             editor={editor}
           />
           <CopyEmailHtml previewText={previewText} editor={editor} />
+          <ViewEmailHtml previewText={previewText} editor={editor} />
+          <ImportEmailHtml editor={editor} />
           <button
             className="flex items-center rounded-md bg-white px-2 py-1 text-sm text-black hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"

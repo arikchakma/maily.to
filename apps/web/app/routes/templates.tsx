@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { FilePlus2Icon } from 'lucide-react';
+import { FilePlus2Icon, InboxIcon } from 'lucide-react';
 import {
   Link,
   NavLink,
@@ -121,6 +121,20 @@ export default function Templates(props: Route.ComponentProps) {
             </div>
           </div>
         )}
+
+        {/* Link to Inbox */}
+        <div className="mt-auto border-t border-gray-200 p-2">
+          <Link
+            to="/inbox"
+            className={cn(
+              buttonVariants({ variant: 'ghost' }),
+              'w-full justify-start gap-2 text-sm'
+            )}
+          >
+            <InboxIcon className="h-4 w-4" />
+            Inbox
+          </Link>
+        </div>
       </aside>
 
       <div className="grow overflow-y-auto">

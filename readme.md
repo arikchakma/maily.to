@@ -71,6 +71,21 @@ Sponsorship at any level is appreciated and encouraged. If you built a paid prod
 
 <br/>
 
+<h4 align="center">Backers</h4>
+
+<table align="center" style="justify-content: center;align-items: center;display: flex;">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Sendmux">
+        <img alt="Sendmux" height="40px" width="40px" src="https://github.com/Sendmux.png" style="border-radius: 50%;">
+      </a>
+      <p><a href="https://github.com/Sendmux">Sendmux</a></p>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
 ## Contributions
 
 Feel free to submit pull requests, create issues, or spread the word. For getting a development version of it up & running, go through the following steps.

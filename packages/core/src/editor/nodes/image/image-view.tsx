@@ -10,11 +10,9 @@ import { Ban, BracesIcon, GrabIcon, ImageOffIcon, Loader2 } from 'lucide-react';
 import { useImageUploadOptions } from '@/editor/extensions/image-upload/image-upload';
 import { cn } from '@/editor/utils/classname';
 import { useEvent } from '@/editor/utils/use-event';
-import { getAspectRatio, getNewHeight } from '@/editor/utils/aspect-ratio';
 
 const MIN_WIDTH = 20;
 export const IMAGE_MAX_WIDTH = 600;
-export const IMAGE_MAX_HEIGHT = 400;
 
 export type ImageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -31,7 +29,7 @@ export function ImageView(props: NodeViewProps) {
   const imgRef = useRef<HTMLImageElement>(null);
 
   const [resizingStyle, setResizingStyle] = useState<
-    Pick<CSSProperties, 'width' | 'height'> | undefined
+    Pick<CSSProperties, 'width'> | undefined
   >();
 
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -54,19 +52,14 @@ export function ImageView(props: NodeViewProps) {
       event.preventDefault();
       const direction = event.currentTarget.dataset.direction || '--';
       const initialXPosition = event.clientX;
-      const initialYPosition = event.clientY;
       const currentWidth = imgRef.current.width;
-      const currentHeight = imgRef.current.height;
       let newWidth = currentWidth;
-      let newHeight = currentHeight;
       const transformX = direction[1] === 'w' ? -1 : 1;
-      const transformY = direction[0] === 'n' ? -1 : 1;
 
       const removeListeners = () => {
         window.removeEventListener('mousemove', mouseMoveHandler);
         window.removeEventListener('mouseup', removeListeners);
-        const aspectRatio = getAspectRatio(newWidth, newHeight);
-        updateAttributes({ width: newWidth, height: newHeight, aspectRatio });
+        updateAttributes({ width: newWidth });
         setResizingStyle(undefined);
       };
 
@@ -75,30 +68,14 @@ export function ImageView(props: NodeViewProps) {
           currentWidth + transformX * (event.clientX - initialXPosition),
           MIN_WIDTH
         );
-        newHeight = Math.max(
-          currentHeight + transformY * (event.clientY - initialYPosition),
-          MIN_WIDTH
-        );
 
         if (newWidth > imageParentWidth) {
           newWidth = imageParentWidth;
         }
-        if (newHeight > IMAGE_MAX_HEIGHT) {
-          newHeight = IMAGE_MAX_HEIGHT;
-        }
 
-        // If aspect ratio is locked, calculate height based on aspect ratio
-        if (node.attrs.lockAspectRatio) {
-          const aspectRatio =
-            node.attrs.aspectRatio &&
-            isFinite(node.attrs.aspectRatio) &&
-            node.attrs.aspectRatio > 0
-              ? node.attrs.aspectRatio
-              : currentWidth / currentHeight;
-          newHeight = getNewHeight(newWidth, aspectRatio);
-        }
-
-        setResizingStyle({ width: newWidth, height: newHeight });
+        // Width is the only authored dimension; height follows via `auto`
+        // so the aspect ratio is always preserved.
+        setResizingStyle({ width: newWidth });
         // If mouse is up, remove event listeners
         if (!event.buttons) {
           return removeListeners();
@@ -137,22 +114,14 @@ export function ImageView(props: NodeViewProps) {
     [handleMouseDown, isPlaceholderImage]
   );
 
-  let {
-    alignment = 'center',
-    width,
-    height,
-    src,
-    borderRadius,
-  } = node.attrs || {};
+  let { alignment = 'center', width, src, borderRadius } = node.attrs || {};
 
   const {
     externalLink,
     isExternalLinkVariable,
     isSrcVariable,
     showIfKey,
-    aspectRatio: defaultAspectRatio,
     borderRadius: _,
-    lockAspectRatio,
     ...attrs
   } = node.attrs || {};
 
@@ -209,9 +178,9 @@ export function ImageView(props: NodeViewProps) {
     img.src = src;
     img.onload = () => {
       setStatus('loaded');
-      // for some reason Apple Mail doesn't respect the width and height attributes
-      // update the dimensions to ensure that the image is not stretched
-      const { naturalWidth, naturalHeight } = img;
+      // for some reason Apple Mail doesn't respect the width attribute
+      // set a concrete width so the image is not stretched; height stays auto
+      const { naturalWidth } = img;
       const wrapper = wrapperRef?.current;
 
       if (!wrapper || width !== 'auto' || !naturalWidth) {
@@ -219,16 +188,9 @@ export function ImageView(props: NodeViewProps) {
       }
 
       const wrapperWidth = wrapper.offsetWidth;
-      const aspectRatio = getAspectRatio(naturalWidth, naturalHeight);
-      const calculatedHeight = Math.min(
-        getNewHeight(wrapperWidth, aspectRatio),
-        naturalHeight
-      );
 
       updateAttributes({
         width: Math.min(wrapperWidth, naturalWidth),
-        height: Math.min(calculatedHeight, naturalHeight),
-        aspectRatio,
       });
     };
     img.onerror = () => {
@@ -302,7 +264,6 @@ export function ImageView(props: NodeViewProps) {
         ...(hasImageSrc && status === 'loaded'
           ? {
               width: width && width !== 'auto' ? `${width}px` : undefined,
-              height: height && height !== 'auto' ? `${height}px` : undefined,
               ...resizingStyle,
             }
           : {}),
@@ -328,26 +289,22 @@ export function ImageView(props: NodeViewProps) {
         : {})}
     >
       {!hasImageSrc && status === 'idle' && (
-        <ImageStatusLabel
-          status="idle"
-          minHeight={height}
-          isDropZone={isDroppable}
-        />
+        <ImageStatusLabel status="idle" isDropZone={isDroppable} />
       )}
 
       {!hasImageSrc && status === 'loading' && !isSrcVariable && (
-        <ImageStatusLabel status="loading" minHeight={height} />
+        <ImageStatusLabel status="loading" />
       )}
 
       {hasImageSrc && isSrcVariable && (
-        <ImageStatusLabel status="variable" minHeight={height} />
+        <ImageStatusLabel status="variable" />
       )}
 
       {hasImageSrc && status === 'loading' && !isSrcVariable && (
-        <ImageStatusLabel status="loading" minHeight={height} />
+        <ImageStatusLabel status="loading" />
       )}
       {hasImageSrc && status === 'error' && !isSrcVariable && (
-        <ImageStatusLabel status="error" minHeight={height} />
+        <ImageStatusLabel status="error" />
       )}
 
       {isDroppable && (
@@ -376,11 +333,7 @@ export function ImageView(props: NodeViewProps) {
                 : width && width !== 'auto'
                   ? `${width}px`
                   : 'auto',
-              height: resizingStyle?.height
-                ? `${resizingStyle.height}px`
-                : height && height !== 'auto'
-                  ? `${height}px`
-                  : 'auto',
+              height: 'auto',
             }}
             draggable={editor.isEditable}
             className={cn(
@@ -420,12 +373,11 @@ export function ImageView(props: NodeViewProps) {
 
 type ImageStatusLabelProps = {
   status: ImageStatus | 'variable';
-  minHeight?: number | string;
   isDropZone?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
-  const { status, minHeight, className, style, isDropZone, ...rest } = props;
+  const { status, className, style, isDropZone, ...rest } = props;
 
   return (
     <div
@@ -438,14 +390,7 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
         },
         className
       )}
-      style={{
-        ...(minHeight
-          ? {
-              minHeight,
-            }
-          : {}),
-        ...style,
-      }}
+      style={style}
     >
       {status === 'idle' && !isDropZone && (
         <>

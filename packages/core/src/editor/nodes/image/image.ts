@@ -23,20 +23,6 @@ export const ImageExtension = TiptapImage.extend({
         },
         renderHTML: ({ width }) => ({ width }),
       },
-      height: {
-        default: 'auto',
-        parseHTML: (element) => {
-          return (
-            element.getAttribute('height') ||
-            (element.style?.height || element.style?.blockSize)?.replace(
-              'px',
-              ''
-            ) ||
-            null
-          );
-        },
-        renderHTML: ({ height }) => ({ height }),
-      },
       alignment: {
         default: 'center',
         renderHTML: ({ alignment }) => ({ 'data-alignment': alignment }),
@@ -108,38 +94,6 @@ export const ImageExtension = TiptapImage.extend({
 
           return {
             'data-is-src-variable': 'true',
-          };
-        },
-      },
-
-      aspectRatio: {
-        default: null,
-        parseHTML: (element) => {
-          return element.getAttribute('data-aspect-ratio') || null;
-        },
-        renderHTML: (attributes) => {
-          if (!attributes?.aspectRatio) {
-            return {};
-          }
-
-          return {
-            'data-aspect-ratio': attributes?.aspectRatio,
-          };
-        },
-      },
-
-      lockAspectRatio: {
-        default: true,
-        parseHTML: (element) => {
-          return element.getAttribute('data-lock-aspect-ratio') === 'true';
-        },
-        renderHTML: (attributes) => {
-          if (!attributes.lockAspectRatio) {
-            return {};
-          }
-
-          return {
-            'data-lock-aspect-ratio': 'true',
           };
         },
       },

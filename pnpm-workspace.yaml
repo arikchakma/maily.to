@@ -2,20 +2,20 @@ packages:
   - 'apps/*'
   - 'packages/*'
 catalog:
-  '@tiptap/core': ^3.22.3
-  '@tiptap/pm': ^3.22.3
-  '@tiptap/react': ^3.22.3
-  '@types/react': ^19.2.14
-  '@types/react-dom': ^19.2.3
-  '@oxlint/plugins': ^1.59.0
-  '@rolldown/plugin-babel': ^0.2.2
-  bumpp: ^11.0.1
-  react: ^19.2.5
-  react-dom: ^19.2.5
-  typescript: ^6.0.2
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vite-plus: latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  '@oxlint/plugins': ^1.76.0
+  '@rolldown/plugin-babel': ^0.2.3
+  '@tiptap/core': ^3.29.2
+  '@tiptap/pm': ^3.29.2
+  '@tiptap/react': ^3.29.2
+  '@types/react': ^19.2.18
+  '@types/react-dom': ^19.2.4
+  bumpp: ^12.1.1
+  react: ^19.2.8
+  react-dom: ^19.2.8
+  typescript: ^7.0.2
+  vite: npm:@voidzero-dev/vite-plus-core@0.1.14
+  vite-plus: 0.1.14
+  vitest: npm:@voidzero-dev/vite-plus-test@0.1.14
 overrides:
   vite: 'catalog:'
   vitest: 'catalog:'

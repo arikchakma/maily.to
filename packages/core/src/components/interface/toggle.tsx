@@ -42,7 +42,7 @@ const ToggleGroup = React.forwardRef<
   );
 });
 
-ToggleGroup.displayName = ToggleGroupPrimitive.displayName;
+ToggleGroup.displayName = 'ToggleGroup';
 
 const ToggleGroupItem = React.forwardRef<
   React.ComponentRef<typeof TogglePrimitive>,
@@ -68,6 +68,6 @@ const ToggleGroupItem = React.forwardRef<
   );
 });
 
-ToggleGroupItem.displayName = TogglePrimitive.displayName;
+ToggleGroupItem.displayName = 'ToggleGroupItem';
 
 export { ToggleGroup, ToggleGroupItem };

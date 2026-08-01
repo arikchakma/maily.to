@@ -1,3 +1,4 @@
+import type { AllowedHtmlCodeBlockTab } from '@maily-to/shared';
 import { HTML_CODE_BLOCK_TABS, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { CodeXmlIcon, EyeIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useRef } from 'react';
@@ -36,7 +37,7 @@ export function HtmlCodeBlockBubbleMenu() {
       <ToggleTabGroup
         value={[activeTab]}
         onValueChange={(value) => {
-          const tab = value[0];
+          const tab = value[0] as AllowedHtmlCodeBlockTab | undefined;
           if (!tab) {
             return;
           }

@@ -11,7 +11,7 @@
 @maily-to/core                      ← depends on shared + ui + migration
 ```
 
-Extensions (`extension-drag-handle`, `extension-variable`, `extension-ai-actions`, `extension-inline-suggestion`) are **not published separately** — they are bundled into `@maily-to/core` at build time via `devDependencies`.
+Extensions (`extension-variable`, `extension-ai-actions`, `extension-inline-suggestion`) are **not published separately** — they are bundled into `@maily-to/core` at build time via `devDependencies`.
 
 ## How to Release
 

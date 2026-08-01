@@ -47,9 +47,9 @@
     "@maily-to/migration": "workspace:*",
     "@maily-to/shared": "workspace:*",
     "@react-email/components": "^1.0.12",
-    "@react-email/render": "^2.0.6",
-    "juice": "^11.1.1",
-    "node-html-parser": "^7.1.0"
+    "@react-email/render": "^2.1.0",
+    "juice": "^12.1.1",
+    "node-html-parser": "^9.0.1"
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",

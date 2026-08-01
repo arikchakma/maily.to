@@ -48,6 +48,6 @@
   "peerDependencies": {
     "@tiptap/core": "catalog:",
     "@tiptap/pm": "catalog:",
-    "@tiptap/suggestion": "^3.20.0"
+    "@tiptap/suggestion": "^3.29.2"
   }
 }

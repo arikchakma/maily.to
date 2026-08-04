@@ -1,4 +1,4 @@
-import { Maily, render } from './index';
+import { Maily, render, htmlToPlainText } from './index';
 import { Preheader } from './preheader';
 
 describe('render', () => {
@@ -554,5 +554,63 @@ describe('render', () => {
 
       expect(result).toBe('Order #ORD-789 for Alice Smith');
     });
+  });
+});
+
+describe("htmlToPlainText", () => {
+  test("strips basic HTML tags", async () => {
+    const result = await htmlToPlainText("<p>Hello <strong>world</strong></p>");
+    expect(result).toBe("Hello world");
+  });
+
+  test("converts links to text (url) format", async () => {
+    const result = await htmlToPlainText(
+      '<a href="https://example.com">Click here</a>',
+    );
+    expect(result).toBe("Click here (https://example.com)");
+  });
+
+  test("preserves bare URL when link text matches URL", async () => {
+    const result = await htmlToPlainText(
+      '<a href="https://example.com">https://example.com</a>',
+    );
+    expect(result).toBe("https://example.com");
+  });
+
+  test("converts <br> to newlines", async () => {
+    const result = await htmlToPlainText("Line 1<br>Line 2<br/>Line 3");
+    expect(result).toBe("Line 1\nLine 2\nLine 3");
+  });
+
+  test("converts <hr> to separator", async () => {
+    const result = await htmlToPlainText("Above<hr>Below");
+    expect(result).toContain("---");
+    expect(result).toContain("Above");
+    expect(result).toContain("Below");
+  });
+
+  test("decodes HTML entities", async () => {
+    const result = await htmlToPlainText("&amp; &lt; &gt; &quot; &#39; &nbsp; &#65;");
+    expect(result).toBe("& < > \" ' A");
+  });
+
+  test("normalizes excessive whitespace", async () => {
+    const result = await htmlToPlainText(
+      "<p>  Too   many   spaces  </p><p></p><p></p><p></p><p>After gap</p>",
+    );
+    expect(result).not.toMatch(/\n{3,}/);
+    expect(result).toContain("Too many spaces");
+    expect(result).toContain("After gap");
+  });
+
+  test("handles empty string", async () => {
+    expect(await htmlToPlainText("")).toBe("");
+  });
+
+  test("handles block-level elements as line breaks", async () => {
+    const result = await htmlToPlainText("<div>Block 1</div><div>Block 2</div>");
+    expect(result).toContain("Block 1");
+    expect(result).toContain("Block 2");
+    expect(result).toMatch(/Block 1\n+Block 2/);
   });
 });

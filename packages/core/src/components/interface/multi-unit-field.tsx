@@ -1,8 +1,7 @@
-import type { AllowedFieldMode } from '@maily-to/shared';
-import { FIELD_MODE } from '@maily-to/shared';
-import { useMailyId } from '@maily-to/ui';
+import type { BoxCorner, BoxSide } from '@maily-to/shared';
 import { ScanIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useId, useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
 
@@ -10,156 +9,133 @@ import { BubbleButton } from './bubble-button';
 import type { UnitFieldPreset } from './unit-field';
 import { UnitField } from './unit-field';
 
-export const CORNER_AXES = [
+// Display order, which reads round the box rather than following the CSS
+// shorthand order that `BOX_SIDES` and `BOX_CORNERS` use.
+export const SIDE_AXES: readonly BoxSide[] = ['left', 'top', 'bottom', 'right'];
+export const CORNER_AXES: readonly BoxCorner[] = [
   'topLeft',
   'topRight',
   'bottomLeft',
   'bottomRight',
-] as const;
-export type Corner = (typeof CORNER_AXES)[number];
-export const SIDE_AXES = ['left', 'top', 'bottom', 'right'] as const;
-export type Side = (typeof SIDE_AXES)[number];
-export type AxisKey = Corner | Side;
+];
+
+export type AxisKey = BoxCorner | BoxSide;
 export type MultiValue<T extends AxisKey> = Record<T, number>;
 
-type MultiUnitFieldProps<T extends AxisKey> = {
+export type MultiUnitFieldProps<T extends AxisKey> = {
+  axisIcons: Record<T, ReactNode>;
+  axes: readonly T[];
   container: FloatingUIContainer;
-  mode: AllowedFieldMode;
-  onModeChange: (mode: AllowedFieldMode) => void;
-  values: MultiValue<T>;
+  dragAreaIcon?: ReactNode;
+  label: string;
+  max?: number;
+  min?: number;
   onValuesChange: (values: MultiValue<T>) => void;
   presets?: UnitFieldPreset[];
-  min?: number;
-  max?: number;
   suffix?: string;
-  axes: readonly T[];
-  axisIcons: Record<T, React.ReactNode>;
-  label?: string;
-  dragAreaIcon?: React.ReactNode;
+  values: MultiValue<T>;
 };
+
+function getMaxValue<T extends AxisKey>(values: MultiValue<T>) {
+  return Math.max(...Object.values<number>(values));
+}
 
 export function MultiUnitField<T extends AxisKey>(
   props: MultiUnitFieldProps<T>
 ) {
   const {
-    container,
-    mode,
-    onModeChange,
-    values,
-    onValuesChange,
-    presets = [],
-    min = 0,
-    max = 9999,
-    suffix = 'px',
     axes,
     axisIcons,
-    label,
+    container,
     dragAreaIcon,
+    label,
+    max = 9999,
+    min = 0,
+    onValuesChange,
+    presets,
+    suffix = 'px',
+    values,
   } = props;
 
-  const step = 1;
-  const largeStep = 5;
+  const fieldId = useId();
+  const isUniform = axes.every((axis) => values[axis] === values[axes[0]]);
 
-  const fieldId = useMailyId();
-  const [unifiedValue, setUnifiedValue] = useState(() => {
-    return getMaxValue(values);
-  });
+  const [isExpanded, setIsExpanded] = useState(!isUniform);
+  const [unifiedValue, setUnifiedValue] = useState(() => getMaxValue(values));
+  const [draft, setDraft] = useState(values);
 
-  const isMixedMode = mode === FIELD_MODE.MIXED;
-  const displayValue = useMemo(() => {
-    if (mode !== FIELD_MODE.PRESET) {
-      return null;
-    }
+  const signature = axes.map((axis) => values[axis]).join(',');
+  const [previousSignature, setPreviousSignature] = useState(signature);
 
-    const preset = presets.find((preset) => preset.value === unifiedValue);
-    return preset?.label ?? null;
-  }, [mode, presets, unifiedValue]);
+  if (previousSignature !== signature) {
+    setPreviousSignature(signature);
+    setUnifiedValue(getMaxValue(values));
+    setDraft(values);
+  }
 
-  const handleUpdateAllValues = (value: number) => {
-    const allUpdated = Object.fromEntries(
-      Object.entries(values).map(([key, _]) => [key, value])
-    ) as MultiValue<T>;
-
+  const updateEveryAxis = (value: number) => {
     setUnifiedValue(value);
-    onValuesChange(allUpdated);
+    onValuesChange(
+      Object.fromEntries(axes.map((axis) => [axis, value])) as MultiValue<T>
+    );
   };
 
   return (
-    <div className="mly:flex mly:flex-col mly:gap-1">
-      <div className="mly:flex mly:w-full mly:items-center mly:justify-between mly:gap-2">
-        <label
-          htmlFor={fieldId}
-          className="mly:min-w-16 mly:pl-2 mly:text-sm mly:text-gray-500"
-        >
+    <div data-mly-multi-unit-field="">
+      <div data-mly-multi-unit-field-row="">
+        <label data-mly-field-label="" htmlFor={fieldId}>
           {label}
         </label>
-        <div className="mly:flex mly:items-start mly:gap-1">
+
+        <div data-mly-multi-unit-field-controls="">
           <UnitField
-            id={fieldId}
-            suffix={suffix}
-            dragAreaIcon={dragAreaIcon}
-            className="mly:pl-px"
-            min={min}
-            max={max}
-            step={step}
-            largeStep={largeStep}
-            value={unifiedValue}
-            onValueChange={(nextValue) => {
-              setUnifiedValue(nextValue);
-              onModeChange(FIELD_MODE.UNIFORM);
-            }}
-            displayValue={isMixedMode ? 'Mixed' : displayValue}
-            presets={presets}
-            onSelectPreset={(value) => {
-              handleUpdateAllValues(value);
-              onModeChange(FIELD_MODE.PRESET);
-            }}
-            onValueCommitted={handleUpdateAllValues}
-          />
-          <BubbleButton
-            label={isMixedMode ? 'Uniform' : 'Mixed'}
-            icon={ScanIcon}
-            tooltip={isMixedMode ? 'Uniform' : 'Mixed'}
-            onClick={() => {
-              onModeChange(isMixedMode ? FIELD_MODE.UNIFORM : FIELD_MODE.MIXED);
-              handleUpdateAllValues(getMaxValue(values));
-            }}
             container={container}
-            isActive={isMixedMode}
+            displayValue={isUniform ? null : 'Mixed'}
+            dragAreaIcon={dragAreaIcon}
+            id={fieldId}
+            label={label}
+            largeStep={5}
+            max={max}
+            min={min}
+            onSelectPreset={updateEveryAxis}
+            onValueChange={setUnifiedValue}
+            onValueCommitted={updateEveryAxis}
+            presets={presets}
+            suffix={suffix}
+            value={unifiedValue}
+          />
+
+          <BubbleButton
+            container={container}
+            icon={ScanIcon}
+            isActive={isExpanded}
+            label={isExpanded ? `Uniform ${label}` : `Mixed ${label}`}
+            onClick={() => setIsExpanded(!isExpanded)}
+            tooltip={isExpanded ? 'Uniform' : 'Mixed'}
           />
         </div>
       </div>
-      {isMixedMode && (
-        <div className="mly:grid mly:grid-cols-2 mly:gap-1 mly:pl-18">
+
+      {isExpanded ? (
+        <div data-mly-multi-unit-field-axes="">
           {axes.map((axis) => (
             <UnitField
-              key={axis}
-              id={`${fieldId}-${axis}`}
-              suffix={suffix}
               dragAreaIcon={axisIcons[axis]}
-              className="mly:pl-px"
-              min={min}
+              key={axis}
+              label={`${label} ${axis}`}
+              largeStep={5}
               max={max}
-              step={step}
-              largeStep={largeStep}
-              defaultValue={values[axis]}
-              onValueCommitted={(value) => {
-                const nextValues = {
-                  ...values,
-                  [axis]: value,
-                } as MultiValue<T>;
-                onValuesChange(nextValues);
-                setUnifiedValue(getMaxValue(nextValues));
-              }}
+              min={min}
+              onValueChange={(value) => setDraft({ ...draft, [axis]: value })}
+              onValueCommitted={(value) =>
+                onValuesChange({ ...values, [axis]: value })
+              }
+              suffix={suffix}
+              value={draft[axis]}
             />
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
-}
-
-function getMaxValue<T extends AxisKey>(values: MultiValue<T>): number {
-  const allValues: number[] = Object.values(values);
-  return Math.max(...allValues);
 }

@@ -1,44 +1,41 @@
-import { MAILY_ERROR_PREFIX, MAILY_NODE_TYPES } from '@maily-to/shared';
+import { invariant, MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { Editor } from '@tiptap/core';
 
+import type { ImageUploadContext, ImageUploadOptions } from './image-upload';
 import {
   IMAGE_UPLOAD_EXTENSION_NAME,
   IMAGE_UPLOAD_STATUSES,
 } from './image-upload';
-import type { ImageUploadContext, ImageUploadOptions } from './image-upload';
 
-function notifyImageUploadStatusChanged(editor: Editor) {
+type FoundImage = {
+  node: NonNullable<ReturnType<Editor['state']['doc']['nodeAt']>>;
+  pos: number;
+};
+
+function notifyUploadStatusChanged(editor: Editor) {
   editor.view.dispatch(
     editor.state.tr.setMeta('__mly_image_upload_status_changed', true)
   );
 }
 
-function getUploadOptions(editor: Editor): Required<ImageUploadOptions> {
-  const ext = editor.extensionManager.extensions.find(
-    (e) => e.name === IMAGE_UPLOAD_EXTENSION_NAME
+function getUploadOptions(editor: Editor): ImageUploadOptions {
+  const extension = editor.extensionManager.extensions.find(
+    (candidate) => candidate.name === IMAGE_UPLOAD_EXTENSION_NAME
   );
 
-  if (!ext) {
-    throw new Error(
-      `${MAILY_ERROR_PREFIX}: You must add the "${IMAGE_UPLOAD_EXTENSION_NAME}" extension to the editor to use the image upload feature.`
-    );
-  }
+  invariant(
+    extension,
+    `You must add the "${IMAGE_UPLOAD_EXTENSION_NAME}" extension to the editor to upload images.`
+  );
 
-  return ext.options;
+  return extension.options as ImageUploadOptions;
 }
 
-type ImageNode = ReturnType<Editor['state']['doc']['nodeAt']>;
-
-type FoundImage = { pos: number; node: NonNullable<ImageNode> };
-
-function findImageByBlobUrl(
-  editor: Editor,
-  blobUrl: string
-): FoundImage | null {
-  let result: FoundImage | null = null;
+function findImageByBlobUrl(editor: Editor, blobUrl: string) {
+  let found: FoundImage | null = null;
 
   editor.state.doc.descendants((node, pos) => {
-    if (result) {
+    if (found) {
       return false;
     }
 
@@ -46,14 +43,14 @@ function findImageByBlobUrl(
       node.type.name === MAILY_NODE_TYPES.IMAGE &&
       node.attrs.src === blobUrl
     ) {
-      result = { pos, node };
+      found = { node, pos };
       return false;
     }
 
     return true;
   });
 
-  return result;
+  return found as FoundImage | null;
 }
 
 function updateImageByBlobUrl(
@@ -77,19 +74,22 @@ function removeImageByBlobUrl(editor: Editor, blobUrl: string) {
     return;
   }
 
-  const { tr } = editor.state;
-  tr.delete(found.pos, found.pos + found.node.nodeSize);
-  editor.view.dispatch(tr);
+  editor.view.dispatch(
+    editor.state.tr.delete(found.pos, found.pos + found.node.nodeSize)
+  );
 }
 
-export function uploadImageFile(editor: Editor, file: File, position: number) {
+export function uploadImageFile(
+  editor: Editor,
+  file: File,
+  position: number
+): void {
   const { onImageUpload, onImageUploadError } = getUploadOptions(editor);
   if (!onImageUpload) {
     return;
   }
 
   const blobUrl = URL.createObjectURL(file);
-
   const inserted = editor
     .chain()
     .insertContentAt(position, {
@@ -105,28 +105,23 @@ export function uploadImageFile(editor: Editor, file: File, position: number) {
 
   const context: ImageUploadContext = {
     position,
-    removeImage: () => {
-      removeImageByBlobUrl(editor, blobUrl);
-    },
+    removeImage: () => removeImageByBlobUrl(editor, blobUrl),
   };
-
-  const uploads = editor.storage.imageUpload.uploads;
+  const { uploads } = editor.storage.imageUpload;
 
   uploads.set(blobUrl, IMAGE_UPLOAD_STATUSES.LOADING);
-  notifyImageUploadStatusChanged(editor);
+  notifyUploadStatusChanged(editor);
 
   onImageUpload(file, context)
     .then((url) => {
       uploads.delete(blobUrl);
-      notifyImageUploadStatusChanged(editor);
-
+      notifyUploadStatusChanged(editor);
       updateImageByBlobUrl(editor, blobUrl, { src: url });
       URL.revokeObjectURL(blobUrl);
     })
     .catch((error: unknown) => {
       uploads.set(blobUrl, IMAGE_UPLOAD_STATUSES.ERROR);
-      notifyImageUploadStatusChanged(editor);
-
+      notifyUploadStatusChanged(editor);
       onImageUploadError?.(error, file, context);
       URL.revokeObjectURL(blobUrl);
     });

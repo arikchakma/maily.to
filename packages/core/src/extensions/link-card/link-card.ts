@@ -1,16 +1,12 @@
 import type { LinkCardAttributes } from '@maily-to/shared';
-import {
-  DATA_NODE_TYPE_KEY,
-  DATA_VISIBILITY_RULE_KEY,
-  MAILY_NODE_TYPES,
-} from '@maily-to/shared';
+import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import { LinkCardView } from './link-card-view';
 
 export type LinkCardOptions = {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: Record<string, unknown>;
 };
 
 declare module '@tiptap/core' {
@@ -30,14 +26,18 @@ export const LinkCardExtension = Node.create<LinkCardOptions>({
   atom: true,
   draggable: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
+
   addAttributes() {
     return {
       title: {
         default: '',
         parseHTML: (element) => element.getAttribute('data-title') || '',
-        renderHTML: (attributes) => ({
-          'data-title': attributes.title,
-        }),
+        renderHTML: (attributes) => ({ 'data-title': attributes.title }),
       },
       description: {
         default: '',
@@ -49,9 +49,7 @@ export const LinkCardExtension = Node.create<LinkCardOptions>({
       link: {
         default: '',
         parseHTML: (element) => element.getAttribute('data-link') || '',
-        renderHTML: (attributes) => ({
-          'data-link': attributes.link,
-        }),
+        renderHTML: (attributes) => ({ 'data-link': attributes.link }),
       },
       linkTitle: {
         default: '',
@@ -63,16 +61,12 @@ export const LinkCardExtension = Node.create<LinkCardOptions>({
       image: {
         default: '',
         parseHTML: (element) => element.getAttribute('data-image') || '',
-        renderHTML: (attributes) => ({
-          'data-image': attributes.image,
-        }),
+        renderHTML: (attributes) => ({ 'data-image': attributes.image }),
       },
       subTitle: {
         default: '',
         parseHTML: (element) => element.getAttribute('data-sub-title') || '',
-        renderHTML: (attributes) => ({
-          'data-sub-title': attributes.subTitle,
-        }),
+        renderHTML: (attributes) => ({ 'data-sub-title': attributes.subTitle }),
       },
       badgeText: {
         default: '',
@@ -84,6 +78,21 @@ export const LinkCardExtension = Node.create<LinkCardOptions>({
     };
   },
 
+  addCommands() {
+    return {
+      setLinkCard:
+        (attrs) =>
+        ({ commands }) => {
+          return commands.insertContent({ type: this.name, attrs });
+        },
+      updateLinkCardAttributes:
+        (attrs) =>
+        ({ commands }) => {
+          return commands.updateAttributes(this.name, attrs);
+        },
+    };
+  },
+
   parseHTML() {
     return [{ tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]` }];
   },
@@ -91,42 +100,17 @@ export const LinkCardExtension = Node.create<LinkCardOptions>({
   renderHTML({ HTMLAttributes }) {
     return [
       'div',
-      mergeAttributes(HTMLAttributes, {
-        [DATA_NODE_TYPE_KEY]: this.name,
-        contenteditable: false,
-      }),
+      mergeAttributes(
+        { [DATA_NODE_TYPE_KEY]: this.name, contenteditable: false },
+        this.options.HTMLAttributes,
+        HTMLAttributes
+      ),
     ];
-  },
-
-  addCommands() {
-    return {
-      setLinkCard: (attrs) => {
-        return ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs,
-          });
-        };
-      },
-      updateLinkCardAttributes: (attrs) => {
-        return ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        };
-      },
-    };
   },
 
   addNodeView() {
     return ReactNodeViewRenderer(LinkCardView, {
-      className: 'mly:relative',
-      attrs: (props) => {
-        return {
-          [DATA_NODE_TYPE_KEY]: this.name,
-          ...(props.node.attrs.visibilityRule
-            ? { [DATA_VISIBILITY_RULE_KEY]: '' }
-            : {}),
-        };
-      },
+      attrs: () => ({ [DATA_NODE_TYPE_KEY]: MAILY_NODE_TYPES.LINK_CARD }),
     });
   },
 });

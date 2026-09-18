@@ -1,8 +1,6 @@
 import { definePlugin } from '@oxlint/plugins';
 import type { ESTree, Rule } from '@oxlint/plugins';
 
-// @oxlint/plugins types BindingIdentifier.typeAnnotation as `null`,
-// but the runtime AST includes full TSTypeAnnotation for TS files.
 type IdentifierWithAnnotation = Omit<
   ESTree.BindingIdentifier,
   'typeAnnotation'

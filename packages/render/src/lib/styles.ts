@@ -1,9 +1,13 @@
+import type { InlineStyle } from '@maily-to/shared';
+import { parseInlineStyles } from '@maily-to/shared';
 import type { CSSProperties } from 'react';
 
-/**
- * Cross-browser font smoothing properties. Applied to the document
- * root so all text renders with subpixel antialiasing disabled.
- */
+export function getNodeStyle(
+  style: string | null | undefined
+): InlineStyle | undefined {
+  return style ? parseInlineStyles(style) : undefined;
+}
+
 export const ANTIALIASED: Pick<
   CSSProperties,
   'WebkitFontSmoothing' | 'MozOsxFontSmoothing'
@@ -11,3 +15,20 @@ export const ANTIALIASED: Pick<
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
 };
+
+export function getStyleAlignment(style: InlineStyle | undefined) {
+  const start = style?.marginLeft === 'auto';
+  const end = style?.marginRight === 'auto';
+
+  if (start && end) {
+    return 'center';
+  }
+  if (end) {
+    return 'left';
+  }
+  if (start) {
+    return 'right';
+  }
+
+  return undefined;
+}

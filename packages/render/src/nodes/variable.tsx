@@ -8,7 +8,7 @@ export const variable: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const { id, fallback } = node.attrs;
+  const { fallback, id } = node.attrs;
   if (!id) {
     return <>{fallback ?? ''}</>;
   }

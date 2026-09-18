@@ -2,12 +2,14 @@ import type { Editor } from '@tiptap/core';
 import { TextSelection } from '@tiptap/pm/state';
 
 type ExitOnTripleEnterOptions = {
+  editor: Editor;
   /**
    * The depth offset for the node to exit *after*.
    * `0` (default) exits after the matched node itself (e.g. section).
    * `-1` exits after the parent of the matched node (e.g. column → exits after columns).
    */
   exitDepthOffset?: number;
+  nodeName: string;
 };
 
 /**
@@ -15,12 +17,8 @@ type ExitOnTripleEnterOptions = {
  * (i.e. the last three children are empty). Deletes the trailing
  * empty blocks and inserts a paragraph after the container.
  */
-export function exitOnTripleEnter(
-  editor: Editor,
-  nodeName: string,
-  options: ExitOnTripleEnterOptions = {}
-): boolean {
-  const { exitDepthOffset = 0 } = options;
+export function exitOnTripleEnter(options: ExitOnTripleEnterOptions): boolean {
+  const { editor, exitDepthOffset = 0, nodeName } = options;
   const { state } = editor;
   const { $from, empty } = state.selection;
 

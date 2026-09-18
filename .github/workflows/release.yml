@@ -43,10 +43,6 @@ jobs:
         run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/shared
 
-      - name: Publish @maily-to/ui
-        run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
-        working-directory: packages/ui
-
       - name: Publish @maily-to/migration
         run: pnpm publish --provenance --access public --no-git-checks ${{ steps.npm-tag.outputs.tag }}
         working-directory: packages/migration

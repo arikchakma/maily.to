@@ -1,26 +1,24 @@
 import { is } from '@maily-to/shared';
 
-import { resolveVariableText } from '../lib/resolve-variable';
+import { getNodeStyle } from '../lib/styles';
 import type { MarkRenderer } from '../mark';
 
-export const link: MarkRenderer = (mark, text, ctx) => {
+const DEFAULT_LINK_REL = 'noopener noreferrer nofollow';
+
+export const link: MarkRenderer = (mark, text) => {
   if (!is.link(mark)) {
     return null;
   }
 
-  const theme = ctx.config.theme;
-  const linkOverride = ctx.config.variableValues.get(mark.attrs.href);
-  const href =
-    (typeof linkOverride === 'string' ? linkOverride : undefined) ??
-    resolveVariableText(mark.attrs.href, ctx);
-  const color = theme.link?.color;
+  const { href, rel, style, target, title } = mark.attrs;
 
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer nofollow"
-      style={color ? { color } : undefined}
+      rel={rel ?? DEFAULT_LINK_REL}
+      style={getNodeStyle(style)}
+      target={target ?? '_blank'}
+      title={title ?? undefined}
     >
       {text}
     </a>

@@ -11,16 +11,6 @@ export default defineConfig({
     trailingComma: 'es5',
     overrides: [
       {
-        files: ['packages/core/**/*.{ts,tsx}'],
-        options: {
-          experimentalTailwindcss: {
-            stylesheet: './packages/core/src/styles/index.css',
-            attributes: ['class', 'className'],
-            functions: ['cn', 'clsx', 'cva'],
-          },
-        },
-      },
-      {
         files: ['apps/web/**/*.{ts,tsx}'],
         options: {
           experimentalTailwindcss: {
@@ -40,7 +30,13 @@ export default defineConfig({
       attributes: ['class', 'className'],
       functions: ['cn', 'clsx', 'cva'],
     },
-    ignorePatterns: ['coverage/', 'coverage-merged/', 'dist/', 'node_modules/'],
+    ignorePatterns: [
+      'apps/app/src/default-email.html',
+      'coverage/',
+      'coverage-merged/',
+      'dist/',
+      'node_modules/',
+    ],
   },
   lint: {
     plugins: ['typescript', 'import'],

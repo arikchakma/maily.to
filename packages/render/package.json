@@ -35,13 +35,12 @@
     "access": "public"
   },
   "scripts": {
+    "bench": "vp test bench --run",
     "build": "vp pack",
     "clean": "rm -rf dist",
-    "dev": "vp pack --watch",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "dev": "vp pack --watch --no-clean",
     "release": "bumpp",
-    "test": "vp test run"
+    "test": "vp test run --passWithNoTests"
   },
   "dependencies": {
     "@maily-to/migration": "workspace:*",

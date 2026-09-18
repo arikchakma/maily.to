@@ -15,120 +15,111 @@ import {
   PopoverTrigger,
 } from '../interface/popover';
 
-type LinkCardFieldsPopoverProps = {
-  container: FloatingUIContainer;
-
-  title: string;
-  onTitleChange: (title: string) => void;
-  description: string;
-  onDescriptionChange: (description: string) => void;
-  linkTitle: string;
-  onLinkTitleChange: (linkTitle: string) => void;
-  link: string;
-  onLinkChange: (link: string) => void;
-  image: string;
-  onImageChange: (image: string) => void;
+export type LinkCardFieldsPopoverProps = {
   badgeText: string;
+  container?: FloatingUIContainer;
+  description: string;
+  image: string;
+  link: string;
+  linkTitle: string;
   onBadgeTextChange: (badgeText: string) => void;
-  subTitle: string;
+  onDescriptionChange: (description: string) => void;
+  onImageChange: (image: string) => void;
+  onLinkChange: (link: string) => void;
+  onLinkTitleChange: (linkTitle: string) => void;
   onSubTitleChange: (subTitle: string) => void;
+  onTitleChange: (title: string) => void;
+  subTitle: string;
+  title: string;
 };
 
 export function LinkCardFieldsPopover(props: LinkCardFieldsPopoverProps) {
   const {
-    container,
-    title,
-    onTitleChange,
-    description,
-    onDescriptionChange,
-    linkTitle,
-    onLinkTitleChange,
-    link,
-    onLinkChange,
-    image,
-    onImageChange,
     badgeText,
+    container,
+    description,
+    image,
+    link,
+    linkTitle,
     onBadgeTextChange,
-    subTitle,
+    onDescriptionChange,
+    onImageChange,
+    onLinkChange,
+    onLinkTitleChange,
     onSubTitleChange,
+    onTitleChange,
+    subTitle,
+    title,
   } = props;
 
   const [open, setOpen] = useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        render={
-          <BubbleButton
-            label="Card Fields"
-            icon={PencilRulerIcon}
-            tooltip="Card Fields"
-            container={container}
-            isActive={open}
-          />
-        }
-      />
-      <PopoverPositioner
+    <Popover onOpenChange={setOpen} open={open}>
+      <BubbleButton
         container={container}
+        icon={PencilRulerIcon}
+        isActive={open}
+        label="Card Fields"
+        render={<PopoverTrigger />}
+        tooltip="Card Fields"
+      />
+
+      <PopoverPositioner
         alignOffset={arrowAlignOffset}
+        container={container}
         side="bottom"
       >
-        <PopoverPopup className="mly:w-auto mly:p-1">
+        <PopoverPopup data-variant="link-card">
           <ImageMetadataField
             content={image}
+            label="Image"
             onContentChange={onImageChange}
             placeholder="https://example.com/image.png"
-            autofocus="end"
-            label="Image"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={title}
+            label="Title"
             onContentChange={onTitleChange}
             placeholder="Card title"
-            autofocus={false}
-            label="Title"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={description}
+            label="Desc."
             onContentChange={onDescriptionChange}
             placeholder="Card description"
-            autofocus={false}
-            label="Desc."
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={link}
+            label="URL"
             onContentChange={onLinkChange}
             placeholder="https://example.com"
-            autofocus={false}
-            label="URL"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={linkTitle}
+            label="CTA"
             onContentChange={onLinkTitleChange}
             placeholder="Link display text"
-            autofocus={false}
-            label="CTA"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={badgeText}
+            label="Badge"
             onContentChange={onBadgeTextChange}
             placeholder="Badge label"
-            autofocus={false}
-            label="Badge"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={subTitle}
+            label="Sub."
             onContentChange={onSubTitleChange}
             placeholder="Subtitle text"
-            autofocus={false}
-            label="Sub."
           />
+
           <PopoverArrow />
         </PopoverPopup>
       </PopoverPositioner>

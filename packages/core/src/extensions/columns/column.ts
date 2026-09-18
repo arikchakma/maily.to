@@ -1,16 +1,17 @@
-import type { ColumnAttributes } from '@maily-to/shared';
-import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
+import type { ColumnAttributes, ColumnWidth } from '@maily-to/shared';
+import {
+  DATA_NODE_TYPE_KEY,
+  getColumnWidth,
+  getColumnWidthValue,
+  MAILY_NODE_TYPES,
+} from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
 
 import { goToSiblingColumn } from '~/utils/columns';
 import { exitOnTripleEnter } from '~/utils/exit-on-triple-enter';
 
-export const DEFAULT_COLUMN_WIDTH = null;
+const DEFAULT_COLUMN_WIDTH = null;
 export const DEFAULT_COLUMN_VERTICAL_ALIGN = 'top';
-
-export type ColumnOptions = {
-  HTMLAttributes: Record<string, any>;
-};
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -20,7 +21,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const ColumnExtension = Node.create<ColumnOptions>({
+export const ColumnExtension = Node.create({
   name: MAILY_NODE_TYPES.COLUMN,
   group: 'column',
   content: 'block+',
@@ -32,30 +33,38 @@ export const ColumnExtension = Node.create<ColumnOptions>({
       width: {
         default: DEFAULT_COLUMN_WIDTH,
         parseHTML: (element) => {
-          const width = element.style.width?.replace(/['"]+/g, '');
-          if (!width) {
-            return DEFAULT_COLUMN_WIDTH;
-          }
-          const num = parseFloat(width);
-          return isNaN(num) ? DEFAULT_COLUMN_WIDTH : num;
+          return getColumnWidth(element.style.width) ?? DEFAULT_COLUMN_WIDTH;
         },
         renderHTML: (attributes) => {
-          if (attributes.width === null || attributes.width === undefined) {
+          const width = attributes.width as ColumnWidth | null;
+          if (width === null) {
             return {};
           }
 
-          return {
-            style: `width: ${attributes.width}%; max-width: ${attributes.width}%`,
-          };
+          const value = getColumnWidthValue(width);
+
+          return { style: `width:${value};max-width:${value}` };
         },
       },
       verticalAlign: {
         default: DEFAULT_COLUMN_VERTICAL_ALIGN,
         parseHTML: (element) => {
-          return element?.style?.verticalAlign || DEFAULT_COLUMN_VERTICAL_ALIGN;
+          if (element.style.verticalAlign) {
+            return element.style.verticalAlign;
+          }
+
+          if (element.style.justifyContent === 'center') {
+            return 'middle';
+          }
+
+          if (element.style.justifyContent === 'flex-end') {
+            return 'bottom';
+          }
+
+          return DEFAULT_COLUMN_VERTICAL_ALIGN;
         },
         renderHTML: (attributes) => {
-          const { verticalAlign } = attributes;
+          const verticalAlign = attributes.verticalAlign;
           if (
             !verticalAlign ||
             verticalAlign === DEFAULT_COLUMN_VERTICAL_ALIGN
@@ -66,12 +75,14 @@ export const ColumnExtension = Node.create<ColumnOptions>({
           if (verticalAlign === 'middle') {
             return {
               style:
-                'display: flex; flex-direction: column; justify-content: center;',
+                'display:flex;flex-direction:column;justify-content:center',
             };
-          } else if (verticalAlign === 'bottom') {
+          }
+
+          if (verticalAlign === 'bottom') {
             return {
               style:
-                'display: flex; flex-direction: column; justify-content: flex-end;',
+                'display:flex;flex-direction:column;justify-content:flex-end',
             };
           }
 
@@ -85,42 +96,36 @@ export const ColumnExtension = Node.create<ColumnOptions>({
     return {
       updateColumn:
         (attrs) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        },
+        ({ commands }) =>
+          commands.updateAttributes(this.name, attrs),
     };
   },
 
   addKeyboardShortcuts() {
     return {
-      Tab: ({ editor }) => {
-        return goToSiblingColumn(editor, 'next');
-      },
-      'Shift-Tab': ({ editor }) => {
-        return goToSiblingColumn(editor, 'previous');
-      },
-      // Exit column on triple enter (exits after parent columns node)
+      Tab: ({ editor }) => goToSiblingColumn(editor, 'next'),
+      'Shift-Tab': ({ editor }) => goToSiblingColumn(editor, 'previous'),
       Enter: ({ editor }) => {
-        return exitOnTripleEnter(editor, this.name, { exitDepthOffset: -1 });
+        return exitOnTripleEnter({
+          editor,
+          exitDepthOffset: -1,
+          nodeName: this.name,
+        });
       },
     };
+  },
+
+  parseHTML() {
+    return [{ tag: `div[${DATA_NODE_TYPE_KEY}="${MAILY_NODE_TYPES.COLUMN}"]` }];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       'div',
       mergeAttributes(HTMLAttributes, {
-        [DATA_NODE_TYPE_KEY]: this.name,
+        [DATA_NODE_TYPE_KEY]: MAILY_NODE_TYPES.COLUMN,
       }),
       0,
-    ];
-  },
-
-  parseHTML() {
-    return [
-      {
-        tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]`,
-      },
     ];
   },
 });

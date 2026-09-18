@@ -1,95 +1,40 @@
 import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
-import * as React from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { cn } from '~/utils/classname';
 
 import { ArrowIcon } from '../icons/arrow-icon';
 import { FLOATING_ELEMENT_PADDING } from './floating-element';
 
-const TooltipProvider = TooltipPrimitive.Provider;
+export const Tooltip = TooltipPrimitive.Root;
+export const TooltipProvider = TooltipPrimitive.Provider;
+export const TooltipTrigger = TooltipPrimitive.Trigger;
 
-const Tooltip = TooltipPrimitive.Root;
+export type TooltipPositionerProps = TooltipPrimitive.Positioner.Props & {
+  container?: FloatingUIContainer;
+};
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
-
-const TooltipPortal = TooltipPrimitive.Portal;
-
-const TooltipPositioner = React.forwardRef<
-  React.ComponentRef<typeof TooltipPrimitive.Positioner>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Positioner> & {
-    container?: FloatingUIContainer;
-  }
->((props, ref) => {
-  const {
-    className,
-    sideOffset = FLOATING_ELEMENT_PADDING,
-    container,
-    ...rest
-  } = props;
+export function TooltipPositioner(props: TooltipPositionerProps) {
+  const { container, sideOffset = FLOATING_ELEMENT_PADDING, ...rest } = props;
 
   return (
     <TooltipPrimitive.Portal container={container}>
-      <TooltipPrimitive.Positioner
-        ref={ref}
-        className={className}
-        sideOffset={sideOffset}
-        {...rest}
-      />
+      <TooltipPrimitive.Positioner sideOffset={sideOffset} {...rest} />
     </TooltipPrimitive.Portal>
   );
-});
+}
 
-TooltipPositioner.displayName = TooltipPrimitive.Positioner.displayName;
+export type TooltipPopupProps = TooltipPrimitive.Popup.Props;
 
-const TooltipPopup = React.forwardRef<
-  React.ComponentRef<typeof TooltipPrimitive.Popup>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Popup>
->((props, ref) => {
-  const { className, ...rest } = props;
+export function TooltipPopup(props: TooltipPopupProps) {
+  return <TooltipPrimitive.Popup data-mly-tooltip="" {...props} />;
+}
 
+export type TooltipArrowProps = TooltipPrimitive.Arrow.Props;
+
+export function TooltipArrow(props: TooltipArrowProps) {
   return (
-    <TooltipPrimitive.Popup
-      ref={ref}
-      className={cn(
-        'mly:z-50 mly:w-fit mly:overflow-hidden mly:rounded-xl mly:border mly:border-gray-200 mly:bg-white mly:px-2 mly:py-1 mly:text-xs',
-        className
-      )}
-      {...rest}
-    />
-  );
-});
-
-TooltipPopup.displayName = TooltipPrimitive.Popup.displayName;
-
-export const ToolTipArrow = React.forwardRef<
-  React.ComponentRef<typeof TooltipPrimitive.Arrow>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Arrow>
->((props, ref) => {
-  const { className, ...rest } = props;
-
-  return (
-    <TooltipPrimitive.Arrow
-      ref={ref}
-      className={cn(
-        'mly:data-[side=bottom]:top-[-7px] mly:data-[side=left]:right-[-13px] mly:data-[side=left]:rotate-90 mly:data-[side=right]:left-[-13px] mly:data-[side=right]:-rotate-90 mly:data-[side=top]:bottom-[-7px] mly:data-[side=top]:rotate-180',
-        'mly:data-[align=end]:right-[calc(var(--anchor-width)/2+5px)] mly:data-[align=start]:left-[calc(var(--anchor-width)/2+2px)]!',
-        className
-      )}
-      {...rest}
-    >
+    <TooltipPrimitive.Arrow data-mly-tooltip-arrow="" {...props}>
       <ArrowIcon />
     </TooltipPrimitive.Arrow>
   );
-});
-
-ToolTipArrow.displayName = TooltipPrimitive.Arrow.displayName;
-
-export {
-  Tooltip,
-  TooltipPopup,
-  TooltipPortal,
-  TooltipPositioner,
-  TooltipProvider,
-  TooltipTrigger,
-};
+}

@@ -1,5 +1,7 @@
 import type { MigrationWarning } from '../types';
 
+const DEFAULT_COLUMNS_GAP = 8;
+
 /**
  * Migrates a v1 columns node to the v2 schema.
  * In v2, columns tracks its child count and gap explicitly:
@@ -12,9 +14,6 @@ export function columns(
 ): void {
   const attrs = node.attrs ?? {};
 
-  // Add columnCount = count of content children
   attrs.columnCount ??= node.content?.length ?? 0;
-
-  // Add gap default
-  attrs.gap ??= 8;
+  attrs.gap ??= DEFAULT_COLUMNS_GAP;
 }

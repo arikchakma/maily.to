@@ -1,7 +1,4 @@
-import type { Properties } from 'csstype';
-
-import type { AllowedFieldMode } from './field-mode';
-import { FIELD_MODE } from './field-mode';
+import type { InlineStyle } from './style';
 
 export const BORDER_STYLES = {
   SOLID: 'solid',
@@ -12,81 +9,52 @@ export const BORDER_STYLES = {
 export type AllowedBorderStyle =
   (typeof BORDER_STYLES)[keyof typeof BORDER_STYLES];
 
+const allowedBorderStyles: readonly AllowedBorderStyle[] = Object.freeze(
+  Object.values(BORDER_STYLES)
+);
+
 export const DEFAULT_BORDER_STYLE: AllowedBorderStyle = BORDER_STYLES.SOLID;
 
-export const DEFAULT_BORDER_COLOR = '#000000';
+export function isAllowedBorderStyle(
+  value: unknown
+): value is AllowedBorderStyle {
+  return (
+    typeof value === 'string' &&
+    allowedBorderStyles.includes(value as AllowedBorderStyle)
+  );
+}
 
-/**
- * Full border configuration for a node. Includes border style, color,
- * per-side widths (top/right/bottom/left), per-corner radii, and
- * field modes that control whether each group is edited uniformly
- * or independently.
- */
-export type BorderStyleConfig = {
-  borderStyle: AllowedBorderStyle;
-
-  borderColor: string;
-
-  borderWidthMode: AllowedFieldMode;
-  borderTopWidth: number;
-  borderRightWidth: number;
-  borderBottomWidth: number;
-  borderLeftWidth: number;
-
-  borderRadiusMode: AllowedFieldMode;
-  borderTopLeftRadius: number;
-  borderTopRightRadius: number;
-  borderBottomRightRadius: number;
-  borderBottomLeftRadius: number;
+export type BorderParts = {
+  color: string | undefined;
+  style: string | undefined;
+  width: string | undefined;
 };
 
 /**
- * Converts a BorderStyleConfig into CSS properties for inline styles.
- * When all widths or radii are equal (or the mode is "uniform"), emits
- * shorthand CSS; otherwise emits per-side longhand properties.
+ * Reads the width, style and colour of a border from the `border` shorthand,
+ * letting any longhand already in the style win. The shorthand lists its
+ * parts in any order, so each is recognised by shape rather than position.
  */
-export function getBorderStyle(config: BorderStyleConfig): Properties {
-  const {
-    borderStyle = DEFAULT_BORDER_STYLE,
-    borderColor = DEFAULT_BORDER_COLOR,
-    borderWidthMode,
-    borderTopWidth,
-    borderRightWidth,
-    borderBottomWidth,
-    borderLeftWidth,
-    borderRadiusMode,
-    borderTopLeftRadius,
-    borderTopRightRadius,
-    borderBottomRightRadius,
-    borderBottomLeftRadius,
-  } = config;
+export function getBorderParts(style: InlineStyle): BorderParts {
+  const parts = (style.border ?? '').trim().split(/\s+/).filter(Boolean);
 
-  const isBorderWidthUniform =
-    borderWidthMode === FIELD_MODE.UNIFORM ||
-    (borderLeftWidth === borderRightWidth &&
-      borderRightWidth === borderBottomWidth &&
-      borderBottomWidth === borderTopWidth);
-  const isBorderRadiusUniform =
-    borderRadiusMode === FIELD_MODE.UNIFORM ||
-    (borderTopLeftRadius === borderTopRightRadius &&
-      borderTopRightRadius === borderBottomRightRadius &&
-      borderBottomRightRadius === borderBottomLeftRadius);
+  let color: string | undefined;
+  let borderStyle: string | undefined;
+  let width: string | undefined;
+
+  for (const part of parts) {
+    if (isAllowedBorderStyle(part) || part === 'none') {
+      borderStyle = part;
+    } else if (/^[\d.]/.test(part)) {
+      width = part;
+    } else {
+      color = part;
+    }
+  }
 
   return {
-    ...(isBorderWidthUniform
-      ? { border: `${borderTopWidth}px ${borderStyle} ${borderColor}` }
-      : {
-          borderTopWidth: `${borderTopWidth}px`,
-          borderRightWidth: `${borderRightWidth}px`,
-          borderBottomWidth: `${borderBottomWidth}px`,
-          borderLeftWidth: `${borderLeftWidth}px`,
-          borderStyle,
-          borderColor,
-        }),
-    ...(isBorderRadiusUniform
-      ? { borderRadius: `${borderTopLeftRadius}px` }
-      : {
-          borderRadius: `${borderTopLeftRadius}px ${borderTopRightRadius}px ${borderBottomRightRadius}px ${borderBottomLeftRadius}px`,
-        }),
+    color: style.borderColor ?? color,
+    style: style.borderStyle ?? borderStyle,
+    width: style.borderWidth ?? width,
   };
 }

@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 
-type UseDelayedStateOptions = {
+type DelayedStateOptions = {
   delay?: number;
 };
 
 export function useDelayedState(
-  defaultOpen: boolean,
-  options: UseDelayedStateOptions = {}
+  isOpen: boolean,
+  options: DelayedStateOptions = {}
 ) {
   const { delay = 200 } = options;
 
   const [value, setValue] = useState(false);
-  const timerRef = useRef<number>(0);
+  const timerRef = useRef(0);
 
   useEffect(() => {
     window.clearTimeout(timerRef.current);
 
-    if (!defaultOpen) {
+    if (!isOpen) {
       timerRef.current = 0;
       setValue(false);
       return;
@@ -35,7 +35,7 @@ export function useDelayedState(
       window.clearTimeout(timerRef.current);
       timerRef.current = 0;
     };
-  }, [defaultOpen, delay]);
+  }, [delay, isOpen]);
 
   return value;
 }

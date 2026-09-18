@@ -1,13 +1,7 @@
-import {
-  getCssDirection,
-  getFontStyle,
-  is,
-  TEXT_ALIGNMENTS,
-} from '@maily-to/shared';
+import { getCssDirection, is } from '@maily-to/shared';
 import { Heading } from '@react-email/components';
 
-import { prepareAndRegisterFontFaceFromAttrs } from '../lib/font-face';
-import { shouldSuppressMarginBottom } from '../lib/spacing';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 const HEADING_LEVELS = {
@@ -21,26 +15,13 @@ export const heading: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const { level, textAlign, dir } = node.attrs;
-  const theme = ctx.config.theme;
-
-  const element = HEADING_LEVELS[level];
-  const key = `h${level}` as 'h1' | 'h2' | 'h3';
-  const defaults = theme.heading?.[key];
-  const fontStyle = getFontStyle(node.attrs, defaults);
-
-  prepareAndRegisterFontFaceFromAttrs(ctx, node.attrs, defaults);
-
   return (
     <Heading
-      as={element}
+      as={HEADING_LEVELS[node.attrs.level]}
+      dir={node.attrs.dir ?? undefined}
       style={{
-        textAlign: textAlign ?? TEXT_ALIGNMENTS.LEFT,
-        ...getCssDirection(dir),
-        color: theme.heading?.defaults?.color,
-        marginTop: 0,
-        marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 12,
-        ...fontStyle,
+        ...getCssDirection(node.attrs.dir),
+        ...getNodeStyle(node.attrs.style),
       }}
     >
       {ctx.children(node)}

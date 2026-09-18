@@ -6,6 +6,7 @@ import type {
 import { is, MAILY_MARK_TYPES } from '@maily-to/shared';
 
 import type { RenderContext } from './context';
+import { getNodeStyle } from './lib/styles';
 import { bold } from './marks/bold';
 import { code } from './marks/code';
 import { italic } from './marks/italic';
@@ -22,10 +23,6 @@ const MAILY_MARKS_ORDER = [
   MAILY_MARK_TYPES.CODE,
 ];
 
-/**
- * Function signature for a mark renderer. Each mark type (bold, link,
- * etc.) wraps the text node in its styled element.
- */
 export type MarkRenderer = (
   mark: AnyMailyMark,
   text: React.ReactNode,
@@ -54,43 +51,41 @@ function render(mark: AnyMailyMark, text: React.ReactNode, ctx: RenderContext) {
   return renderer(mark, text, ctx);
 }
 
-type MergedTextStyle = {
-  color?: string;
+type MergedTextStyle = Record<string, string | undefined> & {
   backgroundColor?: string;
+  color?: string;
 };
 
-/**
- * Applies all marks on a text node. Merges textStyle and highlight
- * marks into a single span, then wraps with remaining marks in order.
- */
 export function marks(node: AnyMailyNode, ctx: RenderContext) {
   if (!is.marked(node)) {
     return [];
   }
 
-  const themeColor = ctx.config.theme.paragraph?.color;
-
-  // Merge text styles so that we don't have to add multiple spans for each text style
-  // This is done by reducing the marks to a single object with the text styles
+  // Merge text styles so that we don't have to add a span for each of them.
   const textStyles = node.marks
-    .filter((mark) => is.textStyle(mark) || is.highlight(mark))
+    .filter((mark) => is.textStyle(mark) || is.highlight(mark) || is.span(mark))
     .reduce((acc, mark) => {
       if (is.textStyle(mark)) {
-        acc.color = mark.attrs.color || themeColor;
-      } else {
+        if (mark.attrs.color) {
+          acc.color = mark.attrs.color;
+        }
+      } else if (is.highlight(mark)) {
         acc.backgroundColor = mark.attrs.color;
+      } else {
+        Object.assign(acc, getNodeStyle(mark.attrs?.style));
       }
 
       return acc;
     }, {} as MergedTextStyle);
 
   const marks = node.marks
-    .filter((mark) => !is.textStyle(mark) && !is.highlight(mark))
-    .sort((a, b) => {
-      const aIndex = MAILY_MARKS_ORDER.indexOf(a.type);
-      const bIndex = MAILY_MARKS_ORDER.indexOf(b.type);
-      return aIndex - bIndex;
-    });
+    .filter(
+      (mark) => !is.textStyle(mark) && !is.highlight(mark) && !is.span(mark)
+    )
+    .sort(
+      (a, b) =>
+        MAILY_MARKS_ORDER.indexOf(a.type) - MAILY_MARKS_ORDER.indexOf(b.type)
+    );
 
   const text = node?.text || <>&nbsp;</>;
   const baseText = isEmptyObject(textStyles) ? (

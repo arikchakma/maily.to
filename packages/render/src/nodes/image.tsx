@@ -1,13 +1,9 @@
-import {
-  getBorderStyle,
-  is,
-  parseWidthToPercentage,
-  TEXT_ALIGNMENTS,
-} from '@maily-to/shared';
+import { is, parseWidthToPercentage } from '@maily-to/shared';
 import { Column, Img, Row } from '@react-email/components';
 
+import { getSafeHref } from '../lib/link';
 import { resolveVariableText } from '../lib/resolve-variable';
-import { shouldSuppressMarginBottom } from '../lib/spacing';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 export const image: NodeRenderer = (node, ctx) => {
@@ -15,46 +11,46 @@ export const image: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const { src, alt, title, width, align, externalLink } = node.attrs;
+  const { align, alt, externalLink, src, title, width } = node.attrs;
   const resolvedSrc = resolveVariableText(src, ctx);
   const resolvedExternalLink = externalLink
-    ? resolveVariableText(externalLink, ctx)
+    ? getSafeHref(resolveVariableText(externalLink, ctx))
     : externalLink;
   const percent = parseWidthToPercentage(width, ctx.box);
   const absoluteWidth = Math.round((ctx.box * percent) / 100);
 
   const img = (
     <Img
-      src={resolvedSrc}
-      alt={alt}
-      title={title}
-      width={absoluteWidth}
+      alt={alt ?? undefined}
+      src={resolvedSrc || undefined}
       style={{
-        width: width ?? '100%',
-        maxWidth: absoluteWidth,
-        height: 'auto',
         display: 'block',
-        ...getBorderStyle(node.attrs),
+        height: 'auto',
+        maxWidth: absoluteWidth,
+        width: width ?? '100%',
+        ...getNodeStyle(node.attrs.style),
       }}
+      title={title ?? undefined}
+      width={absoluteWidth}
     />
   );
 
-  const content = resolvedExternalLink ? (
-    <a
-      href={resolvedExternalLink}
-      target="_blank"
-      rel="noopener noreferrer nofollow"
-      style={{ display: 'block' }}
-    >
-      {img}
-    </a>
-  ) : (
-    img
-  );
-
   return (
-    <Row style={{ marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 32 }}>
-      <Column align={align ?? TEXT_ALIGNMENTS.LEFT}>{content}</Column>
+    <Row>
+      <Column align={align}>
+        {resolvedExternalLink ? (
+          <a
+            href={resolvedExternalLink}
+            rel="noopener noreferrer nofollow"
+            style={{ display: 'block' }}
+            target="_blank"
+          >
+            {img}
+          </a>
+        ) : (
+          img
+        )}
+      </Column>
     </Row>
   );
 };

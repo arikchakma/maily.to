@@ -1,4 +1,8 @@
-import type { MiddlewareState, Placement } from '@floating-ui/react';
+import type {
+  MiddlewareState,
+  OpenChangeReason,
+  Placement,
+} from '@floating-ui/react';
 import {
   autoUpdate,
   flip,
@@ -11,8 +15,7 @@ import {
 } from '@floating-ui/react';
 import { isHTMLElement } from '@floating-ui/utils/dom';
 import { MAILY_NODE_TYPES } from '@maily-to/shared';
-import { useValueAsRef } from '@maily-to/ui';
-import type { Editor, EditorEvents } from '@tiptap/react';
+import type { Editor } from '@tiptap/react';
 import {
   forwardRef,
   useCallback,
@@ -28,8 +31,12 @@ import {
   useRegisterFloatingContext,
 } from '~/hooks/use-floating-store';
 import { useOnSelectionUpdate } from '~/hooks/use-on-selection-update';
+import { useValueAsRef } from '~/hooks/use-value-as-ref';
 import type { FloatingElementId } from '~/types/floating-ui';
-import { FLOATING_ELEMENT_ORDER } from '~/types/floating-ui';
+import {
+  FLOATING_ELEMENT_ATTRIBUTE,
+  FLOATING_ELEMENT_ORDER,
+} from '~/types/floating-ui';
 import {
   getCurrentSelectionRect,
   isValidSelection,
@@ -39,26 +46,20 @@ import {
 export const FLOATING_ELEMENT_PADDING = 8;
 export const FLOATING_ELEMENT_HEIGHT = 28;
 
-const NOT_ALLOWED_NODES = [
+const NOT_ALLOWED_NODES: string[] = [
   MAILY_NODE_TYPES.IMAGE,
   MAILY_NODE_TYPES.INLINE_IMAGE,
   MAILY_NODE_TYPES.SPACER,
   MAILY_NODE_TYPES.HORIZONTAL_RULE,
-  MAILY_NODE_TYPES.BUTTON,
-  MAILY_NODE_TYPES.LINK_CARD,
 ];
 
-const NOT_ALLOWED_NESTED_NODES = [MAILY_NODE_TYPES.HTML_CODE_BLOCK];
-
 export type FloatingElementProps = {
-  editor?: Editor;
   children: React.ReactNode;
-  className?: string;
-  placement?: Placement;
-
+  editor?: Editor;
   floatingId: FloatingElementId;
-  open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+  placement?: Placement;
 };
 
 // We can’t fully control Tiptap’s default BubbleMenu visibility because it only reacts
@@ -72,30 +73,41 @@ export type FloatingElementProps = {
 export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
   (props, ref) => {
     const {
-      floatingId,
-      editor: defaultEditor,
       children,
-      className,
-      placement = 'top',
-      open: defaultOpen = undefined,
+      editor: defaultEditor,
+      floatingId,
       onOpenChange,
+      open: defaultOpen,
+      placement = 'top',
     } = props;
 
     const editor = useEditorInstance(defaultEditor);
 
+    const isDragContextOpen = useFloatingStore((state) => {
+      return state.isDragContextOpen;
+    });
+
     const preventShowRef = useRef(false);
-    const [isOpen, setIsOpen] = useState(
-      defaultOpen !== undefined ? defaultOpen : false
-    );
+    const [isOpen, setIsOpen] = useState(defaultOpen ?? false);
     const openRef = useValueAsRef(isOpen);
 
+    const elementRef = useRef<HTMLDivElement | null>(null);
+
     const handleOpenChange = useCallback(
-      (open: boolean) => {
+      (open: boolean, _event?: Event, reason?: OpenChangeReason) => {
+        if (
+          !open &&
+          reason === 'escape-key' &&
+          elementRef.current?.contains(document.activeElement)
+        ) {
+          editor.commands.focus();
+        }
+
         setIsOpen(open);
         onOpenChange?.(open);
         openRef.current = open;
       },
-      [onOpenChange, openRef]
+      [editor, onOpenChange, openRef]
     );
 
     const handleOutsidePress = useCallback(
@@ -107,21 +119,24 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
           return false;
         }
 
+        if (target.closest(`[${FLOATING_ELEMENT_ATTRIBUTE}]`)) {
+          return false;
+        }
+
         return !editorWrapper.contains(target);
       },
       [editor]
     );
 
     const bubbleMenuOffset = (state: MiddlewareState) => {
-      const contexts = useFloatingStore.getState().contexts;
-      const currentPlacement = state.placement;
+      const { contexts } = useFloatingStore.getState();
 
       const otherBubbles = contexts
         .filter(
           (context) =>
             context.id !== floatingId &&
             context.value.open &&
-            context.value.placement === currentPlacement
+            context.value.placement === state.placement
         )
         .map((context) => context.id);
 
@@ -130,22 +145,22 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
           FLOATING_ELEMENT_ORDER.indexOf(a) - FLOATING_ELEMENT_ORDER.indexOf(b)
       );
 
-      const idx = allBubbles.indexOf(floatingId);
-      if (idx === 0) {
+      const index = allBubbles.indexOf(floatingId);
+      if (index === 0) {
         return FLOATING_ELEMENT_PADDING;
       }
 
       return (
-        idx * (FLOATING_ELEMENT_PADDING + FLOATING_ELEMENT_HEIGHT) +
+        index * (FLOATING_ELEMENT_PADDING + FLOATING_ELEMENT_HEIGHT) +
         FLOATING_ELEMENT_PADDING
       );
     };
 
     const {
-      floatingStyles,
-      refs,
       context,
+      floatingStyles,
       placement: floatingPlacement,
+      refs,
     } = useFloating({
       nodeId: floatingId,
       open: isOpen,
@@ -153,9 +168,7 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       whileElementsMounted: autoUpdate,
       placement,
       middleware: [
-        shift({
-          padding: FLOATING_ELEMENT_PADDING,
-        }),
+        shift({ padding: FLOATING_ELEMENT_PADDING }),
         offset(bubbleMenuOffset),
         flip(),
       ],
@@ -179,26 +192,15 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
     const handleSelectionChange = useCallback(() => {
       const preventShow = preventShowRef.current;
       const rect = getCurrentSelectionRect(editor);
+
       if (rect && defaultOpen !== undefined && !preventShow) {
         setIsOpen(defaultOpen);
-        refs.setReference({
-          getBoundingClientRect() {
-            return rect;
-          },
-        });
+        refs.setReference({ getBoundingClientRect: () => rect });
         return;
       }
 
-      const isSelectionValid = isValidSelection(editor, NOT_ALLOWED_NODES);
-      const isInsideNotAllowedNestedNode = NOT_ALLOWED_NESTED_NODES.some(
-        (nodeType) => {
-          return editor.isActive(nodeType);
-        }
-      );
-
       if (
-        !isSelectionValid ||
-        isInsideNotAllowedNestedNode ||
+        !isValidSelection(editor, NOT_ALLOWED_NODES) ||
         preventShow ||
         !editor.isEditable
       ) {
@@ -207,24 +209,16 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       }
 
       setIsOpen(true);
-      refs.setReference({
-        getBoundingClientRect() {
-          return rect;
-        },
-      });
-    }, [refs, editor, setIsOpen, defaultOpen]);
+      refs.setReference({ getBoundingClientRect: () => rect });
+    }, [defaultOpen, editor, refs]);
 
     useOnSelectionUpdate(editor, handleSelectionChange);
 
     useEffect(() => {
       const editorView = editor.view;
-      if (!editorView) {
-        return;
-      }
 
-      const handleMouseDown = (e: MouseEvent) => {
-        const isLeftButton = e.button === 0;
-        if (!isLeftButton) {
+      const handleMouseDown = (event: MouseEvent) => {
+        if (event.button !== 0) {
           return;
         }
 
@@ -232,17 +226,16 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
 
         // Only move cursor on single clicks — let ProseMirror handle
         // double-click (word select) and triple-click (node select)
-        if (e.detail <= 1) {
+        if (event.detail <= 1) {
           moveCursorToCoords(editor, {
-            left: e.clientX,
-            top: e.clientY,
+            left: event.clientX,
+            top: event.clientY,
           });
         }
       };
 
       const handleMouseUp = () => {
-        const preventShow = preventShowRef.current;
-        if (!preventShow) {
+        if (!preventShowRef.current) {
           return;
         }
 
@@ -261,6 +254,7 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       // and drags outside to here ─────────── mouseup outside editor
       //
       editorView.root.addEventListener('mouseup', handleMouseUp);
+
       return () => {
         editorView.dom.removeEventListener('mousedown', handleMouseDown);
         editorView.root.removeEventListener('mouseup', handleMouseUp);
@@ -281,17 +275,15 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       // TODO: maybe we can also attach the listener to the editor view root
       // instead of the window, to narrow down the scope of the listener
       window.addEventListener('scroll', handleResize);
+
       return () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('scroll', handleResize);
       };
-    }, [openRef, handleSelectionChange]);
+    }, [handleSelectionChange, openRef]);
 
     useEffect(() => {
       const editorViewDom = editor.view.dom;
-      if (!editorViewDom) {
-        return;
-      }
 
       const handleDrag = () => {
         handleOpenChange(false);
@@ -299,53 +291,38 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
 
       editorViewDom.addEventListener('dragstart', handleDrag);
       editorViewDom.addEventListener('dragover', handleDrag);
+
       return () => {
         editorViewDom.removeEventListener('dragstart', handleDrag);
         editorViewDom.removeEventListener('dragover', handleDrag);
       };
     }, [editor, handleOpenChange]);
 
-    useEffect(() => {
-      const handleTransaction = (props: EditorEvents['transaction']) => {
-        const { transaction } = props;
+    const finalRef = useMergeRefs([refs.setFloating, elementRef, ref]);
 
-        const lockDragHandle = transaction.getMeta('lockDragHandle');
-        if (lockDragHandle !== true) {
-          return;
-        }
-
-        handleOpenChange(false);
-      };
-
-      editor.on('transaction', handleTransaction);
-      return () => {
-        editor.off('transaction', handleTransaction);
-      };
-    }, [editor, handleOpenChange]);
-
-    const finalRef = useMergeRefs([refs.setFloating, ref]);
-
-    const zIndex = useMemo(() => {
-      return (
+    const zIndex = useMemo(
+      () =>
         99 -
         FLOATING_ELEMENT_ORDER.toReversed().indexOf(floatingId) *
-          (floatingPlacement === 'top' ? 1 : -1)
-      );
-    }, [floatingId, floatingPlacement]);
+          (floatingPlacement === 'top' ? 1 : -1),
+      [floatingId, floatingPlacement]
+    );
 
-    if (!isOpen) {
+    if (!isOpen || isDragContextOpen) {
       return null;
     }
 
     return (
       <div
-        ref={finalRef}
         {...getReferenceProps()}
+        {...{ [FLOATING_ELEMENT_ATTRIBUTE]: floatingId }}
+        ref={finalRef}
         style={{ ...floatingStyles, zIndex }}
-        className={className}
       >
         {children}
       </div>
     );
   }
 );
+
+FloatingElement.displayName = 'FloatingElement';

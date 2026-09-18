@@ -1,15 +1,13 @@
 import type { AnyExtension } from '@tiptap/core';
 
-/**
- * Replaces default Tiptap extensions with user overrides by name.
- * Extensions in `overrides` replace any default with the same name;
- * the rest of the defaults are kept.
- */
 export function mergeExtensions(
   defaults: AnyExtension[],
   overrides: AnyExtension[]
 ): AnyExtension[] {
-  const overrideNames = new Set(overrides.map((ext) => ext.name));
-  const merged = defaults.filter((ext) => !overrideNames.has(ext.name));
+  const overrideNames = new Set(overrides.map((extension) => extension.name));
+  const merged = defaults.filter(
+    (extension) => !overrideNames.has(extension.name)
+  );
+
   return [...merged, ...overrides];
 }

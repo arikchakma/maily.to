@@ -1,103 +1,71 @@
-import type { Editor } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowUpRightIcon, LinkIcon, TrashIcon } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
 
+import type { TextFieldPopoverAction } from '../interface/text-field-popover';
 import { TextFieldPopover } from '../interface/text-field-popover';
 
-type LinkPopoverProps = {
+export type LinkPopoverProps = {
   container: FloatingUIContainer;
-  icon?: LucideIcon;
-  tooltip?: string;
   enterTooltip?: string;
-
-  url: string;
-  onUrlChange: (url: string | null) => void;
+  icon?: LucideIcon;
   onClose?: () => void;
-
+  onUrlChange: (url: string | null) => void;
   placeholder?: string;
   showOpenInNewTabButton?: boolean;
   showRemoveButton?: boolean;
+  tooltip?: string;
+  url: string;
 };
 
 export function LinkPopover(props: LinkPopoverProps) {
   const {
     container,
-    icon = LinkIcon,
-    tooltip = 'Link',
     enterTooltip = 'Add Link',
-    url,
-    onUrlChange,
+    icon = LinkIcon,
     onClose,
+    onUrlChange,
     placeholder = 'https://maily.to',
     showOpenInNewTabButton = true,
     showRemoveButton,
+    tooltip = 'Link',
+    url,
   } = props;
 
-  const [open, setOpen] = useState(false);
+  const actions: TextFieldPopoverAction[] = [];
 
-  const handleUrlChange = useCallback(
-    (url: string) => {
-      onUrlChange(url ?? null);
-      setOpen(false);
-    },
-    [onUrlChange]
-  );
+  if (showOpenInNewTabButton) {
+    actions.push({
+      icon: ArrowUpRightIcon,
+      onClick: (value) => {
+        if (value) {
+          window.open(value, '_blank', 'noopener,noreferrer');
+        }
+      },
+      tooltip: 'Open in new tab',
+    });
+  }
 
-  const handleRemoveLink = useCallback(() => {
-    onUrlChange(null);
-    onClose?.();
-    setOpen(false);
-  }, [onUrlChange, onClose]);
-
-  const handleOpenInNewTab = useCallback((editor: Editor) => {
-    const text = editor.getText();
-    window.open(text, '_blank');
-  }, []);
-
-  const actions = useMemo(() => {
-    return [
-      ...(showOpenInNewTabButton
-        ? [
-            {
-              icon: ArrowUpRightIcon,
-              tooltip: 'Open in new tab',
-              onClick: handleOpenInNewTab,
-            },
-          ]
-        : []),
-      ...(showRemoveButton
-        ? [
-            {
-              icon: TrashIcon,
-              tooltip: 'Remove link',
-              onClick: handleRemoveLink,
-            },
-          ]
-        : []),
-    ];
-  }, [
-    showRemoveButton,
-    handleRemoveLink,
-    handleOpenInNewTab,
-    showOpenInNewTabButton,
-  ]);
+  if (showRemoveButton) {
+    actions.push({
+      icon: TrashIcon,
+      onClick: () => onUrlChange(null),
+      tooltip: 'Remove link',
+    });
+  }
 
   return (
     <TextFieldPopover
-      open={open}
-      onOpenChange={setOpen}
+      actions={actions}
       container={container}
-      value={url ?? ''}
-      onValueChange={handleUrlChange}
+      enterTooltip={enterTooltip}
       onClose={onClose}
+      onValueChange={onUrlChange}
+      placeholder={placeholder}
       triggerIcon={icon}
       triggerTooltip={tooltip}
-      enterTooltip={enterTooltip}
-      actions={actions}
-      placeholder={placeholder}
+      value={url}
     />
   );
 }

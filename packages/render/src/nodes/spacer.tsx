@@ -1,6 +1,7 @@
 import { is } from '@maily-to/shared';
 import { Container } from '@react-email/components';
 
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 export const spacer: NodeRenderer = (node) => {
@@ -8,7 +9,12 @@ export const spacer: NodeRenderer = (node) => {
     return null;
   }
 
-  const { height } = node.attrs;
-
-  return <Container style={{ height: `${height}px` }} />;
+  return (
+    <Container
+      style={{
+        height: `${node.attrs.height}px`,
+        ...getNodeStyle(node.attrs.style),
+      }}
+    />
+  );
 };

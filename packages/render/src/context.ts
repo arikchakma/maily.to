@@ -1,18 +1,10 @@
-import type { AnyMailyMark, AnyMailyNode, FontProps } from '@maily-to/shared';
+import type { AnyMailyNode, FontProps } from '@maily-to/shared';
 
-import type { MailyRenderConfig } from './config';
-import { dispatch, children } from './node';
+import type { BuiltMailyConfig } from './config';
+import { children, dispatch } from './node';
 
 /**
  * Typed variable keys available on every RenderContext.
- *
- * Built-in keys:
- * - `item` — the current record during a repeat iteration. Set by repeat.tsx
- *   when looping over an array variable. Each iteration gets its own copy so
- *   sibling iterations are isolated. Variable/visibility lookups check `item`
- *   first, then fall back to `config.variableValues`.
- * - `columnTdWidth` — the TD-relative percentage width string (e.g. `"48.4%"`)
- *   set by columns.tsx and consumed by column.tsx.
  *
  * Extend via module augmentation to add custom keys:
  *
@@ -20,15 +12,14 @@ import { dispatch, children } from './node';
  * ```ts
  * declare module '@maily-to/render' {
  *   interface RenderVariableMap {
- *     theme: 'light' | 'dark';
- *     locale: string;
+ *     item: Record<string, unknown>;
  *   }
  * }
  * ```
  */
 export interface RenderVariableMap {
-  item?: Record<string, unknown>;
-  columnTdWidth?: string;
+  columnWidth: string;
+  item: Record<string, unknown>;
 }
 
 export type BoxModel = {
@@ -38,24 +29,24 @@ export type BoxModel = {
 };
 
 /**
- * Render-time context threaded through every node and mark renderer.
+ * Render-time context threaded through every node renderer.
  *
  * State scoping:
  * - `config` — immutable, shared by the entire tree.
- * - `styles` / `fonts` — shared collectors that accumulate to the document root.
- *   Use `style()` and `font()` from any depth; they all write to the same sets.
+ * - `styles` — a shared collector that accumulates to the document root.
+ *   Use `style()` from any depth; every context writes to the same set.
+ * - `fonts` — a shared collector of the fonts the document needs an
+ *   `@font-face` rule for, keyed so each variant is registered once.
  * - `vars` — cloned per `child()` call. A child inherits the parent's vars at
- *   creation time, but mutations in either direction are isolated. This is what
- *   allows nested repeat iterations to each carry their own `item` without
- *   leaking into siblings or parents.
+ *   creation time, but mutations in either direction are isolated.
  * - `parent`, `siblingIndex`, `size` — local to each context instance.
  */
 export interface RenderContext<
   Variables extends RenderVariableMap = RenderVariableMap,
 > {
-  readonly parent: AnyMailyNode | AnyMailyMark | undefined;
+  readonly parent: AnyMailyNode | undefined;
   readonly siblingIndex: number;
-  readonly config: MailyRenderConfig;
+  readonly config: BuiltMailyConfig;
   readonly size: Readonly<BoxModel>;
   /** Content width after subtracting border and padding from `size.totalWidth`. */
   readonly box: number;
@@ -84,13 +75,14 @@ export interface RenderContext<
 
   /** Add a CSS rule to the shared document-level style collector. */
   style(css: string): void;
-  /** Register a font face in the shared document-level font collector. */
-  font(name: string, props: FontProps): void;
+
+  /** Add a font to the shared document-level font collector. */
+  font(key: string, font: FontProps): void;
 
   /**
    * Derive a child context for rendering a child node.
    *
-   * - `config`, `styles`, and `fonts` are shared by reference.
+   * - `config` and `styles` are shared by reference.
    * - `vars` are shallow-cloned so child `set()` calls don't affect the parent.
    * - `parent`, `siblingIndex`, and `size` can be overridden; unset fields
    *   inherit from the current context.
@@ -102,7 +94,7 @@ export interface RenderContext<
 }
 
 export type ChildContextOptions = {
-  parent?: AnyMailyNode | AnyMailyMark;
+  parent?: AnyMailyNode;
   siblingIndex?: number;
   size?: Partial<BoxModel>;
 };
@@ -114,8 +106,8 @@ type SharedState = {
 };
 
 export type CreateRenderContextOptions = {
-  config: MailyRenderConfig;
-  parent?: AnyMailyNode | AnyMailyMark;
+  config: BuiltMailyConfig;
+  parent?: AnyMailyNode;
   siblingIndex?: number;
   size?: Partial<BoxModel>;
 };
@@ -139,22 +131,20 @@ export function defineRenderContext<
     fonts: new Map(),
   };
 
-  const size = { ...DEFAULT_SIZE, ...opts.size };
-
   return defineContext(
     {
       config: opts.config,
       parent: opts.parent,
       siblingIndex: opts.siblingIndex ?? 0,
-      size,
+      size: { ...DEFAULT_SIZE, ...opts.size },
     },
     shared
   );
 }
 
 type BuildContextOptions = {
-  config: MailyRenderConfig;
-  parent: AnyMailyNode | AnyMailyMark | undefined;
+  config: BuiltMailyConfig;
+  parent: AnyMailyNode | undefined;
   siblingIndex: number;
   size: BoxModel;
 };
@@ -178,36 +168,36 @@ function defineContext<Variables extends RenderVariableMap = RenderVariableMap>(
       return size.totalWidth - size.totalBorder - size.totalPadding;
     },
 
-    render(node: AnyMailyNode) {
+    render(node) {
       return dispatch(node, ctx);
     },
 
-    children(parent: AnyMailyNode) {
+    children(parent) {
       return children(parent, ctx);
     },
 
-    set<K extends keyof Variables>(key: K, value: Variables[K]) {
+    set(key, value) {
       vars.set(key as string, value);
       varCache = null;
     },
 
-    get<K extends keyof Variables>(key: K): Variables[K] {
-      return vars.get(key as string) as Variables[K];
+    get(key) {
+      return vars.get(key as string) as Variables[typeof key];
     },
 
     get var() {
       return (varCache ??= Object.fromEntries(vars) as Readonly<Variables>);
     },
 
-    style(css: string) {
+    style(css) {
       styles.add(css);
     },
 
-    font(name: string, props: FontProps) {
-      fonts.set(name, props);
+    font(key, font) {
+      fonts.set(key, font);
     },
 
-    child(opts: ChildContextOptions): RenderContext<Variables> {
+    child(opts) {
       const childSize: BoxModel = opts.size
         ? {
             totalWidth: opts.size.totalWidth ?? size.totalWidth,
@@ -217,7 +207,7 @@ function defineContext<Variables extends RenderVariableMap = RenderVariableMap>(
         : size;
 
       // Clone vars so child mutations don't leak to parent.
-      // Styles and fonts remain shared (they accumulate to the document root).
+      // Styles remain shared (they accumulate to the document root).
       const childShared: SharedState = {
         vars: new Map(vars),
         styles,
@@ -238,6 +228,7 @@ function defineContext<Variables extends RenderVariableMap = RenderVariableMap>(
     get styles() {
       return styles as ReadonlySet<string>;
     },
+
     get fonts() {
       return fonts as ReadonlyMap<string, FontProps>;
     },

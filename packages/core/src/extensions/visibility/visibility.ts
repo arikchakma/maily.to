@@ -1,6 +1,7 @@
 import type { VisibilityRule } from '@maily-to/shared';
 import {
-  DATA_VISIBILITY_RULE_KEY,
+  getVisibilityRule,
+  getVisibilityValueSupport,
   MAILY_EXTENSION_TYPES,
   MAILY_NODE_TYPES,
 } from '@maily-to/shared';
@@ -19,11 +20,8 @@ export const VISIBILITY_SUPPORTED_TYPES: string[] = [
   MAILY_NODE_TYPES.BUTTON,
   MAILY_NODE_TYPES.REPEAT,
   MAILY_NODE_TYPES.HTML_CODE_BLOCK,
+  MAILY_NODE_TYPES.LINK_CARD,
 ];
-
-type VisibilityAttributes = {
-  visibilityRule: VisibilityRule | null;
-};
 
 export type VisibilityOptions = {
   types: string[];
@@ -32,10 +30,27 @@ export type VisibilityOptions = {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     visibility: {
-      setVisibility: (attrs: Partial<VisibilityAttributes>) => ReturnType;
-      unsetVisibility: () => ReturnType;
+      setVisibilityRule: (
+        typeOrName: string,
+        rule: VisibilityRule
+      ) => ReturnType;
+      unsetVisibilityRule: (typeOrName: string) => ReturnType;
     };
   }
+}
+
+function getRuleAttributes(rule: VisibilityRule): Record<string, string> {
+  const attributes: Record<string, string> = {
+    'data-visibility-action': rule.action,
+    'data-visibility-operator': rule.operator,
+    'data-visibility-variable': rule.variable,
+  };
+
+  if (getVisibilityValueSupport(rule.operator)) {
+    attributes['data-visibility-value'] = rule.value;
+  }
+
+  return attributes;
 }
 
 export const VisibilityExtension = Extension.create<VisibilityOptions>({
@@ -54,14 +69,18 @@ export const VisibilityExtension = Extension.create<VisibilityOptions>({
         attributes: {
           visibilityRule: {
             default: null,
+            keepOnSplit: false,
+            parseHTML: (element) =>
+              getVisibilityRule({
+                action: element.getAttribute('data-visibility-action'),
+                operator: element.getAttribute('data-visibility-operator'),
+                value: element.getAttribute('data-visibility-value'),
+                variable: element.getAttribute('data-visibility-variable'),
+              }),
             renderHTML: (attributes) => {
-              if (!attributes.visibilityRule) {
-                return {};
-              }
+              const rule = attributes.visibilityRule as VisibilityRule | null;
 
-              return {
-                [DATA_VISIBILITY_RULE_KEY]: '',
-              };
+              return rule ? getRuleAttributes(rule) : {};
             },
           },
         },
@@ -71,57 +90,15 @@ export const VisibilityExtension = Extension.create<VisibilityOptions>({
 
   addCommands() {
     return {
-      setVisibility:
-        (attrs: Partial<VisibilityAttributes>) =>
-        ({ tr, state, dispatch }) => {
-          const { selection } = state;
-          const { from, to } = selection;
+      setVisibilityRule:
+        (typeOrName, rule) =>
+        ({ commands }) =>
+          commands.updateAttributes(typeOrName, { visibilityRule: rule }),
 
-          if (dispatch) {
-            tr.doc.nodesBetween(from, to, (node, pos) => {
-              if (node.isText) {
-                return;
-              }
-
-              if (!this.options.types.includes(node.type.name)) {
-                return;
-              }
-
-              tr.setNodeMarkup(pos, undefined, {
-                ...node.attrs,
-                ...attrs,
-              });
-            });
-          }
-
-          return true;
-        },
-
-      unsetVisibility:
-        () =>
-        ({ tr, state, dispatch }) => {
-          const { selection } = state;
-          const { from, to } = selection;
-
-          if (dispatch) {
-            tr.doc.nodesBetween(from, to, (node, pos) => {
-              if (node.isText) {
-                return;
-              }
-
-              if (!this.options.types.includes(node.type.name)) {
-                return;
-              }
-
-              tr.setNodeMarkup(pos, undefined, {
-                ...node.attrs,
-                visibilityRule: null,
-              });
-            });
-          }
-
-          return true;
-        },
+      unsetVisibilityRule:
+        (typeOrName) =>
+        ({ commands }) =>
+          commands.updateAttributes(typeOrName, { visibilityRule: null }),
     };
   },
 });

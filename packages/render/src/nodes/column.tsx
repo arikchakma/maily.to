@@ -1,6 +1,7 @@
 import { is } from '@maily-to/shared';
 import { Column as EmailColumn } from '@react-email/components';
 
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 export const column: NodeRenderer = (node, ctx) => {
@@ -8,20 +9,20 @@ export const column: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const attrs = node.attrs;
   const width =
-    ctx.get('columnTdWidth') ??
-    (attrs.width === null ? undefined : `${attrs.width}%`);
+    ctx.get('columnWidth') ??
+    (node.attrs.width === null ? undefined : `${node.attrs.width}%`);
 
   return (
     <EmailColumn
-      width={width}
       className="tab-col-full"
       style={{
         margin: 0,
+        verticalAlign: node.attrs.verticalAlign,
         width,
-        verticalAlign: attrs.verticalAlign,
+        ...getNodeStyle(node.attrs.style),
       }}
+      width={width}
     >
       {ctx.children(node)}
     </EmailColumn>

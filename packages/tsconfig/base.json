@@ -13,9 +13,9 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
-    "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "noEmit": true,
     "verbatimModuleSyntax": true
   },

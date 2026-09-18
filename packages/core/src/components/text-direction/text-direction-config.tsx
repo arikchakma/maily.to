@@ -1,11 +1,13 @@
 import type { AllowedTextAlignment, TextDirection } from '@maily-to/shared';
 import {
+  DEFAULT_TEXT_ALIGN,
   DEFAULT_TEXT_DIRECTION,
+  isAllowedTextAlignment,
   MAILY_NODE_TYPES,
+  parseInlineStyles,
   TEXT_ALIGNMENTS,
   TEXT_DIRECTIONS,
 } from '@maily-to/shared';
-import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -14,127 +16,114 @@ import {
   PilcrowLeftIcon,
   PilcrowRightIcon,
 } from 'lucide-react';
-import { useCallback } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
-import { cn } from '~/utils/classname';
 
 import { Button } from '../interface/button';
 import { Divider } from '../interface/divider';
 import { PopoverBack } from '../interface/popover';
 
-type TextDirectionConfigProps = {
-  editor: Editor;
-  nodeType: string;
-  onBack?: () => void;
-};
-
-type DirectionOption = {
-  label: string;
+const DIRECTION_OPTIONS: {
   icon: LucideIcon;
+  label: string;
   value: TextDirection;
-};
-
-const DIRECTION_OPTIONS: DirectionOption[] = [
+}[] = [
   {
-    label: 'Left to Right',
     icon: PilcrowLeftIcon,
+    label: 'Left to Right',
     value: TEXT_DIRECTIONS.LTR,
   },
+  { icon: PilcrowIcon, label: 'Auto', value: TEXT_DIRECTIONS.AUTO },
   {
-    label: 'Auto',
-    icon: PilcrowIcon,
-    value: TEXT_DIRECTIONS.AUTO,
-  },
-  {
-    label: 'Right to Left',
     icon: PilcrowRightIcon,
+    label: 'Right to Left',
     value: TEXT_DIRECTIONS.RTL,
   },
 ];
 
-export function TextDirectionConfig(props: TextDirectionConfigProps) {
-  const { editor: editorProp, nodeType, onBack } = props;
+export const TEXT_DIRECTION_SUPPORTED_TYPES: string[] = [
+  MAILY_NODE_TYPES.PARAGRAPH,
+  MAILY_NODE_TYPES.HEADING,
+  MAILY_NODE_TYPES.BULLET_LIST,
+  MAILY_NODE_TYPES.ORDERED_LIST,
+  MAILY_NODE_TYPES.BUTTON,
+];
 
-  const editor = useEditorInstance(editorProp);
+export type TextDirectionConfigProps = {
+  nodeType: string;
+  onBack: () => void;
+};
+
+export function TextDirectionConfig(props: TextDirectionConfigProps) {
+  const { nodeType, onBack } = props;
+
+  const editor = useEditorInstance();
+
   const state = useEditorState({
     editor,
-    selector: (ctx) => {
-      const attrs = ctx.editor.getAttributes(nodeType);
-
-      const align: AllowedTextAlignment | null =
+    selector: ({ editor: instance }) => {
+      const attrs = instance.getAttributes(nodeType);
+      const align =
         nodeType === MAILY_NODE_TYPES.BUTTON
-          ? ((attrs.alignment as AllowedTextAlignment) ?? null)
-          : ((attrs.textAlign as AllowedTextAlignment) ?? null);
+          ? attrs.align
+          : parseInlineStyles((attrs.style as string) ?? '').textAlign;
 
       return {
+        align: isAllowedTextAlignment(align) ? align : DEFAULT_TEXT_ALIGN,
         direction: (attrs.dir ?? DEFAULT_TEXT_DIRECTION) as TextDirection,
-        align,
       };
     },
   });
 
-  const handleDirectionChange = useCallback(
-    (dir: TextDirection) => {
-      const chain = editor.chain().focus();
+  const updateDirection = (direction: TextDirection) => {
+    const chain = editor.chain().focus();
 
-      if (dir === TEXT_DIRECTIONS.AUTO) {
-        chain.unsetTextDirection();
+    if (direction === TEXT_DIRECTIONS.AUTO) {
+      chain.unsetTextDirection();
+    } else {
+      chain.setTextDirection(direction);
+    }
+
+    if (state.align !== TEXT_ALIGNMENTS.CENTER) {
+      const align: AllowedTextAlignment =
+        direction === TEXT_DIRECTIONS.RTL
+          ? TEXT_ALIGNMENTS.RIGHT
+          : TEXT_ALIGNMENTS.LEFT;
+
+      if (nodeType === MAILY_NODE_TYPES.BUTTON) {
+        chain.updateButtonAttributes({ align });
       } else {
-        chain.setTextDirection(dir);
+        chain.updateNodeStyle(nodeType, { textAlign: align });
       }
+    }
 
-      if (state.align !== TEXT_ALIGNMENTS.CENTER) {
-        if (nodeType === MAILY_NODE_TYPES.BUTTON) {
-          chain.updateButtonAttributes({
-            alignment:
-              dir === TEXT_DIRECTIONS.RTL
-                ? TEXT_ALIGNMENTS.RIGHT
-                : TEXT_ALIGNMENTS.LEFT,
-          });
-        } else {
-          chain.setTextAlign(
-            dir === TEXT_DIRECTIONS.RTL
-              ? TEXT_ALIGNMENTS.RIGHT
-              : TEXT_ALIGNMENTS.LEFT
-          );
-        }
-      }
-
-      chain.run();
-    },
-    [editor, nodeType, state.align]
-  );
+    return chain.run();
+  };
 
   return (
-    <div className="mly:flex mly:flex-col">
-      {onBack && (
-        <>
-          <PopoverBack onClick={onBack}>Text Direction</PopoverBack>
-          <Divider type="horizontal" className="mly:-mx-1 mly:my-1" />
-        </>
-      )}
+    <div data-mly-text-direction-config="">
+      <PopoverBack onClick={onBack}>Text Direction</PopoverBack>
 
-      <div className="mly:space-y-0.5 mly:p-0.5">
+      <Divider type="horizontal" />
+
+      <div data-mly-text-direction-options="">
         {DIRECTION_OPTIONS.map((option) => {
-          const Icon = option.icon;
           const isActive = state.direction === option.value;
 
           return (
             <Button
+              data-active={isActive ? '' : undefined}
+              data-mly-text-direction-option=""
               key={option.value}
-              variant="ghost"
-              onClick={() => handleDirectionChange(option.value)}
-              className={cn(
-                'mly:w-full mly:cursor-default mly:justify-start mly:gap-2 mly:px-2 mly:py-1 mly:font-normal',
-                isActive && 'mly:bg-soft-gray/70 mly:text-gray-900'
-              )}
+              onClick={() => {
+                return updateDirection(option.value);
+              }}
             >
-              <Icon className="mly:size-4" />
+              <option.icon size={16} />
               {option.label}
-              {isActive && (
-                <CheckIcon className="mly:ml-auto mly:size-3.5 mly:shrink-0" />
-              )}
+              {isActive ? (
+                <CheckIcon data-mly-text-direction-check="" size={14} />
+              ) : null}
             </Button>
           );
         })}

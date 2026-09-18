@@ -1,45 +1,39 @@
 import type { AllowedTextAlignment } from '@maily-to/shared';
 import {
   clamp,
+  clampImageWidthPercentage,
   MAX_IMAGE_WIDTH_PERCENTAGE,
   MIN_IMAGE_WIDTH_PERCENTAGE,
   noop,
   percentage,
   TEXT_ALIGNMENTS,
 } from '@maily-to/shared';
-import { useValueAsRef } from '@maily-to/ui';
 import { useCallback, useRef, useState } from 'react';
 
-import type { ResizableImageHandleType } from '~/extensions/resizable-image/resizable-image-handle';
+import type { ImageHandleType } from '~/extensions/image/image-handle';
+import { capturePointer, releasePointer } from '~/utils/pointer';
 
 type UseImageResizeControllerOptions = {
-  width: number;
   align: AllowedTextAlignment;
   onWidthChange?: (width: number) => void;
   onWidthCommitted?: (width: number) => void;
 };
 
 type ResizeParams = {
-  initialWidth: number;
+  handleUsed: ImageHandleType;
   initialClientX: number;
-  handleUsed: ResizableImageHandleType;
+  initialWidth: number;
 };
 
 export function useImageResizeController(
   options: UseImageResizeControllerOptions
 ) {
-  const {
-    width,
-    align,
-    onWidthChange = noop,
-    onWidthCommitted = noop,
-  } = options;
+  const { align, onWidthChange = noop, onWidthCommitted = noop } = options;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageWrapperRef = useRef<HTMLDivElement | null>(null);
   const [shouldShowDragHandles, setShouldShowDragHandles] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const valueRef = useValueAsRef(width);
 
   const handleResize = useCallback(
     (
@@ -47,10 +41,17 @@ export function useImageResizeController(
       initialResizeParams: ResizeParams
     ) => {
       let activeResizeState: ResizeParams | null = initialResizeParams;
-      let nextWidth = valueRef.current;
+      let nextWidth = clampImageWidthPercentage(
+        Math.round(
+          percentage(
+            initialResizeParams.initialWidth,
+            containerRef.current?.clientWidth ?? 0
+          )
+        )
+      );
 
-      const targentElement = event.currentTarget;
-      targentElement.setPointerCapture(event.pointerId);
+      const targetElement = event.currentTarget;
+      capturePointer({ element: targetElement, pointerId: event.pointerId });
 
       const handlePointerMove = (moveEvent: PointerEvent) => {
         const imageWrapper = imageWrapperRef.current;
@@ -61,17 +62,14 @@ export function useImageResizeController(
 
         const pointerDeltaX =
           moveEvent.clientX - activeResizeState.initialClientX;
-        const { initialWidth, handleUsed } = activeResizeState;
-
-        let newWidthInPixels =
-          align === TEXT_ALIGNMENTS.CENTER
-            ? initialWidth +
-              (handleUsed === 'left' ? -pointerDeltaX * 2 : pointerDeltaX * 2)
-            : initialWidth +
-              (handleUsed === 'left' ? -pointerDeltaX : pointerDeltaX);
+        const { handleUsed, initialWidth } = activeResizeState;
+        const delta = handleUsed === 'left' ? -pointerDeltaX : pointerDeltaX;
 
         const maxWidth = container.clientWidth;
-        newWidthInPixels = clamp(newWidthInPixels, [0, maxWidth]);
+        const newWidthInPixels = clamp(
+          initialWidth + (align === TEXT_ALIGNMENTS.CENTER ? delta * 2 : delta),
+          [0, maxWidth]
+        );
 
         nextWidth = clamp(Math.round(percentage(newWidthInPixels, maxWidth)), [
           MIN_IMAGE_WIDTH_PERCENTAGE,
@@ -85,7 +83,10 @@ export function useImageResizeController(
       const handlePointerUp = (upEvent: PointerEvent) => {
         activeResizeState = null;
         setIsResizing(false);
-        targentElement.releasePointerCapture(upEvent.pointerId);
+        releasePointer({
+          element: targetElement,
+          pointerId: upEvent.pointerId,
+        });
 
         onWidthChange(nextWidth);
         onWidthCommitted(nextWidth);
@@ -99,15 +100,15 @@ export function useImageResizeController(
 
       setIsResizing(true);
     },
-    [align, shouldShowDragHandles, onWidthChange, onWidthCommitted]
+    [align, onWidthChange, onWidthCommitted]
   );
 
   return {
-    handleResize,
-    isResizing,
-    imageWrapperRef,
-    shouldShowDragHandles,
-    setShouldShowDragHandles,
     containerRef,
+    handleResize,
+    imageWrapperRef,
+    isResizing,
+    setShouldShowDragHandles,
+    shouldShowDragHandles,
   };
 }

@@ -12,6 +12,7 @@ export const PlaceholderExtension = Placeholder.configure({
     } else if (
       (
         [
+          MAILY_NODE_TYPES.BUTTON,
           MAILY_NODE_TYPES.SECTION,
           MAILY_NODE_TYPES.BULLET_LIST,
           MAILY_NODE_TYPES.ORDERED_LIST,

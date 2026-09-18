@@ -2,23 +2,17 @@ import { computePosition, flip, offset, shift } from '@floating-ui/react';
 import { DEFAULT_VARIABLE_START_TRIGGER } from '@maily-to/shared';
 import type { Editor, Range } from '@tiptap/react';
 import { posToDOMRect, ReactRenderer } from '@tiptap/react';
-import type {
-  SuggestionKeyDownProps,
-  SuggestionOptions,
-} from '@tiptap/suggestion';
+import type { SuggestionOptions } from '@tiptap/suggestion';
 
 import { FLOATING_ELEMENT_PADDING } from '~/components/interface/floating-element';
 import type { Variable } from '~/utils/variable';
 import {
-  VARIABLE_SUGGESTION_POPOVER_ID,
   filterVariableSuggestions,
+  VARIABLE_SUGGESTION_POPOVER_ID,
 } from '~/utils/variable';
 
+import type { VariableSuggestionListRef } from './variable-suggestion-list';
 import { VariableSuggestionList } from './variable-suggestion-list';
-
-type VariableSuggestionListRef = {
-  onKeyDown: (props: SuggestionKeyDownProps) => boolean;
-};
 
 async function updatePosition(
   editor: Editor,
@@ -48,10 +42,11 @@ export function getVariableSuggestions(
 ): Omit<SuggestionOptions<Variable>, 'editor'> {
   return {
     char,
-    items: ({ query, editor }) => {
-      const variables = editor.storage.variable?.variables;
-      return filterVariableSuggestions(variables, { query, editor });
-    },
+    items: ({ editor, query }) =>
+      filterVariableSuggestions(editor.storage.variable?.variables, {
+        editor,
+        query,
+      }),
 
     render: () => {
       let component: ReactRenderer<VariableSuggestionListRef> | null = null;
@@ -65,8 +60,8 @@ export function getVariableSuggestions(
           }
 
           component = new ReactRenderer(VariableSuggestionList, {
-            props,
             editor,
+            props,
           });
 
           if (!props.clientRect) {
@@ -75,7 +70,7 @@ export function getVariableSuggestions(
 
           component.element.style.position = 'absolute';
           component.element.id = VARIABLE_SUGGESTION_POPOVER_ID;
-          parentElement.appendChild(component.element);
+          parentElement.append(component.element);
           await updatePosition(editor, component.element, range);
         },
 

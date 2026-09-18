@@ -12,9 +12,9 @@ import { VariableExtension } from '~/extensions/variable/variable';
 import { getVariableSuggestions } from '~/extensions/variable/variable-suggestion';
 import type { Variables } from '~/utils/variable';
 
-type UseSkeletonEditorOptions = {
-  placeholder?: string;
+export type UseSkeletonEditorOptions = {
   content?: string | JSONContent;
+  placeholder?: string;
   variables?: Variables;
 } & Omit<UseEditorOptions, 'content'>;
 
@@ -24,10 +24,10 @@ export function useSkeletonEditor(
 ) {
   const {
     content,
+    editorProps,
+    extensions: _extensions,
     placeholder,
     variables,
-    extensions: _,
-    editorProps,
     ...rest
   } = options;
 
@@ -35,47 +35,33 @@ export function useSkeletonEditor(
     {
       content: content ?? '',
       extensions: [
-        Document.extend({
-          content: 'block',
-        }),
+        Document.extend({ content: 'block' }),
         Paragraph.configure({
-          HTMLAttributes: {
-            class:
-              'not-prose mly:hide-scrollbar mly:h-7 mly:overflow-x-scroll mly:rounded-none mly:pt-1 mly:text-sm mly:whitespace-nowrap mly:focus-visible:border-gray-300 mly:focus-visible:ring-0 mly:focus-visible:ring-offset-0',
-          },
+          HTMLAttributes: { 'data-mly-variable-only-line': '' },
         }),
         Text,
-        Placeholder.configure({
-          placeholder,
-        }),
+        Placeholder.configure({ placeholder }),
         VariableExtension.configure({
-          variables,
-          shouldScrollIntoView: true,
           addSpaceSuffix: false,
-          suggestion: {
-            ...getVariableSuggestions(),
-            allowedPrefixes: null,
-          },
           renderText(props) {
             return serializeVariableToText(
               props.node.attrs as VariableNodeAttrs
             );
           },
+          shouldScrollIntoView: true,
+          suggestion: { ...getVariableSuggestions(), allowedPrefixes: null },
+          variables,
         }),
       ],
       editorProps: {
         ...editorProps,
         attributes: {
           spellcheck: 'false',
-          ...(typeof editorProps?.attributes !== 'function'
-            ? editorProps?.attributes
-            : {}),
+          ...(typeof editorProps?.attributes === 'function'
+            ? {}
+            : editorProps?.attributes),
         },
       },
-      // on create the editor view is not created
-      // but using `immediatelyRender: false` renders the editor view
-      // so it fixes the focus issue:
-      //    `editor.commands.focus()` - without updating the editor
       immediatelyRender: false,
       ...rest,
     },

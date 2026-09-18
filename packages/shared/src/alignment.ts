@@ -7,7 +7,7 @@ export const TEXT_ALIGNMENTS = {
 export type AllowedTextAlignment =
   (typeof TEXT_ALIGNMENTS)[keyof typeof TEXT_ALIGNMENTS];
 
-export const allowedTextAligns: readonly AllowedTextAlignment[] = Object.freeze(
+const allowedTextAligns: readonly AllowedTextAlignment[] = Object.freeze(
   Object.values(TEXT_ALIGNMENTS)
 );
 

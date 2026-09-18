@@ -1,11 +1,11 @@
-import { absoluteFromPercentage, is, TEXT_ALIGNMENTS } from '@maily-to/shared';
+import { absoluteFromPercentage, is } from '@maily-to/shared';
 import { Column as EmailColumn, Row, Section } from '@react-email/components';
-import { cloneElement, isValidElement } from 'react';
+import { Fragment } from 'react';
 
 import { calculateColumnLayout } from '../lib/columns';
 import type { NodeRenderer } from '../node';
 
-export const COLUMNS_RESPONSIVE_CSS = /* css */ `@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-gap{display:none!important}}`;
+const COLUMNS_RESPONSIVE_CSS = `@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-gap{display:none!important}}`;
 
 export const columns: NodeRenderer = (node, ctx) => {
   if (!is.columns(node)) {
@@ -14,11 +14,10 @@ export const columns: NodeRenderer = (node, ctx) => {
 
   ctx.style(COLUMNS_RESPONSIVE_CSS);
 
-  const { gap = 0 } = node.attrs;
-  const nodes = node.content.filter(is.column);
-  const { columns, rowWidthPercent, gapTdWidthPercent } = calculateColumnLayout(
-    nodes,
-    gap,
+  const columnNodes = node.content.filter(is.column);
+  const { columns, gapTdWidthPercent, rowWidthPercent } = calculateColumnLayout(
+    columnNodes,
+    node.attrs.gap,
     ctx.box
   );
 
@@ -27,58 +26,44 @@ export const columns: NodeRenderer = (node, ctx) => {
   }
 
   const width = `${rowWidthPercent}%`;
+  const gapWidth = `${gapTdWidthPercent}%`;
 
   return (
     <Section>
       <Row
+        align="left"
         className="tab-row-full"
-        width={width}
         style={{ width }}
-        align={TEXT_ALIGNMENTS.LEFT}
+        width={width}
       >
-        {columns.flatMap((item, index) => {
-          const widthInPixels = absoluteFromPercentage(
-            item.containerPercent,
-            ctx.box
-          );
-
+        {columns.map((item, index) => {
           const childCtx = ctx.child({
             parent: node,
             siblingIndex: index,
             size: {
-              totalWidth: widthInPixels,
+              totalWidth: absoluteFromPercentage(
+                item.containerPercent,
+                ctx.box
+              ),
               totalBorder: 0,
               totalPadding: 0,
             },
           });
 
-          const tdWidth = `${item.tdWidthPercent}%`;
-          childCtx.set('columnTdWidth', tdWidth);
-          const el = childCtx.render(item.node);
+          childCtx.set('columnWidth', `${item.tdWidthPercent}%`);
 
-          const colEl = isValidElement(el)
-            ? cloneElement(el, { key: item.node.attrs.id })
-            : null;
-
-          const isNotLastColumn = index < columns.length - 1;
-          const hasGap = gap > 0;
-          const shouldRenderGap = isNotLastColumn && hasGap;
-          if (shouldRenderGap) {
-            const gapWidth = `${gapTdWidthPercent}%`;
-            const gapKey = `gap-${item.node.attrs.id}`;
-
-            return [
-              colEl,
-              <EmailColumn
-                key={gapKey}
-                className="tab-gap"
-                width={gapWidth}
-                style={{ width: gapWidth }}
-              />,
-            ];
-          }
-
-          return [colEl];
+          return (
+            <Fragment key={index}>
+              {childCtx.render(item.node)}
+              {node.attrs.gap > 0 && index < columns.length - 1 ? (
+                <EmailColumn
+                  className="tab-gap"
+                  style={{ width: gapWidth }}
+                  width={gapWidth}
+                />
+              ) : null}
+            </Fragment>
+          );
         })}
       </Row>
     </Section>

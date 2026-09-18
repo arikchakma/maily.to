@@ -1,9 +1,4 @@
-<div align="center"><img height="150" src="https://maily.to/brand/icon.svg" /></div>
-<br>
-
-<div align="center"><strong>@maily-to/extension-variable</strong></div>
-<div align="center">Tiptap extension for template variables in <a href="https://maily.to">Maily</a>.</div>
-<br />
+[![@maily-to/extension-variable](../../_static/extension-variable.jpg)](https://maily.to)
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
@@ -18,35 +13,55 @@
 
 ### Install
 
-Install `@maily-to/extension-variable` from your command line.
+This package is not published on its own. It is bundled into
+[`@maily-to/core`](../core) at build time, which re-exports it as
+`VariableExtension`.
 
 ```sh
-pnpm add @maily-to/extension-variable
+pnpm add @maily-to/core
 ```
 
-#### Peer Dependencies
-
-```sh
-pnpm add @tiptap/core @tiptap/pm @tiptap/suggestion
+```ts
+import { VariableExtension } from '@maily-to/core/extensions';
 ```
+
+<br>
 
 ### Usage
 
+The extension adds a `variable` inline node, so writers can insert dynamic
+placeholders that get replaced at render time. Typing `{{` opens the variable
+picker.
+
 ```ts
-import { Variable } from '@maily-to/extension-variable';
+import { VariableExtension } from '@maily-to/core/extensions';
 
 const editor = new Editor({
   extensions: [
-    Variable.configure({
-      suggestion: {
-        // your suggestion configuration
-      },
+    VariableExtension.configure({
+      variables: [{ id: 'currentDate' }, { id: 'firstName', required: false }],
     }),
   ],
 });
 ```
 
-This extension adds a `variable` inline node to the editor, allowing users to insert dynamic template variables (e.g. `{{name}}`, `{{currentDate}}`) that get replaced at render time.
+A variable reference carries named attributes rather than a flat string, and
+`@maily-to/render` resolves it from the `variables` map you pass at render time.
+
+#### Using it directly
+
+Configuring the underlying extension — a different trigger character, a custom
+suggestion renderer — means reaching for `Variable` itself.
+
+```ts
+import { Variable, getSuggestionOptions } from '@maily-to/extension-variable';
+```
+
+#### Peer dependencies
+
+```sh
+pnpm add @tiptap/core @tiptap/pm @tiptap/suggestion
+```
 
 ### Contributions
 

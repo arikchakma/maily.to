@@ -31,7 +31,7 @@ import { TrustedBy } from '~/components/landing/trusted-by';
 
 import type { Route } from './+types/_index';
 
-export function headers(_: Route.HeadersArgs) {
+export function headers() {
   return {
     'Cache-Control': 'max-age=3600, s-maxage=86400',
   };

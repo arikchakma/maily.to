@@ -1,23 +1,30 @@
+import type { InlineStyle } from '@maily-to/shared';
 import {
-  MAX_IMAGE_WIDTH_PERCENTAGE,
-  MIN_IMAGE_WIDTH_PERCENTAGE,
+  DEFAULT_CONTAINER_WIDTH_PIXELS,
+  parseInlineStyles,
 } from '@maily-to/shared';
 
 import type { MigrationWarning } from '../types';
-import { splitBorderRadius } from '../utils/border';
+import { getWidthPercentage } from '../utils/image-width';
+import { getPixelValue, getStyleAttribute } from '../utils/style';
+import { getVariableReference } from '../utils/variable';
 
-const DEFAULT_CONTAINER_WIDTH = 600;
+const DROPPED_IMAGE_ATTRS = [
+  'height',
+  'lockAspectRatio',
+  'aspectRatio',
+] as const;
 
 /**
  * Migrates a v1 image node to the v2 schema.
  * Performs the following conversions:
  *   - Renames `alignment` → `align` to match the v2 attribute name.
- *   - Splits the single `borderRadius` number into four corner properties.
- *   - Converts `width: 'auto'` → `'100%'` (v2 uses percentage strings).
- *   - Sets v2 border defaults: borderRadiusMode/borderWidthMode "uniform",
- *     borderStyle "solid", all border widths to 0.
- *   - Drops deprecated attrs: height, isSrcVariable, isExternalLinkVariable,
- *     lockAspectRatio, aspectRatio.
+ *   - Moves the `borderRadius` number into the `style` attribute.
+ *   - Converts `width` to a percentage string, using the container width
+ *     stamped by `annotateContainerWidths` to scale pixel values.
+ *   - Resolves `isSrcVariable` / `isExternalLinkVariable` into variable
+ *     references inside `src` / `externalLink`.
+ *   - Drops deprecated attrs: height, lockAspectRatio, aspectRatio.
  */
 export function image(
   node: Record<string, any>,
@@ -25,7 +32,6 @@ export function image(
 ): void {
   const attrs = node.attrs ?? {};
 
-  // alignment → align
   if ('alignment' in attrs) {
     warnings.push({
       nodeType: 'image',
@@ -36,19 +42,20 @@ export function image(
     delete attrs.alignment;
   }
 
-  // Split borderRadius (number) → 4 corners
-  if (typeof attrs.borderRadius === 'number') {
+  const declarations: InlineStyle = {};
+
+  if (typeof attrs.borderRadius === 'number' && attrs.borderRadius > 0) {
     warnings.push({
       nodeType: 'image',
       field: 'borderRadius',
-      message: 'Migrated "borderRadius" → individual corner radius properties',
+      message: 'Migrated "borderRadius" → "style"',
     });
-    Object.assign(attrs, splitBorderRadius(attrs.borderRadius));
-    delete attrs.borderRadius;
+    declarations.borderRadius = getPixelValue(attrs.borderRadius);
   }
+  delete attrs.borderRadius;
 
-  // Convert width to percentage string
-  const container = attrs._containerWidth ?? DEFAULT_CONTAINER_WIDTH;
+  const containerWidth =
+    attrs._containerWidth ?? DEFAULT_CONTAINER_WIDTH_PIXELS;
   delete attrs._containerWidth;
 
   if (attrs.width === 'auto') {
@@ -57,34 +64,33 @@ export function image(
     typeof attrs.width === 'number' ||
     (typeof attrs.width === 'string' && !attrs.width.endsWith('%'))
   ) {
-    const px = Number(attrs.width);
-    if (!Number.isNaN(px) && px > 0) {
-      const percent = Math.min(
-        MAX_IMAGE_WIDTH_PERCENTAGE,
-        Math.max(MIN_IMAGE_WIDTH_PERCENTAGE, Math.round((px / container) * 100))
-      );
-      attrs.width = `${percent}%`;
+    const pixels = Number(attrs.width);
+    if (!Number.isNaN(pixels) && pixels > 0) {
+      attrs.width = `${getWidthPercentage({ containerWidth, pixels })}%`;
     }
   }
 
-  // Set defaults
-  attrs.borderRadiusMode ??= 'uniform';
-  attrs.borderWidthMode ??= 'uniform';
-  attrs.borderStyle ??= 'solid';
-  attrs.borderColor ??= '#000000';
-  attrs.borderTopWidth ??= 0;
-  attrs.borderRightWidth ??= 0;
-  attrs.borderBottomWidth ??= 0;
-  attrs.borderLeftWidth ??= 0;
+  if (attrs.isSrcVariable === true) {
+    warnings.push({
+      nodeType: 'image',
+      field: 'isSrcVariable',
+      message: 'Migrated "isSrcVariable" → variable reference in "src"',
+    });
+    attrs.src = getVariableReference(attrs.src);
+  }
+  delete attrs.isSrcVariable;
 
-  // Drop with warnings
-  const DROPPED_IMAGE_ATTRS = [
-    'height',
-    'isSrcVariable',
-    'isExternalLinkVariable',
-    'lockAspectRatio',
-    'aspectRatio',
-  ] as const;
+  if (attrs.isExternalLinkVariable === true && attrs.externalLink) {
+    warnings.push({
+      nodeType: 'image',
+      field: 'isExternalLinkVariable',
+      message:
+        'Migrated "isExternalLinkVariable" → variable reference in "externalLink"',
+    });
+    attrs.externalLink = getVariableReference(attrs.externalLink);
+  }
+  delete attrs.isExternalLinkVariable;
+
   for (const field of DROPPED_IMAGE_ATTRS) {
     if (field in attrs) {
       warnings.push({
@@ -94,5 +100,14 @@ export function image(
       });
       delete attrs[field];
     }
+  }
+
+  const style = getStyleAttribute({
+    ...parseInlineStyles(attrs.style ?? ''),
+    ...declarations,
+  });
+
+  if (style) {
+    attrs.style = style;
   }
 }

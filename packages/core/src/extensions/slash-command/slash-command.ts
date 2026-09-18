@@ -1,10 +1,15 @@
 import { Extension } from '@tiptap/core';
 import type { SuggestionOptions } from '@tiptap/suggestion';
-import Suggestion from '@tiptap/suggestion';
+import { Suggestion } from '@tiptap/suggestion';
 
 import type { SlashCommandGroupItem } from '~/utils/slash-command';
 
+import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
 import { getSlashCommandSuggestions } from './slash-command-suggestion';
+
+type SlashCommandStorage = {
+  commands: SlashCommandGroupItem[];
+};
 
 declare module '@tiptap/core' {
   interface Storage {
@@ -12,44 +17,35 @@ declare module '@tiptap/core' {
   }
 }
 
-type SlashCommandStorage = {
-  commands: SlashCommandGroupItem[];
-};
-
 export type SlashCommandOptions = {
-  suggestion: Omit<SuggestionOptions, 'editor'>;
   commands: SlashCommandGroupItem[];
+  suggestion: Omit<SuggestionOptions, 'editor'>;
 };
 
 export const SlashCommandExtension = Extension.create<
   SlashCommandOptions,
   SlashCommandStorage
 >({
-  name: 'slash-command',
+  name: 'slashCommand',
+  priority: 101,
+
   addOptions() {
     return {
-      suggestion: {
-        char: '/',
-        command: ({ editor, range, props }) => {
-          props.command({ editor, range });
-        },
-      },
-      commands: [],
+      commands: DEFAULT_SLASH_COMMANDS,
+      suggestion: getSlashCommandSuggestions() as Omit<
+        SuggestionOptions,
+        'editor'
+      >,
     };
   },
+
   addStorage() {
     return {
       commands: this.options.commands,
     };
   },
+
   addProseMirrorPlugins() {
-    return [
-      Suggestion({
-        editor: this.editor,
-        ...this.options.suggestion,
-      }),
-    ];
+    return [Suggestion({ editor: this.editor, ...this.options.suggestion })];
   },
-}).configure({
-  suggestion: getSlashCommandSuggestions(),
 });

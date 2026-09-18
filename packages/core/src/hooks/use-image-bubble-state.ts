@@ -1,45 +1,25 @@
+import type { ImageAttributes } from '@maily-to/shared';
 import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { Editor } from '@tiptap/react';
-import { useEditorState } from '@tiptap/react';
-import { useCallback, useState } from 'react';
 
-import { useEditorInstance } from './use-editor-instance';
-import { useOnNodeSelect } from './use-on-node-select';
-import { useOnSelectionUpdate } from './use-on-selection-update';
+import { useNodeBubbleState } from './use-node-bubble-state';
 
-export function useImageBubbleState(editor: Editor) {
-  const editorInstance = useEditorInstance(editor);
-  const [open, setOpen] = useState(false);
+export function useImageBubbleState(editor?: Editor) {
+  return useNodeBubbleState({
+    editor,
+    selector: (instance) => {
+      const attrs = instance.getAttributes(
+        MAILY_NODE_TYPES.IMAGE
+      ) as ImageAttributes;
 
-  const state = useEditorState({
-    editor: editorInstance,
-    selector: (ctx) => {
-      const currentImage = ctx.editor.getAttributes(MAILY_NODE_TYPES.IMAGE);
       return {
-        align: currentImage.align,
-        src: currentImage.src,
-        alt: currentImage.alt,
-        title: currentImage.title,
-        externalLink: currentImage.externalLink,
+        align: attrs.align,
+        alt: attrs.alt ?? '',
+        externalLink: attrs.externalLink ?? '',
+        src: attrs.src ?? '',
+        title: attrs.title ?? '',
       };
     },
+    type: MAILY_NODE_TYPES.IMAGE,
   });
-
-  const handleSelectionUpdate = useCallback(() => {
-    if (!editorInstance.isEditable) {
-      return;
-    }
-
-    const isImageSelected = editorInstance.isActive(MAILY_NODE_TYPES.IMAGE);
-    setOpen(isImageSelected);
-  }, [editorInstance]);
-
-  useOnSelectionUpdate(editorInstance, handleSelectionUpdate);
-  useOnNodeSelect(editorInstance, handleSelectionUpdate);
-
-  return {
-    ...state,
-    open,
-    setOpen,
-  };
 }

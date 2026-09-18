@@ -1,4 +1,4 @@
-import { PencilRulerIcon } from 'lucide-react';
+import { TypeIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
@@ -15,63 +15,50 @@ import {
 } from '../interface/popover';
 import { ImageMetadataField } from './image-metadata-field';
 
-type ImageMetadataPopoverProps = {
+export type ImageMetadataPopoverProps = {
+  alt: string;
   container: FloatingUIContainer;
-  altText: string;
-  onAltTextChange: (altText: string) => void;
-  title: string;
+  onAltChange: (alt: string) => void;
   onTitleChange: (title: string) => void;
-
-  onClose?: () => void;
+  title: string;
 };
 
 export function ImageMetadataPopover(props: ImageMetadataPopoverProps) {
-  const { container, altText, onAltTextChange, title, onTitleChange, onClose } =
-    props;
+  const { alt, container, onAltChange, onTitleChange, title } = props;
 
   const [open, setOpen] = useState(false);
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
-      onClose?.();
-    }
-
-    setOpen(nextOpen);
-  };
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger
-        render={
-          <BubbleButton
-            label="Image Metadata"
-            icon={PencilRulerIcon}
-            tooltip="Image Metadata"
-            container={container}
-            isActive={open || !!altText || !!title}
-          />
-        }
-      />
-      <PopoverPositioner
+    <Popover onOpenChange={setOpen} open={open}>
+      <BubbleButton
         container={container}
+        icon={TypeIcon}
+        isActive={open || Boolean(alt) || Boolean(title)}
+        label="Image Metadata"
+        render={<PopoverTrigger />}
+        tooltip="Image Metadata"
+      />
+
+      <PopoverPositioner
         alignOffset={arrowAlignOffset}
+        container={container}
         side="bottom"
       >
-        <PopoverPopup className="mly:w-auto mly:p-1">
+        <PopoverPopup data-variant="image-metadata">
           <ImageMetadataField
-            content={altText}
-            onContentChange={onAltTextChange}
-            placeholder="Describe the image"
-            autofocus="end"
-            label="Alt Text"
+            content={alt}
+            label="Alt text"
+            onContentChange={onAltChange}
+            placeholder="ie. A cat sitting on a laptop"
           />
-          <Divider type="horizontal" className="mly:my-1" />
+          <Divider type="horizontal" />
           <ImageMetadataField
             content={title}
-            onContentChange={onTitleChange}
-            placeholder="Tooltip or short title"
-            autofocus={false}
             label="Title"
+            onContentChange={onTitleChange}
+            placeholder="ie. Cat on a laptop"
           />
+
           <PopoverArrow />
         </PopoverPopup>
       </PopoverPositioner>

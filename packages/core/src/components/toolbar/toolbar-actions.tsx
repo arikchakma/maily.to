@@ -1,5 +1,8 @@
+import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar';
 import { MAILY_MARK_TYPES } from '@maily-to/shared';
+import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
+import type { LucideIcon } from 'lucide-react';
 import {
   BoldIcon,
   CodeIcon,
@@ -11,175 +14,140 @@ import {
 } from 'lucide-react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
-import { cn } from '~/utils/classname';
 
 import { BubbleButton } from '../interface/bubble-button';
-import { Group } from './toolbar';
 import { ToolbarAlign } from './toolbar-align';
-import { useToolbarContext } from './toolbar-context';
 import { ToolbarDirection } from './toolbar-direction';
+import { ToolbarGroup } from './toolbar-group';
 
-type ToolbarActionProps = {
-  className?: string;
+type MarkName = keyof Pick<
+  Editor['commands'],
+  | 'toggleBold'
+  | 'toggleCode'
+  | 'toggleItalic'
+  | 'toggleStrike'
+  | 'toggleUnderline'
+>;
+
+type MarkActionProps = {
+  command: MarkName;
+  icon: LucideIcon;
+  label: string;
+  name: string;
 };
 
-export function ToolbarUndo(props: ToolbarUndo.Props) {
-  const { className } = props;
+function MarkAction(props: MarkActionProps) {
+  const { command, icon, label, name } = props;
   const editor = useEditorInstance();
-  const { container } = useToolbarContext();
+
+  const isActive = useEditorState({
+    editor,
+    selector: ({ editor: instance }) => instance.isActive(name),
+  });
+
+  return (
+    <BubbleButton
+      render={<ToolbarPrimitive.Button />}
+      icon={icon}
+      isActive={isActive}
+      label={label}
+      onClick={() => editor.chain().focus()[command]().run()}
+      tooltip={label}
+    />
+  );
+}
+
+export function ToolbarUndo() {
+  const editor = useEditorInstance();
 
   const canUndo = useEditorState({
     editor,
-    selector: (ctx) => ctx.editor.can().undo(),
+    selector: ({ editor: instance }) => instance.can().undo(),
   });
 
   return (
     <BubbleButton
-      label="Undo"
-      icon={Undo2Icon}
-      tooltip="Undo"
-      container={container}
+      render={<ToolbarPrimitive.Button />}
       disabled={!canUndo}
-      className={cn(className)}
+      icon={Undo2Icon}
+      label="Undo"
       onClick={() => editor.chain().focus().undo().run()}
+      tooltip="Undo"
     />
   );
 }
 
-export function ToolbarRedo(props: ToolbarRedo.Props) {
-  const { className } = props;
+export function ToolbarRedo() {
   const editor = useEditorInstance();
-  const { container } = useToolbarContext();
 
   const canRedo = useEditorState({
     editor,
-    selector: (ctx) => ctx.editor.can().redo(),
+    selector: ({ editor: instance }) => instance.can().redo(),
   });
 
   return (
     <BubbleButton
-      label="Redo"
-      icon={Redo2Icon}
-      tooltip="Redo"
-      container={container}
+      render={<ToolbarPrimitive.Button />}
       disabled={!canRedo}
-      className={cn(className)}
+      icon={Redo2Icon}
+      label="Redo"
       onClick={() => editor.chain().focus().redo().run()}
+      tooltip="Redo"
     />
   );
 }
 
-export function ToolbarBold(props: ToolbarBold.Props) {
-  const { className } = props;
-  const editor = useEditorInstance();
-  const { container } = useToolbarContext();
-
-  const isActive = useEditorState({
-    editor,
-    selector: (ctx) => ctx.editor.isActive(MAILY_MARK_TYPES.BOLD),
-  });
-
+export function ToolbarBold() {
   return (
-    <BubbleButton
-      label="Bold"
+    <MarkAction
+      command="toggleBold"
       icon={BoldIcon}
-      tooltip="Bold"
-      container={container}
-      isActive={isActive}
-      className={cn(className)}
-      onClick={() => editor.chain().focus().toggleBold().run()}
+      label="Bold"
+      name={MAILY_MARK_TYPES.BOLD}
     />
   );
 }
 
-export function ToolbarItalic(props: ToolbarItalic.Props) {
-  const { className } = props;
-  const editor = useEditorInstance();
-  const { container } = useToolbarContext();
-
-  const isActive = useEditorState({
-    editor,
-    selector: (ctx) => ctx.editor.isActive(MAILY_MARK_TYPES.ITALIC),
-  });
-
+export function ToolbarItalic() {
   return (
-    <BubbleButton
-      label="Italic"
+    <MarkAction
+      command="toggleItalic"
       icon={ItalicIcon}
-      tooltip="Italic"
-      container={container}
-      isActive={isActive}
-      className={cn(className)}
-      onClick={() => editor.chain().focus().toggleItalic().run()}
+      label="Italic"
+      name={MAILY_MARK_TYPES.ITALIC}
     />
   );
 }
 
-export function ToolbarUnderline(props: ToolbarUnderline.Props) {
-  const { className } = props;
-  const editor = useEditorInstance();
-  const { container } = useToolbarContext();
-
-  const isActive = useEditorState({
-    editor,
-    selector: (ctx) => ctx.editor.isActive(MAILY_MARK_TYPES.UNDERLINE),
-  });
-
+export function ToolbarUnderline() {
   return (
-    <BubbleButton
-      label="Underline"
+    <MarkAction
+      command="toggleUnderline"
       icon={UnderlineIcon}
-      tooltip="Underline"
-      container={container}
-      isActive={isActive}
-      className={cn(className)}
-      onClick={() => editor.chain().focus().toggleUnderline().run()}
+      label="Underline"
+      name={MAILY_MARK_TYPES.UNDERLINE}
     />
   );
 }
 
-export function ToolbarStrikethrough(props: ToolbarStrikethrough.Props) {
-  const { className } = props;
-  const editor = useEditorInstance();
-  const { container } = useToolbarContext();
-
-  const isActive = useEditorState({
-    editor,
-    selector: (ctx) => ctx.editor.isActive(MAILY_MARK_TYPES.STRIKE),
-  });
-
+export function ToolbarStrikethrough() {
   return (
-    <BubbleButton
-      label="Strikethrough"
+    <MarkAction
+      command="toggleStrike"
       icon={StrikethroughIcon}
-      tooltip="Strikethrough"
-      container={container}
-      isActive={isActive}
-      className={cn(className)}
-      onClick={() => editor.chain().focus().toggleStrike().run()}
+      label="Strikethrough"
+      name={MAILY_MARK_TYPES.STRIKE}
     />
   );
 }
 
-export function ToolbarCode(props: ToolbarCode.Props) {
-  const { className } = props;
-  const editor = useEditorInstance();
-  const { container } = useToolbarContext();
-
-  const isActive = useEditorState({
-    editor,
-    selector: (ctx) => ctx.editor.isActive(MAILY_MARK_TYPES.CODE),
-  });
-
+export function ToolbarCode() {
   return (
-    <BubbleButton
-      label="Code"
+    <MarkAction
+      command="toggleCode"
       icon={CodeIcon}
-      tooltip="Code"
-      container={container}
-      isActive={isActive}
-      className={cn(className)}
-      onClick={() => editor.chain().focus().toggleCode().run()}
+      label="Code"
+      name={MAILY_MARK_TYPES.CODE}
     />
   );
 }
@@ -187,43 +155,21 @@ export function ToolbarCode(props: ToolbarCode.Props) {
 export function ToolbarCommonActions() {
   return (
     <>
-      <Group>
+      <ToolbarGroup>
         <ToolbarUndo />
         <ToolbarRedo />
-      </Group>
-      <Group>
+      </ToolbarGroup>
+      <ToolbarGroup>
         <ToolbarBold />
         <ToolbarItalic />
         <ToolbarUnderline />
         <ToolbarStrikethrough />
         <ToolbarCode />
-      </Group>
-      <Group>
+      </ToolbarGroup>
+      <ToolbarGroup>
         <ToolbarAlign />
         <ToolbarDirection />
-      </Group>
+      </ToolbarGroup>
     </>
   );
-}
-
-export namespace ToolbarUndo {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarRedo {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarBold {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarItalic {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarUnderline {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarStrikethrough {
-  export type Props = ToolbarActionProps;
-}
-export namespace ToolbarCode {
-  export type Props = ToolbarActionProps;
 }

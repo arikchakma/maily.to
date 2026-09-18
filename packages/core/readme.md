@@ -1,8 +1,4 @@
-[![MAILY](../../_static/maily.jpg)](https://maily.to)
-
-<p align="center">
-  AI-powered powerful editor for creating beautiful,<br /> pre-designed with flexibility, mobile-ready emails.
-</p>
+[![@maily-to/core](../../_static/core.jpg)](https://maily.to)
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
@@ -24,14 +20,15 @@ pnpm add -D @tiptap/core
 
 ### Quick Start
 
-The editor uses a **compound component** pattern — compose `Editor.Root`, `Editor.Frame`, and `Editor.Content` to build your layout.
+The editor uses a **compound component** pattern — compose `Editor.Root`,
+`Editor.Frame`, and `Editor.Content` to build your layout.
 
 ```tsx
 import '@maily-to/core/style.css';
 
 import { useState } from 'react';
 import { Editor } from '@maily-to/core';
-import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
+import type { Editor as TiptapEditor } from '@tiptap/core';
 
 function App() {
   const [editor, setEditor] = useState<TiptapEditor>();
@@ -44,6 +41,8 @@ function App() {
     >
       <Editor.Frame>
         <Editor.Content />
+        <Editor.BubbleMenus />
+        <Editor.DragContextHandle />
       </Editor.Frame>
     </Editor.Root>
   );
@@ -52,38 +51,46 @@ function App() {
 
 #### Editor Components
 
-| Component          | Description                                                                   |
-| ------------------ | ----------------------------------------------------------------------------- |
-| `Editor.Root`      | Top-level provider. Accepts content, extensions, theme, and editor callbacks. |
-| `Editor.Body`      | Applies theme CSS variables and body background/padding.                      |
-| `Editor.Container` | Constrains content to the theme's max-width with padding.                     |
-| `Editor.Content`   | Renders the Tiptap editor and all bubble menus.                               |
-| `Editor.Frame`     | Convenience wrapper — renders `Body > Container` in one component.            |
+| Component                  | Description                                                            |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `Editor.Root`              | Top-level provider. Accepts content, extensions, and editor callbacks. |
+| `Editor.Frame`             | Renders the document's body and container shells.                      |
+| `Editor.Content`           | Renders the Tiptap editor.                                             |
+| `Editor.BubbleMenus`       | Renders every node and text bubble menu.                               |
+| `Editor.DragContextHandle` | Renders the drag handle and its context menu.                          |
 
-`Editor.Frame` is shorthand for nesting `Body` and `Container`. Use the individual pieces when you need more control:
+`Editor.Content` renders only the editor. Compose `Editor.BubbleMenus` and
+`Editor.DragContextHandle` beside it to get Maily's chrome, and leave them out
+for a bare canvas.
 
-```tsx
-<Editor.Root content={content}>
-  <Editor.Body>
-    <Editor.Container>
-      <Editor.Content />
-    </Editor.Container>
-  </Editor.Body>
-</Editor.Root>
-```
+#### Reading the document
 
-#### Accessing the Editor Context
-
-Use `useEditorRootContext` to access the theme and text direction from any child component:
+Pass a `ref` to `Editor.Root` to reach the editor and its content from outside.
 
 ```tsx
-import { useEditorRootContext } from '@maily-to/core';
+import { useRef } from 'react';
+import { Editor } from '@maily-to/core';
 
-function MyComponent() {
-  const { textDirection, setTextDirection, theme } = useEditorRootContext();
-  // ...
+function App() {
+  const editorRef = useRef<Editor.Root.Handle>(null);
+
+  const save = () => {
+    const json = editorRef.current?.getJSON();
+    // ...
+  };
+
+  return <Editor.Root ref={editorRef}>{/* ... */}</Editor.Root>;
 }
 ```
+
+`Editor.Root.Props` types the props in the same way.
+
+| Method          | Returns                          |
+| --------------- | -------------------------------- |
+| `getEditor`     | The underlying Tiptap `Editor`   |
+| `getJSON`       | The document as a `DocumentNode` |
+| `getEditorHTML` | The editor's HTML                |
+| `getText`       | The document's plain text        |
 
 ### Toolbar
 
@@ -98,6 +105,7 @@ import { Editor, Toolbar } from '@maily-to/core';
   </Toolbar.Root>
   <Editor.Frame>
     <Editor.Content />
+    <Editor.BubbleMenus />
   </Editor.Frame>
 </Editor.Root>;
 ```
@@ -134,42 +142,14 @@ Or pick individual buttons:
 
 ### Slash Commands
 
-Slash commands let you interact with the editor by typing `/` followed by a command name. Commands are organized into groups with a `title` and a `commands` array.
+Slash commands let you interact with the editor by typing `/` followed by a
+command name. Commands are organized into groups with a `title` and a `commands`
+array.
 
 #### Basic Example
 
 ```tsx
-import { text, heading1 } from '@maily-to/core/blocks';
-import { SlashCommandExtension } from '@maily-to/core/extensions';
-
-<Editor.Root
-  extensions={[
-    SlashCommandExtension.configure({
-      commands: [text, heading1],
-    }),
-  ]}
->
-  ...
-</Editor.Root>;
-```
-
-> The order of the groups and commands determines how they are displayed in the editor.
-
-#### Available Blocks
-
-Import pre-built blocks from `@maily-to/core/blocks`:
-
-**Typography:** `text`, `heading1`, `heading2`, `heading3`, `blockquote`, `footer`, `hardBreak`, `clearLine`
-
-**Layout:** `spacer`, `divider`, `section`, `columns`, `repeat`, `htmlCodeBlock`
-
-**Content:** `button`, `image`, `inlineImage`, `linkCard`, `bulletList`, `orderedList`
-
-#### Grouped Commands with Subcommands
-
-Define a command with an `id` and a `commands` array to create nested menus. Typing `/headers.` will show the subcommands.
-
-```tsx
+import { heading1, text } from '@maily-to/core/blocks';
 import { SlashCommandExtension } from '@maily-to/core/extensions';
 
 <Editor.Root
@@ -177,20 +157,58 @@ import { SlashCommandExtension } from '@maily-to/core/extensions';
     SlashCommandExtension.configure({
       commands: [
         {
-          title: 'Headers',
-          id: 'headers',
-          searchTerms: ['header', 'title'],
+          title: 'Blocks',
+          commands: [text, heading1],
+        },
+      ],
+    }),
+  ]}
+>
+  ...
+</Editor.Root>;
+```
+
+`commands` takes groups, not blocks — every block belongs to a group with a
+`title`. `DEFAULT_SLASH_COMMANDS` is the set the editor ships with, so extend it
+rather than restate it when you only want to add one group.
+
+> The order of the groups and commands determines how they are displayed in the editor.
+
+#### Available Blocks
+
+Import pre-built blocks from `@maily-to/core/blocks`:
+
+**Typography:** `text`, `heading1`, `heading2`, `heading3`, `blockquote`, `hardBreak`, `clearLine`
+
+**Layout:** `spacer`, `divider`, `section`, `columns`, `repeat`, `table`, `htmlCodeBlock`
+
+**Content:** `button`, `image`, `inlineImage`, `linkCard`, `bulletList`, `orderedList`
+
+**Headers:** `headerLogoWithCoverImage`, `headerLogoWithTextHorizontal`, `headerLogoWithTextVertical`
+
+**Footers:** `footer`, `footerCommunityFeedbackCta`, `footerCompanySignature`, `footerCopyrightText`
+
+#### Grouped Commands with Subcommands
+
+An item with an `id` and a `commands` array becomes a nested menu. Typing
+`/headers.` then shows its subcommands.
+
+```tsx
+import { heading1, heading2, heading3 } from '@maily-to/core/blocks';
+import { SlashCommandExtension } from '@maily-to/core/extensions';
+
+<Editor.Root
+  extensions={[
+    SlashCommandExtension.configure({
+      commands: [
+        {
+          title: 'Blocks',
           commands: [
             {
-              title: 'Heading 1',
-              searchTerms: ['h1'],
-              command: ({ editor, range }) => {
-                editor
-                  .chain()
-                  .deleteRange(range)
-                  .setHeading({ level: 1 })
-                  .run();
-              },
+              title: 'Headers',
+              id: 'headers',
+              searchTerms: ['header', 'title'],
+              commands: [heading1, heading2, heading3],
             },
           ],
         },
@@ -202,25 +220,51 @@ import { SlashCommandExtension } from '@maily-to/core/extensions';
 </Editor.Root>;
 ```
 
+The `id` and the nesting live on the **item**, not on the group — a group only
+carries a `title` and its `commands`.
+
 > Currently supports one level of depth for subcommands.
 
-#### Custom Rendered Blocks
+#### Writing a Block
 
-Pass a `render` function to return custom JSX. Return `null` to skip rendering based on editor state.
+A block is an item with a `title`, `searchTerms`, and a `command` that runs
+against the editor and the typed range.
 
 ```tsx
 {
   title: 'Custom Block',
   searchTerms: ['custom'],
-  render: (editor) => {
-    return <div>Custom Block</div>;
+  command: ({ editor, range }) => {
+    editor.chain().deleteRange(range).run();
   },
 }
 ```
 
+#### Controlling How a Block Appears
+
+`render` decides whether an item shows and what its row looks like. Return
+`null` to hide it, `true` for the default row, or JSX to replace the row.
+
+```tsx
+{
+  title: 'Custom Block',
+  searchTerms: ['custom'],
+  command: ({ editor, range }) => {
+    editor.chain().deleteRange(range).run();
+  },
+  render: (editor) => {
+    return editor.isActive('section') ? null : true;
+  },
+}
+```
+
+Add `preview` to show a preview beside the row, and `description` or `icon` to
+fill out the default one.
+
 ### Variables
 
-Variables are dynamic placeholders (e.g. `{{name}}`) that get replaced at render time. Trigger the variable picker by typing the suggestion character (default `@`).
+Variables are dynamic placeholders that get replaced at render time. Typing `{{`
+opens the variable picker.
 
 #### Array of Variables
 
@@ -242,7 +286,9 @@ import { VariableExtension } from '@maily-to/core/extensions';
 </Editor.Root>;
 ```
 
-When passing an array, Maily handles query filtering automatically. A dynamic entry is appended when no exact match exists, allowing users to create variables on the fly.
+When passing an array, Maily handles query filtering automatically. A dynamic
+entry is appended when no exact match exists, allowing users to create variables
+on the fly.
 
 #### Function-based Variables
 
@@ -259,14 +305,15 @@ VariableExtension.configure({
 
 ### Extensions
 
-Extensions extend the editor's functionality. All Maily extensions are included by default — use the `extensions` prop to add more or override existing ones.
+Extensions extend the editor's functionality. Maily's own extensions are
+included by default — use the `extensions` prop to configure them, to override
+one, or to add an opt-in extension.
 
 ```tsx
 import {
-  VariableExtension,
   ImageUploadExtension,
-  AIActions,
-  InlineSuggestion,
+  LinkCardExtension,
+  VariableExtension,
 } from '@maily-to/core/extensions';
 
 <Editor.Root
@@ -278,11 +325,14 @@ import {
         return url;
       },
     }),
+    LinkCardExtension,
   ]}
 >
   ...
 </Editor.Root>
 ```
+
+`LinkCardExtension` is opt-in — add it to get the link card node.
 
 #### Image Upload
 
@@ -307,100 +357,91 @@ ImageUploadExtension.configure({
 
 Supports `image/jpeg`, `image/png`, `image/gif`, `image/webp`, and `image/svg+xml`.
 
-#### AI Actions
+#### AI Actions and Inline Suggestions
 
-Add AI-powered content transformations (rewriting, summarizing, expanding):
-
-```tsx
-import { AIActions } from '@maily-to/core/extensions';
-import type {
-  AIActionsOptions,
-  AIActionsTransformParams,
-} from '@maily-to/core/extensions';
-```
-
-#### Inline Suggestions
-
-Add ghost-text autocomplete suggestions (like AI code completion):
-
-```tsx
-import { InlineSuggestion } from '@maily-to/core/extensions';
-import type { InlineSuggestionOptions } from '@maily-to/core/extensions';
-```
+AI transformations and ghost-text autocomplete ship inside this package. The
+text bubble menu renders `AIActionsDropdown` when the AI actions extension is
+present. See [extension-ai-actions](../extension-ai-actions) and
+[extension-inline-suggestion](../extension-inline-suggestion).
 
 ### Theming
 
-Customize the editor appearance through the `theme` prop on `Editor.Root`. Theme values are applied as CSS custom variables.
+A document carries its own appearance. `ThemeExtension` writes a theme into the
+document's `theme` attribute, and every node's `style` attribute is what the
+renderer reads — so `@maily-to/render` applies no theme of its own and the email
+matches the canvas.
 
 ```tsx
+import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { ThemeExtension } from '@maily-to/core/extensions';
+
 <Editor.Root
-  theme={{
-    container: {
-      backgroundColor: '#f9fafb',
-      maxWidth: 640,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: '#e5e7eb',
-      paddingTop: 16,
-      paddingRight: 16,
-      paddingBottom: 16,
-      paddingLeft: 16,
-    },
-    body: {
-      backgroundColor: '#ffffff',
-      paddingTop: 24,
-      paddingRight: 24,
-      paddingBottom: 24,
-      paddingLeft: 24,
-    },
-    button: {
-      backgroundColor: '#4f46e5',
-      color: '#ffffff',
-    },
-    link: {
-      color: '#2563eb',
-    },
-    font: {
-      fontFamily: 'Inter',
-      fallbackFontFamily: 'sans-serif',
-      webFont: {
-        format: 'woff2',
-        url: 'https://cdn.usemaily.com/fonts/v0/inter.woff2',
-      },
-    },
-  }}
+  extensions={[ThemeExtension.configure({ theme: DEFAULT_NODE_THEME })]}
 >
   ...
-</Editor.Root>
+</Editor.Root>;
 ```
+
+`DEFAULT_NODE_THEME` is the look Maily ships with. Omit `ThemeExtension`
+entirely for an unthemed document — the editor stays fully usable and applies no
+Maily appearance.
+
+A theme is a `NodeThemeOptions` map from node type to an inline style:
+
+```ts
+import type { NodeThemeOptions } from '@maily-to/shared';
+
+const theme: NodeThemeOptions = {
+  body: { backgroundColor: '#ffffff', padding: '24px' },
+  container: { backgroundColor: '#f9fafb', maxWidth: '600px' },
+  button: { backgroundColor: '#4f46e5', color: '#ffffff' },
+  link: { color: '#2563eb' },
+  paragraph: { fontSize: '15px', lineHeight: '24px' },
+};
+```
+
+#### Editing the theme
+
+`ThemeSettings` gives writers a panel for the theme the document holds. Each
+part edits one group of declarations.
+
+```tsx
+import { ThemeSettings } from '@maily-to/core';
+
+<ThemeSettings.Root>
+  <ThemeSettings.Font />
+  <ThemeSettings.Layout />
+  <ThemeSettings.Button />
+  <ThemeSettings.Text />
+</ThemeSettings.Root>;
+```
+
+The `setNodeTheme`, `updateNodeTheme`, and `updateShellTheme` commands do the
+same work from your own UI.
 
 ## Text Direction
 
-The editor supports LTR and RTL text directions. Control it via props on `Editor.Root`:
+The editor supports LTR and RTL text directions. Set the initial direction with
+the `textDirection` prop on `Editor.Root`:
 
 ```tsx
-// Uncontrolled (editor manages state)
-<Editor.Root defaultTextDirection="ltr">
-
-// Controlled
-<Editor.Root
-  textDirection={direction}
-  onTextDirectionChange={setDirection}
->
+<Editor.Root textDirection="rtl">
 ```
 
 Use `Toolbar.Direction` to let users toggle direction from the toolbar.
 
 ## Entry Points
 
-| Import path                 | Contents                                                                                                    |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `@maily-to/core`            | `Editor`, `Toolbar`, `useEditorRootContext`, `useEditorVariables`, `filterVariableSuggestions`, theme types |
-| `@maily-to/core/blocks`     | Pre-built slash command block items and types                                                               |
-| `@maily-to/core/extensions` | All Tiptap extensions and their option/storage types                                                        |
-| `@maily-to/core/style.css`  | Required CSS stylesheet                                                                                     |
+| Import path                 | Contents                                                                                     |
+| --------------------------- | -------------------------------------------------------------------------------------------- |
+| `@maily-to/core`            | `Editor`, `Toolbar`, `ThemeSettings`, bubble menus, headless UI primitives, hooks, and types |
+| `@maily-to/core/blocks`     | Pre-built slash command block items and types                                                |
+| `@maily-to/core/extensions` | All Tiptap extensions and their option/storage types                                         |
+| `@maily-to/core/style.css`  | Optional stylesheet — the editor works without it and carries no Maily visual styles         |
 
-See the [@maily-to/render](../render) package for converting editor content to HTML email templates.
+See the [@maily-to/render](../render) package for converting editor content to
+HTML email templates, and [@maily-to/migration](../migration) for loading v1
+documents.
 
 ### Sponsors
 

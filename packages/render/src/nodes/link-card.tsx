@@ -1,10 +1,10 @@
 import { is } from '@maily-to/shared';
-import { Column, Img, Row, Text } from '@react-email/components';
+import { Column, Img, Row } from '@react-email/components';
 
+import { getSafeHref } from '../lib/link';
 import { resolveVariableText } from '../lib/resolve-variable';
 import { shouldSuppressMarginBottom } from '../lib/spacing';
-import { ANTIALIASED } from '../lib/styles';
-import { shouldShow } from '../lib/visibility';
+import { ANTIALIASED, getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 export const linkCard: NodeRenderer = (node, ctx) => {
@@ -12,106 +12,100 @@ export const linkCard: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  if (!shouldShow(node, ctx)) {
-    return null;
-  }
-
-  const { title, description, link, linkTitle, image, subTitle, badgeText } =
+  const { badgeText, description, image, link, linkTitle, subTitle, title } =
     node.attrs;
-  const theme = ctx.config.theme.linkCard;
-
-  const resolvedLink = link ? resolveVariableText(link, ctx) : '';
-  const href = resolvedLink || '#';
+  const href = (link ? getSafeHref(resolveVariableText(link, ctx)) : '') || '#';
+  const alt = title || 'Link card';
 
   return (
     <a
       href={href}
       rel="noopener noreferrer"
       style={{
-        border: `1px solid ${theme?.borderColor ?? '#eaeaea'}`,
-        borderRadius: 10,
-        textDecoration: 'none',
+        border: '1px solid #eaeaea',
+        borderRadius: '10px',
         color: 'inherit',
         display: 'block',
-        marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 20,
+        marginBottom: shouldSuppressMarginBottom(ctx) ? '0' : '20px',
+        textDecoration: 'none',
+        ...getNodeStyle(node.attrs?.style),
       }}
       target="_blank"
     >
       {image ? (
-        <Row style={{ marginBottom: 6 }}>
-          <Column style={{ width: '100%', height: '100%' }}>
+        <Row style={{ marginBottom: '6px' }}>
+          <Column style={{ height: '100%', width: '100%' }}>
             <Img
-              alt={title || 'Link Card'}
+              alt={alt}
               src={image}
               style={{
                 borderRadius: '10px 10px 0 0',
-                width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                width: '100%',
               }}
-              title={title || 'Link Card'}
+              title={alt}
             />
           </Column>
         </Row>
       ) : null}
 
-      <Row style={{ padding: 15, marginTop: 0, marginBottom: 0 }}>
+      <Row style={{ marginBottom: '0', marginTop: '0', padding: '15px' }}>
         <Column style={{ verticalAlign: 'top' }}>
-          <Row
-            style={{ marginBottom: 8, marginTop: 0 }}
-            width="100%"
-            align="left"
-          >
+          <Row align="left" style={{ marginBottom: '8px', marginTop: '0' }}>
             <Column>
-              <Text
+              <p
                 style={{
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: theme?.titleColor ?? '#111827',
-                  margin: 0,
-                  textAlign: 'left',
                   ...ANTIALIASED,
+                  color: '#111827',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  lineHeight: '24px',
+                  margin: '0',
+                  textAlign: 'left',
                 }}
               >
                 {title}
-                {badgeText && (
+                {badgeText ? (
                   <span
                     style={{
-                      fontWeight: 600,
-                      color: theme?.badgeTextColor ?? '#6B7280',
-                      padding: '4px 8px',
+                      backgroundColor: '#f3f4f6',
                       borderRadius: '8px',
-                      backgroundColor: theme?.badgeBackgroundColor ?? '#F3F4F6',
+                      color: '#6b7280',
                       fontSize: '12px',
+                      fontWeight: '600',
                       lineHeight: '12px',
                       marginLeft: '6px',
+                      padding: '4px 8px',
                     }}
                   >
                     {badgeText}
                   </span>
-                )}
-                {subTitle && !badgeText && (
+                ) : null}
+                {subTitle && !badgeText ? (
                   <span
                     style={{
+                      color: '#6b7280',
+                      fontSize: '12px',
                       fontWeight: 'normal',
-                      color: theme?.subTitleColor ?? '#6B7280',
-                      fontSize: 12,
                       lineHeight: '12px',
                       marginLeft: '6px',
                     }}
                   >
                     {subTitle}
                   </span>
-                )}
-              </Text>
+                ) : null}
+              </p>
             </Column>
           </Row>
-          <Text
+
+          <p
             style={{
-              fontSize: 16,
-              color: theme?.descriptionColor ?? '#374151',
-              marginTop: 0,
-              marginBottom: 0,
+              color: '#374151',
+              fontSize: '16px',
+              lineHeight: '24px',
+              marginBottom: '0',
+              marginTop: '0',
             }}
           >
             {description}{' '}
@@ -120,16 +114,17 @@ export const linkCard: NodeRenderer = (node, ctx) => {
                 href={href}
                 rel="noopener noreferrer"
                 style={{
-                  color: theme?.titleColor ?? '#111827',
-                  fontSize: 14,
-                  fontWeight: 600,
+                  color: '#111827',
+                  fontSize: '14px',
+                  fontWeight: '600',
                   textDecoration: 'underline',
                 }}
+                target="_blank"
               >
                 {linkTitle}
               </a>
             ) : null}
-          </Text>
+          </p>
         </Column>
       </Row>
     </a>

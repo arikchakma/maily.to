@@ -1,6 +1,7 @@
 import { is, isObject } from '@maily-to/shared';
 import { Fragment } from 'react';
 
+import { getVariableList } from '../lib/resolve-variable';
 import type { NodeRenderer } from '../node';
 
 export const repeat: NodeRenderer = (node, ctx) => {
@@ -9,12 +10,7 @@ export const repeat: NodeRenderer = (node, ctx) => {
   }
 
   const { each } = node.attrs;
-  const payload = ctx.config.variableValues.get(each);
-
-  // If no payload or not an array, render once with no item
-  if (!Array.isArray(payload)) {
-    return <>{ctx.children(node)}</>;
-  }
+  const payload = getVariableList(each, ctx);
 
   return (
     <>

@@ -1,7 +1,6 @@
 import { getCssDirection, is } from '@maily-to/shared';
-import { Container } from '@react-email/components';
 
-import { shouldSuppressMarginBottom } from '../lib/spacing';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 export const bulletList: NodeRenderer = (node, ctx) => {
@@ -9,22 +8,15 @@ export const bulletList: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const { dir } = node.attrs;
-
   return (
-    <Container
-      style={{ marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 20 }}
+    <ul
+      dir={node.attrs?.dir ?? undefined}
+      style={{
+        ...getCssDirection(node.attrs?.dir),
+        ...getNodeStyle(node.attrs?.style),
+      }}
     >
-      <ul
-        style={{
-          paddingLeft: 26,
-          listStyleType: 'disc',
-          margin: 0,
-          ...getCssDirection(dir),
-        }}
-      >
-        {ctx.children(node)}
-      </ul>
-    </Container>
+      {ctx.children(node)}
+    </ul>
   );
 };

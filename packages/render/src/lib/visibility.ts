@@ -1,68 +1,75 @@
 import type { AllowedVisibilityOperator, AnyMailyNode } from '@maily-to/shared';
 import { VISIBILITY_ACTIONS, VISIBILITY_OPERATORS } from '@maily-to/shared';
+import type { VisibilityRule } from '@maily-to/shared';
 
 import type { RenderContext } from '../context';
+import { getVariableId, getVariableValue } from './resolve-variable';
 
-/**
- * Evaluates a node's visibility rule against the current variables.
- * Returns true (visible) when there's no rule, or when the rule
- * matches for "show" / doesn't match for "hide".
- */
-export function shouldShow(node: AnyMailyNode, ctx: RenderContext): boolean {
-  const rule = node.attrs?.visibilityRule;
-  if (!rule || rule.action === VISIBILITY_ACTIONS.NONE) {
-    return true;
-  }
+type OperatorMatchOptions = {
+  operator: AllowedVisibilityOperator;
+  resolved: unknown;
+  value: string;
+};
 
-  const { action, variable, operator, value } = rule;
-  const item = ctx.get('item');
+function getOperatorMatch(options: OperatorMatchOptions): boolean {
+  const { operator, resolved, value } = options;
 
-  let resolvedValue: unknown;
-  if (item && variable in item) {
-    resolvedValue = item[variable];
-  } else {
-    resolvedValue = ctx.config.variableValues.get(variable);
-  }
-
-  const matched = evaluate(operator, resolvedValue, value);
-
-  if (action === VISIBILITY_ACTIONS.SHOW) {
-    return matched;
-  }
-  if (action === VISIBILITY_ACTIONS.HIDE) {
-    return !matched;
-  }
-
-  return true;
-}
-
-function evaluate(
-  operator: AllowedVisibilityOperator,
-  resolvedValue: unknown,
-  compareValue: string
-): boolean {
   switch (operator) {
     case VISIBILITY_OPERATORS.IS_TRUE:
-      return Boolean(resolvedValue);
+      return Boolean(resolved);
     case VISIBILITY_OPERATORS.IS_FALSE:
-      return !resolvedValue;
+      return !resolved;
     case VISIBILITY_OPERATORS.EQUALS:
-      return String(resolvedValue) === compareValue;
+      return String(resolved) === value;
     case VISIBILITY_OPERATORS.NOT_EQUALS:
-      return String(resolvedValue) !== compareValue;
+      return String(resolved) !== value;
     case VISIBILITY_OPERATORS.CONTAINS:
-      return String(resolvedValue).includes(compareValue);
+      return String(resolved).includes(value);
     case VISIBILITY_OPERATORS.NOT_CONTAINS:
-      return !String(resolvedValue).includes(compareValue);
+      return !String(resolved).includes(value);
     case VISIBILITY_OPERATORS.STARTS_WITH:
-      return String(resolvedValue).startsWith(compareValue);
+      return String(resolved).startsWith(value);
     case VISIBILITY_OPERATORS.ENDS_WITH:
-      return String(resolvedValue).endsWith(compareValue);
+      return String(resolved).endsWith(value);
     case VISIBILITY_OPERATORS.GREATER_THAN:
-      return Number(resolvedValue) > Number(compareValue);
+      return Number(resolved) > Number(value);
     case VISIBILITY_OPERATORS.LESS_THAN:
-      return Number(resolvedValue) < Number(compareValue);
+      return Number(resolved) < Number(value);
     default:
       return false;
   }
+}
+
+type VisibilityMatchOptions = {
+  ctx: RenderContext;
+  rule: VisibilityRule;
+};
+
+function getVisibilityMatch(options: VisibilityMatchOptions): boolean {
+  const { ctx, rule } = options;
+  const id = getVariableId(rule.variable);
+
+  return getOperatorMatch({
+    operator: rule.operator,
+    resolved: id ? getVariableValue({ ctx, id }) : undefined,
+    value: rule.value,
+  });
+}
+
+type ShouldShowNodeOptions = {
+  ctx: RenderContext;
+  node: AnyMailyNode;
+};
+
+export function shouldShowNode(options: ShouldShowNodeOptions): boolean {
+  const { ctx, node } = options;
+  const rule = node.attrs?.visibilityRule as VisibilityRule | null | undefined;
+
+  if (!rule) {
+    return true;
+  }
+
+  const matched = getVisibilityMatch({ ctx, rule });
+
+  return rule.action === VISIBILITY_ACTIONS.SHOW ? matched : !matched;
 }

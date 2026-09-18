@@ -3,12 +3,6 @@ import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite-plus';
 import { defineConfig } from 'vite-plus';
 
-/**
- * Strips the deprecated `esbuild` config from plugin hook results.
- * Vite 8 handles JSX via its built-in oxc transform, so the
- * esbuild.jsx config react-router sets is redundant. Can be removed
- * once react-router ships native Vite 8 support.
- */
 function stripEsbuildConfig(plugins: Plugin[]): Plugin[] {
   return plugins.map((plugin) => {
     const original = plugin.config;

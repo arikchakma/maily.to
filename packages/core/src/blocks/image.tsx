@@ -1,18 +1,23 @@
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, SmilePlusIcon } from 'lucide-react';
 
 import type { SlashCommandItem } from '~/utils/slash-command';
 
 export const image: SlashCommandItem = {
   title: 'Image',
-  description: 'Insert an image',
-  searchTerms: ['image', 'picture', 'logo'],
-  icon: <ImageIcon className="mly:h-4 mly:w-4" />,
+  icon: <ImageIcon size={16} />,
+  description: 'Add a full-width image.',
+  searchTerms: ['image', 'picture', 'photo', 'media'],
   command: ({ editor, range }) => {
-    return editor
-      .chain()
-      .focus()
-      .deleteRange(range)
-      .setImage({ src: '' })
-      .run();
+    editor.chain().focus().deleteRange(range).setImage({ src: '' }).run();
+  },
+};
+
+export const inlineImage: SlashCommandItem = {
+  title: 'Inline Image',
+  icon: <SmilePlusIcon size={16} />,
+  description: 'Add an image inside a line of text.',
+  searchTerms: ['inline', 'image', 'icon', 'emoji'],
+  command: ({ editor, range }) => {
+    editor.chain().focus().deleteRange(range).setInlineImage({ src: '' }).run();
   },
 };

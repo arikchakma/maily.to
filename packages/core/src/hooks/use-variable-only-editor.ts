@@ -13,9 +13,9 @@ import { VariableExtension } from '~/extensions/variable/variable';
 import { getVariableSuggestions } from '~/extensions/variable/variable-suggestion';
 import type { Variables } from '~/utils/variable';
 
-type UseVariableOnlyEditorOptions = {
-  placeholder?: string;
+export type UseVariableOnlyEditorOptions = {
   content?: string | JSONContent;
+  placeholder?: string;
   variables?: Variables;
 } & Omit<UseEditorOptions, 'content'>;
 
@@ -25,10 +25,10 @@ export function useVariableOnlyEditor(
 ) {
   const {
     content,
+    editorProps,
+    extensions: _extensions,
     placeholder,
     variables,
-    extensions: _,
-    editorProps,
     ...rest
   } = options;
 
@@ -36,34 +36,22 @@ export function useVariableOnlyEditor(
     {
       content: content ?? '',
       extensions: [
-        Document.extend({
-          content: 'block',
-        }),
-        Paragraph.extend({
-          content: 'text* variable?',
-        }).configure({
-          HTMLAttributes: {
-            class:
-              'not-prose mly:hide-scrollbar mly:h-7 mly:overflow-x-scroll mly:rounded-none mly:pt-1 mly:text-sm mly:whitespace-nowrap mly:focus-visible:border-gray-300 mly:focus-visible:ring-0 mly:focus-visible:ring-offset-0',
-          },
+        Document.extend({ content: 'block' }),
+        Paragraph.extend({ content: 'text* variable?' }).configure({
+          HTMLAttributes: { 'data-mly-variable-only-line': '' },
         }),
         Text,
-        Placeholder.configure({
-          placeholder,
-        }),
+        Placeholder.configure({ placeholder }),
         VariableExtension.configure({
-          variables,
-          shouldScrollIntoView: true,
           addSpaceSuffix: false,
-          suggestion: {
-            ...getVariableSuggestions(),
-            allowedPrefixes: null,
-          },
           renderText(props) {
             return serializeVariableToText(
               props.node.attrs as VariableNodeAttrs
             );
           },
+          shouldScrollIntoView: true,
+          suggestion: { ...getVariableSuggestions(), allowedPrefixes: null },
+          variables,
         }),
         ProtectVariableTrigger,
       ],
@@ -71,23 +59,20 @@ export function useVariableOnlyEditor(
         ...editorProps,
         attributes: {
           spellcheck: 'false',
-          ...(typeof editorProps?.attributes !== 'function'
-            ? editorProps?.attributes
-            : {}),
+          ...(typeof editorProps?.attributes === 'function'
+            ? {}
+            : editorProps?.attributes),
         },
         handleTextInput(view, from, _to, text) {
-          const textBefore = view.state.doc.textBetween(0, from, '');
-          const hasOpenTrigger = textBefore.includes('{{');
+          const hasOpenTrigger = view.state.doc
+            .textBetween(0, from, '')
+            .includes('{{');
 
           if (text === '{') {
             return hasOpenTrigger;
           }
 
-          if (hasOpenTrigger) {
-            return false;
-          }
-
-          return true;
+          return !hasOpenTrigger;
         },
       },
       immediatelyRender: false,

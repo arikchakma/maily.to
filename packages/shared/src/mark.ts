@@ -1,4 +1,3 @@
-/** Registry of all inline mark type strings used in the document JSON. */
 export const MAILY_MARK_TYPES = {
   BOLD: 'bold',
   ITALIC: 'italic',
@@ -8,79 +7,77 @@ export const MAILY_MARK_TYPES = {
   CODE: 'code',
   TEXT_STYLE: 'textStyle',
   HIGHLIGHT: 'highlight',
+  SPAN: 'span',
 } as const;
+
+export const allowedMarkTypes = Object.values(MAILY_MARK_TYPES);
 
 export type MailyMarkType =
   (typeof MAILY_MARK_TYPES)[keyof typeof MAILY_MARK_TYPES];
 
-export const allowedMarkTypes = Object.values(MAILY_MARK_TYPES);
-
-/**
- * Base shape shared by all inline marks. Individual mark types
- * narrow the type field and optionally add typed attrs.
- */
-export type BaseMailyMark = {
-  type: MailyMarkType;
-  attrs?: Record<string, any>;
+export type MarkStyleAttributes = {
+  style?: string | null;
 };
 
-/** Bold */
+export type BaseMailyMark = {
+  attrs?: MarkStyleAttributes & Record<string, unknown>;
+  type: MailyMarkType;
+};
+
 export type BoldMark = BaseMailyMark & {
   type: typeof MAILY_MARK_TYPES.BOLD;
 };
 
-/** Italic */
 export type ItalicMark = BaseMailyMark & {
   type: typeof MAILY_MARK_TYPES.ITALIC;
 };
 
-/** Strike */
 export type StrikeMark = BaseMailyMark & {
   type: typeof MAILY_MARK_TYPES.STRIKE;
 };
 
-/** Underline */
 export type UnderlineMark = BaseMailyMark & {
   type: typeof MAILY_MARK_TYPES.UNDERLINE;
 };
 
-/** Link */
-export type LinkAttributes = {
+export type LinkAttributes = MarkStyleAttributes & {
+  class?: string | null;
   href: string;
-  target?: string;
+  rel?: string | null;
+  target?: string | null;
+  title?: string | null;
 };
 
 export type LinkMark = BaseMailyMark & {
-  type: typeof MAILY_MARK_TYPES.LINK;
   attrs: LinkAttributes;
+  type: typeof MAILY_MARK_TYPES.LINK;
 };
-
-/** Code */
-export type CodeAttributes = {};
 
 export type CodeMark = BaseMailyMark & {
   type: typeof MAILY_MARK_TYPES.CODE;
-  attrs: CodeAttributes;
 };
 
-/** Text Style */
-export type TextStyleAttributes = {
+export type TextStyleAttributes = MarkStyleAttributes & {
   color: string;
 };
 
 export type TextStyleMark = BaseMailyMark & {
-  type: typeof MAILY_MARK_TYPES.TEXT_STYLE;
   attrs: TextStyleAttributes;
+  type: typeof MAILY_MARK_TYPES.TEXT_STYLE;
 };
 
-/** Highlight */
-export type HighlightAttributes = {
+export type HighlightAttributes = MarkStyleAttributes & {
   color: string;
 };
 
 export type HighlightMark = BaseMailyMark & {
-  type: typeof MAILY_MARK_TYPES.HIGHLIGHT;
   attrs: HighlightAttributes;
+  type: typeof MAILY_MARK_TYPES.HIGHLIGHT;
+};
+
+export type SpanMark = BaseMailyMark & {
+  attrs?: MarkStyleAttributes;
+  type: typeof MAILY_MARK_TYPES.SPAN;
 };
 
 export type AnyMailyMark =
@@ -91,4 +88,5 @@ export type AnyMailyMark =
   | LinkMark
   | CodeMark
   | TextStyleMark
-  | HighlightMark;
+  | HighlightMark
+  | SpanMark;

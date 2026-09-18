@@ -1,16 +1,15 @@
-import type { VariableOptions } from '@maily-to/extension-variable';
 import { MAILY_NODE_TYPES } from '@maily-to/shared';
-import { useMailyId } from '@maily-to/ui';
+import { isNodeSelection } from '@tiptap/react';
 import { CornerDownLeftIcon } from 'lucide-react';
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
-import { useExtensionOptions } from '~/hooks/use-extension-options';
 import { useVariableBubbleState } from '~/hooks/use-variable-bubble-state';
 import { FLOATING_ELEMENT_IDS } from '~/types/floating-ui';
 
 import { BubbleMenu } from '../interface/bubble-menu';
 import {
+  FieldControl,
   FieldIcon,
   FieldInput,
   FieldLabel,
@@ -19,131 +18,108 @@ import {
 
 export function VariableBubbleMenu() {
   const editor = useEditorInstance();
-  const state = useVariableBubbleState(editor);
-  const options = useExtensionOptions<VariableOptions>(
-    MAILY_NODE_TYPES.VARIABLE,
-    editor
-  );
+  const { fallback, hideDefaultValue, id, open, setOpen } =
+    useVariableBubbleState(editor);
 
-  const container = useRef<HTMLDivElement | null>(null);
-  const variableFieldRef = useRef<HTMLInputElement | null>(null);
-  const fallbackFieldRef = useRef<HTMLInputElement | null>(null);
+  const variableFieldRef = useRef<HTMLInputElement>(null);
+  const fallbackFieldRef = useRef<HTMLInputElement>(null);
 
-  const variableFieldId = useMailyId();
-  const fallbackFieldId = useMailyId();
+  const variableFieldId = useId();
+  const fallbackFieldId = useId();
 
-  const handleVariableChange = (id: string) => {
-    const { selection } = editor.state;
-    const { from } = selection;
-
-    editor
-      .chain()
-      .updateAttributes(MAILY_NODE_TYPES.VARIABLE, {
-        id,
-        label: null,
-      })
-      .setNodeSelection(from)
-      .run();
-  };
-
-  const handleFallbackChange = (fallback: string) => {
-    const { selection } = editor.state;
-    const { from } = selection;
-
-    editor
-      .chain()
-      .updateAttributes(MAILY_NODE_TYPES.VARIABLE, { fallback })
-      .setNodeSelection(from)
-      .run();
-  };
-
-  if (!state.open) {
+  if (!open) {
     return null;
   }
 
+  const updateVariable = (attrs: Record<string, string | null>) => {
+    const { selection } = editor.state;
+    const chain = editor
+      .chain()
+      .updateAttributes(MAILY_NODE_TYPES.VARIABLE, attrs);
+
+    return isNodeSelection(selection)
+      ? chain.setNodeSelection(selection.from).run()
+      : chain.run();
+  };
+
   return (
     <BubbleMenu
-      ref={container}
-      open={state.open}
-      onOpenChange={state.setOpen}
       floatingId={FLOATING_ELEMENT_IDS.VARIABLE_BUBBLE_MENU}
+      onOpenChange={setOpen}
+      open={open}
     >
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          const variableField = variableFieldRef.current;
-          if (!variableField) {
+          const field = variableFieldRef.current;
+          if (!field) {
             return;
           }
 
-          handleVariableChange(variableField.value);
-          variableField.blur();
+          updateVariable({ id: field.value, label: null });
+          field.blur();
         }}
       >
-        <FieldRoot className="mly:flex mly:items-center mly:gap-2 mly:pl-1">
+        <FieldRoot>
           <FieldLabel htmlFor={variableFieldId}>Variable</FieldLabel>
-          <div className="mly:relative">
+          <FieldControl>
             <FieldInput
-              ref={variableFieldRef}
-              id={variableFieldId}
               aria-label="Variable"
-              className="mly:pr-6.5"
-              placeholder="ie. Full Name"
-              defaultValue={state.id ?? ''}
+              defaultValue={id}
+              id={variableFieldId}
+              key={id}
               onBlur={(event) => {
-                const value = event.target.value;
-                if (value === state.id) {
+                if (event.target.value === id) {
                   return;
                 }
 
-                handleVariableChange(value);
+                updateVariable({ id: event.target.value, label: null });
               }}
-              disabled={options.disableInput}
+              placeholder="ie. Full Name"
+              ref={variableFieldRef}
             />
             <FieldIcon>
               <CornerDownLeftIcon />
             </FieldIcon>
-          </div>
+          </FieldControl>
         </FieldRoot>
       </form>
 
-      {!state.hideDefaultValue && (
+      {hideDefaultValue ? null : (
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            const fallbackField = fallbackFieldRef.current;
-            if (!fallbackField) {
+            const field = fallbackFieldRef.current;
+            if (!field) {
               return;
             }
 
-            handleFallbackChange(fallbackField.value);
-            fallbackField.blur();
+            updateVariable({ fallback: field.value });
+            field.blur();
           }}
         >
-          <FieldRoot className="mly:flex mly:items-center mly:gap-2 mly:pl-1">
+          <FieldRoot>
             <FieldLabel htmlFor={fallbackFieldId}>Default</FieldLabel>
-            <div className="mly:relative">
+            <FieldControl>
               <FieldInput
-                ref={fallbackFieldRef}
-                className="mly:pr-6.5"
                 aria-label="Default Value"
+                defaultValue={fallback}
                 id={fallbackFieldId}
-                placeholder="ie. John Doe..."
-                defaultValue={state.fallback ?? ''}
+                key={fallback}
                 onBlur={(event) => {
-                  const value = event.target.value;
-                  if (value === state.fallback) {
+                  if (event.target.value === fallback) {
                     return;
                   }
 
-                  handleFallbackChange(value);
+                  updateVariable({ fallback: event.target.value });
                 }}
+                placeholder="ie. John Doe"
+                ref={fallbackFieldRef}
               />
-
               <FieldIcon>
                 <CornerDownLeftIcon />
               </FieldIcon>
-            </div>
+            </FieldControl>
           </FieldRoot>
         </form>
       )}

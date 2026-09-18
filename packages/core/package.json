@@ -17,13 +17,19 @@
     "directory": "packages/core"
   },
   "files": [
-    "dist/**"
+    "dist/**",
+    "src/styles/index.css"
   ],
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
+  "types": "./dist/index.d.mts",
+  "imports": {
+    "#test-utils": "./tests/utils.tsx"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -38,35 +44,32 @@
       "require": "./dist/extensions/index.cjs"
     },
     "./package.json": "./package.json",
-    "./style.css": "./dist/index.css"
+    "./style.css": "./src/styles/index.css"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "pnpm run clean && pnpm run build:style && pnpm run build:lib",
+    "bench": "vp test bench --run",
+    "build": "vp run clean && vp run build:lib",
     "build:lib": "vp pack",
-    "build:style": "tailwindcss -i ./src/styles/index.css -o ./dist/index.css",
     "clean": "rm -rf dist",
-    "dev": "pnpm --filter @maily-to/core --parallel \"/^dev:.*/\"",
-    "dev:lib": "vp pack --watch",
-    "dev:style": "tailwindcss -i ./src/styles/index.css -o ./dist/index.css --watch",
-    "release": "bumpp"
+    "dev": "vp pack --watch --no-clean",
+    "release": "bumpp",
+    "test": "vp test run",
+    "test:watch": "vp test"
   },
   "dependencies": {
     "@base-ui/react": "1.6.0",
+    "@base-ui/utils": "0.3.1",
     "@floating-ui/react": "^0.27.20",
     "@floating-ui/utils": "^0.2.12",
-    "@maily-to/migration": "workspace:*",
     "@maily-to/shared": "workspace:*",
-    "@maily-to/ui": "workspace:*",
     "@tiptap/core": "catalog:",
     "@tiptap/extension-blockquote": "^3.29.2",
     "@tiptap/extension-bold": "^3.29.2",
-    "@tiptap/extension-bubble-menu": "^3.29.2",
     "@tiptap/extension-code": "^3.29.2",
     "@tiptap/extension-code-block-lowlight": "^3.29.2",
-    "@tiptap/extension-collaboration": "^3.29.2",
     "@tiptap/extension-document": "^3.29.2",
     "@tiptap/extension-drag-handle": "^3.29.2",
     "@tiptap/extension-drag-handle-react": "^3.29.2",
@@ -79,12 +82,10 @@
     "@tiptap/extension-italic": "^3.29.2",
     "@tiptap/extension-link": "^3.29.2",
     "@tiptap/extension-list": "^3.29.2",
-    "@tiptap/extension-node-range": "^3.29.2",
     "@tiptap/extension-paragraph": "^3.29.2",
     "@tiptap/extension-strike": "^3.29.2",
     "@tiptap/extension-table": "^3.29.2",
     "@tiptap/extension-text": "^3.29.2",
-    "@tiptap/extension-text-align": "^3.29.2",
     "@tiptap/extension-text-style": "^3.29.2",
     "@tiptap/extension-typography": "^3.29.2",
     "@tiptap/extension-underline": "^3.29.2",
@@ -93,31 +94,29 @@
     "@tiptap/pm": "catalog:",
     "@tiptap/react": "catalog:",
     "@tiptap/suggestion": "^3.29.2",
-    "@tiptap/y-tiptap": "^3.0.8",
-    "@vitejs/plugin-react": "^6.0.5",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "@vitejs/plugin-react": "^6.1.1",
+    "cromia": "^0.0.1",
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^1.28.0",
-    "stylecast": "^0.0.6",
-    "tailwind-merge": "^3.6.0",
-    "y-protocols": "^1.0.7",
-    "yjs": "^13.6.31",
+    "unit-field": "^0.0.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@maily-to/extension-ai-actions": "workspace:*",
     "@maily-to/extension-inline-suggestion": "workspace:*",
     "@maily-to/extension-variable": "workspace:*",
+    "@maily-to/render": "workspace:*",
     "@maily-to/tsconfig": "workspace:*",
-    "@rolldown/plugin-babel": "catalog:",
-    "@tailwindcss/cli": "^4.3.3",
-    "@tailwindcss/typography": "^0.5.20",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "catalog:",
-    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "@vitest/browser-playwright": "4.1.11",
     "bumpp": "catalog:",
-    "tailwindcss": "^4.3.3",
+    "oxc-transform-react": "catalog:",
+    "playwright": "^1.62.1",
+    "react-dom": "catalog:",
     "typescript": "catalog:",
     "vite-plus": "catalog:"
   },

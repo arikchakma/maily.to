@@ -1,5 +1,6 @@
+import { getNodeStyle } from '../lib/styles';
 import type { MarkRenderer } from '../mark';
 
-export const strike: MarkRenderer = (_mark, text, _ctx) => {
-  return <s>{text}</s>;
+export const strike: MarkRenderer = (mark, text) => {
+  return <s style={getNodeStyle(mark.attrs?.style)}>{text}</s>;
 };

@@ -1,6 +1,8 @@
 import type { TextDirection } from '@maily-to/shared';
-import { isAllowedTextDirection, TEXT_DIRECTIONS } from '@maily-to/shared';
+import { TEXT_DIRECTIONS } from '@maily-to/shared';
 import { PilcrowIcon, PilcrowLeftIcon, PilcrowRightIcon } from 'lucide-react';
+import type { ComponentProps } from 'react';
+import { useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
 
@@ -12,88 +14,62 @@ import {
   PopoverPositioner,
   PopoverTrigger,
 } from './popover';
-import { ToggleGroup, ToggleGroupItem } from './toggle';
 import { TooltipProvider } from './tooltip';
 
-type ToggleDirectionPopoverProps = {
-  container: FloatingUIContainer;
+const DIRECTIONS = [
+  {
+    icon: PilcrowLeftIcon,
+    label: 'Left to Right',
+    value: TEXT_DIRECTIONS.LTR,
+  },
+  { icon: PilcrowIcon, label: 'Auto', value: TEXT_DIRECTIONS.AUTO },
+  {
+    icon: PilcrowRightIcon,
+    label: 'Right to Left',
+    value: TEXT_DIRECTIONS.RTL,
+  },
+] as const;
+
+export type ToggleDirectionPopoverProps = {
+  container?: FloatingUIContainer;
   direction: TextDirection;
   onDirectionChange: (direction: TextDirection) => void;
-  onClose?: () => void;
+  trigger?: ComponentProps<typeof PopoverTrigger>['render'];
 };
 
 export function ToggleDirectionPopover(props: ToggleDirectionPopoverProps) {
-  const { container, direction, onDirectionChange, onClose } = props;
+  const { container, direction, onDirectionChange, trigger } = props;
+  const [open, setOpen] = useState(false);
 
-  const actions = [
-    {
-      label: 'Left to Right',
-      icon: PilcrowLeftIcon,
-      value: TEXT_DIRECTIONS.LTR,
-    },
-    {
-      label: 'Auto',
-      icon: PilcrowIcon,
-      value: TEXT_DIRECTIONS.AUTO,
-    },
-    {
-      label: 'Right to Left',
-      icon: PilcrowRightIcon,
-      value: TEXT_DIRECTIONS.RTL,
-    },
-  ];
-
-  const activeAction = actions.find((action) => action.value === direction);
-  const { icon: ActiveIcon = PilcrowIcon } = activeAction || {};
+  const active = DIRECTIONS.find((item) => item.value === direction);
 
   return (
-    <Popover
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose?.();
-        }
-      }}
-    >
-      <PopoverTrigger
-        render={
-          <BubbleButton
-            label="Direction"
-            icon={ActiveIcon}
-            tooltip="Text Direction"
-            container={container}
-          />
-        }
+    <Popover onOpenChange={setOpen} open={open}>
+      <BubbleButton
+        container={container}
+        icon={active?.icon ?? PilcrowIcon}
+        isActive={open}
+        label="Direction"
+        render={<PopoverTrigger render={trigger} />}
+        tooltip="Text Direction"
       />
 
-      <PopoverPositioner container={container} align="center" side="bottom">
-        <PopoverPopup className="mly:flex mly:w-auto mly:flex-col">
+      <PopoverPositioner align="center" container={container} side="bottom">
+        <PopoverPopup data-variant="align">
           <TooltipProvider>
-            <ToggleGroup
-              value={[direction]}
-              onValueChange={(value) => {
-                const dir = value[0];
-                if (!isAllowedTextDirection(dir)) {
-                  return;
-                }
-                onDirectionChange(dir);
-              }}
-              className="mly:flex mly:gap-0.5"
-            >
-              {actions.map((action) => (
-                <ToggleGroupItem
-                  key={action.value}
-                  render={
-                    <BubbleButton
-                      label={action.label}
-                      icon={action.icon}
-                      tooltip={action.label}
-                      container={container}
-                    />
-                  }
-                  value={action.value}
+            <div data-mly-align-group="" role="group">
+              {DIRECTIONS.map((item) => (
+                <BubbleButton
+                  container={container}
+                  icon={item.icon}
+                  isActive={item.value === direction}
+                  key={item.value}
+                  label={item.label}
+                  onClick={() => onDirectionChange(item.value)}
+                  tooltip={item.label}
                 />
               ))}
-            </ToggleGroup>
+            </div>
           </TooltipProvider>
 
           <PopoverArrow />

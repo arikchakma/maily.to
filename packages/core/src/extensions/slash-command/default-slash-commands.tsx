@@ -11,8 +11,7 @@ import {
   headerLogoWithTextHorizontal,
   headerLogoWithTextVertical,
 } from '~/blocks/headers';
-import { image } from '~/blocks/image';
-import { inlineImage } from '~/blocks/inline-image';
+import { image, inlineImage } from '~/blocks/image';
 import {
   columns,
   divider,
@@ -20,6 +19,7 @@ import {
   repeat,
   section,
   spacer,
+  table,
 } from '~/blocks/layout';
 import { linkCard } from '~/blocks/link-card';
 import { bulletList, orderedList } from '~/blocks/list';
@@ -53,6 +53,7 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommandGroupItem[] = [
       section,
       columns,
       repeat,
+      table,
       button,
       linkCard,
       footer,
@@ -66,10 +67,9 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommandGroupItem[] = [
       {
         id: 'headers',
         title: 'Headers',
+        icon: <Heading1Icon size={16} />,
         description: 'Pre-designed headers block',
         searchTerms: ['header', 'headers'],
-        icon: <Heading1Icon className="mly:h-4 mly:w-4" />,
-        preview: 'https://cdn.usemaily.com/previews/header-preview-xyz.png',
         commands: [
           headerLogoWithTextVertical,
           headerLogoWithTextHorizontal,
@@ -79,9 +79,9 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommandGroupItem[] = [
       {
         id: 'footers',
         title: 'Footers',
+        icon: <FootprintsIcon size={16} />,
         description: 'Pre-designed footers block',
         searchTerms: ['footer', 'footers'],
-        icon: <FootprintsIcon className="mly:h-4 mly:w-4" />,
         commands: [
           footerCopyrightText,
           footerCommunityFeedbackCta,

@@ -1,59 +1,54 @@
-import {
-  MAX_IMAGE_WIDTH_PERCENTAGE,
-  MIN_IMAGE_WIDTH_PERCENTAGE,
-} from '@maily-to/shared';
+import { DEFAULT_CONTAINER_WIDTH_PIXELS } from '@maily-to/shared';
 
 import type { MigrationWarning } from '../types';
+import { getWidthPercentage } from '../utils/image-width';
+import { getVariableReference } from '../utils/variable';
 
-const LOGO_SIZE_MAP: Record<string, number> = {
+const LOGO_SIZE_PIXELS: Record<string, number> = {
   sm: 40,
   md: 48,
   lg: 64,
 };
 
-const DEFAULT_CONTAINER_WIDTH = 600;
+const DEFAULT_LOGO_SIZE_PIXELS = 48;
 
 /**
  * Migrates a v1 logo node by converting it into a v2 image node.
  * The logo node type was removed in v2 — logos are now just images.
  * Performs the following conversions:
  *   - Changes `type: 'logo'` → `type: 'image'`.
- *   - Maps the `size` enum (sm/md/lg) to a numeric `width` string
- *     (40/48/64 pixels respectively).
+ *   - Maps the `size` enum (sm/md/lg → 40/48/64 pixels) to a percentage
+ *     `width`, scaled against the container width stamped by
+ *     `annotateContainerWidths`.
  *   - Renames `alignment` → `align`.
- *   - Sets v2 image border defaults (all radii and widths to 0).
- *   - Drops deprecated `isSrcVariable` flag.
+ *   - Resolves `isSrcVariable` into a variable reference inside `src`.
+ *   - Drops the `maily-component` marker.
  */
 export function logo(
   node: Record<string, any>,
   warnings: MigrationWarning[]
 ): void {
-  // Change type: 'logo' → 'image'
   node.type = 'image';
 
   const attrs = node.attrs ?? {};
 
-  // Map size → width (percentage)
   if ('size' in attrs) {
-    const px = LOGO_SIZE_MAP[attrs.size] ?? 48;
-    const container = attrs._containerWidth ?? DEFAULT_CONTAINER_WIDTH;
-    const percent = Math.min(
-      MAX_IMAGE_WIDTH_PERCENTAGE,
-      Math.max(MIN_IMAGE_WIDTH_PERCENTAGE, Math.round((px / container) * 100))
-    );
+    const pixels = LOGO_SIZE_PIXELS[attrs.size] ?? DEFAULT_LOGO_SIZE_PIXELS;
+    const containerWidth =
+      attrs._containerWidth ?? DEFAULT_CONTAINER_WIDTH_PIXELS;
+    const percentage = getWidthPercentage({ containerWidth, pixels });
+
     warnings.push({
       nodeType: 'logo',
       field: 'size',
-      message: `Migrated "size: ${attrs.size}" → "width: ${percent}%"`,
+      message: `Migrated "size: ${attrs.size}" → "width: ${percentage}%"`,
     });
-    attrs.width = `${percent}%`;
+    attrs.width = `${percentage}%`;
     delete attrs.size;
   }
 
-  // Clean up temporary annotation
   delete attrs._containerWidth;
 
-  // alignment → align
   if ('alignment' in attrs) {
     warnings.push({
       nodeType: 'logo',
@@ -64,30 +59,23 @@ export function logo(
     delete attrs.alignment;
   }
 
-  // Set image defaults
-  attrs.borderRadiusMode ??= 'uniform';
-  attrs.borderWidthMode ??= 'uniform';
-  attrs.borderStyle ??= 'solid';
-  attrs.borderColor ??= '#000000';
-  attrs.borderTopWidth ??= 0;
-  attrs.borderRightWidth ??= 0;
-  attrs.borderBottomWidth ??= 0;
-  attrs.borderLeftWidth ??= 0;
-  attrs.borderTopLeftRadius ??= 0;
-  attrs.borderTopRightRadius ??= 0;
-  attrs.borderBottomRightRadius ??= 0;
-  attrs.borderBottomLeftRadius ??= 0;
+  if (attrs.isSrcVariable === true) {
+    warnings.push({
+      nodeType: 'logo',
+      field: 'isSrcVariable',
+      message: 'Migrated "isSrcVariable" → variable reference in "src"',
+    });
+    attrs.src = getVariableReference(attrs.src);
+  }
+  delete attrs.isSrcVariable;
 
-  // Drop with warnings
-  const DROPPED_LOGO_ATTRS = ['isSrcVariable', 'maily-component'] as const;
-  for (const field of DROPPED_LOGO_ATTRS) {
-    if (field in attrs) {
-      warnings.push({
-        nodeType: 'logo',
-        field,
-        message: `Attribute "${field}" is not supported in v2 and was dropped`,
-      });
-      delete attrs[field];
-    }
+  if ('maily-component' in attrs) {
+    warnings.push({
+      nodeType: 'logo',
+      field: 'maily-component',
+      message:
+        'Attribute "maily-component" is not supported in v2 and was dropped',
+    });
+    delete attrs['maily-component'];
   }
 }

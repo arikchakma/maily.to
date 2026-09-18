@@ -1,4 +1,8 @@
-import { TEXT_ALIGNMENTS } from '@maily-to/shared';
+import {
+  MAILY_MARK_TYPES,
+  MAILY_NODE_TYPES,
+  TEXT_ALIGNMENTS,
+} from '@maily-to/shared';
 
 import { LogoWithCoverImageIcon } from '~/components/icons/logo-with-cover-image';
 import { LogoWithTextHorizonIcon } from '~/components/icons/logo-with-text-horizon';
@@ -7,58 +11,43 @@ import type { SlashCommandItem } from '~/utils/slash-command';
 
 export const headerLogoWithTextHorizontal: SlashCommandItem = {
   title: 'Logo with Text (Horizontal)',
+  icon: <LogoWithTextHorizonIcon />,
   description: 'Logo and a text horizontally',
   searchTerms: ['logo', 'text'],
-  icon: <LogoWithTextHorizonIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
+      .focus()
       .deleteRange(range)
       .insertContent({
-        type: 'columns',
+        type: MAILY_NODE_TYPES.COLUMNS,
         content: [
           {
-            type: 'column',
-            attrs: {
-              columnId: '36de3eda-0677-47c3-a8b7-e071dec9ce30',
-              width: 'auto',
-              verticalAlign: 'middle',
-            },
+            type: MAILY_NODE_TYPES.COLUMN,
+            attrs: { width: null, verticalAlign: 'middle' },
             content: [
               {
-                type: 'image',
+                type: MAILY_NODE_TYPES.IMAGE,
                 attrs: {
                   src: 'https://maily.to/brand/logo.png',
-                  alt: null,
-                  title: null,
-                  width: '32',
-                  height: '32',
-                  alignment: TEXT_ALIGNMENTS.LEFT,
-                  externalLink: null,
-                  isExternalLinkVariable: false,
-                  isSrcVariable: false,
+                  width: '32px',
+                  align: TEXT_ALIGNMENTS.LEFT,
+                  style: 'height:32px',
                 },
               },
             ],
           },
           {
-            type: 'column',
-            attrs: {
-              columnId: '6feb593e-374a-4479-a1c7-872c60c2f4e0',
-              width: 'auto',
-              verticalAlign: 'bottom',
-            },
+            type: MAILY_NODE_TYPES.COLUMN,
+            attrs: { width: null, verticalAlign: 'bottom' },
             content: [
               {
-                type: 'heading',
-                attrs: {
-                  textAlign: TEXT_ALIGNMENTS.RIGHT,
-                  level: 3,
-                },
+                type: MAILY_NODE_TYPES.HEADING,
+                attrs: { level: 3, style: 'text-align:right' },
                 content: [
                   {
-                    type: 'text',
-                    marks: [{ type: 'bold' }],
+                    type: MAILY_NODE_TYPES.TEXT,
+                    marks: [{ type: MAILY_MARK_TYPES.BOLD }],
                     text: 'Weekly Newsletter',
                   },
                 ],
@@ -73,36 +62,29 @@ export const headerLogoWithTextHorizontal: SlashCommandItem = {
 
 export const headerLogoWithTextVertical: SlashCommandItem = {
   title: 'Logo with Text (Vertical)',
+  icon: <LogoWithTextVerticalIcon />,
   description: 'Logo and a text vertically',
   searchTerms: ['logo', 'text'],
-  icon: <LogoWithTextVerticalIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
+      .focus()
       .deleteRange(range)
       .insertContent([
         {
-          type: 'image',
+          type: MAILY_NODE_TYPES.IMAGE,
           attrs: {
             src: 'https://maily.to/brand/logo.png',
-            alt: null,
-            title: null,
-            width: '48',
-            height: '48',
-            alignment: TEXT_ALIGNMENTS.CENTER,
-            externalLink: null,
-            isExternalLinkVariable: false,
-            isSrcVariable: false,
+            width: '48px',
+            align: TEXT_ALIGNMENTS.CENTER,
+            style: 'height:48px',
           },
         },
-        { type: 'spacer', attrs: { height: 8 } },
+        { type: MAILY_NODE_TYPES.SPACER, attrs: { height: 8 } },
         {
-          type: 'heading',
-          attrs: {
-            textAlign: TEXT_ALIGNMENTS.CENTER,
-            level: 2,
-          },
-          content: [{ type: 'text', text: 'Maily' }],
+          type: MAILY_NODE_TYPES.HEADING,
+          attrs: { level: 2, style: 'text-align:center' },
+          content: [{ type: MAILY_NODE_TYPES.TEXT, text: 'Maily' }],
         },
       ])
       .run();
@@ -111,9 +93,9 @@ export const headerLogoWithTextVertical: SlashCommandItem = {
 
 export const headerLogoWithCoverImage: SlashCommandItem = {
   title: 'Logo with Cover Image',
+  icon: <LogoWithCoverImageIcon />,
   description: 'Logo and a cover image',
   searchTerms: ['logo', 'cover', 'image'],
-  icon: <LogoWithCoverImageIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     const todayFormatted = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -123,71 +105,57 @@ export const headerLogoWithCoverImage: SlashCommandItem = {
 
     editor
       .chain()
+      .focus()
       .deleteRange(range)
       .insertContent([
         {
-          type: 'image',
+          type: MAILY_NODE_TYPES.IMAGE,
           attrs: {
             src: 'https://maily.to/og-image.png',
-            alt: null,
-            title: null,
-            width: 600,
-            height: 314,
-            alignment: TEXT_ALIGNMENTS.CENTER,
-            externalLink: null,
-            isExternalLinkVariable: false,
-            isSrcVariable: false,
+            width: '600px',
+            align: TEXT_ALIGNMENTS.CENTER,
+            style: 'height:314px',
           },
         },
         {
-          type: 'columns',
+          type: MAILY_NODE_TYPES.COLUMNS,
           content: [
             {
-              type: 'column',
-              attrs: {
-                columnId: '36de3eda-0677-47c3-a8b7-e071dec9ce30',
-                width: 'auto',
-                verticalAlign: 'middle',
-              },
+              type: MAILY_NODE_TYPES.COLUMN,
+              attrs: { width: null, verticalAlign: 'middle' },
               content: [
                 {
-                  type: 'image',
+                  type: MAILY_NODE_TYPES.IMAGE,
                   attrs: {
                     src: 'https://maily.to/brand/logo.png',
-                    alt: null,
-                    title: null,
-                    width: '48',
-                    height: '48',
-                    alignment: TEXT_ALIGNMENTS.LEFT,
-                    externalLink: null,
-                    isExternalLinkVariable: false,
-                    isSrcVariable: false,
+                    width: '48px',
+                    align: TEXT_ALIGNMENTS.LEFT,
+                    style: 'height:48px',
                   },
                 },
               ],
             },
             {
-              type: 'column',
-              attrs: {
-                columnId: '6feb593e-374a-4479-a1c7-872c60c2f4e0',
-                width: 'auto',
-                verticalAlign: 'middle',
-              },
+              type: MAILY_NODE_TYPES.COLUMN,
+              attrs: { width: null, verticalAlign: 'middle' },
               content: [
                 {
-                  type: 'paragraph',
-                  attrs: { textAlign: TEXT_ALIGNMENTS.RIGHT },
+                  type: MAILY_NODE_TYPES.PARAGRAPH,
+                  attrs: { style: 'text-align:right' },
                   content: [
                     {
-                      type: 'text',
-                      marks: [{ type: 'bold' }],
+                      type: MAILY_NODE_TYPES.TEXT,
+                      marks: [{ type: MAILY_MARK_TYPES.BOLD }],
                       text: 'Weekly Newsletter',
                     },
-                    { type: 'hardBreak' },
+                    { type: MAILY_NODE_TYPES.HARD_BREAK },
                     {
-                      type: 'text',
+                      type: MAILY_NODE_TYPES.TEXT,
                       marks: [
-                        { type: 'textStyle', attrs: { color: '#929292' } },
+                        {
+                          type: MAILY_MARK_TYPES.TEXT_STYLE,
+                          attrs: { color: '#929292' },
+                        },
                       ],
                       text: todayFormatted,
                     },

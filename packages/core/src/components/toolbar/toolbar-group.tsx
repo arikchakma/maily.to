@@ -1,25 +1,7 @@
-import { cn } from '~/utils/classname';
+import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar';
 
-type ToolbarGroupProps = {
-  children: React.ReactNode;
-  className?: string;
-};
+export type ToolbarGroupProps = ToolbarPrimitive.Group.Props;
 
-export function ToolbarGroup(props: ToolbarGroup.Props) {
-  const { children, className } = props;
-
-  return (
-    <div
-      className={cn(
-        'mly:flex mly:items-stretch mly:gap-0.5 mly:rounded-xl mly:border mly:border-gray-200/70 mly:bg-white mly:p-0.5',
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-export namespace ToolbarGroup {
-  export type Props = ToolbarGroupProps;
+export function ToolbarGroup(props: ToolbarGroupProps) {
+  return <ToolbarPrimitive.Group data-mly-toolbar-group="" {...props} />;
 }

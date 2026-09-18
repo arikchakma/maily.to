@@ -1,89 +1,86 @@
 import type { HtmlCodeBlockAttributes } from '@maily-to/shared';
-import {
-  DEFAULT_HTML_CODE_BLOCK_TAB,
-  HTML_CODE_BLOCK_TABS,
-} from '@maily-to/shared';
+import { HTML_CODE_BLOCK_TABS, MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { ReactNodeViewProps } from '@tiptap/react';
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import { useMemo } from 'react';
 
-import { cn } from '~/utils/classname';
+const PREVIEW_RESET = `
+  * { font-family: 'Inter', sans-serif; }
+  blockquote, h1, h2, h3, img, li, ol, p, ul {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+`;
 
 export function HtmlCodeBlockView(props: ReactNodeViewProps) {
   const { node, updateAttributes } = props;
+  const { activeTab, language } = node.attrs as HtmlCodeBlockAttributes;
 
-  const { language, activeTab = DEFAULT_HTML_CODE_BLOCK_TAB } =
-    node.attrs as HtmlCodeBlockAttributes;
-
-  const languageClass = language ? `language-${language}` : '';
-
+  /**
+   * A `<style>` in the source belongs to the document head, so the preview
+   * hoists every one of them above the body it renders.
+   */
   const html = useMemo(() => {
-    const text = node.content.content.reduce((acc, cur) => {
-      if (cur.type.name === 'text') {
-        return acc + cur.text;
+    const source = node.content.content.reduce((text, child) => {
+      if (child.type.name !== MAILY_NODE_TYPES.TEXT) {
+        return text;
       }
 
-      return acc;
+      return text + child.text;
     }, '');
 
-    const htmlParser = new DOMParser();
-    const htmlDoc = htmlParser.parseFromString(text, 'text/html');
-    const style = htmlDoc.querySelectorAll('style');
-    const body = htmlDoc.body;
-    const combinedStyle = Array.from(style)
-      .map((s) => s.innerHTML)
+    const parsed = new DOMParser().parseFromString(source, 'text/html');
+    const styles = Array.from(parsed.querySelectorAll('style'))
+      .map((element) => {
+        return element.innerHTML;
+      })
       .join('\n');
 
-    return `<style>${combinedStyle}</style>${body.innerHTML}`;
-  }, [activeTab, node]);
+    return `<style>${styles}</style>${parsed.body.innerHTML}`;
+  }, [node]);
 
   const isEmpty = html === '<style></style>';
 
+  // The preview is a shadow root so the pasted markup cannot restyle the
+  // editor around it, and the editor's own stylesheet cannot restyle the
+  // preview.
+  const setPreviewElement = (element: HTMLDivElement | null) => {
+    if (!element || element.shadowRoot) {
+      return;
+    }
+
+    const shadow = element.attachShadow({ mode: 'open' });
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(PREVIEW_RESET);
+    shadow.adoptedStyleSheets = [sheet];
+
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    shadow.append(container);
+  };
+
   return (
-    <NodeViewWrapper draggable={false} data-drag-handle={false}>
+    <NodeViewWrapper data-drag-handle={false} draggable={false}>
       {activeTab === HTML_CODE_BLOCK_TABS.CODE && (
-        <pre className="mly:my-0 mly:overflow-x-auto mly:rounded-lg mly:border mly:border-soft-gray mly:bg-white mly:p-2 mly:text-sm mly:text-black">
+        <pre data-mly-html-code-block="">
           <NodeViewContent<'code'>
             as="code"
-            className={cn('is-editable', languageClass)}
+            className={language ? `language-${language}` : undefined}
           />
         </pre>
       )}
 
       {activeTab === HTML_CODE_BLOCK_TABS.PREVIEW && (
         <div
-          className={cn(
-            'mly:not-prose mly:rounded-lg mly:border mly:border-soft-gray mly:p-2',
-            isEmpty && 'mly:min-h-9.5'
-          )}
-          ref={(node) => {
-            if (!node || node?.shadowRoot) {
-              return;
-            }
-            const shadow = node.attachShadow({ mode: 'open' });
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(`
-              * { font-family: 'Inter', sans-serif; }
-              blockquote, h1, h2, h3, img, li, ol, p, ul {
-                margin-top: 0;
-                margin-bottom: 0;
-              }
-            `);
-            shadow.adoptedStyleSheets = [sheet];
-            const container = document.createElement('div');
-            container.innerHTML = html;
-            shadow.appendChild(container);
-          }}
           contentEditable={false}
+          data-empty={isEmpty ? '' : undefined}
+          data-mly-html-code-block-preview=""
           onClick={() => {
-            if (!isEmpty) {
-              return;
+            if (isEmpty) {
+              updateAttributes({ activeTab: HTML_CODE_BLOCK_TABS.CODE });
             }
-
-            updateAttributes({
-              activeTab: HTML_CODE_BLOCK_TABS.CODE,
-            });
           }}
+          ref={setPreviewElement}
         />
       )}
     </NodeViewWrapper>

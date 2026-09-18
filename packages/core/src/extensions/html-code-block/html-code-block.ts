@@ -1,29 +1,24 @@
 import type { HtmlCodeBlockAttributes } from '@maily-to/shared';
 import {
   DATA_NODE_TYPE_KEY,
-  DATA_VISIBILITY_RULE_KEY,
   DEFAULT_HTML_CODE_BLOCK_TAB,
   MAILY_NODE_TYPES,
 } from '@maily-to/shared';
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { TextSelection } from '@tiptap/pm/state';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import html from 'highlight.js/lib/languages/xml';
-import { createLowlight, common } from 'lowlight';
+import { common, createLowlight } from 'lowlight';
 
 import { HtmlCodeBlockView } from './html-code-block-view';
 
 const lowlight = createLowlight(common);
 lowlight.register('html', html);
 
-export type HtmlCodeBlockOptions = {
-  HTMLAttributes: Record<string, any>;
-};
-
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     htmlCodeBlock: {
-      setHtmlCodeBlock: (attributes?: { language: string }) => ReturnType;
+      setHtmlCodeBlock: (attrs?: { language: string }) => ReturnType;
       updateHtmlCodeBlock: (
         attrs: Partial<HtmlCodeBlockAttributes>
       ) => ReturnType;
@@ -46,7 +41,6 @@ export const HtmlCodeBlockExtension = CodeBlockLowlight.extend({
 
   addNodeView() {
     return ReactNodeViewRenderer(HtmlCodeBlockView, {
-      className: 'mly:relative',
       attrs: (props) => {
         const { node } = props;
         const { activeTab } = node.attrs as HtmlCodeBlockAttributes;
@@ -54,9 +48,6 @@ export const HtmlCodeBlockExtension = CodeBlockLowlight.extend({
         return {
           'data-active-tab': activeTab,
           [DATA_NODE_TYPE_KEY]: MAILY_NODE_TYPES.HTML_CODE_BLOCK,
-          ...(node.attrs.visibilityRule
-            ? { [DATA_VISIBILITY_RULE_KEY]: '' }
-            : {}),
         };
       },
     });
@@ -64,9 +55,9 @@ export const HtmlCodeBlockExtension = CodeBlockLowlight.extend({
 
   addCommands() {
     return {
-      setHtmlCodeBlock: (attributes) => {
+      setHtmlCodeBlock: (attrs) => {
         return ({ commands }) => {
-          return commands.setNode(this.name, attributes);
+          return commands.setNode(this.name, attrs);
         };
       },
       updateHtmlCodeBlock: (attrs) => {
@@ -80,43 +71,37 @@ export const HtmlCodeBlockExtension = CodeBlockLowlight.extend({
   addKeyboardShortcuts() {
     return {
       ...this.parent?.(),
+      /**
+       * Without this the browser selects the whole document from inside a code
+       * block, because the block is one text node and nothing scopes the
+       * selection to it.
+       */
       'Mod-a': ({ editor }) => {
-        const { selection } = editor.state;
-        const $pos = selection.$anchor;
-
-        const node = $pos.node($pos.depth);
-        if (node.type.name !== this.name) {
+        const $pos = editor.state.selection.$anchor;
+        if ($pos.node($pos.depth).type.name !== this.name) {
           return false;
         }
 
         let depth = $pos.depth;
-        for (let d = depth; d > 0; d--) {
-          if ($pos.node(d).type.name === this.name) {
-            depth = d;
+        for (let level = depth; level > 0; level -= 1) {
+          if ($pos.node(level).type.name === this.name) {
+            depth = level;
             break;
           }
         }
 
-        const start = $pos.before(depth) + 1;
-        const end = $pos.after(depth) - 1;
+        const from = editor.state.doc.resolve($pos.before(depth) + 1);
+        const to = editor.state.doc.resolve($pos.after(depth) - 1);
+        const transaction = editor.state.tr.setSelection(
+          TextSelection.between(from, to)
+        );
+        editor.view.dispatch(transaction);
 
-        const from = editor.state.doc.resolve(start);
-        const to = editor.state.doc.resolve(end);
-        if (from && to) {
-          const transaction = editor.state.tr.setSelection(
-            TextSelection.between(from, to)
-          );
-          editor.view.dispatch(transaction);
-          return true;
-        }
-
-        return false;
+        return true;
       },
       'Mod-Backspace': ({ editor }) => {
         return editor.commands.deleteNode(this.name);
       },
     };
   },
-}).configure({
-  lowlight,
-});
+}).configure({ lowlight });

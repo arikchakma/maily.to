@@ -1,8 +1,9 @@
-import { memo, useRef, useState } from 'react';
+import type { useRender } from '@base-ui/react/use-render';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
 import { arrowAlignOffset } from '~/utils/base-ui';
-import { cn } from '~/utils/classname';
 
 import {
   Popover,
@@ -17,91 +18,69 @@ import { ColorPicker } from './color-picker';
 import type { ColorSwatchItem } from './color-swatch';
 import { ColorSwatch } from './color-swatch';
 
-type ColorSwatchPopoverProps = {
-  container: FloatingUIContainer;
-  onClose?: () => void;
-  color: string;
-  onColorChange: (color: string, item?: ColorSwatchItem) => void;
-  renderTrigger: React.ComponentPropsWithoutRef<
-    typeof PopoverTrigger
-  >['render'];
-  items: ColorSwatchItem[];
+export type ColorSwatchTriggerState = {
+  isActive: boolean;
+  render: useRender.RenderProp;
 };
 
-function _ColorSwatchPopover(props: ColorSwatchPopoverProps) {
-  const {
-    container,
-    color: initialColor,
-    onColorChange,
-    onClose,
-    renderTrigger,
-    items,
-  } = props;
+export type ColorSwatchPopoverProps = {
+  color: string;
+  container: FloatingUIContainer;
+  items: ColorSwatchItem[];
+  onColorChange: (color: string, item?: ColorSwatchItem) => void;
+  renderTrigger: (state: ColorSwatchTriggerState) => ReactNode;
+};
 
-  const popoverRef = useRef<HTMLDivElement>(null);
+export function ColorSwatchPopover(props: ColorSwatchPopoverProps) {
+  const { color, container, items, onColorChange, renderTrigger } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
 
-  return (
-    <Popover
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose?.();
-          setIsColorPickerOpen(false);
-        }
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setIsColorPickerOpen(false);
+    }
 
-        setIsOpen(open);
-      }}
-    >
-      <PopoverTrigger render={renderTrigger} />
+    setOpen(nextOpen);
+  };
+
+  return (
+    <Popover onOpenChange={handleOpenChange} open={open}>
+      {renderTrigger({ isActive: open, render: <PopoverTrigger /> })}
+
       <PopoverPositioner
+        alignOffset={arrowAlignOffset}
         container={container}
         side="bottom"
-        alignOffset={arrowAlignOffset}
       >
         <PopoverPopup
-          ref={popoverRef}
-          className={cn(
-            'mly:relative mly:flex mly:w-fit mly:flex-col mly:gap-0 mly:p-1',
-            isColorPickerOpen && 'mly:min-w-[220px]'
-          )}
+          data-picker={isColorPickerOpen ? '' : undefined}
+          data-variant="color-swatch"
         >
           <TooltipProvider>
-            {isColorPickerOpen && (
+            {isColorPickerOpen ? (
               <>
-                <PopoverBack
-                  onClick={() => setIsColorPickerOpen(false)}
-                  className="mly:mb-1"
-                >
+                <PopoverBack onClick={() => setIsColorPickerOpen(false)}>
                   Back to Color Picker
                 </PopoverBack>
 
-                <ColorPicker
-                  color={initialColor}
-                  onColorChange={onColorChange}
-                />
+                <ColorPicker color={color} onColorChange={onColorChange} />
               </>
-            )}
-
-            {!isColorPickerOpen && (
+            ) : (
               <ColorSwatch
-                color={initialColor}
+                color={color}
                 container={container}
                 items={items}
-                onCustomColorClick={() => setIsColorPickerOpen(true)}
-                onResetColorClick={onColorChange}
                 onColorClick={onColorChange}
+                onCustomColorClick={() => setIsColorPickerOpen(true)}
               />
             )}
-
-            <PopoverArrow />
           </TooltipProvider>
+
+          <PopoverArrow />
         </PopoverPopup>
       </PopoverPositioner>
     </Popover>
   );
 }
-
-export const ColorSwatchPopover = memo(_ColorSwatchPopover);

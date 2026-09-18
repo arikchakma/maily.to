@@ -1,4 +1,5 @@
 import { render } from '@maily-to/render';
+import type { DocumentNode } from '@maily-to/shared';
 import { useMutation } from '@tanstack/react-query';
 import type { Editor } from '@tiptap/core';
 import { EyeIcon, Loader2Icon } from 'lucide-react';
@@ -29,7 +30,7 @@ export function PreviewEmailDialog(props: PreviewEmailDialogProps) {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => {
-      const json = editor?.getJSON();
+      const json = editor?.getJSON() as DocumentNode | undefined;
       if (!json) {
         throw new Error('No email content to preview');
       }

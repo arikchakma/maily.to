@@ -3,7 +3,7 @@ import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
 
 export type FooterOptions = {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: Record<string, unknown>;
 };
 
 declare module '@tiptap/core' {
@@ -26,36 +26,16 @@ export const FooterExtension = Node.create<FooterOptions>({
     };
   },
 
-  addAttributes() {
-    return {
-      textAlign: {
-        default: 'left',
-        parseHTML: (element) => element.style.textAlign || 'left',
-        renderHTML: (attributes) => {
-          if (!attributes.textAlign || attributes.textAlign === 'left') {
-            return {};
-          }
-
-          return {
-            style: `text-align: ${attributes.textAlign}`,
-          };
-        },
-      },
-    };
-  },
-
   addCommands() {
     return {
       setFooter:
         () =>
-        ({ commands }) => {
-          return commands.setNode(this.name);
-        },
+        ({ commands }) =>
+          commands.setNode(this.name),
       updateFooterAttributes:
         (attrs) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        },
+        ({ commands }) =>
+          commands.updateAttributes(this.name, attrs),
     };
   },
 
@@ -67,9 +47,7 @@ export const FooterExtension = Node.create<FooterOptions>({
     return [
       'small',
       mergeAttributes(
-        {
-          [DATA_NODE_TYPE_KEY]: this.name,
-        },
+        { [DATA_NODE_TYPE_KEY]: this.name },
         this.options.HTMLAttributes,
         HTMLAttributes
       ),

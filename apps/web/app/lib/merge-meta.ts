@@ -41,7 +41,6 @@ type CreateMetaArgs<T = unknown> = {
  * ```
  * The resulting meta will contain both `title: 'My Leaf Route'` and `description: 'This is the parent route'`.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mergeRouteModuleMeta<TMetaArgs extends CreateMetaArgs<any>>(
   leafMetaFn: (args: TMetaArgs) => MetaDescriptors
 ): (args: TMetaArgs) => MetaDescriptors {

@@ -1,11 +1,11 @@
 import { clamp, noop } from '@maily-to/shared';
-import { useValueAsRef } from '@maily-to/ui';
 import { useCallback, useRef, useState } from 'react';
 
 import type { SpacerHandleType } from '~/extensions/spacer/spacer-handle';
+import { capturePointer, releasePointer } from '~/utils/pointer';
+import { MAX_SPACER_HEIGHT, MIN_SPACER_HEIGHT } from '~/utils/spacing';
 
-const MIN_SPACER_HEIGHT = 16;
-const MAX_SPACER_HEIGHT = 1000;
+import { useValueAsRef } from './use-value-as-ref';
 
 type UseSpacerResizeControllerOptions = {
   height: number;
@@ -14,9 +14,9 @@ type UseSpacerResizeControllerOptions = {
 };
 
 type ResizeParams = {
-  initialHeight: number;
-  initialClientY: number;
   handleUsed: SpacerHandleType;
+  initialClientY: number;
+  initialHeight: number;
 };
 
 export function useSpacerResizeController(
@@ -28,7 +28,8 @@ export function useSpacerResizeController(
   const spacerWrapperRef = useRef<HTMLDivElement | null>(null);
   const [shouldShowDragHandles, setShouldShowDragHandles] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const valueRef = useValueAsRef(height);
+
+  const heightRef = useValueAsRef(height);
 
   const handleResize = useCallback(
     (
@@ -36,10 +37,10 @@ export function useSpacerResizeController(
       initialResizeParams: ResizeParams
     ) => {
       let activeResizeState: ResizeParams | null = initialResizeParams;
-      let nextHeight = valueRef.current;
+      let nextHeight = heightRef.current;
 
       const targetElement = event.currentTarget;
-      targetElement.setPointerCapture(event.pointerId);
+      capturePointer({ element: targetElement, pointerId: event.pointerId });
 
       const handlePointerMove = (moveEvent: PointerEvent) => {
         const spacerWrapper = spacerWrapperRef.current;
@@ -49,13 +50,10 @@ export function useSpacerResizeController(
 
         const pointerDeltaY =
           moveEvent.clientY - activeResizeState.initialClientY;
-        const { initialHeight, handleUsed } = activeResizeState;
+        const { handleUsed, initialHeight } = activeResizeState;
+        const delta = handleUsed === 'top' ? -pointerDeltaY : pointerDeltaY;
 
-        let newHeightInPixels =
-          initialHeight +
-          (handleUsed === 'top' ? -pointerDeltaY : pointerDeltaY);
-
-        nextHeight = clamp(Math.round(newHeightInPixels), [
+        nextHeight = clamp(Math.round(initialHeight + delta), [
           MIN_SPACER_HEIGHT,
           MAX_SPACER_HEIGHT,
         ]);
@@ -67,7 +65,10 @@ export function useSpacerResizeController(
       const handlePointerUp = (upEvent: PointerEvent) => {
         activeResizeState = null;
         setIsResizing(false);
-        targetElement.releasePointerCapture(upEvent.pointerId);
+        releasePointer({
+          element: targetElement,
+          pointerId: upEvent.pointerId,
+        });
 
         onHeightChange(nextHeight);
         onHeightCommitted(nextHeight);
@@ -81,15 +82,15 @@ export function useSpacerResizeController(
 
       setIsResizing(true);
     },
-    [onHeightChange, onHeightCommitted]
+    [heightRef, onHeightChange, onHeightCommitted]
   );
 
   return {
+    containerRef,
     handleResize,
     isResizing,
-    spacerWrapperRef,
-    shouldShowDragHandles,
     setShouldShowDragHandles,
-    containerRef,
+    shouldShowDragHandles,
+    spacerWrapperRef,
   };
 }

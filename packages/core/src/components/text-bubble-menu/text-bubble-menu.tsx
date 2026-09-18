@@ -1,4 +1,4 @@
-import { AI_ACTIONS_PLUGIN_KEY } from '@maily-to/extension-ai-actions';
+import { MAILY_MARK_TYPES } from '@maily-to/shared';
 import {
   BoldIcon,
   CodeIcon,
@@ -6,19 +6,18 @@ import {
   StrikethroughIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
 import { useTextBubbleState } from '~/hooks/use-text-bubble-state';
 import { useTurnIntoBlockItems } from '~/hooks/use-turn-into-block-items';
 import { FLOATING_ELEMENT_IDS } from '~/types/floating-ui';
 import {
-  DEFAULT_COLOR_SWATCHES,
-  TRANSPARENT_COLOR,
+  getBackgroundColorSwatches,
+  getTextColorSwatches,
 } from '~/utils/color-swatch';
 
 import { ColorTrigger } from '../color-picker/color-picker-trigger';
-import type { ColorSwatchItem } from '../color-picker/color-swatch';
 import { ColorSwatchPopover } from '../color-picker/color-swatch-popover';
 import { BubbleButton } from '../interface/bubble-button';
 import { BubbleMenu } from '../interface/bubble-menu';
@@ -28,149 +27,76 @@ import { LinkPopover } from '../link-popover/link-popover';
 import { AIActionsDropdown } from './ai-actions-dropdown';
 import { TurnIntoBlock } from './turn-into-block';
 
+const MARKS = [
+  {
+    activeKey: 'isBold',
+    command: 'toggleBold',
+    icon: BoldIcon,
+    label: 'Bold',
+    name: MAILY_MARK_TYPES.BOLD,
+  },
+  {
+    activeKey: 'isItalic',
+    command: 'toggleItalic',
+    icon: ItalicIcon,
+    label: 'Italic',
+    name: MAILY_MARK_TYPES.ITALIC,
+  },
+  {
+    activeKey: 'isUnderline',
+    command: 'toggleUnderline',
+    icon: UnderlineIcon,
+    label: 'Underline',
+    name: MAILY_MARK_TYPES.UNDERLINE,
+  },
+  {
+    activeKey: 'isStrike',
+    command: 'toggleStrike',
+    icon: StrikethroughIcon,
+    label: 'Strikethrough',
+    name: MAILY_MARK_TYPES.STRIKE,
+  },
+  {
+    activeKey: 'isCode',
+    command: 'toggleCode',
+    icon: CodeIcon,
+    label: 'Code',
+    name: MAILY_MARK_TYPES.CODE,
+  },
+] as const;
+
 export function TextBubbleMenu() {
   const editor = useEditorInstance();
   const state = useTextBubbleState(editor);
   const turnIntoBlockItems = useTurnIntoBlockItems(editor);
+  const container = useRef<HTMLDivElement>(null);
 
-  const container = useRef<HTMLDivElement | null>(null);
+  const {
+    align,
+    backgroundColor,
+    blockType,
+    color,
+    isButtonSelected,
+    linkHref,
+  } = state;
 
-  const actions = [
-    {
-      label: 'Bold',
-      icon: BoldIcon,
-      tooltip: 'Bold',
-      isActive: state.isBold,
-      command: () => editor.chain().focus().toggleBold().run(),
-    },
-    {
-      label: 'Italic',
-      icon: ItalicIcon,
-      tooltip: 'Italic',
-      isActive: state.isItalic,
-      command: () => editor.chain().focus().toggleItalic().run(),
-    },
-    {
-      label: 'Underline',
-      icon: UnderlineIcon,
-      tooltip: 'Underline',
-      isActive: state.isUnderline,
-      command: () => editor.chain().focus().toggleUnderline().run(),
-    },
-    {
-      label: 'Strikethrough',
-      icon: StrikethroughIcon,
-      tooltip: 'Strikethrough',
-      isActive: state.isStrike,
-      command: () => editor.chain().focus().toggleStrike().run(),
-    },
-    {
-      label: 'Code',
-      icon: CodeIcon,
-      tooltip: 'Code',
-      isActive: state.isCode,
-      command: () => editor.chain().focus().toggleCode().run(),
-    },
-  ];
+  const hasAIActions = 'runAIAction' in editor.commands;
 
-  const handleTextColorChange = useCallback(
-    (color: string) => {
-      if (!color) {
-        return editor.chain().unsetColor().run();
-      }
+  const handleLinkChange = (url: string | null) => {
+    if (!url) {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
 
-      return editor.chain().setColor(color).run();
-    },
-    [editor]
-  );
-
-  const handleBackgroundColorChange = useCallback(
-    (color: string) => {
-      if (!color) {
-        return editor.chain().unsetHighlight().run();
-      }
-
-      return editor.chain().setHighlight({ color }).run();
-    },
-    [editor]
-  );
-
-  const handleAlignChange = useCallback(
-    (align: string) => {
-      return editor.chain().focus().setTextAlign(align).run();
-    },
-    [editor]
-  );
-
-  const handleUrlChange = useCallback(
-    (url: string | null) => {
-      if (!url) {
-        return editor
-          .chain()
-          .extendMarkRange('link')
-          .unsetLink()
-          .unsetUnderline()
-          .run();
-      }
-
-      return editor
-        .chain()
-        .extendMarkRange('link')
-        .setLink({ href: url })
-        .setUnderline()
-        .run();
-    },
-    [editor]
-  );
-
-  const [textColorSwatch, backgroundColorSwatch] = useMemo(() => {
-    const textColors: ColorSwatchItem[] = [
-      { id: 'reset', label: 'Reset Color', color: '' },
-    ];
-    const backgroundColors: ColorSwatchItem[] = [
-      { id: 'reset', label: 'Reset Color', color: '' },
-    ];
-
-    DEFAULT_COLOR_SWATCHES.forEach((swatch) => {
-      textColors.push({
-        id: swatch.id,
-        label: swatch.label,
-        color: swatch.text,
-      });
-      backgroundColors.push({
-        id: swatch.id,
-        label: swatch.label,
-        color: swatch.background,
-      });
-    });
-
-    textColors.push({
-      id: 'transparent',
-      label: 'Transparent',
-      color: TRANSPARENT_COLOR,
-    });
-
-    backgroundColors.push({
-      id: 'transparent',
-      label: 'Transparent',
-      color: TRANSPARENT_COLOR,
-    });
-
-    return [textColors, backgroundColors];
-  }, []);
-
-  const { isButtonSelected } = state;
-
-  const hasAIActions = editor.extensionManager.extensions.some(
-    (ext) => ext.name === AI_ACTIONS_PLUGIN_KEY
-  );
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
 
   return (
     <BubbleMenu
-      ref={container}
       floatingId={FLOATING_ELEMENT_IDS.TEXT_BUBBLE_MENU}
+      ref={container}
     >
-      {!isButtonSelected && hasAIActions && (
+      {isButtonSelected || !hasAIActions ? null : (
         <>
           <AIActionsDropdown container={container} />
 
@@ -178,76 +104,86 @@ export function TextBubbleMenu() {
         </>
       )}
 
-      {!isButtonSelected && (
+      {isButtonSelected ? null : (
         <>
-          <TurnIntoBlock items={turnIntoBlockItems} container={container} />
+          <TurnIntoBlock container={container} items={turnIntoBlockItems} />
 
           <Divider />
         </>
       )}
 
-      {actions.map((action) => (
+      {MARKS.map((mark) => (
         <BubbleButton
-          key={action.label}
-          label={action.label}
-          icon={action.icon}
-          tooltip={action.tooltip}
           container={container}
-          isActive={action.isActive}
-          onClick={action.command}
+          icon={mark.icon}
+          isActive={state[mark.activeKey]}
+          key={mark.name}
+          label={mark.label}
+          onClick={() => editor.chain().focus()[mark.command]().run()}
+          tooltip={mark.label}
         />
       ))}
 
-      {!isButtonSelected && (
-        <ToggleAlignPopover
-          container={container}
-          align={state.align}
-          onAlignChange={handleAlignChange}
-        />
-      )}
-
-      {!isButtonSelected && (
+      {isButtonSelected ? null : (
         <>
+          <ToggleAlignPopover
+            align={align}
+            container={container}
+            onAlignChange={(textAlign) =>
+              editor
+                .chain()
+                .focus()
+                .updateNodeStyle(blockType, { textAlign })
+                .run()
+            }
+          />
+
           <Divider />
 
           <LinkPopover
             container={container}
-            url={state.linkHref}
-            onUrlChange={handleUrlChange}
+            onUrlChange={handleLinkChange}
+            url={linkHref}
           />
 
           <ColorSwatchPopover
+            color={backgroundColor}
             container={container}
-            color={state.backgroundColor}
-            onColorChange={handleBackgroundColorChange}
-            items={backgroundColorSwatch}
-            renderTrigger={(props, renderState) => (
+            items={getBackgroundColorSwatches()}
+            onColorChange={(next) =>
+              next
+                ? editor.chain().focus().setHighlight({ color: next }).run()
+                : editor.chain().focus().unsetHighlight().run()
+            }
+            renderTrigger={(state) => (
               <ColorTrigger
+                {...state}
+                color={backgroundColor}
+                container={container}
                 group="background"
-                backgroundColor={state.backgroundColor}
-                active={renderState.open}
                 label="Background Color"
                 tooltip="Background Color"
-                container={container}
-                {...props}
               />
             )}
           />
 
           <ColorSwatchPopover
+            color={color}
             container={container}
-            color={state.textColor}
-            onColorChange={handleTextColorChange}
-            items={textColorSwatch}
-            renderTrigger={(props, renderState) => (
+            items={getTextColorSwatches()}
+            onColorChange={(next) =>
+              next
+                ? editor.chain().focus().setColor(next).run()
+                : editor.chain().focus().unsetColor().run()
+            }
+            renderTrigger={(state) => (
               <ColorTrigger
+                {...state}
+                color={color}
+                container={container}
                 group="text"
-                textColor={state.textColor}
-                active={renderState.open}
                 label="Text Color"
                 tooltip="Text Color"
-                container={container}
-                {...props}
               />
             )}
           />

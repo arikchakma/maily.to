@@ -2,17 +2,15 @@ import type { LinkCardAttributes } from '@maily-to/shared';
 import type { ReactNodeViewProps } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { SquareArrowOutUpRightIcon } from 'lucide-react';
-import { useCallback } from 'react';
 
-import { ImageState } from '~/extensions/resizable-image/image-state/image-state';
+import { ImageState } from '~/extensions/image/image-state';
 
 export function LinkCardView(props: ReactNodeViewProps) {
-  const { editor, node, getPos } = props;
-  const attrs = node.attrs as LinkCardAttributes;
-  const { title, description, link, linkTitle, image, subTitle, badgeText } =
-    attrs;
+  const { editor, getPos, node } = props;
+  const { badgeText, description, image, link, linkTitle, subTitle, title } =
+    node.attrs as LinkCardAttributes;
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (!editor.isEditable) {
       return;
     }
@@ -23,64 +21,53 @@ export function LinkCardView(props: ReactNodeViewProps) {
     }
 
     editor.commands.setNodeSelection(pos);
-  }, [editor, getPos]);
+  };
 
-  const isEmpty = !title && !description && !image;
+  const isEmpty = !(title || description || image);
 
   return (
     <NodeViewWrapper
-      className="not-prose mly:cursor-default"
-      draggable={editor.isEditable}
       data-drag-handle={editor.isEditable}
+      data-mly-link-card=""
+      draggable={editor.isEditable}
       onClick={handleClick}
     >
       {isEmpty ? (
-        <ImageState.Root>
-          <ImageState.Icon icon={SquareArrowOutUpRightIcon} />
-          <ImageState.Label>Link Card</ImageState.Label>
-        </ImageState.Root>
+        <ImageState icon={SquareArrowOutUpRightIcon} state="idle">
+          Link Card
+        </ImageState>
       ) : (
-        <div className="mly:flex mly:flex-col mly:rounded-lg mly:border mly:border-gray-300">
-          <>
-            {image && (
-              <div className="mly:relative mly:mb-1.5 mly:w-full mly:shrink-0">
-                <img
-                  src={image}
-                  alt="link-card"
-                  className="mly:mb-0! mly:h-full mly:w-full mly:rounded-t-lg"
-                  draggable={editor.isEditable}
-                />
-              </div>
-            )}
-            <div className="mly:flex mly:items-stretch mly:p-3">
-              <div className="mly:flex mly:flex-col">
-                <div className="mly:mb-1.5! mly:flex mly:items-center mly:gap-1.5">
-                  <h2 className="mly:mb-0! mly:text-lg! mly:font-semibold">
-                    {title}
-                  </h2>
-                  {badgeText && (
-                    <span className="mly:font-base! mly:rounded-md mly:bg-yellow-200 mly:px-2 mly:py-1 mly:text-xs mly:leading-none mly:font-semibold">
-                      {badgeText}
-                    </span>
-                  )}{' '}
-                  {subTitle && !badgeText && (
-                    <span className="mly:font-base! mly:rounded-md mly:text-xs mly:leading-none mly:text-gray-400">
-                      {subTitle}
-                    </span>
-                  )}
-                </div>
-                <p className="mly:my-0! mly:text-base! mly:text-gray-500">
-                  {description}{' '}
-                  {linkTitle ? (
-                    <a href={link} className="mly:font-semibold">
-                      {linkTitle}
-                    </a>
-                  ) : null}
-                </p>
-              </div>
+        <>
+          {image ? (
+            <img
+              alt={title || 'Link card'}
+              data-mly-link-card-image=""
+              draggable={false}
+              src={image}
+            />
+          ) : null}
+
+          <div data-mly-link-card-content="">
+            <div data-mly-link-card-heading="">
+              <span data-mly-link-card-title="">{title}</span>
+              {badgeText ? (
+                <span data-mly-link-card-badge="">{badgeText}</span>
+              ) : null}
+              {subTitle && !badgeText ? (
+                <span data-mly-link-card-sub-title="">{subTitle}</span>
+              ) : null}
             </div>
-          </>
-        </div>
+
+            <p data-mly-link-card-description="">
+              {description}{' '}
+              {linkTitle ? (
+                <a data-mly-link-card-cta="" href={link}>
+                  {linkTitle}
+                </a>
+              ) : null}
+            </p>
+          </div>
+        </>
       )}
     </NodeViewWrapper>
   );

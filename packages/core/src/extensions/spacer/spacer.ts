@@ -1,30 +1,25 @@
 import type { SpacerAttributes } from '@maily-to/shared';
-import {
-  DATA_NODE_TYPE_KEY,
-  DATA_VISIBILITY_RULE_KEY,
-  FIELD_MODE,
-  MAILY_NODE_TYPES,
-} from '@maily-to/shared';
+import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import { SpacerView } from './spacer-view';
 
+export const DEFAULT_SPACER_HEIGHT = 8;
+
 export type SpacerOptions = {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: Record<string, unknown>;
 };
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     spacer: {
       setSpacer: (attrs?: Partial<SpacerAttributes>) => ReturnType;
-      updateSpacerAttributes: (attrs: Partial<SpacerAttributes>) => ReturnType;
       unsetSpacer: () => ReturnType;
+      updateSpacerAttributes: (attrs: Partial<SpacerAttributes>) => ReturnType;
     };
   }
 }
-
-export const DEFAULT_SPACER_HEIGHT = 8;
 
 export const SpacerExtension = Node.create<SpacerOptions>({
   name: MAILY_NODE_TYPES.SPACER,
@@ -32,83 +27,61 @@ export const SpacerExtension = Node.create<SpacerOptions>({
   group: 'block',
   draggable: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
+
   addAttributes() {
     return {
       height: {
         default: DEFAULT_SPACER_HEIGHT,
-        parseHTML: (element) => Number(element.getAttribute('data-height')),
-        renderHTML: (attributes) => {
-          return {
-            'data-height': attributes.height,
-          };
-        },
-      },
-      heightMode: {
-        default: FIELD_MODE.UNIFORM,
-        parseHTML: (element) => element.getAttribute('data-height-mode'),
-        renderHTML: (attributes) => {
-          return {
-            'data-height-mode': attributes.heightMode,
-          };
-        },
+        parseHTML: (element) =>
+          Number(element.getAttribute('data-height')) || DEFAULT_SPACER_HEIGHT,
+        renderHTML: (attributes) => ({ 'data-height': attributes.height }),
       },
     };
   },
 
   addCommands() {
     return {
-      setSpacer: (attrs) => {
-        return ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs,
-          });
-        };
-      },
-      updateSpacerAttributes: (attrs) => {
-        return ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        };
-      },
-      unsetSpacer: () => {
-        return ({ commands }) => {
-          return commands.deleteNode(this.name);
-        };
-      },
+      setSpacer:
+        (attrs) =>
+        ({ commands }) =>
+          commands.insertContent({ type: this.name, attrs }),
+      unsetSpacer:
+        () =>
+        ({ commands }) =>
+          commands.deleteNode(this.name),
+      updateSpacerAttributes:
+        (attrs) =>
+        ({ commands }) =>
+          commands.updateAttributes(this.name, attrs),
     };
   },
+
+  parseHTML() {
+    return [{ tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]` }];
+  },
+
   renderHTML({ HTMLAttributes, node }) {
-    const { height = DEFAULT_SPACER_HEIGHT } = node.attrs as SpacerAttributes;
+    const { height } = node.attrs as SpacerAttributes;
 
     return [
       'div',
       mergeAttributes(
-        {
-          [DATA_NODE_TYPE_KEY]: this.name,
-        },
+        { [DATA_NODE_TYPE_KEY]: this.name },
         this.options.HTMLAttributes,
         HTMLAttributes,
-        {
-          contenteditable: false,
-          style: `height: ${height}px;--spacer-height: ${height}px;`,
-        }
+        { contenteditable: 'false', style: `height:${height}px` }
       ),
     ];
   },
-  parseHTML() {
-    return [{ tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]` }];
-  },
+
   addNodeView() {
     return ReactNodeViewRenderer(SpacerView, {
-      className: 'mly:relative',
-      attrs: (props) => {
-        return {
-          [DATA_NODE_TYPE_KEY]: this.name,
-          ...(props.node.attrs.visibilityRule
-            ? { [DATA_VISIBILITY_RULE_KEY]: '' }
-            : {}),
-        };
-      },
+      attrs: { [DATA_NODE_TYPE_KEY]: this.name },
     });
   },
 });

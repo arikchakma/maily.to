@@ -1,50 +1,23 @@
 import type { VariableAttributes } from '@maily-to/shared';
 import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { Editor } from '@tiptap/react';
-import { useEditorState } from '@tiptap/react';
-import { useCallback, useState } from 'react';
 
-import { useEditorInstance } from './use-editor-instance';
-import { useOnNodeSelect } from './use-on-node-select';
-import { useOnSelectionUpdate } from './use-on-selection-update';
+import { useNodeBubbleState } from './use-node-bubble-state';
 
-export function useVariableBubbleState(editor: Editor) {
-  const editorInstance = useEditorInstance(editor);
-  const [open, setOpen] = useState(false);
-
-  const state = useEditorState({
-    editor: editorInstance,
-    selector: (ctx) => {
-      const currentVariable = ctx.editor.getAttributes(
+export function useVariableBubbleState(editor?: Editor) {
+  return useNodeBubbleState({
+    editor,
+    selector: (instance) => {
+      const attrs = instance.getAttributes(
         MAILY_NODE_TYPES.VARIABLE
       ) as VariableAttributes;
+
       return {
-        id: currentVariable.id,
-        label: currentVariable.label,
-        required: currentVariable.required,
-        fallback: currentVariable.fallback,
-        hideDefaultValue: currentVariable.hideDefaultValue,
+        fallback: attrs.fallback ?? '',
+        hideDefaultValue: attrs.hideDefaultValue ?? false,
+        id: attrs.id ?? '',
       };
     },
+    type: MAILY_NODE_TYPES.VARIABLE,
   });
-
-  const handleSelectionUpdate = useCallback(() => {
-    if (!editorInstance.isEditable) {
-      return;
-    }
-
-    const isVariableSelected = editorInstance.isActive(
-      MAILY_NODE_TYPES.VARIABLE
-    );
-    setOpen(isVariableSelected);
-  }, [editorInstance]);
-
-  useOnSelectionUpdate(editorInstance, handleSelectionUpdate);
-  useOnNodeSelect(editorInstance, handleSelectionUpdate);
-
-  return {
-    ...state,
-    open,
-    setOpen,
-  };
 }

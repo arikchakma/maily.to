@@ -11,8 +11,8 @@
 }
 
 @utility no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -26,7 +26,6 @@
     margin: 0;
   }
 
-  /* Firefox */
   &[type='number'] {
     -moz-appearance: textfield;
   }

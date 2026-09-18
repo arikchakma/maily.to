@@ -25,7 +25,7 @@ type ApiReturn<ResponseType> = ResponseType;
  * @param url
  * @param options
  */
-export async function httpCall<ResponseType = AppResponse>(
+async function httpCall<ResponseType = AppResponse>(
   url: string,
   options?: HttpOptionsType
 ): Promise<ApiReturn<ResponseType>> {
@@ -49,7 +49,6 @@ export async function httpCall<ResponseType = AppResponse>(
 
   const data = doesAcceptHtml ? await response.text() : await response.json();
 
-  // Logout user if token is invalid
   if (data.status === 401) {
     window.location.reload();
     return null as unknown as ApiReturn<ResponseType>;
@@ -87,38 +86,4 @@ export async function httpGet<ResponseType = AppResponse>(
   const queryUrl = searchParams ? `${url}?${searchParams}` : url;
 
   return httpCall<ResponseType>(queryUrl, options);
-}
-
-export async function httpPatch<ResponseType = AppResponse>(
-  url: string,
-  body: Record<string, any>,
-  options?: HttpOptionsType
-): Promise<ApiReturn<ResponseType>> {
-  return httpCall<ResponseType>(url, {
-    ...options,
-    method: 'PATCH',
-    body: JSON.stringify(body),
-  });
-}
-
-export async function httpPut<ResponseType = AppResponse>(
-  url: string,
-  body: Record<string, any>,
-  options?: HttpOptionsType
-): Promise<ApiReturn<ResponseType>> {
-  return httpCall<ResponseType>(url, {
-    ...options,
-    method: 'PUT',
-    body: JSON.stringify(body),
-  });
-}
-
-export async function httpDelete<ResponseType = AppResponse>(
-  url: string,
-  options?: HttpOptionsType
-): Promise<ApiReturn<ResponseType>> {
-  return httpCall<ResponseType>(url, {
-    ...options,
-    method: 'DELETE',
-  });
 }

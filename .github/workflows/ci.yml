@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,11 +19,33 @@ jobs:
           cache: true
 
       - run: vp install
-
-      - run: vp run build -r
-
+      - run: vp run -r build
       - run: vp run @maily-to/web#typegen
-
       - run: vp check
+      # Core belongs to the browser job, and a filtered run also selects the
+      # workspace root, whose test script would pull core back in.
+      - run: vp run -F './packages/*' -F './apps/*' -F '!@maily-to/core' test
 
-      - run: vp test
+  browser:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+
+      - run: vp install
+      - run: vp exec playwright install --with-deps ${{ matrix.browser }}
+      - run: vp run -r build
+      - run: vp run -F '@maily-to/core' test
+        env:
+          TEST_BROWSER: ${{ matrix.browser }}
+      - run: vp exec playwright test --project=${{ matrix.browser }} --retries=2

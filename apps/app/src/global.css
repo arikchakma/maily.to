@@ -26,3 +26,11 @@ html,
 body {
   @apply overscroll-none;
 }
+
+[data-mly-editor-content] .ProseMirror {
+  min-height: 420px;
+}
+
+[data-mly-editor-content] .ProseMirror > :last-child {
+  margin-bottom: 0;
+}

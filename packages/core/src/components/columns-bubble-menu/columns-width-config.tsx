@@ -1,116 +1,118 @@
 import { Columns2Icon, Columns3Icon, SlidersVerticalIcon } from 'lucide-react';
+import { useState } from 'react';
 
-import { cn } from '~/utils/classname';
+import type { FloatingUIContainer } from '~/types/floating-ui';
 
+import { BubbleButton } from '../interface/bubble-button';
 import { Button } from '../interface/button';
+import { Divider } from '../interface/divider';
 import {
   Popover,
   PopoverPopup,
   PopoverPositioner,
   PopoverTrigger,
 } from '../interface/popover';
-import {
-  Tooltip,
-  TooltipPopup,
-  TooltipPositioner,
-  TooltipTrigger,
-} from '../interface/tooltip';
 import { UnitField } from '../interface/unit-field';
 
-type ColumnsWidthConfigProps = {
-  container: React.RefObject<HTMLDivElement | null>;
+const MIN_COLUMN_WIDTH = 10;
+
+const COLUMN_COUNT_OPTIONS = [
+  { icon: Columns2Icon, label: '2 Columns', value: 2 },
+  { icon: Columns3Icon, label: '3 Columns', value: 3 },
+] as const;
+
+function getColumnLabel(index: number, columnsCount: number) {
+  if (index === 0) {
+    return 'Left';
+  }
+
+  if (index === columnsCount - 1) {
+    return 'Right';
+  }
+
+  return 'Middle';
+}
+
+function getMaxColumnWidth(columnWidths: (number | null)[], index: number) {
+  const othersTotal = columnWidths.reduce<number>(
+    (sum, width, position) =>
+      position === index ? sum : sum + (width ?? MIN_COLUMN_WIDTH),
+    0
+  );
+
+  return 100 - othersTotal;
+}
+
+export type ColumnsWidthConfigProps = {
   columnsCount: number;
-  onColumnsCountChange: (columns: number) => void;
   columnWidths: (number | null)[];
-  onColumnWidthChange?: (index: number, width: number | null) => void;
+  container: FloatingUIContainer;
+  onColumnsCountChange: (columnsCount: number) => void;
+  onColumnWidthChange: (index: number, width: number | null) => void;
 };
 
 export function ColumnsWidthConfig(props: ColumnsWidthConfigProps) {
   const {
-    container,
-    columnsCount = 2,
-    onColumnsCountChange,
+    columnsCount,
     columnWidths,
+    container,
+    onColumnsCountChange,
     onColumnWidthChange,
   } = props;
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Popover>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <PopoverTrigger
-              render={
-                <Button variant="ghost" size="icon" className="mly:size-7">
-                  <SlidersVerticalIcon className="mly:size-4" />
-                </Button>
-              }
-            />
-          }
-        />
-        <TooltipPositioner container={container}>
-          <TooltipPopup>Column Settings</TooltipPopup>
-        </TooltipPositioner>
-      </Tooltip>
-      <PopoverPositioner container={container} sideOffset={8} side="bottom">
-        <PopoverPopup className="mly:w-[280px] mly:p-1">
-          <div className="mly:grid mly:grid-cols-2 mly:gap-1">
-            <SwitchButton
-              onClick={() => onColumnsCountChange(2)}
-              isActive={columnsCount === 2}
-            >
-              <Columns2Icon className="mly:size-4" />
-              <span>2 Columns</span>
-            </SwitchButton>
-            <SwitchButton
-              onClick={() => onColumnsCountChange(3)}
-              isActive={columnsCount === 3}
-            >
-              <Columns3Icon className="mly:size-4" />
-              <span>3 Columns</span>
-            </SwitchButton>
+    <Popover onOpenChange={setOpen} open={open}>
+      <BubbleButton
+        container={container}
+        icon={SlidersVerticalIcon}
+        isActive={open}
+        label="Column Settings"
+        render={<PopoverTrigger />}
+        tooltip="Column Settings"
+      />
+
+      <PopoverPositioner container={container} side="bottom">
+        <PopoverPopup data-variant="columns-width" initialFocus={false}>
+          <div data-mly-columns-count-switch="" role="group">
+            {COLUMN_COUNT_OPTIONS.map((option) => (
+              <Button
+                data-active={option.value === columnsCount ? '' : undefined}
+                data-mly-columns-count-button=""
+                key={option.value}
+                onClick={() => onColumnsCountChange(option.value)}
+              >
+                <option.icon size={14} />
+                <span>{option.label}</span>
+              </Button>
+            ))}
           </div>
 
-          <hr className="mly:my-1 mly:border-gray-200" />
+          <Divider type="horizontal" />
 
           <div
-            className="mly:grid mly:gap-1.5 mly:p-1"
+            data-mly-column-width-fields=""
             style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
           >
             {Array.from({ length: columnsCount }).map((_, index) => {
+              const label = getColumnLabel(index, columnsCount);
               const width = columnWidths[index];
-              const label =
-                columnsCount === 2
-                  ? index === 0
-                    ? 'Left'
-                    : 'Right'
-                  : index === 0
-                    ? 'Left'
-                    : index === 1
-                      ? 'Middle'
-                      : 'Right';
-
-              const MIN_COLUMN_WIDTH = 10;
-              const othersTotal = columnWidths.reduce<number>(
-                (sum, w, i) =>
-                  i === index ? sum : sum + (w ?? MIN_COLUMN_WIDTH),
-                0
-              );
-              const maxWidth = 100 - othersTotal;
 
               return (
-                <div className="mly:flex mly:flex-col mly:gap-1" key={index}>
-                  <span className="mly:text-xs mly:text-gray-400">{label}</span>
+                <div data-mly-column-width-field="" key={index}>
+                  <span data-mly-column-width-label="">{label}</span>
                   <UnitField
-                    value={width ?? 0}
                     displayValue={width === null ? 'auto' : undefined}
-                    suffix="%"
+                    label={`${label} Column Width`}
+                    max={getMaxColumnWidth(columnWidths, index)}
                     min={MIN_COLUMN_WIDTH}
-                    max={maxWidth}
-                    onValueChange={(val) => onColumnWidthChange?.(index, val)}
-                    onValueCommitted={(val) =>
-                      onColumnWidthChange?.(index, val)
+                    onValueChange={(next) => onColumnWidthChange(index, next)}
+                    onValueCommitted={(next) =>
+                      onColumnWidthChange(index, next)
                     }
+                    suffix="%"
+                    value={width ?? 0}
                   />
                 </div>
               );
@@ -119,28 +121,5 @@ export function ColumnsWidthConfig(props: ColumnsWidthConfigProps) {
         </PopoverPopup>
       </PopoverPositioner>
     </Popover>
-  );
-}
-
-type SwitchButtonProps = {
-  isActive?: boolean;
-  onClick?: () => void;
-  children: React.ReactNode;
-};
-
-function SwitchButton(props: SwitchButtonProps) {
-  const { onClick, isActive = false, children } = props;
-
-  return (
-    <button
-      className={cn(
-        'mly:flex mly:h-7 mly:items-center mly:gap-1.5 mly:rounded-md mly:px-2 mly:text-sm mly:text-gray-500 mly:hover:bg-soft-gray mly:hover:text-midnight-gray',
-        isActive && 'mly:bg-soft-gray mly:text-midnight-gray'
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      {children}
-    </button>
   );
 }

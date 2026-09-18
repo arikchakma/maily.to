@@ -1,55 +1,45 @@
-import type { AllowedTextAlignment } from '@maily-to/shared';
-import { DEFAULT_TEXT_ALIGN, TEXT_ALIGNMENTS } from '@maily-to/shared';
+import { Toolbar as ToolbarPrimitive } from '@base-ui/react/toolbar';
+import {
+  DEFAULT_TEXT_ALIGN,
+  isAllowedTextAlignment,
+  MAILY_NODE_TYPES,
+  parseInlineStyles,
+} from '@maily-to/shared';
 import { useEditorState } from '@tiptap/react';
-import { useCallback } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
 
 import { ToggleAlignPopover } from '../interface/toggle-align-popover';
-import { useToolbarContext } from './toolbar-context';
 
-type ToolbarAlignProps = {
-  className?: string;
-};
-
-export function ToolbarAlign(props: ToolbarAlign.Props) {
-  const { className: _className } = props;
-
+export function ToolbarAlign() {
   const editor = useEditorInstance();
-  const { container } = useToolbarContext();
 
-  const align = useEditorState({
+  const { align, blockType } = useEditorState({
     editor,
-    selector: (ctx) => {
-      if (ctx.editor.isActive({ textAlign: TEXT_ALIGNMENTS.LEFT })) {
-        return TEXT_ALIGNMENTS.LEFT;
-      }
-      if (ctx.editor.isActive({ textAlign: TEXT_ALIGNMENTS.CENTER })) {
-        return TEXT_ALIGNMENTS.CENTER;
-      }
-      if (ctx.editor.isActive({ textAlign: TEXT_ALIGNMENTS.RIGHT })) {
-        return TEXT_ALIGNMENTS.RIGHT;
-      }
-      return DEFAULT_TEXT_ALIGN;
+    selector: ({ editor: instance }) => {
+      const type = instance.isActive(MAILY_NODE_TYPES.HEADING)
+        ? MAILY_NODE_TYPES.HEADING
+        : MAILY_NODE_TYPES.PARAGRAPH;
+      const declarations = parseInlineStyles(
+        (instance.getAttributes(type).style as string) ?? ''
+      );
+
+      return {
+        align: isAllowedTextAlignment(declarations.textAlign)
+          ? declarations.textAlign
+          : DEFAULT_TEXT_ALIGN,
+        blockType: type,
+      };
     },
   });
 
-  const handleAlignChange = useCallback(
-    (align: AllowedTextAlignment) => {
-      editor.chain().focus().setTextAlign(align).run();
-    },
-    [editor]
-  );
-
   return (
     <ToggleAlignPopover
-      container={container}
       align={align}
-      onAlignChange={handleAlignChange}
+      trigger={<ToolbarPrimitive.Button />}
+      onAlignChange={(textAlign) =>
+        editor.chain().focus().updateNodeStyle(blockType, { textAlign }).run()
+      }
     />
   );
-}
-
-export namespace ToolbarAlign {
-  export type Props = ToolbarAlignProps;
 }

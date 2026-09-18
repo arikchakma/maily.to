@@ -1,20 +1,8 @@
 {
   "name": "@maily-to/extension-inline-suggestion",
   "version": "0.0.1",
-  "private": false,
-  "description": "Inline suggestion extension for Maily",
-  "keywords": [
-    "autocomplete",
-    "email",
-    "inline-suggestion",
-    "maily.to"
-  ],
-  "author": "Arik Chakma <arikchangma@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arikchakma/maily.to.git",
-    "directory": "packages/extension-inline-suggestion"
-  },
+  "private": true,
+  "description": "Inline suggestion extension shell.",
   "files": [
     "dist/**"
   ],
@@ -22,7 +10,7 @@
   "sideEffects": false,
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -30,19 +18,18 @@
     },
     "./package.json": "./package.json"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "vp pack",
     "clean": "rm -rf dist",
-    "dev": "vp pack --watch"
+    "dev": "vp pack --watch --no-clean",
+    "release": "bumpp"
   },
   "dependencies": {
     "@maily-to/shared": "workspace:*"
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",
+    "bumpp": "catalog:",
     "typescript": "catalog:",
     "vite-plus": "catalog:"
   },

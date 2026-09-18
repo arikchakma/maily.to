@@ -1,136 +1,102 @@
-import { Select as SelectPrimitive } from '@base-ui/react/select';
-import { invariant, noop } from '@maily-to/shared';
-import { UnitField as UnitFieldPrimitive } from '@maily-to/ui';
-import { BoxIcon, ChevronDownIcon } from 'lucide-react';
+import { BoxIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { UnitField as UnitFieldPrimitive } from 'unit-field';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { cn } from '~/utils/classname';
 
-import { buttonVariants } from './button';
-import { Select, SelectContent, SelectItem, SelectPositioner } from './select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectPositioner,
+  SelectTrigger,
+} from './select';
 
 export type UnitFieldPreset = {
-  value: number;
-  label: string;
   displayValue?: string;
+  label: string;
+  value: number;
 };
 
 export type UnitFieldProps = Omit<
   UnitFieldPrimitive.Root.Props,
   'format' | 'parse'
 > & {
-  suffix?: string;
-  presets?: UnitFieldPreset[];
-  onSelectPreset?: (value: number) => void;
-  wrapperClassName?: string;
   container?: FloatingUIContainer;
-  dragAreaIcon?: React.ReactNode;
   decimal?: boolean;
+  dragAreaIcon?: ReactNode;
+  label: string;
+  onSelectPreset?: (value: number) => void;
+  presets?: UnitFieldPreset[];
+  suffix?: string;
 };
 
 export function UnitField(props: UnitFieldProps) {
   const {
-    className,
-    presets,
-    suffix = '',
-    onSelectPreset = noop,
-    value,
-    displayValue,
-    wrapperClassName,
-    dragAreaIcon: dragAreaIconProp,
     container,
     decimal = false,
+    displayValue,
+    dragAreaIcon = <BoxIcon size={14} />,
+    label,
+    onSelectPreset,
+    presets = [],
+    suffix = '',
+    value,
     ...rest
   } = props;
 
-  const dragAreaIcon = dragAreaIconProp ?? (
-    <BoxIcon className="mly:size-3.5 mly:text-midnight-gray" />
-  );
+  const format = (next: number) => `${next}${suffix}`;
 
-  const format = (value: number) => {
-    return `${value}${suffix}`;
+  const parse = (next: string) => {
+    const cleaned = next.replace(suffix, '');
+    const parsed = decimal
+      ? Number.parseFloat(cleaned)
+      : Number.parseInt(cleaned, 10);
+
+    return Number.isNaN(parsed) ? null : parsed;
   };
 
-  const parse = (value: string) => {
-    const cleaned = value.replace(suffix, '');
-    const nextValue = decimal ? parseFloat(cleaned) : parseInt(cleaned, 10);
-    if (isNaN(nextValue)) {
-      return null;
-    }
-
-    return nextValue;
-  };
-
-  const hasPresets = presets !== undefined && presets.length > 0;
+  const matchedPreset = presets.find((preset) => preset.value === value);
+  const presetDisplayValue = matchedPreset
+    ? (matchedPreset.displayValue ?? matchedPreset.label)
+    : null;
 
   return (
-    <div
-      className={cn(
-        'mly:flex mly:h-7 mly:w-full mly:items-center',
-        wrapperClassName
-      )}
-    >
+    <div data-mly-unit-field-wrapper="">
       <UnitFieldPrimitive.Root
-        id="mly-unit-field"
-        className={cn(
-          'mly:relative mly:z-10 mly:flex mly:h-full mly:w-full mly:items-stretch mly:rounded-lg mly:bg-soft-gray mly:has-focus-within:ring-1 mly:has-focus-within:ring-gray-300',
-          hasPresets && 'mly:rounded-r-none',
-          className
-        )}
+        {...rest}
+        data-mly-unit-field=""
+        data-with-presets={presets.length > 0 ? '' : undefined}
+        displayValue={displayValue ?? presetDisplayValue}
         format={format}
         parse={parse}
         value={value}
-        displayValue={displayValue}
-        {...rest}
       >
-        <UnitFieldPrimitive.DragArea className="mly:pointer-events-auto mly:flex mly:aspect-square mly:w-7 mly:shrink-0 mly:cursor-ew-resize mly:items-center mly:justify-center">
+        <UnitFieldPrimitive.DragArea>
           {dragAreaIcon}
         </UnitFieldPrimitive.DragArea>
-
-        <UnitFieldPrimitive.Input className="mly:w-full mly:appearance-none mly:pr-1.5 mly:text-sm mly:tabular-nums mly:outline-none mly:focus-visible:outline-none" />
+        <UnitFieldPrimitive.Input aria-label={label} />
       </UnitFieldPrimitive.Root>
 
-      {hasPresets && (
+      {presets.length > 0 ? (
         <Select
           items={presets}
-          value={
-            displayValue !== null && displayValue !== 'Mixed' ? value : null
-          }
-          onValueChange={(value) => {
-            invariant(typeof value === 'number', 'Value must be a number');
-            onSelectPreset(value);
-          }}
+          onValueChange={(next) => onSelectPreset?.(Number(next))}
+          value={matchedPreset ? matchedPreset.value : null}
         >
-          <SelectPrimitive.Trigger
-            className={(state) =>
-              cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'mly:shrink-0 mly:cursor-default mly:rounded-lg mly:rounded-l-none mly:border-l mly:border-white mly:bg-soft-gray',
-                state.open && 'mly:bg-soft-gray'
-              )
-            }
-          >
-            <ChevronDownIcon className="mly:size-4 mly:opacity-50" />
-          </SelectPrimitive.Trigger>
-          <SelectPositioner
-            container={container}
-            align="end"
-            className="mly:z-99"
-          >
-            <SelectContent className="mly:w-30.5 mly:p-0.5">
-              {presets?.map((preset) => {
-                const { value, label } = preset;
+          <SelectTrigger aria-label={`${label} presets`} />
 
-                return (
-                  <SelectItem key={label} value={value}>
-                    {label}
-                  </SelectItem>
-                );
-              })}
+          <SelectPositioner align="end" container={container}>
+            <SelectContent>
+              {presets.map((preset) => (
+                <SelectItem key={preset.label} value={preset.value}>
+                  {preset.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </SelectPositioner>
         </Select>
-      )}
+      ) : null}
     </div>
   );
 }

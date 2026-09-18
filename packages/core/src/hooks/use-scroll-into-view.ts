@@ -15,12 +15,12 @@ export function useScrollIntoView<
       return;
     }
 
-    const { offsetTop, offsetHeight } = activeElement;
+    const { offsetHeight, offsetTop } = activeElement;
     const containerHeight = container.getBoundingClientRect().height;
-    const scrollTo = offsetTop - containerHeight / 2 + offsetHeight / 2;
 
-    container.scrollTop = scrollTo;
+    container.scrollTop = offsetTop - containerHeight / 2 + offsetHeight / 2;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
-  return { containerRef, activeRef };
+  return { activeRef, containerRef };
 }

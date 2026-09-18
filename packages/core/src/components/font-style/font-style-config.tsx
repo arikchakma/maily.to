@@ -1,10 +1,4 @@
-import type {
-  FallbackFont,
-  FontFamily,
-  FontStyleValue,
-  FontWeight,
-  HeadingLevel,
-} from '@maily-to/shared';
+import type { FallbackFont, FontStyleValue } from '@maily-to/shared';
 import {
   allowedFallbackFonts,
   DEFAULT_FONT_FALLBACK,
@@ -12,20 +6,21 @@ import {
   FONT_SIZE_PRESETS,
   FONT_STYLES,
   FONT_WEIGHTS,
-  getNodeFontStyleDefaults,
+  getFontFamilyNames,
+  getFontFamilyValue,
   LINE_HEIGHT_PRESETS,
+  MAILY_NODE_TYPES,
   roundTo,
 } from '@maily-to/shared';
-import { useMailyId } from '@maily-to/ui';
-import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
 import { ALargeSmallIcon, BaselineIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
-import { useFontFamilies } from '~/hooks/use-font-style-options';
+import { useFontFamilies } from '~/hooks/use-font-families';
 import { useLoadFont } from '~/hooks/use-load-font';
 import type { FloatingUIContainer } from '~/types/floating-ui';
+import { getNodeStyleState } from '~/utils/theme';
 
 import { Divider } from '../interface/divider';
 import { FieldLabel, FieldRoot } from '../interface/field';
@@ -40,134 +35,201 @@ import {
 } from '../interface/select';
 import { UnitField } from '../interface/unit-field';
 
-type FontStyleConfigProps = {
+export const FONT_STYLE_SUPPORTED_TYPES: string[] = [
+  MAILY_NODE_TYPES.PARAGRAPH,
+  MAILY_NODE_TYPES.HEADING,
+  MAILY_NODE_TYPES.BUTTON,
+  MAILY_NODE_TYPES.BLOCKQUOTE,
+  MAILY_NODE_TYPES.FOOTER,
+];
+
+const FALLBACK_FONT_SIZE = 16;
+const FALLBACK_LINE_HEIGHT = 1.5;
+
+const STYLE_PRESETS = [
+  { label: 'Normal', value: FONT_STYLES.NORMAL },
+  { label: 'Italic', value: FONT_STYLES.ITALIC },
+];
+
+const WEIGHT_PRESETS = Object.entries(FONT_WEIGHTS).map(([name, value]) => {
+  return {
+    label: name
+      .split('_')
+      .map((word) => {
+        return word.charAt(0) + word.slice(1).toLowerCase();
+      })
+      .join(' '),
+    value,
+  };
+});
+
+type LineHeightFieldOptions = {
+  fontSize: number;
+  isRatio: boolean;
+};
+
+function getLineHeightField(options: LineHeightFieldOptions) {
+  const { fontSize, isRatio } = options;
+
+  if (isRatio) {
+    return {
+      decimal: true,
+      max: 3,
+      min: 0.5,
+      presets: LINE_HEIGHT_PRESETS.map((preset) => {
+        return { label: preset.label, value: preset.value };
+      }),
+      step: 0.1,
+      suffix: '',
+    };
+  }
+
+  return {
+    decimal: false,
+    max: 200,
+    min: 8,
+    presets: LINE_HEIGHT_PRESETS.map((preset) => {
+      return {
+        label: preset.label,
+        value: Math.round(fontSize * preset.value),
+      };
+    }),
+    step: 1,
+    suffix: 'px',
+  };
+}
+
+export type FontStyleConfigProps = {
   container: FloatingUIContainer;
-  editor: Editor;
   nodeType: string;
-  onBack?: () => void;
+  onBack: () => void;
 };
 
 export function FontStyleConfig(props: FontStyleConfigProps) {
-  const { container, editor: editorProp, nodeType, onBack } = props;
+  const { container, nodeType, onBack } = props;
 
-  const editor = useEditorInstance(editorProp);
+  const editor = useEditorInstance();
   const fontFamilies = useFontFamilies(editor);
   const loadFont = useLoadFont();
+
   const state = useEditorState({
-    editor: editor,
-    selector: (ctx) => {
-      const attrs = ctx.editor.getAttributes(nodeType);
+    editor,
+    selector: ({ editor: instance }) => {
+      const { resolved } = getNodeStyleState({
+        editor: instance,
+        type: nodeType,
+      });
+      const names = resolved.fontFamily
+        ? getFontFamilyNames(resolved.fontFamily)
+        : [];
+      const fontSize =
+        Number.parseFloat(resolved.fontSize ?? '') || FALLBACK_FONT_SIZE;
+      const lineHeight = resolved.lineHeight ?? '';
 
       return {
-        fontFamily: (attrs.fontFamily as FontFamily) ?? null,
-        fontFallback: (attrs.fontFallback as FallbackFont) ?? null,
-        fontSize: (attrs.fontSize as number) ?? null,
-        fontWeight: (attrs.fontWeight as FontWeight) ?? null,
-        lineHeight: (attrs.lineHeight as number) ?? null,
-        fontStyle: (attrs.fontStyle as FontStyleValue) ?? null,
-        level: (attrs.level as HeadingLevel) ?? null,
+        fallbackFontFamily: (names.length > 1
+          ? names.at(-1)
+          : DEFAULT_FONT_FALLBACK) as FallbackFont,
+        fontFamily: names[0] ?? DEFAULT_FONT_FAMILY,
+        fontSize,
+        fontStyle:
+          resolved.fontStyle === FONT_STYLES.ITALIC
+            ? FONT_STYLES.ITALIC
+            : FONT_STYLES.NORMAL,
+        fontWeight: Number.parseInt(resolved.fontWeight ?? '', 10) || null,
+        isRatio: !lineHeight.endsWith('px'),
+        lineHeight: Number.parseFloat(lineHeight) || FALLBACK_LINE_HEIGHT,
       };
     },
   });
 
-  const fontDefaults = getNodeFontStyleDefaults(
-    nodeType,
-    state.level ?? undefined
-  );
+  const [fontSize, setFontSize] = useState(state.fontSize);
+  const [lineHeight, setLineHeight] = useState(state.lineHeight);
+  const signature = `${state.fontSize}:${state.lineHeight}:${state.isRatio}`;
+  const [previousSignature, setPreviousSignature] = useState(signature);
 
-  const [fontSize, setFontSize] = useState(
-    state.fontSize ?? fontDefaults.fontSize
-  );
-  const [lineHeight, setLineHeight] = useState(
-    state.lineHeight ?? fontDefaults.lineHeight
-  );
+  if (previousSignature !== signature) {
+    setPreviousSignature(signature);
+    setFontSize(state.fontSize);
+    setLineHeight(state.lineHeight);
+  }
 
-  const handleFontFamilyChange = (value: unknown) => {
-    const item = fontFamilies.find((f) => f.fontFamily === value);
-    if (!item) {
-      return;
+  const lineHeightField = getLineHeightField({
+    fontSize: state.fontSize,
+    isRatio: state.isRatio,
+  });
+
+  const updateStyle = (next: Record<string, string | null>) => {
+    return editor.chain().updateNodeStyle(nodeType, next).run();
+  };
+
+  const commitLineHeight = (value: number) => {
+    const next = roundTo(value, 2);
+    setLineHeight(next);
+
+    return updateStyle({ lineHeight: `${next}${lineHeightField.suffix}` });
+  };
+
+  const updateFontFamily = (options: {
+    fallbackFontFamily: FallbackFont;
+    fontFamily: string;
+  }) => {
+    const item = fontFamilies.find((candidate) => {
+      return candidate.fontFamily === options.fontFamily;
+    });
+
+    if (item) {
+      loadFont({ fallbackFontFamily: options.fallbackFontFamily, item });
     }
 
-    loadFont(item, state.fontFallback ?? DEFAULT_FONT_FALLBACK);
-    editor.chain().setFontStyle({ fontFamily: item.fontFamily }).run();
+    updateStyle({ fontFamily: getFontFamilyValue(options) });
   };
 
-  const handleFontFallbackChange = (value: unknown) => {
-    editor
-      .chain()
-      .setFontStyle({ fontFallback: value as FallbackFont })
-      .run();
-  };
+  const fontFamilyOptions = fontFamilies.some((font) => {
+    return font.fontFamily === state.fontFamily;
+  })
+    ? fontFamilies
+    : [{ fontFamily: state.fontFamily }, ...fontFamilies];
 
-  const handleFontSizeCommit = (value: number) => {
-    setFontSize(value);
-    editor.chain().setFontStyle({ fontSize: value }).run();
-  };
-
-  const handleFontWeightChange = (value: unknown) => {
-    const weight = parseInt(value as string, 10) as FontWeight;
-    if (isNaN(weight) || weight <= 0) {
-      return;
-    }
-
-    editor.chain().setFontStyle({ fontWeight: weight }).run();
-  };
-
-  const handleLineHeightChange = (value: number) => {
-    setLineHeight(roundTo(value, 2));
-  };
-
-  const handleLineHeightCommit = (value: number) => {
-    setLineHeight(roundTo(value, 2));
-    editor.chain().setFontStyle({ lineHeight: value }).run();
-  };
-
-  const handleFontStyleChange = (value: unknown) => {
-    editor
-      .chain()
-      .setFontStyle({ fontStyle: value as FontStyleValue })
-      .run();
-  };
-
-  const selectedFontFamily = fontFamilies.find(
-    (f) => f.fontFamily === state.fontFamily
-  );
-
-  const fontFamilyFieldId = useMailyId();
-  const fontFallbackFieldId = useMailyId();
-  const fontSizeFieldId = useMailyId();
-  const fontWeightFieldId = useMailyId();
-  const fontStyleFieldId = useMailyId();
-  const lineHeightFieldId = useMailyId();
+  const fontFamilyId = useId();
+  const fontFallbackId = useId();
+  const fontSizeId = useId();
+  const fontWeightId = useId();
+  const fontStyleId = useId();
+  const lineHeightId = useId();
 
   return (
-    <div className="mly:flex mly:flex-col">
-      {onBack && (
-        <>
-          <PopoverBack onClick={onBack}>Typography</PopoverBack>
-          <Divider type="horizontal" className="mly:-mx-1 mly:my-2 mly:mt-1" />
-        </>
-      )}
+    <div data-mly-font-style-config="">
+      <PopoverBack onClick={onBack}>Typography</PopoverBack>
 
-      <div className="mly:grid mly:gap-2 mly:px-1.5">
+      <Divider type="horizontal" />
+
+      <div data-mly-font-style-fields="">
         <FieldRoot>
-          <FieldLabel
-            htmlFor={fontFamilyFieldId}
-            className="mly:mb-1 mly:block"
-          >
-            Font Family
-          </FieldLabel>
+          <FieldLabel htmlFor={fontFamilyId}>Font Family</FieldLabel>
+
           <Select
-            id={fontFamilyFieldId}
-            value={selectedFontFamily?.fontFamily ?? DEFAULT_FONT_FAMILY}
-            onValueChange={handleFontFamilyChange}
+            items={fontFamilyOptions.map((font) => {
+              return {
+                label: font.label ?? font.fontFamily,
+                value: font.fontFamily,
+              };
+            })}
+            onValueChange={(value) => {
+              return updateFontFamily({
+                fallbackFontFamily: state.fallbackFontFamily,
+                fontFamily: String(value),
+              });
+            }}
+            value={state.fontFamily}
           >
-            <SelectTrigger className="mly:w-full">
-              <SelectValue placeholder="Default" />
+            <SelectTrigger aria-label="Font Family" id={fontFamilyId}>
+              <SelectValue />
             </SelectTrigger>
+
             <SelectPositioner container={container}>
-              <SelectContent className="mly:max-w-(--anchor-width)">
-                {fontFamilies.map((font) => (
+              <SelectContent>
+                {fontFamilyOptions.map((font) => (
                   <SelectItem key={font.fontFamily} value={font.fontFamily}>
                     {font.label ?? font.fontFamily}
                   </SelectItem>
@@ -178,22 +240,23 @@ export function FontStyleConfig(props: FontStyleConfigProps) {
         </FieldRoot>
 
         <FieldRoot>
-          <FieldLabel
-            htmlFor={fontFallbackFieldId}
-            className="mly:mb-1 mly:block"
-          >
-            Fallback
-          </FieldLabel>
+          <FieldLabel htmlFor={fontFallbackId}>Fallback</FieldLabel>
+
           <Select
-            id={fontFallbackFieldId}
-            value={state.fontFallback ?? DEFAULT_FONT_FALLBACK}
-            onValueChange={handleFontFallbackChange}
+            onValueChange={(value) => {
+              return updateFontFamily({
+                fallbackFontFamily: value as FallbackFont,
+                fontFamily: state.fontFamily,
+              });
+            }}
+            value={state.fallbackFontFamily}
           >
-            <SelectTrigger className="mly:w-full">
-              <SelectValue placeholder="Default" />
+            <SelectTrigger aria-label="Font Fallback" id={fontFallbackId}>
+              <SelectValue />
             </SelectTrigger>
+
             <SelectPositioner container={container}>
-              <SelectContent className="mly:max-w-(--anchor-width)">
+              <SelectContent>
                 {allowedFallbackFonts.map((font) => (
                   <SelectItem key={font} value={font}>
                     {font}
@@ -205,91 +268,52 @@ export function FontStyleConfig(props: FontStyleConfigProps) {
         </FieldRoot>
       </div>
 
-      <Divider type="horizontal" className="mly:-mx-1 mly:my-2" />
+      <Divider type="horizontal" />
 
-      <div className="mly:grid mly:grid-cols-2 mly:gap-2 mly:p-1.5 mly:pt-0">
+      <div data-mly-font-style-metrics="">
         <FieldRoot>
-          <FieldLabel htmlFor={fontSizeFieldId} className="mly:mb-1 mly:block">
-            Size
-          </FieldLabel>
+          <FieldLabel htmlFor={fontSizeId}>Size</FieldLabel>
+
           <UnitField
-            id={fontSizeFieldId}
-            value={fontSize}
-            onValueChange={setFontSize}
-            onValueCommitted={handleFontSizeCommit}
-            suffix="px"
-            min={8}
-            max={200}
-            presets={[...FONT_SIZE_PRESETS]}
-            onSelectPreset={handleFontSizeCommit}
             container={container}
-            dragAreaIcon={
-              <ALargeSmallIcon className="mly:size-3.5 mly:text-midnight-gray" />
-            }
+            displayValue={`${fontSize}px`}
+            dragAreaIcon={<ALargeSmallIcon size={14} />}
+            id={fontSizeId}
+            label="Size"
+            max={200}
+            min={8}
+            onSelectPreset={(value) => {
+              return updateStyle({ fontSize: `${value}px` });
+            }}
+            onValueChange={setFontSize}
+            onValueCommitted={(value) => {
+              return updateStyle({ fontSize: `${value}px` });
+            }}
+            presets={[...FONT_SIZE_PRESETS]}
+            suffix="px"
+            value={fontSize}
           />
         </FieldRoot>
 
         <FieldRoot>
-          <FieldLabel
-            htmlFor={fontWeightFieldId}
-            className="mly:mb-1 mly:block"
-          >
-            Weight
-          </FieldLabel>
-          <Select
-            id={fontWeightFieldId}
-            value={String(state.fontWeight ?? fontDefaults.fontWeight)}
-            onValueChange={handleFontWeightChange}
-          >
-            <SelectTrigger className="mly:w-full">
-              <SelectValue placeholder="Normal" />
-            </SelectTrigger>
-            <SelectPositioner container={container}>
-              <SelectContent className="mly:max-w-(--anchor-width)">
-                {Object.entries(FONT_WEIGHTS).map(([label, value]) => {
-                  const formattedLabel = label
-                    .split('_')
-                    .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-                    .join(' ');
+          <FieldLabel htmlFor={fontWeightId}>Weight</FieldLabel>
 
-                  return (
-                    <SelectItem
-                      key={value}
-                      value={String(value)}
-                      className="mly:whitespace-nowrap"
-                    >
-                      {formattedLabel}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </SelectPositioner>
-          </Select>
-        </FieldRoot>
-
-        <FieldRoot>
-          <FieldLabel htmlFor={fontStyleFieldId} className="mly:mb-1 mly:block">
-            Style
-          </FieldLabel>
           <Select
-            id={fontStyleFieldId}
-            value={
-              state.fontStyle ?? fontDefaults.fontStyle ?? FONT_STYLES.NORMAL
-            }
-            onValueChange={handleFontStyleChange}
+            items={WEIGHT_PRESETS}
+            onValueChange={(value) => {
+              return updateStyle({ fontWeight: String(value) });
+            }}
+            value={state.fontWeight ?? FONT_WEIGHTS.NORMAL}
           >
-            <SelectTrigger className="mly:w-full mly:capitalize">
-              <SelectValue placeholder="Normal" />
+            <SelectTrigger aria-label="Font Weight" id={fontWeightId}>
+              <SelectValue />
             </SelectTrigger>
+
             <SelectPositioner container={container}>
-              <SelectContent className="mly:max-w-(--anchor-width)">
-                {Object.entries(FONT_STYLES).map(([, value]) => (
-                  <SelectItem
-                    key={value}
-                    value={value}
-                    className="mly:capitalize"
-                  >
-                    {value}
+              <SelectContent>
+                {WEIGHT_PRESETS.map((preset) => (
+                  <SelectItem key={preset.value} value={preset.value}>
+                    {preset.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -298,27 +322,50 @@ export function FontStyleConfig(props: FontStyleConfigProps) {
         </FieldRoot>
 
         <FieldRoot>
-          <FieldLabel
-            htmlFor={lineHeightFieldId}
-            className="mly:mb-1 mly:block"
+          <FieldLabel htmlFor={fontStyleId}>Style</FieldLabel>
+
+          <Select
+            items={STYLE_PRESETS}
+            onValueChange={(value) => {
+              return updateStyle({ fontStyle: value as FontStyleValue });
+            }}
+            value={state.fontStyle}
           >
-            Line Height
-          </FieldLabel>
+            <SelectTrigger aria-label="Font Style" id={fontStyleId}>
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectPositioner container={container}>
+              <SelectContent>
+                {STYLE_PRESETS.map((preset) => (
+                  <SelectItem key={preset.value} value={preset.value}>
+                    {preset.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectPositioner>
+          </Select>
+        </FieldRoot>
+
+        <FieldRoot>
+          <FieldLabel htmlFor={lineHeightId}>Line Height</FieldLabel>
+
           <UnitField
-            id={lineHeightFieldId}
-            value={lineHeight}
-            onValueChange={handleLineHeightChange}
-            onValueCommitted={handleLineHeightCommit}
-            decimal
-            step={0.1}
-            min={0.5}
-            max={3}
-            presets={[...LINE_HEIGHT_PRESETS]}
-            onSelectPreset={handleLineHeightCommit}
             container={container}
-            dragAreaIcon={
-              <BaselineIcon className="mly:size-3.5 mly:text-midnight-gray" />
-            }
+            decimal={lineHeightField.decimal}
+            displayValue={`${lineHeight}${lineHeightField.suffix}`}
+            dragAreaIcon={<BaselineIcon size={14} />}
+            id={lineHeightId}
+            label="Line Height"
+            max={lineHeightField.max}
+            min={lineHeightField.min}
+            onSelectPreset={commitLineHeight}
+            onValueChange={setLineHeight}
+            onValueCommitted={commitLineHeight}
+            presets={lineHeightField.presets}
+            step={lineHeightField.step}
+            suffix={lineHeightField.suffix}
+            value={lineHeight}
           />
         </FieldRoot>
       </div>

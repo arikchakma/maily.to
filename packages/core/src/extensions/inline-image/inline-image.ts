@@ -1,20 +1,11 @@
-import { DATA_NODE_TYPE_KEY } from '@maily-to/shared';
+import type { InlineImageAttributes } from '@maily-to/shared';
+import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
 
-import { InlineImageView } from './inline-image-view';
+const DEFAULT_INLINE_IMAGE_SIZE = 20;
 
-export type InlineImageAttributes = {
-  src: string;
-  alt: string | null;
-  title: string | null;
-  width: number;
-  height: number;
-  externalLink: string | null;
-};
-
-type InlineImageOptions = {
-  HTMLAttributes: Record<string, any>;
+export type InlineImageOptions = {
+  HTMLAttributes: Record<string, unknown>;
 };
 
 declare module '@tiptap/core' {
@@ -28,15 +19,13 @@ declare module '@tiptap/core' {
   }
 }
 
+const INLINE_PARENTS = new Set(['A', 'B', 'EM', 'I', 'SPAN', 'STRONG']);
+
 export const InlineImageExtension = Node.create<InlineImageOptions>({
-  name: 'inlineImage',
-
+  name: MAILY_NODE_TYPES.INLINE_IMAGE,
   group: 'inline',
-
   inline: true,
-
   atom: true,
-
   selectable: true,
 
   addOptions() {
@@ -47,19 +36,71 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
 
   addAttributes() {
     return {
-      src: { default: '' },
-      alt: { default: null },
-      title: { default: null },
-      width: { default: 20 },
-      height: { default: 20 },
-      externalLink: { default: null },
+      src: {
+        default: '',
+        parseHTML: (element) => element.getAttribute('src') || '',
+        renderHTML: (attributes) =>
+          attributes.src ? { src: attributes.src } : {},
+      },
+      alt: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('alt'),
+        renderHTML: (attributes) =>
+          attributes.alt ? { alt: attributes.alt } : {},
+      },
+      title: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('title'),
+        renderHTML: (attributes) =>
+          attributes.title ? { title: attributes.title } : {},
+      },
+      width: {
+        default: DEFAULT_INLINE_IMAGE_SIZE,
+        parseHTML: (element) =>
+          Number(element.getAttribute('width')) || DEFAULT_INLINE_IMAGE_SIZE,
+        renderHTML: (attributes) => ({ width: attributes.width }),
+      },
+      height: {
+        default: DEFAULT_INLINE_IMAGE_SIZE,
+        parseHTML: (element) =>
+          Number(element.getAttribute('height')) || DEFAULT_INLINE_IMAGE_SIZE,
+        renderHTML: (attributes) => ({ height: attributes.height }),
+      },
+      externalLink: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-external-link'),
+        renderHTML: (attributes) =>
+          attributes.externalLink
+            ? { 'data-external-link': attributes.externalLink }
+            : {},
+      },
+    };
+  },
+
+  addCommands() {
+    return {
+      setInlineImage:
+        (attrs) =>
+        ({ commands }) =>
+          commands.insertContent({ type: this.name, attrs }),
+      updateInlineImageAttributes:
+        (attrs) =>
+        ({ commands }) =>
+          commands.updateAttributes(this.name, attrs),
     };
   },
 
   parseHTML() {
     return [
+      { tag: `img[${DATA_NODE_TYPE_KEY}="${this.name}"]` },
       {
-        tag: `img[${DATA_NODE_TYPE_KEY}="${this.name}"]`,
+        tag: 'img[src]',
+        priority: 60,
+        getAttrs: (element) => {
+          const parent = element.parentElement;
+
+          return parent && INLINE_PARENTS.has(parent.tagName) ? null : false;
+        },
       },
     ];
   },
@@ -73,33 +114,5 @@ export const InlineImageExtension = Node.create<InlineImageOptions>({
         HTMLAttributes
       ),
     ];
-  },
-
-  addCommands() {
-    return {
-      setInlineImage:
-        (attrs) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs,
-          });
-        },
-      updateInlineImageAttributes:
-        (attrs) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        },
-    };
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(InlineImageView, {
-      as: 'span',
-      attrs: {
-        [DATA_NODE_TYPE_KEY]: this.name,
-        class: 'mly:relative mly:inline-block',
-      },
-    });
   },
 });

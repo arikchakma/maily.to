@@ -1,23 +1,17 @@
 import { computePosition, flip, offset, shift } from '@floating-ui/react';
 import type { Editor, Range } from '@tiptap/react';
 import { posToDOMRect, ReactRenderer } from '@tiptap/react';
-import type {
-  SuggestionKeyDownProps,
-  SuggestionOptions,
-} from '@tiptap/suggestion';
+import type { SuggestionOptions } from '@tiptap/suggestion';
 
+import { FLOATING_ELEMENT_PADDING } from '~/components/interface/floating-element';
 import type { SlashCommandGroupItem } from '~/utils/slash-command';
 import {
   filterSlashCommands,
   SLASH_COMMAND_SUGGESTION_POPOVER_ID,
 } from '~/utils/slash-command';
 
-import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
+import type { SlashCommandSuggestionListRef } from './slash-command-suggestion-list';
 import { SlashCommandSuggestionList } from './slash-command-suggestion-list';
-
-type SlashCommandSuggestionListRef = {
-  onKeyDown: (props: SuggestionKeyDownProps) => boolean;
-};
 
 async function updatePosition(
   editor: Editor,
@@ -32,7 +26,7 @@ async function updatePosition(
   const position = await computePosition(virtualElement, element, {
     placement: 'bottom-start',
     strategy: 'absolute',
-    middleware: [shift(), flip(), offset(8)],
+    middleware: [shift(), flip(), offset(FLOATING_ELEMENT_PADDING)],
   });
 
   element.style.width = 'max-content';
@@ -47,10 +41,20 @@ export function getSlashCommandSuggestions(): Omit<
   'editor'
 > {
   return {
-    items: ({ query, editor }) => {
-      const commands =
-        editor.storage.slashCommand?.commands ?? DEFAULT_SLASH_COMMANDS;
-      return filterSlashCommands({ groups: commands, query, editor });
+    char: '/',
+
+    items: ({ editor, query }) =>
+      filterSlashCommands({
+        editor,
+        groups: editor.storage.slashCommand?.commands ?? [],
+        query,
+      }),
+
+    command: ({ editor, props, range }) => {
+      (props as unknown as { command: (opts: unknown) => void }).command({
+        editor,
+        range,
+      });
     },
 
     render: () => {
@@ -65,8 +69,8 @@ export function getSlashCommandSuggestions(): Omit<
           }
 
           component = new ReactRenderer(SlashCommandSuggestionList, {
-            props,
             editor,
+            props,
           });
 
           if (!props.clientRect) {
@@ -75,7 +79,7 @@ export function getSlashCommandSuggestions(): Omit<
 
           component.element.style.position = 'absolute';
           component.element.id = SLASH_COMMAND_SUGGESTION_POPOVER_ID;
-          parentElement.appendChild(component.element);
+          parentElement.append(component.element);
           await updatePosition(editor, component.element, range);
         },
 

@@ -6,14 +6,15 @@ export function percentage(portion: number, total: number): number {
   return clamp((portion / total) * 100, [0, 100]);
 }
 
+export function roundTo(value: number, decimals: number): number {
+  const factor = 10 ** decimals;
+
+  return Math.round(value * factor) / factor;
+}
+
 export function absoluteFromPercentage(
   percentage: number,
   total: number
 ): number {
   return Math.round((total * percentage) / 100);
-}
-
-export function roundTo(value: number, decimals: number): number {
-  const factor = Math.pow(10, decimals);
-  return Math.round(value * factor) / factor;
 }

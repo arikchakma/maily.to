@@ -1,24 +1,22 @@
-import { MAILY_ERROR_PREFIX } from '@maily-to/shared';
-import type { EditorThemeOptions, TextDirection } from '@maily-to/shared';
-import * as React from 'react';
+import type { TextDirection } from '@maily-to/shared';
+import { invariant } from '@maily-to/shared';
+import { createContext, use } from 'react';
 
-export type EditorRootContext = {
-  textDirection: TextDirection;
+type EditorRootContext = {
   setTextDirection: (direction: TextDirection) => void;
-  theme: EditorThemeOptions;
+  textDirection: TextDirection;
 };
 
-export const EditorRootContext = React.createContext<EditorRootContext | null>(
-  null
-);
+const EditorRootContext = createContext<EditorRootContext | null>(null);
 
 export function useEditorRootContext() {
-  const context = React.useContext(EditorRootContext);
-  if (!context) {
-    throw new Error(
-      `${MAILY_ERROR_PREFIX}: EditorRootContext is missing. Editor parts must be placed within <Editor.Root>.`
-    );
-  }
+  const context = use(EditorRootContext);
+  invariant(
+    context,
+    'EditorRootContext is missing. Editor parts must be placed within <Editor.Root>.'
+  );
 
   return context;
 }
+
+export { EditorRootContext };

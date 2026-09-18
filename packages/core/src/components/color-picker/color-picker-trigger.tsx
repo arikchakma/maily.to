@@ -1,84 +1,54 @@
+import type { useRender } from '@base-ui/react/use-render';
 import { ChevronDownIcon, HighlighterIcon } from 'lucide-react';
-import React from 'react';
+import type { ComponentPropsWithRef, CSSProperties } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { cn } from '~/utils/classname';
 
 import { BubbleButton } from '../interface/bubble-button';
-import type { ButtonProps } from '../interface/button';
 
-type ColorTriggerProps = {
+export type ColorTriggerProps = Omit<
+  ComponentPropsWithRef<'button'>,
+  'children'
+> & {
+  color: string;
   container: FloatingUIContainer;
+  group: 'background' | 'text';
+  isActive?: boolean;
   label: string;
+  render?: useRender.RenderProp;
   tooltip: string;
-  active: boolean;
-} & (
-  | {
-      group: 'background';
-      backgroundColor: string;
-      textColor?: never;
-    }
-  | {
-      group: 'text';
-      textColor: string;
-      backgroundColor?: never;
-    }
-) &
-  ButtonProps;
+};
 
-export const ColorTrigger = React.forwardRef<
-  React.ComponentRef<typeof BubbleButton>,
-  ColorTriggerProps
->((props, ref) => {
-  const {
-    container,
-    label,
-    tooltip,
-    active,
-    group,
-    backgroundColor,
-    textColor,
-    ...rest
-  } = props;
+export function ColorTrigger(props: ColorTriggerProps) {
+  const { color, container, group, isActive, label, render, tooltip, ...rest } =
+    props;
+
+  const style =
+    group === 'background'
+      ? ({
+          backgroundColor: color || undefined,
+          '--mly-dynamic-text-color-background': color || undefined,
+        } as CSSProperties)
+      : { color: color || undefined };
 
   return (
     <BubbleButton
-      label={label}
-      size="default"
-      className="mly:group/picker mly:gap-1 mly:px-1.5"
-      isActive={active}
-      tooltip={tooltip}
-      container={container}
-      ref={ref}
       {...rest}
+      container={container}
+      data-variant="color"
+      isActive={isActive}
+      label={label}
+      render={render}
+      tooltip={tooltip}
     >
-      <div
-        className={cn(
-          'mly:flex mly:h-5 mly:w-5 mly:items-center mly:justify-center mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:text-xs mly:group-hover/picker:border-gray-300',
-          group === 'text' ? 'mly:font-normal' : 'mly:font-semibold'
-        )}
-        style={
-          group === 'background'
-            ? backgroundColor
-              ? {
-                  backgroundColor,
-                  '--mly-dynamic-text-color-background': backgroundColor,
-                }
-              : {}
-            : textColor
-              ? { color: textColor }
-              : {}
-        }
-      >
+      <span data-group={group} data-mly-color-trigger="" style={style}>
         {group === 'background' ? (
-          <HighlighterIcon className="mly:size-3 mly:shrink-0 mly:dynamic-text-color" />
+          <HighlighterIcon data-mly-dynamic-text-color="" size={12} />
         ) : (
-          <span className="mly:relative mly:-top-px mly:leading-none">A</span>
+          <span data-mly-color-trigger-letter="">A</span>
         )}
-      </div>
-      <ChevronDownIcon className="mly:size-3 mly:shrink-0" />
+      </span>
+      <ChevronDownIcon size={12} />
     </BubbleButton>
   );
-});
-
-ColorTrigger.displayName = 'ColorTrigger';
+}

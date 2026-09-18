@@ -7,8 +7,12 @@ node_modules
 
 # testing
 coverage
+playwright-report
+test-results
+.vitest-attachments
+__screenshots__
 
-# next.js
+# build output
 .next/
 out/
 dist
@@ -31,16 +35,12 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# vercel
-.vercel
-
-# cursor
+# local tooling
 .cursor
-
-# tmp
 .tmp
-
-# claude
 .claude
 Claude.md
 .agents.turbo
+
+# local scratch
+archive

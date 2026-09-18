@@ -41,10 +41,7 @@ export const VariableExtension = Variable.extend<
 
   addNodeView() {
     return ReactNodeViewRenderer(VariableView, {
-      attrs: {
-        [DATA_NODE_TYPE_KEY]: this.name,
-        class: 'mly:relative',
-      },
+      attrs: { [DATA_NODE_TYPE_KEY]: this.name },
     });
   },
 }).configure({

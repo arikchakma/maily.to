@@ -1,6 +1,7 @@
-import { useValueAsRef } from '@maily-to/ui';
 import type { Editor } from '@tiptap/react';
 import { useEffect } from 'react';
+
+import { useValueAsRef } from './use-value-as-ref';
 
 export function useOnSelectionUpdate(
   editor: Editor,
@@ -15,8 +16,9 @@ export function useOnSelectionUpdate(
 
     handler();
     editor.on('selectionUpdate', handler);
+
     return () => {
       editor.off('selectionUpdate', handler);
     };
-  }, [editor]);
+  }, [callback, editor]);
 }

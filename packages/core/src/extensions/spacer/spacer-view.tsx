@@ -1,103 +1,85 @@
 import type { SpacerAttributes } from '@maily-to/shared';
-import { FIELD_MODE } from '@maily-to/shared';
 import type { ReactNodeViewProps } from '@tiptap/react';
 import { NodeViewWrapper } from '@tiptap/react';
 import { useCallback } from 'react';
 
 import { useSpacerResizeController } from '~/hooks/use-spacer-resize-controller';
-import { cn } from '~/utils/classname';
 
-import { DEFAULT_SPACER_HEIGHT } from './spacer';
 import type { SpacerHandleType } from './spacer-handle';
 import { SpacerHandle } from './spacer-handle';
 
 export function SpacerView(props: ReactNodeViewProps) {
-  const { editor, node, updateAttributes, selected: _selected } = props;
-  const attrs = node.attrs as SpacerAttributes;
-  const { height = DEFAULT_SPACER_HEIGHT } = attrs;
-
-  const handleResizeCommitted = useCallback(
-    (finalHeight: number) => {
-      updateAttributes({ height: finalHeight, heightMode: FIELD_MODE.UNIFORM });
-    },
-    [updateAttributes]
-  );
+  const { editor, getPos, node, updateAttributes } = props;
+  const { height } = node.attrs as SpacerAttributes;
 
   const {
-    isResizing,
-    handleResize,
     containerRef,
-    spacerWrapperRef,
-    shouldShowDragHandles,
+    handleResize,
+    isResizing,
     setShouldShowDragHandles,
+    shouldShowDragHandles,
+    spacerWrapperRef,
   } = useSpacerResizeController({
     height,
-    onHeightCommitted: handleResizeCommitted,
+    onHeightCommitted: useCallback(
+      (committed: number) => updateAttributes({ height: committed }),
+      [updateAttributes]
+    ),
   });
 
-  const handleResizeHandleMouseDown = useCallback(
-    (
-      resizeHandle: SpacerHandleType,
-      event: React.PointerEvent<HTMLDivElement>
-    ) => {
-      const spacerWrapperElement = spacerWrapperRef.current;
-      if (!spacerWrapperElement) {
+  const handlePointerDown = useCallback(
+    (handle: SpacerHandleType, event: React.PointerEvent<HTMLDivElement>) => {
+      const spacerWrapper = spacerWrapperRef.current;
+      if (!spacerWrapper) {
         return;
       }
 
       event.preventDefault();
       handleResize(event, {
-        initialHeight: spacerWrapperElement.clientHeight,
+        handleUsed: handle,
         initialClientY: event.clientY,
-        handleUsed: resizeHandle,
+        initialHeight: spacerWrapper.clientHeight,
       });
     },
     [handleResize, spacerWrapperRef]
   );
 
-  const handleSpacerWrapperMouseEnter = useCallback(() => {
-    if (!editor.isEditable) {
+  const handleSelect = useCallback(() => {
+    const position = getPos();
+    if (typeof position !== 'number') {
       return;
     }
 
-    setShouldShowDragHandles(true);
-  }, [setShouldShowDragHandles, editor.isEditable]);
-
-  const handleSpacerWrapperMouseLeave = useCallback(() => {
-    setShouldShowDragHandles(false);
-  }, [setShouldShowDragHandles]);
+    editor.commands.setNodeSelection(position);
+  }, [editor, getPos]);
 
   return (
     <NodeViewWrapper
-      ref={containerRef}
-      className="mly:cursor-default"
-      onMouseEnter={handleSpacerWrapperMouseEnter}
-      onMouseLeave={handleSpacerWrapperMouseLeave}
-      draggable={editor.isEditable}
       data-drag-handle={editor.isEditable}
+      data-mly-spacer-view=""
+      draggable={editor.isEditable}
+      onMouseEnter={() => setShouldShowDragHandles(editor.isEditable)}
+      onMouseLeave={() => setShouldShowDragHandles(false)}
+      onPointerDown={handleSelect}
+      ref={containerRef}
     >
       <div
+        data-mly-spacer-wrapper=""
         ref={spacerWrapperRef}
-        className="mly:relative mly:w-full"
-        style={{
-          height: `${height}px`,
-          '--spacer-height': `${height}px`,
-        }}
+        style={{ height: `${height}px` }}
       >
-        {(shouldShowDragHandles || isResizing) && (
+        {shouldShowDragHandles || isResizing ? (
           <>
             <SpacerHandle
               handle="top"
-              onPointerDown={(e) => handleResizeHandleMouseDown('top', e)}
-              className={cn(height < 16 && 'mly:-top-1')}
+              onPointerDown={(event) => handlePointerDown('top', event)}
             />
             <SpacerHandle
               handle="bottom"
-              onPointerDown={(e) => handleResizeHandleMouseDown('bottom', e)}
-              className={cn(height < 16 && 'mly:-bottom-1')}
+              onPointerDown={(event) => handlePointerDown('bottom', event)}
             />
           </>
-        )}
+        ) : null}
       </div>
     </NodeViewWrapper>
   );

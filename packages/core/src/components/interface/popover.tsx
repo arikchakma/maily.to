@@ -1,37 +1,32 @@
 import { Popover as PopoverPrimitive } from '@base-ui/react/popover';
 import { ChevronLeftIcon } from 'lucide-react';
-import * as React from 'react';
+import type { ComponentPropsWithRef } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { cn } from '~/utils/classname';
 
 import { ArrowIcon } from '../icons/arrow-icon';
 import { Button } from './button';
 import { FLOATING_ELEMENT_PADDING } from './floating-element';
 
-const Popover = PopoverPrimitive.Root;
+export const Popover = PopoverPrimitive.Root;
+export const PopoverTrigger = PopoverPrimitive.Trigger;
 
-const PopoverTrigger = PopoverPrimitive.Trigger;
+export type PopoverPositionerProps = PopoverPrimitive.Positioner.Props & {
+  container?: FloatingUIContainer;
+};
 
-const PopoverPositioner = React.forwardRef<
-  React.ComponentRef<typeof PopoverPrimitive.Positioner>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Positioner> & {
-    container?: FloatingUIContainer;
-  }
->((props, ref) => {
+export function PopoverPositioner(props: PopoverPositionerProps) {
   const {
-    className,
-    container,
     align = 'start',
+    container,
     side = 'top',
     sideOffset = FLOATING_ELEMENT_PADDING,
     ...rest
   } = props;
+
   return (
     <PopoverPrimitive.Portal container={container}>
       <PopoverPrimitive.Positioner
-        ref={ref}
-        className={className}
         align={align}
         side={side}
         sideOffset={sideOffset}
@@ -39,77 +34,47 @@ const PopoverPositioner = React.forwardRef<
       />
     </PopoverPrimitive.Portal>
   );
-});
+}
 
-const PopoverPopup = React.forwardRef<
-  React.ComponentRef<typeof PopoverPrimitive.Popup>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Popup>
->((props, ref) => {
-  const { className, ...rest } = props;
+// Only a keyboard needs focus moved into the popup; a pointer opening it would
+// land on the first control and pop that control's tooltip over the panel.
+const getInitialFocus: PopoverPrimitive.Popup.Props['initialFocus'] = (
+  openType
+) => {
+  return openType === 'keyboard';
+};
 
+export type PopoverPopupProps = PopoverPrimitive.Popup.Props;
+
+export function PopoverPopup(props: PopoverPopupProps) {
   return (
     <PopoverPrimitive.Popup
-      ref={ref}
-      className={cn(
-        'mly:w-72 mly:cursor-default mly:rounded-xl mly:border mly:border-gray-200/70 mly:bg-white mly:p-0.5 mly:text-gray-950 mly:shadow-md mly:outline-none',
-        'mly-editor',
-        className
-      )}
-      {...rest}
+      data-mly-popover=""
+      initialFocus={getInitialFocus}
+      {...props}
     />
   );
-});
+}
 
-PopoverPopup.displayName = PopoverPrimitive.Popup.displayName;
+export type PopoverArrowProps = PopoverPrimitive.Arrow.Props;
 
-const PopoverArrow = React.forwardRef<
-  React.ComponentRef<typeof PopoverPrimitive.Arrow>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Arrow>
->((props, ref) => {
-  const { className, ...rest } = props;
-
+export function PopoverArrow(props: PopoverArrowProps) {
   return (
-    <PopoverPrimitive.Arrow
-      ref={ref}
-      className={cn(
-        'mly:data-[side=bottom]:top-[-7px] mly:data-[side=left]:right-[-13px] mly:data-[side=left]:rotate-90 mly:data-[side=right]:left-[-13px] mly:data-[side=right]:-rotate-90 mly:data-[side=top]:bottom-[-7px] mly:data-[side=top]:rotate-180',
-        'mly:data-[align=end]:right-[calc(var(--anchor-width)/2+5px)] mly:data-[align=start]:left-[calc(var(--anchor-width)/2+2px)]!',
-        className
-      )}
-      {...rest}
-    >
+    <PopoverPrimitive.Arrow data-mly-popover-arrow="" {...props}>
       <ArrowIcon />
     </PopoverPrimitive.Arrow>
   );
-});
+}
 
-PopoverArrow.displayName = PopoverPrimitive.Arrow.displayName;
+export type PopoverBackProps = ComponentPropsWithRef<'button'>;
 
-type PopoverBackProps = React.ComponentProps<'button'> & {};
+export function PopoverBack(props: PopoverBackProps) {
+  const { children, ...rest } = props;
 
-const PopoverBack = (props: PopoverBackProps) => {
-  const { onClick, children, className, ...rest } = props;
   return (
-    <Button
-      variant="ghost"
-      className={cn(
-        'mly:w-full mly:justify-start mly:gap-1.5 mly:px-2 mly:font-normal mly:text-gray-500 mly:hover:text-gray-900',
-        className
-      )}
-      onClick={onClick}
-      {...rest}
-    >
-      <ChevronLeftIcon className="mly:size-3.5 mly:shrink-0" />
+    <Button {...rest} data-mly-popover-back="">
+      <ChevronLeftIcon size={14} />
       {children}
     </Button>
   );
-};
-
-export {
-  Popover,
-  PopoverArrow,
-  PopoverBack,
-  PopoverPopup,
-  PopoverPositioner,
-  PopoverTrigger,
-};
+}

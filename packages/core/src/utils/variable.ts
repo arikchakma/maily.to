@@ -3,15 +3,13 @@ import type { Editor } from '@tiptap/react';
 
 /** A variable item passed to the editor's variable suggestion list. */
 export type Variable = Omit<VariableNodeAttrs, 'variableSuggestionChar'> & {
-  /** @deprecated Use `id` instead. Will be removed in a future version. */
-  name?: string;
   /** Arbitrary metadata attached to this variable (e.g. category, type). */
   metadata?: Record<string, unknown>;
 };
 
 export type VariableFunctionOptions = {
-  query: string;
   editor: Editor;
+  query: string;
 };
 
 export type VariablesFunction = (
@@ -23,7 +21,7 @@ export type Variables = Array<Variable> | VariablesFunction;
 export const VARIABLE_SUGGESTION_POPOVER_ID = 'mly-variable-suggestion-popover';
 
 function getVariableLabel(item: Variable): string {
-  return item.label ?? item.id ?? item.name ?? '';
+  return item.label ?? item.id ?? '';
 }
 
 /**

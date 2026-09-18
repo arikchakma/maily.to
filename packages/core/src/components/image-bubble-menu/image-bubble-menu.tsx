@@ -1,5 +1,6 @@
+import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import { ImageIcon } from 'lucide-react';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
 import { useImageBubbleState } from '~/hooks/use-image-bubble-state';
@@ -13,95 +14,57 @@ import { ImageStylePopover } from './image-style-popover';
 
 export function ImageBubbleMenu() {
   const editor = useEditorInstance();
-  const state = useImageBubbleState(editor);
-  const container = useRef<HTMLDivElement | null>(null);
+  const { align, alt, externalLink, open, setOpen, src, title } =
+    useImageBubbleState(editor);
+  const container = useRef<HTMLDivElement>(null);
 
-  const handleAttributeChange = useCallback(
-    (attribute: string, value: string | null, focus = true) => {
-      let chain = editor.chain();
-      if (focus) {
-        chain = chain.focus();
-      }
-      chain = chain.updateAttributes('image', { [attribute]: value });
-      return chain.run();
-    },
-    [editor]
-  );
-
-  const handleAlignChange = useCallback(
-    (align: string) => {
-      return handleAttributeChange('align', align);
-    },
-    [handleAttributeChange]
-  );
-
-  const handleUrlChange = useCallback(
-    (url: string | null) => {
-      return handleAttributeChange('src', url);
-    },
-    [handleAttributeChange]
-  );
-
-  const handleExternalLinkChange = useCallback(
-    (url: string | null) => {
-      return handleAttributeChange('externalLink', url);
-    },
-    [handleAttributeChange]
-  );
-
-  const handleTitleChange = useCallback(
-    (title: string | null) => {
-      return handleAttributeChange('title', title, false);
-    },
-    [handleAttributeChange]
-  );
-
-  const handleAltChange = useCallback(
-    (alt: string | null) => {
-      return handleAttributeChange('alt', alt, false);
-    },
-    [handleAttributeChange]
-  );
-
-  if (!state.open) {
+  if (!open) {
     return null;
   }
 
+  const updateImage = (attrs: Record<string, string | null>) =>
+    editor.chain().updateAttributes(MAILY_NODE_TYPES.IMAGE, attrs).run();
+
   return (
     <BubbleMenu
-      ref={container}
-      open={state.open}
-      onOpenChange={state.setOpen}
       floatingId={FLOATING_ELEMENT_IDS.IMAGE_BUBBLE_MENU}
+      onOpenChange={setOpen}
+      open={open}
+      ref={container}
     >
       <ToggleAlignPopover
+        align={align}
         container={container}
-        align={state.align}
-        onAlignChange={handleAlignChange}
+        onAlignChange={(next) => updateImage({ align: next })}
       />
+
       <LinkPopover
         container={container}
-        url={state.externalLink}
-        onUrlChange={handleExternalLinkChange}
-        tooltip="External Link"
         enterTooltip="Add External Link"
+        onUrlChange={(url) => updateImage({ externalLink: url })}
+        tooltip="External Link"
+        url={externalLink}
       />
-      <ImageStylePopover container={container} editor={editor} />
+
+      <ImageStylePopover container={container} />
+
       <LinkPopover
         container={container}
-        icon={ImageIcon}
-        tooltip="Source URL"
         enterTooltip="Add Source URL"
-        url={state.src}
-        onUrlChange={handleUrlChange}
+        icon={ImageIcon}
+        onUrlChange={(url) => updateImage({ src: url })}
+        showOpenInNewTabButton={false}
         showRemoveButton={false}
+        tooltip="Source URL"
+        url={src}
       />
+
       <ImageMetadataPopover
+        alt={alt}
         container={container}
-        altText={state.alt}
-        onAltTextChange={handleAltChange}
-        title={state.title}
-        onTitleChange={handleTitleChange}
+        onAltChange={(next) => updateImage({ alt: next })}
+        onTitleChange={(next) => updateImage({ title: next })}
+        title={title}
       />
     </BubbleMenu>
   );

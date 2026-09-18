@@ -14,10 +14,14 @@ type EmailPreviewIFrameProps = {
   wrapperClassName?: string;
 } & React.HTMLProps<HTMLIFrameElement>;
 
-function renderHTMLToIFrame(
-  ref: RefObject<HTMLIFrameElement | null>,
-  html: string
-) {
+type RenderHTMLToIFrameOptions = {
+  html: string;
+  ref: RefObject<HTMLIFrameElement | null>;
+};
+
+function renderHTMLToIFrame(options: RenderHTMLToIFrameOptions) {
+  const { html, ref } = options;
+
   if (!ref || !ref?.current) {
     return;
   }
@@ -60,7 +64,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
       return;
     }
 
-    renderHTMLToIFrame(iframeRef, innerHTML);
+    renderHTMLToIFrame({ html: innerHTML, ref: iframeRef });
   }, [innerHTML, isServer]);
 
   function handleOpen() {
@@ -94,7 +98,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
             return;
           }
 
-          renderHTMLToIFrame(iframeRef, innerHTML);
+          renderHTMLToIFrame({ html: innerHTML, ref: iframeRef });
         }}
         ref={iframeRef}
         srcDoc={isServer ? innerHTML : ''}

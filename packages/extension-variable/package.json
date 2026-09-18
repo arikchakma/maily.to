@@ -1,19 +1,8 @@
 {
   "name": "@maily-to/extension-variable",
   "version": "0.0.1",
-  "private": false,
-  "description": "Variable extension for Maily",
-  "keywords": [
-    "email",
-    "maily.to",
-    "react"
-  ],
-  "author": "Arik Chakma <arikchangma@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arikchakma/maily.to.git",
-    "directory": "packages/extension-variable"
-  },
+  "private": true,
+  "description": "Variable extension shell.",
   "files": [
     "dist/**"
   ],
@@ -29,19 +18,18 @@
     },
     "./package.json": "./package.json"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "vp pack",
     "clean": "rm -rf dist",
-    "dev": "vp pack --watch"
+    "dev": "vp pack --watch --no-clean",
+    "release": "bumpp"
   },
   "dependencies": {
     "@maily-to/shared": "workspace:*"
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",
+    "bumpp": "catalog:",
     "typescript": "catalog:",
     "vite-plus": "catalog:"
   },

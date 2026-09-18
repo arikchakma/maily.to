@@ -18,7 +18,7 @@ export type MetaDescriptor =
  * so `{ name: 'a', content: 'b' }` and `{ content: 'b', name: 'a' }`
  * produce the same key.
  */
-function hash(descriptor: MetaDescriptor): string {
+function getHash(descriptor: MetaDescriptor): string {
   const sorted = Object.keys(descriptor)
     .sort()
     .reduce<Record<string, string>>((acc, key) => {
@@ -38,13 +38,13 @@ export function meta(descriptors: MetaDescriptor[]): React.ReactNode[] {
   const elements: React.ReactNode[] = [];
 
   for (const descriptor of descriptors) {
-    const key = hash(descriptor);
+    const key = getHash(descriptor);
     if (seen.has(key)) {
       continue;
     }
     seen.add(key);
 
-    const element = process(descriptor, key);
+    const element = getMetaElement({ descriptor, key });
     if (element) {
       elements.push(element);
     }
@@ -53,9 +53,16 @@ export function meta(descriptors: MetaDescriptor[]): React.ReactNode[] {
   return elements;
 }
 
-function process(descriptor: MetaDescriptor, key: string): React.ReactNode {
+type MetaElementOptions = {
+  descriptor: MetaDescriptor;
+  key: string;
+};
+
+function getMetaElement(options: MetaElementOptions): React.ReactNode {
+  const { descriptor, key } = options;
+
   if ('charSet' in descriptor) {
-    return <meta key={key} charSet={descriptor.charSet} />;
+    return <meta charSet={descriptor.charSet} key={key} />;
   }
 
   if ('title' in descriptor) {
@@ -76,7 +83,7 @@ function process(descriptor: MetaDescriptor, key: string): React.ReactNode {
 
   if ('httpEquiv' in attrs) {
     const { httpEquiv, ...rest } = attrs;
-    return <meta key={key} httpEquiv={httpEquiv} {...rest} />;
+    return <meta httpEquiv={httpEquiv} key={key} {...rest} />;
   }
 
   return <meta key={key} {...attrs} />;

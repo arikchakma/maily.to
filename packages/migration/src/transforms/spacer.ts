@@ -1,63 +1,37 @@
 import type { MigrationWarning } from '../types';
 
 const DEFAULT_SPACER_HEIGHT = 8;
-const SPACING = [
-  {
-    name: 'Extra Small',
-    short: 'xs',
-    value: 4,
-  },
-  {
-    name: 'Small',
-    short: 'sm',
-    value: 8,
-  },
-  {
-    name: 'Medium',
-    short: 'md',
-    value: 16,
-  },
-  {
-    name: 'Large',
-    short: 'lg',
-    value: 32,
-  },
-  {
-    name: 'Extra Large',
-    short: 'xl',
-    value: 64,
-  },
-];
 
-const ALLOWED_SPACING_SHORT_NAMES = SPACING.map((s) => s.short);
+const SPACER_ENUM_HEIGHTS: Record<string, number> = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 32,
+  xl: 64,
+};
 
-/**
- * Migrates a v1 spacer node to the v2 schema.
- * Sets `heightMode` to "uniform" if not already present.
- * In v2, spacers support per-side height control via heightMode;
- * v1 spacers only had a single uniform height value.
- */
 export function spacer(
   node: Record<string, any>,
   warnings: MigrationWarning[]
 ): void {
   const attrs = node.attrs ?? {};
+  const height = attrs.height;
 
-  let height = node.attrs?.height;
-  if (
-    typeof height === 'string' &&
-    ALLOWED_SPACING_SHORT_NAMES.includes(height)
-  ) {
-    const spacing = SPACING.find((s) => s.short === height);
+  if (typeof height === 'number') {
+    return;
+  }
+
+  if (typeof height === 'string' && height in SPACER_ENUM_HEIGHTS) {
+    const value = SPACER_ENUM_HEIGHTS[height];
     warnings.push({
       nodeType: 'spacer',
       field: 'height',
-      message: `Migrated "height" from string enum to number: ${height} → ${spacing?.value}`,
+      message: `Migrated "height" from string enum to number: ${height} → ${value}`,
     });
 
-    height = spacing?.value ?? DEFAULT_SPACER_HEIGHT;
+    attrs.height = value;
+    return;
   }
 
-  attrs.height = height;
-  attrs.heightMode ??= 'uniform';
+  attrs.height = DEFAULT_SPACER_HEIGHT;
 }

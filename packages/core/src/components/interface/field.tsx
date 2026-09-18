@@ -1,75 +1,43 @@
-import { mergeProps } from '@base-ui/react';
-import { useRender } from '@base-ui/react/use-render';
+import type { ComponentPropsWithRef } from 'react';
 
-import { cn } from '~/utils/classname';
-import { AUTOCOMPLETE_PASSWORD_MANAGERS_OFF } from '~/utils/constants';
+export type FieldRootProps = ComponentPropsWithRef<'div'>;
 
-type FieldRootProps = React.HTMLAttributes<HTMLDivElement> & {
-  ref?: React.RefObject<HTMLDivElement | null>;
-};
-
-function FieldRoot(props: FieldRootProps) {
-  const { className, ref, ...rest } = props;
-
-  return <div ref={ref} className={cn('mly:relative', className)} {...rest} />;
+export function FieldRoot(props: FieldRootProps) {
+  return <div data-mly-field="" {...props} />;
 }
 
-type FieldLabelProps = useRender.ComponentProps<'label'>;
+export type FieldLabelProps = ComponentPropsWithRef<'label'>;
 
-function FieldLabel(props: FieldLabelProps) {
-  const { className, render, ...rest } = props;
-
-  const element = useRender({
-    defaultTagName: 'label',
-    render,
-    props: mergeProps<'label'>(
-      { className: cn('mly:text-sm mly:text-gray-500', className) },
-      rest
-    ),
-  });
-
-  return element;
+export function FieldLabel(props: FieldLabelProps) {
+  return <label data-mly-field-label="" {...props} />;
 }
 
-type FieldInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  ref?: React.RefObject<HTMLInputElement | null>;
-};
+export type FieldControlProps = ComponentPropsWithRef<'div'>;
 
-function FieldInput(props: FieldInputProps) {
-  const { className, ref, ...rest } = props;
+export function FieldControl(props: FieldControlProps) {
+  return <div data-mly-field-control="" {...props} />;
+}
+
+export type FieldIconProps = ComponentPropsWithRef<'span'>;
+
+export function FieldIcon(props: FieldIconProps) {
+  return <span data-mly-field-icon="" {...props} />;
+}
+
+export type FieldInputProps = ComponentPropsWithRef<'input'>;
+
+export function FieldInput(props: FieldInputProps) {
+  const { type = 'text', ...rest } = props;
 
   return (
     <input
-      ref={ref}
-      {...AUTOCOMPLETE_PASSWORD_MANAGERS_OFF}
-      className={cn(
-        'mly-editor',
-        'mly:flex mly:h-7 mly:w-34 mly:rounded-lg mly:border-none mly:bg-soft-gray mly:px-2 mly:text-sm mly:ring-offset-white mly:placeholder:text-gray-500 mly:focus-visible:ring-1 mly:focus-visible:ring-gray-300 mly:focus-visible:ring-offset-0 mly:focus-visible:outline-hidden mly:disabled:cursor-not-allowed mly:disabled:opacity-50',
-        className
-      )}
+      autoComplete="off"
+      data-1p-ignore=""
+      data-lpignore="true"
+      spellCheck={false}
       {...rest}
+      data-mly-field-input=""
+      type={type}
     />
   );
 }
-
-type FieldIconProps = React.HTMLAttributes<HTMLSpanElement> & {
-  ref?: React.RefObject<HTMLSpanElement | null>;
-};
-
-function FieldIcon(props: FieldIconProps) {
-  const { className, children, ...rest } = props;
-
-  return (
-    <span
-      className={cn(
-        'mly:absolute mly:inset-y-0 mly:right-2 mly:flex mly:items-center mly:[&>svg]:size-3.5 mly:[&>svg]:text-gray-500',
-        className
-      )}
-      {...rest}
-    >
-      {children}
-    </span>
-  );
-}
-
-export { FieldIcon, FieldInput, FieldLabel, FieldRoot };

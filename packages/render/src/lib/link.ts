@@ -20,7 +20,7 @@ export function links(json: JSONContent): Set<string> {
         }
 
         const href = mark.attrs.href;
-        if (!isValid(href)) {
+        if (!isValidUrl(href)) {
           continue;
         }
 
@@ -37,11 +37,21 @@ export function links(json: JSONContent): Set<string> {
   return links;
 }
 
-function isValid(string: string) {
+function isValidUrl(value: string): boolean {
   try {
-    new URL(string);
+    new URL(value);
     return true;
   } catch {
     return false;
   }
+}
+
+const UNSAFE_SCHEME = /^(?:data|javascript|vbscript):/i;
+
+export function getSafeHref(url: string | null | undefined) {
+  if (!url) {
+    return url ?? undefined;
+  }
+
+  return UNSAFE_SCHEME.test(url.replace(/\s/g, '')) ? undefined : url;
 }

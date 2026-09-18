@@ -1,4 +1,4 @@
-function isMergableObject(value: unknown): value is Record<string, unknown> {
+function isMergeableObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
@@ -15,33 +15,16 @@ export function deepMerge<T extends object>(
   target: T,
   ...sources: Partial<T>[]
 ): T {
-  const result: Record<string, unknown> = { ...target } as Record<
-    string,
-    unknown
-  >;
+  const result = { ...target } as Record<string, unknown>;
 
   for (const source of sources) {
-    for (const [key, value] of Object.entries(source as object)) {
+    for (const [key, value] of Object.entries(source)) {
       result[key] =
-        isMergableObject(value) && isMergableObject(result[key])
+        isMergeableObject(value) && isMergeableObject(result[key])
           ? { ...result[key], ...value }
           : value;
     }
   }
 
   return result as T;
-}
-
-export function isObjectDeepEqual(first: object, second: object): boolean {
-  if (first === second) {
-    return true;
-  }
-
-  for (const key of Object.keys(first) as Array<keyof typeof first>) {
-    if (first[key] !== (second as typeof first)[key]) {
-      return false;
-    }
-  }
-
-  return true;
 }

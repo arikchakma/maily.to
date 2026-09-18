@@ -4,16 +4,14 @@ import type {
   VisibilityRule,
 } from '@maily-to/shared';
 import {
-  OPERATORS_WITHOUT_VALUE,
+  DEFAULT_VISIBILITY_RULE,
+  getVisibilityValueSupport,
   VISIBILITY_ACTION_OPTIONS,
-  VISIBILITY_ACTIONS,
   VISIBILITY_OPERATOR_OPTIONS,
-  VISIBILITY_OPERATORS,
 } from '@maily-to/shared';
-import { ConditionBuilder } from '@maily-to/ui';
 import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
 import type { FloatingUIContainer } from '~/types/floating-ui';
@@ -22,6 +20,7 @@ import { Divider } from '../interface/divider';
 import { FieldInput, FieldRoot } from '../interface/field';
 import { PopoverBack } from '../interface/popover';
 import {
+  Select,
   SelectContent,
   SelectItem,
   SelectPositioner,
@@ -30,176 +29,139 @@ import {
 } from '../interface/select';
 import { VariableOnlyEditor } from '../variable-only-editor/variable-only-editor';
 
-type VisibilityConfigProps = {
+const NO_CONDITION_ACTION = 'none';
+
+const ACTION_OPTIONS = [
+  { label: 'No condition', value: NO_CONDITION_ACTION },
+  ...VISIBILITY_ACTION_OPTIONS,
+];
+
+export type VisibilityConfigProps = {
   container: FloatingUIContainer;
-  editor: Editor;
   nodeType: string;
-  onBack?: () => void;
+  onBack: () => void;
 };
 
 export function VisibilityConfig(props: VisibilityConfigProps) {
-  const { container, editor: editorProp, nodeType, onBack } = props;
+  const { container, nodeType, onBack } = props;
 
-  const editor = useEditorInstance(editorProp);
+  const editor = useEditorInstance();
   const variableEditorRef = useRef<Editor | null>(null);
 
-  const state = useEditorState({
+  const rule = useEditorState({
     editor,
-    selector: (ctx) => {
-      const attrs = ctx.editor.getAttributes(nodeType);
+    selector: ({ editor: instance }) => {
+      const { visibilityRule } = instance.getAttributes(nodeType);
 
-      return {
-        visibilityRule: (attrs.visibilityRule as VisibilityRule) ?? null,
-      };
+      return (visibilityRule as VisibilityRule | null) ?? null;
     },
   });
 
-  const updateCondition = useCallback(
-    (updates: Partial<VisibilityRule>) => {
-      const current = state.visibilityRule ?? {
-        action: VISIBILITY_ACTIONS.SHOW,
-        variable: '',
-        operator: VISIBILITY_OPERATORS.EQUALS,
-        value: '',
-      };
+  const updateRule = (updates: Partial<VisibilityRule>) => {
+    const next = { ...(rule ?? DEFAULT_VISIBILITY_RULE), ...updates };
 
-      const next: VisibilityRule = { ...current, ...updates };
+    return editor
+      .chain()
+      .setVisibilityRule(nodeType, {
+        ...next,
+        value: getVisibilityValueSupport(next.operator) ? next.value : '',
+      })
+      .run();
+  };
 
-      if (
-        updates.operator &&
-        OPERATORS_WITHOUT_VALUE.includes(updates.operator)
-      ) {
-        next.value = '';
-      }
+  const handleActionChange = (value: unknown) => {
+    if (value === NO_CONDITION_ACTION) {
+      return editor.chain().unsetVisibilityRule(nodeType).run();
+    }
 
-      editor.chain().setVisibility({ visibilityRule: next }).run();
-    },
-    [editor, state.visibilityRule]
-  );
-
-  const handleClearCondition = useCallback(() => {
-    editor.chain().setVisibility({ visibilityRule: null }).run();
-  }, [editor]);
-
-  const handleActionChange = useCallback(
-    (action: string) => {
-      if (action === VISIBILITY_ACTIONS.NONE) {
-        handleClearCondition();
-        return;
-      }
-
-      updateCondition({ action: action as AllowedVisibilityAction });
-    },
-    [updateCondition, handleClearCondition]
-  );
-
-  const condition = state.visibilityRule;
-  const currentAction = condition?.action ?? VISIBILITY_ACTIONS.NONE;
-  const currentOperator = condition?.operator ?? VISIBILITY_OPERATORS.EQUALS;
-  const hasCondition = currentAction !== VISIBILITY_ACTIONS.NONE;
-  const needsValue = !OPERATORS_WITHOUT_VALUE.includes(currentOperator);
+    return updateRule({ action: value as AllowedVisibilityAction });
+  };
 
   return (
-    <div className="mly:flex mly:flex-col">
-      {onBack && (
-        <>
-          <PopoverBack onClick={onBack}>Visibility</PopoverBack>
-          <Divider type="horizontal" className="mly:-mx-1 mly:my-1" />
-        </>
-      )}
+    <div data-mly-visibility-config="">
+      <PopoverBack onClick={onBack}>Visibility</PopoverBack>
 
-      <div className="mly:grid mly:p-0">
-        <ConditionBuilder.Root
-          action={currentAction}
-          field={condition?.variable ?? ''}
-          operator={currentOperator}
-          value={condition?.value ?? ''}
-          onActionChange={handleActionChange}
-          onFieldChange={(v) => {
-            updateCondition({ variable: v });
-          }}
-          onOperatorChange={(o) => {
-            updateCondition({ operator: o as AllowedVisibilityOperator });
-          }}
-          onValueChange={(v) => {
-            updateCondition({ value: v });
-          }}
-          onClear={handleClearCondition}
-          operatorNeedsValue={needsValue}
-          className="mly:grid mly:gap-2"
-        >
-          <FieldRoot>
-            <ConditionBuilder.ActionSelect items={VISIBILITY_ACTION_OPTIONS}>
-              <SelectTrigger className="mly:w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectPositioner container={container}>
-                <SelectContent>
-                  {VISIBILITY_ACTION_OPTIONS.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectPositioner>
-            </ConditionBuilder.ActionSelect>
-          </FieldRoot>
+      <Divider type="horizontal" />
 
-          {hasCondition && (
-            <>
+      <div data-mly-visibility-fields="">
+        <FieldRoot>
+          <Select
+            items={ACTION_OPTIONS}
+            onValueChange={handleActionChange}
+            value={rule?.action ?? NO_CONDITION_ACTION}
+          >
+            <SelectTrigger aria-label="Visibility Action">
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectPositioner container={container}>
+              <SelectContent data-variant="visibility-action">
+                {ACTION_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectPositioner>
+          </Select>
+        </FieldRoot>
+
+        {rule ? (
+          <>
+            <FieldRoot>
+              <VariableOnlyEditor
+                autofocus={false}
+                content={rule.variable || '{{'}
+                editorRef={variableEditorRef}
+                onContentChange={(value) => {
+                  updateRule({ variable: value });
+                }}
+                placeholder="{{variable}}"
+              />
+            </FieldRoot>
+
+            <div data-mly-visibility-condition="">
               <FieldRoot>
-                <VariableOnlyEditor
-                  editorRef={variableEditorRef}
-                  content={condition?.variable ?? '{{'}
-                  onContentChange={(v) => {
-                    updateCondition({ variable: v });
+                <Select
+                  items={VISIBILITY_OPERATOR_OPTIONS}
+                  onValueChange={(value) => {
+                    return updateRule({
+                      operator: value as AllowedVisibilityOperator,
+                    });
                   }}
-                  placeholder="{{variable}}"
-                  autofocus={false}
-                  className="mly:w-full mly:rounded-lg mly:bg-soft-gray"
-                />
+                  value={rule.operator}
+                >
+                  <SelectTrigger aria-label="Visibility Operator">
+                    <SelectValue />
+                  </SelectTrigger>
+
+                  <SelectPositioner container={container}>
+                    <SelectContent data-variant="visibility-operator">
+                      {VISIBILITY_OPERATOR_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectPositioner>
+                </Select>
               </FieldRoot>
 
-              <div className="mly:grid mly:grid-cols-2 mly:gap-2">
+              {getVisibilityValueSupport(rule.operator) ? (
                 <FieldRoot>
-                  <ConditionBuilder.OperatorSelect
-                    items={VISIBILITY_OPERATOR_OPTIONS}
-                  >
-                    <SelectTrigger className="mly:w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectPositioner container={container} align="start">
-                      <SelectContent>
-                        {VISIBILITY_OPERATOR_OPTIONS.map((item) => (
-                          <SelectItem
-                            key={item.value}
-                            value={item.value}
-                            className="mly:whitespace-nowrap"
-                          >
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </SelectPositioner>
-                  </ConditionBuilder.OperatorSelect>
+                  <FieldInput
+                    aria-label="Visibility Value"
+                    defaultValue={rule.value}
+                    onChange={(event) => {
+                      updateRule({ value: event.target.value });
+                    }}
+                    placeholder="Value"
+                  />
                 </FieldRoot>
-
-                {needsValue && (
-                  <FieldRoot>
-                    <FieldInput
-                      placeholder="Value"
-                      value={condition?.value ?? ''}
-                      onChange={(e) => {
-                        updateCondition({ value: e.target.value });
-                      }}
-                      className="mly:w-full"
-                    />
-                  </FieldRoot>
-                )}
-              </div>
-            </>
-          )}
-        </ConditionBuilder.Root>
+              ) : null}
+            </div>
+          </>
+        ) : null}
       </div>
     </div>
   );

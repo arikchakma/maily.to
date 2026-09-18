@@ -1,9 +1,4 @@
-<div align="center"><img height="150" src="https://maily.to/brand/icon.svg" /></div>
-<br>
-
-<div align="center"><strong>@maily-to/extension-ai-actions</strong></div>
-<div align="center">Tiptap extension for AI-powered content actions in <a href="https://maily.to">Maily</a>.</div>
-<br />
+[![@maily-to/extension-ai-actions](../../_static/extension-ai-actions.jpg)](https://maily.to)
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
@@ -18,33 +13,57 @@
 
 ### Install
 
-Install `@maily-to/extension-ai-actions` from your command line.
+This package is not published on its own. It is bundled into
+[`@maily-to/core`](../core), which ships the `AIActionsDropdown` the text bubble
+menu renders.
 
 ```sh
-pnpm add @maily-to/extension-ai-actions
+pnpm add @maily-to/core
 ```
 
-#### Peer Dependencies
-
-```sh
-pnpm add @tiptap/core @tiptap/pm
-```
+<br>
 
 ### Usage
 
+The extension adds AI-powered transformations over the current selection —
+rewriting, summarizing, expanding. You supply the `transform` function, so the
+model and the prompt stay yours.
+
 ```ts
-import { AiActions } from '@maily-to/extension-ai-actions';
+import { AIActions } from '@maily-to/extension-ai-actions';
 
 const editor = new Editor({
   extensions: [
-    AiActions.configure({
-      // your configuration
+    AIActions.configure({
+      transform: async (params, ctx) => {
+        return getAIResult({ ctx, params });
+      },
     }),
   ],
 });
 ```
 
-This extension adds AI-powered content transformation capabilities to the editor, enabling actions like rewriting, summarizing, and expanding selected text.
+`transform` receives the action and the selected text, and returns the
+replacement. State lives on the extension's storage, per editor, so two editors
+on one page never share a pending action.
+
+#### Types
+
+```ts
+import type {
+  AIActionsOptions,
+  AIActionsRange,
+  AIActionsStorage,
+  AIActionsTransformContext,
+  AIActionsTransformParams,
+} from '@maily-to/extension-ai-actions';
+```
+
+#### Peer dependencies
+
+```sh
+pnpm add @tiptap/core @tiptap/pm
+```
 
 ### Contributions
 

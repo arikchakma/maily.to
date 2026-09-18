@@ -35,7 +35,7 @@
   "scripts": {
     "build": "vp pack",
     "clean": "rm -rf dist",
-    "dev": "vp pack --watch",
+    "dev": "vp pack --watch --no-clean",
     "release": "bumpp",
     "test": "vp test run"
   },

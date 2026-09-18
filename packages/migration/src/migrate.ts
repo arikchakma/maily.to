@@ -3,10 +3,11 @@ import { column } from './transforms/column';
 import { columns } from './transforms/columns';
 import { footer } from './transforms/footer';
 import { global } from './transforms/global';
-import { htmlCodeBlock } from './transforms/html-code-block';
 import { image } from './transforms/image';
 import { inlineImage } from './transforms/inline-image';
 import { link } from './transforms/link';
+import { linkCard } from './transforms/link-card';
+import { listItem } from './transforms/list-item';
 import { logo } from './transforms/logo';
 import { repeat } from './transforms/repeat';
 import { section } from './transforms/section';
@@ -26,7 +27,6 @@ type MarkTransform = (
 
 const NODE_TRANSFORMS: Record<string, NodeTransform> = {
   button,
-  htmlCodeBlock,
   image,
   logo,
   section,
@@ -34,8 +34,11 @@ const NODE_TRANSFORMS: Record<string, NodeTransform> = {
   column,
   spacer,
   repeat,
+  for: repeat,
   footer,
   inlineImage,
+  linkCard,
+  listItem,
 };
 
 const MARK_TRANSFORMS: Record<string, MarkTransform> = {
@@ -56,9 +59,9 @@ export function requireContentMigration(json: Record<string, any>): boolean {
  * Converts a Maily v1 JSON document to the v2 schema.
  * Deep-clones the input so the original is never mutated, then
  * walks the tree iteratively (stack-based) applying global transforms
- * (showIfKey → visibilityRule, textDirection → dir, id generation)
- * followed by node-specific transforms (button, image, section, etc.)
- * and mark transforms (link).
+ * (showIfKey → visibilityRule, textDirection → dir, textAlign → style,
+ * id generation) followed by node-specific transforms (button, image,
+ * section, etc.) and mark transforms (link).
  *
  * If the document is already v2+ (version >= 2), it is returned as-is
  * with an empty warnings array. Warnings are emitted when v1 attributes
@@ -69,11 +72,9 @@ export function migrate(json: Record<string, any>): MigrationResult {
     return { json, warnings: [] };
   }
 
-  // Deep clone
   const doc = structuredClone(json);
   const warnings: MigrationWarning[] = [];
 
-  // Set version
   if (!doc.attrs) {
     doc.attrs = {};
   }
@@ -83,22 +84,18 @@ export function migrate(json: Record<string, any>): MigrationResult {
   // compute accurate pixel → percentage conversions.
   annotateContainerWidths(doc);
 
-  // Walk tree iteratively (stack-based)
   const stack: Record<string, any>[] = [doc];
 
   while (stack.length > 0) {
     const node = stack.pop()!;
 
-    // Apply global transforms
     global(node, warnings);
 
-    // Apply node-specific transform
     const transform = NODE_TRANSFORMS[node.type];
     if (transform) {
       transform(node, warnings);
     }
 
-    // Process marks
     if (Array.isArray(node.marks)) {
       for (const mark of node.marks) {
         const markTransform = MARK_TRANSFORMS[mark.type];

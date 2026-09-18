@@ -1,46 +1,50 @@
-import type { MigrationWarning } from '../types';
-import { splitBorderRadius } from '../utils/border';
+import {
+  DEFAULT_BUTTON_KIND,
+  MAILY_NODE_TYPES,
+  parseInlineStyles,
+  TEXT_ALIGNMENTS,
+} from '@maily-to/shared';
 
-const BORDER_RADIUS_MAP: Record<string, number> = {
-  sharp: 0,
-  smooth: 6,
-  round: 9999,
+import type { MigrationWarning } from '../types';
+import { getBoxDeclarations, getStyleAttribute } from '../utils/style';
+import { getVariableReference } from '../utils/variable';
+
+type StyleDeclarations = Record<string, string | null | undefined>;
+
+const BORDER_RADIUS_VALUES: Record<string, string> = {
+  sharp: '0px',
+  smooth: '6px',
+  round: '9999px',
 };
 
-/**
- * Migrates a v1 button node to the v2 schema.
- * Performs the following conversions:
- *   - Moves `attrs.text` into `content` as a text node (or a variable
- *     node when `isTextVariable` is true).
- *   - Renames `buttonColor` → `backgroundColor`, `textColor` → `color`.
- *   - Converts `variant: 'outline'` to `backgroundColor: 'transparent'`.
- *   - Converts the `borderRadius` string enum (sharp/smooth/round) into
- *     four numeric corner properties via splitBorderRadius.
- *   - Sets v2 defaults: kind "tight", paddingMode "mixed",
- *     borderRadiusMode/borderWidthMode "uniform", borderStyle "solid".
- *   - Drops deprecated flags: isTextVariable, isUrlVariable, variant.
- */
+const FALLBACK_BORDER_RADIUS = '9999px';
+const FALLBACK_OUTLINE_COLOR = '#000000';
+const OUTLINE_VARIANT = 'outline';
+const V1_DEFAULT_ALIGN = TEXT_ALIGNMENTS.LEFT;
+
 export function button(
   node: Record<string, any>,
   warnings: MigrationWarning[]
 ): void {
-  const attrs = node.attrs ?? {};
+  node.attrs ??= {};
 
-  // Move text → content
+  const attrs = node.attrs;
+
   if (!node.content) {
     const text = attrs.text ?? '';
 
     if (attrs.isTextVariable && text) {
       node.content = [
         {
-          type: 'variable',
+          type: MAILY_NODE_TYPES.VARIABLE,
           attrs: { id: text },
         },
       ];
     } else if (text) {
-      node.content = [{ type: 'text', text }];
+      node.content = [{ type: MAILY_NODE_TYPES.TEXT, text }];
     }
   }
+
   if ('text' in attrs) {
     warnings.push({
       nodeType: 'button',
@@ -49,6 +53,7 @@ export function button(
     });
     delete attrs.text;
   }
+
   if ('isTextVariable' in attrs) {
     warnings.push({
       nodeType: 'button',
@@ -58,79 +63,97 @@ export function button(
     delete attrs.isTextVariable;
   }
 
-  // Rename buttonColor → backgroundColor
-  if ('buttonColor' in attrs) {
+  if (attrs.isUrlVariable === true) {
+    warnings.push({
+      nodeType: 'button',
+      field: 'isUrlVariable',
+      message: 'Migrated "isUrlVariable" → variable reference in "url"',
+    });
+    attrs.url = getVariableReference(attrs.url ?? '');
+  }
+  delete attrs.isUrlVariable;
+
+  if ('alignment' in attrs) {
+    if (attrs.alignment) {
+      warnings.push({
+        nodeType: 'button',
+        field: 'alignment',
+        message: 'Migrated "alignment" → "align"',
+      });
+      attrs.align = attrs.alignment;
+    }
+    delete attrs.alignment;
+  }
+  attrs.align ??= V1_DEFAULT_ALIGN;
+
+  const declarations: StyleDeclarations = parseInlineStyles(attrs.style ?? '');
+
+  if (attrs.buttonColor != null && attrs.variant !== OUTLINE_VARIANT) {
     warnings.push({
       nodeType: 'button',
       field: 'buttonColor',
-      message: 'Migrated "buttonColor" → "backgroundColor"',
+      message: 'Migrated "buttonColor" → "style"',
     });
-    attrs.backgroundColor = attrs.buttonColor;
-    delete attrs.buttonColor;
+    declarations.backgroundColor = attrs.buttonColor;
   }
 
-  // Rename textColor → color
-  if ('textColor' in attrs) {
+  if (attrs.textColor != null) {
     warnings.push({
       nodeType: 'button',
       field: 'textColor',
-      message: 'Migrated "textColor" → "color"',
+      message: 'Migrated "textColor" → "style"',
     });
-    attrs.color = attrs.textColor;
-    delete attrs.textColor;
+    declarations.color = attrs.textColor;
   }
 
-  // Handle variant: outline → transparent bg, border takes buttonColor
-  // In v1, outline buttons had: background=transparent, border=2px solid buttonColor
-  if (attrs.variant === 'outline') {
+  if (attrs.variant === OUTLINE_VARIANT) {
     warnings.push({
       nodeType: 'button',
       field: 'variant',
       message:
-        'Migrated "variant: outline" → transparent backgroundColor + border properties',
+        'Migrated "variant: outline" → transparent background + border in "style"',
     });
-    attrs.borderColor = attrs.backgroundColor ?? '#000000';
-    attrs.borderTopWidth = 2;
-    attrs.borderRightWidth = 2;
-    attrs.borderBottomWidth = 2;
-    attrs.borderLeftWidth = 2;
-    attrs.backgroundColor = 'transparent';
+    declarations.backgroundColor = 'transparent';
+    declarations.borderWidth = '2px';
+    declarations.borderStyle = 'solid';
+    declarations.borderColor = attrs.buttonColor ?? FALLBACK_OUTLINE_COLOR;
   }
   delete attrs.variant;
 
-  // Convert borderRadius enum → number → split to 4 corners
   if (typeof attrs.borderRadius === 'string') {
     warnings.push({
       nodeType: 'button',
       field: 'borderRadius',
-      message:
-        'Migrated "borderRadius" enum → individual corner radius properties',
+      message: 'Migrated "borderRadius" enum → "style"',
     });
-    const radius = BORDER_RADIUS_MAP[attrs.borderRadius] ?? 9999;
-    Object.assign(attrs, splitBorderRadius(radius));
-    delete attrs.borderRadius;
+    declarations.borderRadius =
+      BORDER_RADIUS_VALUES[attrs.borderRadius] ?? FALLBACK_BORDER_RADIUS;
+  }
+  delete attrs.borderRadius;
+
+  Object.assign(
+    declarations,
+    getBoxDeclarations({
+      bottom: attrs.paddingBottom,
+      left: attrs.paddingLeft,
+      property: 'padding',
+      right: attrs.paddingRight,
+      top: attrs.paddingTop,
+    })
+  );
+
+  delete attrs.paddingTop;
+  delete attrs.paddingRight;
+  delete attrs.paddingBottom;
+  delete attrs.paddingLeft;
+
+  const style = getStyleAttribute(declarations);
+  if (style) {
+    attrs.style = style;
   }
 
-  // Set defaults
-  attrs.kind ??= 'tight';
-  attrs.paddingMode ??= 'mixed';
-  attrs.borderRadiusMode ??= 'uniform';
-  attrs.borderWidthMode ??= 'uniform';
-  attrs.borderStyle ??= 'solid';
-  attrs.borderColor ??= '#000000';
-  attrs.borderTopWidth ??= 0;
-  attrs.borderRightWidth ??= 0;
-  attrs.borderBottomWidth ??= 0;
-  attrs.borderLeftWidth ??= 0;
+  attrs.kind ??= DEFAULT_BUTTON_KIND;
 
-  // Drop with warning
-  if ('isUrlVariable' in attrs) {
-    warnings.push({
-      nodeType: 'button',
-      field: 'isUrlVariable',
-      message:
-        'Attribute "isUrlVariable" is not supported in v2 and was dropped',
-    });
-    delete attrs.isUrlVariable;
-  }
+  delete attrs.buttonColor;
+  delete attrs.textColor;
 }

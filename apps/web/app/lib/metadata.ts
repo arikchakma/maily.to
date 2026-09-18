@@ -2,7 +2,6 @@
 // https://github.com/vercel/next.js/blob/main/packages/next/src/build/webpack/loaders/metadata/resolve-route-data.ts#L5
 
 type RobotsFile = {
-  // Apply rules for all
   rules:
     | {
         userAgent?: string | string[] | undefined;
@@ -10,7 +9,6 @@ type RobotsFile = {
         disallow?: string | string[] | undefined;
         crawlDelay?: number | undefined;
       }
-    // Apply rules for specific user agents
     | Array<{
         userAgent: string | string[];
         allow?: string | string[] | undefined;
@@ -21,12 +19,12 @@ type RobotsFile = {
   host?: string | undefined;
 };
 
-export type Restriction = {
+type Restriction = {
   relationship: 'allow' | 'deny';
   content: string;
 };
 
-export type Videos = {
+type Videos = {
   title: string;
   thumbnail_loc: string;
   description: string;
@@ -103,7 +101,6 @@ export function resolveRobots(data: RobotsFile): string {
   }
   if (data.sitemap) {
     const sitemap = resolveArray(data.sitemap);
-    // TODO-METADATA: support injecting sitemap url into robots.txt
     sitemap.forEach((item) => {
       content += `Sitemap: ${item}\n`;
     });
@@ -146,8 +143,6 @@ export function resolveSitemap(data: SitemapFile): string {
 
     const languages = item.alternates?.languages;
     if (languages && Object.keys(languages).length) {
-      // Since sitemap is separated from the page rendering, there's not metadataBase accessible yet.
-      // we give the default setting that won't effect the languages resolving.
       for (const language in languages) {
         content += `<xhtml:link rel="alternate" hreflang="${language}" href="${
           languages[language as keyof typeof languages]

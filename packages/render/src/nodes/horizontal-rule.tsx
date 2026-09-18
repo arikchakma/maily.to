@@ -1,26 +1,13 @@
 import { is } from '@maily-to/shared';
 import { Hr } from '@react-email/components';
 
-import {
-  shouldSuppressMarginBottom,
-  shouldSuppressMarginTop,
-} from '../lib/spacing';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
-export const horizontalRule: NodeRenderer = (node, ctx) => {
+export const horizontalRule: NodeRenderer = (node) => {
   if (!is.horizontalRule(node)) {
     return null;
   }
 
-  const theme = ctx.config.theme;
-
-  return (
-    <Hr
-      style={{
-        borderColor: theme.horizontalRule?.color,
-        marginTop: shouldSuppressMarginTop(ctx) ? 0 : 32,
-        marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 32,
-      }}
-    />
-  );
+  return <Hr style={getNodeStyle(node.attrs?.style)} />;
 };

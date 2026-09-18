@@ -1,18 +1,18 @@
-import { EditorBody } from './editor-body';
-import { EditorContainer } from './editor-container';
+import type { ComponentPropsWithRef } from 'react';
 
-type EditorFrameProps = {
-  children: React.ReactNode;
-  className?: string;
-};
+import { useEditorInstance } from '~/hooks/use-editor-instance';
+
+type EditorFrameProps = ComponentPropsWithRef<'div'>;
 
 export function EditorFrame(props: EditorFrame.Props) {
-  const { children, className } = props;
+  const editor = useEditorInstance();
 
   return (
-    <EditorBody className={className}>
-      <EditorContainer>{children}</EditorContainer>
-    </EditorBody>
+    <div
+      {...props}
+      data-editable={editor.isEditable ? '' : undefined}
+      data-mly-editor-body=""
+    />
   );
 }
 

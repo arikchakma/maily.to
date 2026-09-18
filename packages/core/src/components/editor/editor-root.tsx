@@ -1,173 +1,168 @@
-import type { EditorThemeOptions, TextDirection } from '@maily-to/shared';
-import {
-  deepMerge,
-  DEFAULT_EDITOR_THEME,
-  DEFAULT_TEXT_DIRECTION,
-  invariant,
-} from '@maily-to/shared';
+import type { DocumentNode, TextDirection } from '@maily-to/shared';
+import { DEFAULT_TEXT_DIRECTION, invariant } from '@maily-to/shared';
 import type { AnyExtension, Editor, JSONContent } from '@tiptap/core';
-import { NodeSelection } from '@tiptap/pm/state';
 import type { EditorEvents, UseEditorOptions } from '@tiptap/react';
 import { EditorContext as TiptapEditorContext } from '@tiptap/react';
-import { useImperativeHandle, useMemo } from 'react';
+import {
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
-import { useControllableState } from '~/hooks/use-controllable-state';
 import { useMailyEditor } from '~/hooks/use-maily-editor';
-import { getInitialEditorContent } from '~/utils/initial-content';
+import { getNormalizedHtml } from '~/utils/html';
 import { clearInitialNodeSelection } from '~/utils/selection';
 
 import { EditorRootContext } from './editor-root-context';
 
+const DIRECTION_ATTRIBUTE = 'dir';
+
 type EditorRootProps = {
+  children: React.ReactNode;
   content?: JSONContent | string;
   extensions?: AnyExtension[];
-  onUpdate?: ((props: EditorEvents['update']) => void) | undefined;
+  onContentError?: ((props: EditorEvents['contentError']) => void) | undefined;
   onCreate?: ((props: EditorEvents['create']) => void) | undefined;
-
-  textDirection?: TextDirection;
-  defaultTextDirection?: TextDirection;
-  onTextDirectionChange?: (direction: TextDirection) => void;
-
-  theme?: EditorThemeOptions;
-
+  onUpdate?: ((props: EditorEvents['update']) => void) | undefined;
   ref?: React.Ref<EditorRootHandle>;
-
-  children: React.ReactNode;
 } & Pick<
   UseEditorOptions,
-  'immediatelyRender' | 'autofocus' | 'editable' | 'editorProps'
+  | 'autofocus'
+  | 'editable'
+  | 'editorProps'
+  | 'immediatelyRender'
+  | 'textDirection'
 >;
 
-/**
- * Imperative handle exposed by `Editor.Root` via `ref`. `getEditorHTML`
- * returns the ProseMirror-serialized HTML for the editor view — for
- * email HTML output use `@maily-to/render` with `getJSON()`.
- */
 type EditorRootHandle = {
   getEditor: () => Editor;
-  getJSON: () => JSONContent;
   getEditorHTML: () => string;
+  getJSON: () => DocumentNode;
   getText: () => string;
 };
 
+const EMITTED_CONTENT_HISTORY = 20;
+
+const LEADING_SEPARATORS = /^(?:\n\n)+/;
+
+function getEditorText(editor: Editor) {
+  return editor.getText().replace(LEADING_SEPARATORS, '');
+}
+
 export function EditorRoot(props: EditorRoot.Props) {
   const {
-    ref,
-    content,
-    onUpdate,
-    onCreate,
-    extensions,
-    theme: themeProp = {},
-    defaultTextDirection,
-    textDirection: textDirectionProp,
-    onTextDirectionChange,
-    children,
-
-    editable = true,
-    immediatelyRender = true,
     autofocus = false,
-    editorProps,
+    children,
+    content,
+    editable = true,
+    editorProps = {},
+    extensions,
+    immediatelyRender = true,
+    onContentError,
+    onCreate,
+    onUpdate,
+    ref,
+    textDirection: textDirectionProp,
   } = props;
 
-  const theme = deepMerge(DEFAULT_EDITOR_THEME, themeProp);
+  const [textDirection, setTextDirection] = useState(
+    textDirectionProp ?? DEFAULT_TEXT_DIRECTION
+  );
+  const [previousDirection, setPreviousDirection] = useState(textDirectionProp);
 
-  const [textDirection, setTextDirection] = useControllableState({
-    value: textDirectionProp,
-    defaultValue: defaultTextDirection ?? DEFAULT_TEXT_DIRECTION,
-    onChange: onTextDirectionChange,
-  });
+  if (previousDirection !== textDirectionProp) {
+    setPreviousDirection(textDirectionProp);
+    setTextDirection(textDirectionProp ?? DEFAULT_TEXT_DIRECTION);
+  }
+
+  const emittedRef = useRef<Set<string>>(new Set());
+
+  const rememberEmitted = (instance: Editor) => {
+    const emitted = emittedRef.current;
+    emitted.add(JSON.stringify(instance.getJSON()));
+
+    if (emitted.size > EMITTED_CONTENT_HISTORY) {
+      emitted.delete(emitted.values().next().value as string);
+    }
+  };
 
   const editor = useMailyEditor(
     {
-      content: getInitialEditorContent(content),
-      editorProps: {
-        scrollMargin: 40,
-        scrollThreshold: 40,
-        attributes: {
-          spellcheck: 'false',
-          class: 'mly:w-full',
-        },
-        handleTripleClick(view, pos) {
-          const { state } = view;
-          const $pos = state.doc.resolve(pos);
-          const { depth } = $pos;
-
-          if (depth < 1) {
-            return false;
-          }
-
-          const node = $pos.node(depth);
-          if (node.type.spec.selectable === false) {
-            return false;
-          }
-
-          const nodePos = $pos.before(depth);
-          const selection = NodeSelection.create(state.doc, nodePos);
-          view.dispatch(state.tr.setSelection(selection));
-
-          return true;
-        },
-        ...editorProps,
-      },
+      autofocus,
+      content,
+      editable,
+      editorProps,
       extensions,
-      textDirection,
-      onUpdate,
-      onCreate: (props) => {
+      immediatelyRender,
+      ...(onContentError ? { onContentError } : {}),
+      onCreate: (event) => {
         if (autofocus === false || autofocus === null) {
-          clearInitialNodeSelection(props.editor);
+          clearInitialNodeSelection(event.editor);
         }
 
-        onCreate?.(props);
+        rememberEmitted(event.editor);
+        onCreate?.(event);
       },
-      editable,
-      immediatelyRender,
-      autofocus,
-    },
-    [textDirection, editable]
-  );
-
-  const contextValue: EditorRootContext = useMemo(
-    () => ({
+      onUpdate: (event) => {
+        rememberEmitted(event.editor);
+        onUpdate?.(event);
+      },
       textDirection,
-      setTextDirection,
-      theme,
-    }),
-    [textDirection, setTextDirection, theme]
+    },
+    [editable, textDirection]
   );
 
-  useImperativeHandle(
-    ref,
+  useEffect(() => {
+    if (!editor || content === undefined) {
+      return;
+    }
+
+    if (typeof content !== 'string') {
+      const next = JSON.stringify(content);
+
+      // The editor produced this document, so applying it back would either be
+      // a no-op or, when the parent echoes a stale value, undo a newer edit.
+      if (
+        emittedRef.current.has(next) ||
+        next === JSON.stringify(editor.getJSON())
+      ) {
+        return;
+      }
+    }
+
+    editor.commands.setContent(
+      typeof content === 'string' ? getNormalizedHtml(content) : content,
+      { emitUpdate: false, errorOnInvalidContent: false }
+    );
+  }, [content, editor]);
+
+  useImperativeHandle(ref, () => {
+    const getEditor = () => {
+      invariant(editor, 'Editor.Root ref accessed before the editor was ready');
+      return editor;
+    };
+
+    return {
+      getEditor,
+      getEditorHTML: () => getEditor().getHTML(),
+      getJSON: () => getEditor().getJSON() as DocumentNode,
+      getText: () => getEditorText(getEditor()),
+    };
+  }, [editor]);
+
+  const rootContext = useMemo(
     () => ({
-      getEditor: () => {
-        invariant(
-          editor,
-          'Editor.Root ref accessed before the editor was ready'
+      setTextDirection: (direction: TextDirection) => {
+        setTextDirection(direction);
+        editor?.view.dispatch(
+          editor.state.tr.setDocAttribute(DIRECTION_ATTRIBUTE, direction)
         );
-        return editor;
       },
-      getJSON: () => {
-        invariant(
-          editor,
-          'Editor.Root ref accessed before the editor was ready'
-        );
-        return editor.getJSON();
-      },
-      getEditorHTML: () => {
-        invariant(
-          editor,
-          'Editor.Root ref accessed before the editor was ready'
-        );
-        return editor.getHTML();
-      },
-      getText: () => {
-        invariant(
-          editor,
-          'Editor.Root ref accessed before the editor was ready'
-        );
-        return editor.getText();
-      },
+      textDirection: textDirection ?? DEFAULT_TEXT_DIRECTION,
     }),
-    [editor]
+    [editor, textDirection]
   );
 
   if (!editor) {
@@ -176,14 +171,14 @@ export function EditorRoot(props: EditorRoot.Props) {
 
   return (
     <TiptapEditorContext.Provider value={{ editor }}>
-      <EditorRootContext.Provider value={contextValue}>
-        {children}
-      </EditorRootContext.Provider>
+      <EditorRootContext value={rootContext}>
+        <div data-mly-editor-root="">{children}</div>
+      </EditorRootContext>
     </TiptapEditorContext.Provider>
   );
 }
 
 export namespace EditorRoot {
-  export type Props = EditorRootProps;
   export type Handle = EditorRootHandle;
+  export type Props = EditorRootProps;
 }

@@ -20,6 +20,7 @@ export const ProtectVariableTrigger = Extension.create({
           newState.doc.descendants((node) => {
             if (node.type.name === MAILY_NODE_TYPES.VARIABLE) {
               hasVariable = true;
+
               return false;
             }
 
@@ -35,16 +36,20 @@ export const ProtectVariableTrigger = Extension.create({
             return null;
           }
 
-          const text = paragraph.textContent;
-          if (text.startsWith(DEFAULT_VARIABLE_START_TRIGGER)) {
+          if (
+            paragraph.textContent.startsWith(DEFAULT_VARIABLE_START_TRIGGER)
+          ) {
             return null;
           }
 
           const tr = newState.tr;
           const start = 1;
-          const end = start + paragraph.content.size;
-          tr.replaceWith(start, end, newState.schema.text('{{'));
-          return tr;
+
+          return tr.replaceWith(
+            start,
+            start + paragraph.content.size,
+            newState.schema.text(DEFAULT_VARIABLE_START_TRIGGER)
+          );
         },
       }),
     ];

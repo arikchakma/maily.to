@@ -1,3 +1,4 @@
+import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { Editor } from '@tiptap/react';
 import { useEditorState } from '@tiptap/react';
 import {
@@ -15,103 +16,84 @@ import type { TurnIntoItems } from '~/utils/turn-into';
 export function useTurnIntoBlockItems(editor: Editor) {
   return useEditorState({
     editor,
-    selector: ({ editor }): TurnIntoItems => [
-      {
-        type: 'category',
-        id: 'hierarchy',
-        label: 'Hierarchy',
-      },
-      {
-        type: 'option',
-        id: 'paragraph',
-        label: 'Paragraph',
-        icon: LetterTextIcon,
-        disabled: !editor.can().setParagraph(),
-        isActive:
-          editor.isActive('paragraph') &&
-          !editor.isActive('orderedList') &&
-          !editor.isActive('bulletList'),
-        onClick: () =>
-          editor.chain().focus().liftListItem('listItem').setParagraph().run(),
-      },
-      {
-        type: 'option',
-        id: 'heading1',
-        label: 'Heading 1',
-        icon: Heading1Icon,
-        disabled: !editor.can().setHeading({ level: 1 }),
-        isActive: editor.isActive('heading', { level: 1 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .liftListItem('listItem')
-            .setHeading({ level: 1 })
-            .run(),
-      },
-      {
-        type: 'option',
-        id: 'heading2',
-        label: 'Heading 2',
-        icon: Heading2Icon,
-        disabled: !editor.can().setHeading({ level: 2 }),
-        isActive: editor.isActive('heading', { level: 2 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .liftListItem('listItem')
-            .setHeading({ level: 2 })
-            .run(),
-      },
-      {
-        type: 'option',
-        id: 'heading3',
-        label: 'Heading 3',
-        icon: Heading3Icon,
-        disabled: !editor.can().setHeading({ level: 3 }),
-        isActive: editor.isActive('heading', { level: 3 }),
-        onClick: () =>
-          editor
-            .chain()
-            .focus()
-            .liftListItem('listItem')
-            .setHeading({ level: 3 })
-            .run(),
-      },
-      {
-        type: 'option',
-        id: 'footer',
-        label: 'Footer',
-        icon: FootprintsIcon,
-        disabled: !editor.can().setFooter(),
-        isActive: editor.isActive('footer'),
-        onClick: () =>
-          editor.chain().focus().liftListItem('listItem').setFooter().run(),
-      },
-      {
-        type: 'category',
-        id: 'lists',
-        label: 'Lists',
-      },
-      {
-        type: 'option',
-        id: 'bulletList',
-        label: 'Bullet list',
-        icon: ListIcon,
-        disabled: !editor.can().toggleBulletList(),
-        isActive: editor.isActive('bulletList'),
-        onClick: () => editor.chain().focus().toggleBulletList().run(),
-      },
-      {
-        type: 'option',
-        id: 'orderedList',
-        label: 'Numbered list',
-        icon: ListOrderedIcon,
-        disabled: !editor.can().toggleOrderedList(),
-        isActive: editor.isActive('orderedList'),
-        onClick: () => editor.chain().focus().toggleOrderedList().run(),
-      },
-    ],
+    selector: ({ editor: instance }): TurnIntoItems => {
+      const liftOut = () => {
+        return instance
+          .chain()
+          .focus()
+          .liftListItem(MAILY_NODE_TYPES.LIST_ITEM);
+      };
+
+      return [
+        { id: 'hierarchy', label: 'Hierarchy', type: 'category' },
+        {
+          disabled: !instance.can().setParagraph(),
+          icon: LetterTextIcon,
+          id: MAILY_NODE_TYPES.PARAGRAPH,
+          isActive:
+            instance.isActive(MAILY_NODE_TYPES.PARAGRAPH) &&
+            !instance.isActive(MAILY_NODE_TYPES.ORDERED_LIST) &&
+            !instance.isActive(MAILY_NODE_TYPES.BULLET_LIST),
+          label: 'Paragraph',
+          onClick: () => liftOut().setParagraph().run(),
+          type: 'option',
+        },
+        {
+          disabled: !instance.can().setHeading({ level: 1 }),
+          icon: Heading1Icon,
+          id: 'heading1',
+          isActive: instance.isActive(MAILY_NODE_TYPES.HEADING, { level: 1 }),
+          label: 'Heading 1',
+          onClick: () => liftOut().setHeading({ level: 1 }).run(),
+          type: 'option',
+        },
+        {
+          disabled: !instance.can().setHeading({ level: 2 }),
+          icon: Heading2Icon,
+          id: 'heading2',
+          isActive: instance.isActive(MAILY_NODE_TYPES.HEADING, { level: 2 }),
+          label: 'Heading 2',
+          onClick: () => liftOut().setHeading({ level: 2 }).run(),
+          type: 'option',
+        },
+        {
+          disabled: !instance.can().setHeading({ level: 3 }),
+          icon: Heading3Icon,
+          id: 'heading3',
+          isActive: instance.isActive(MAILY_NODE_TYPES.HEADING, { level: 3 }),
+          label: 'Heading 3',
+          onClick: () => liftOut().setHeading({ level: 3 }).run(),
+          type: 'option',
+        },
+        {
+          disabled: !instance.can().setFooter(),
+          icon: FootprintsIcon,
+          id: MAILY_NODE_TYPES.FOOTER,
+          isActive: instance.isActive(MAILY_NODE_TYPES.FOOTER),
+          label: 'Footer',
+          onClick: () => liftOut().setFooter().run(),
+          type: 'option',
+        },
+        { id: 'lists', label: 'Lists', type: 'category' },
+        {
+          disabled: !instance.can().toggleBulletList(),
+          icon: ListIcon,
+          id: MAILY_NODE_TYPES.BULLET_LIST,
+          isActive: instance.isActive(MAILY_NODE_TYPES.BULLET_LIST),
+          label: 'Bullet list',
+          onClick: () => instance.chain().focus().toggleBulletList().run(),
+          type: 'option',
+        },
+        {
+          disabled: !instance.can().toggleOrderedList(),
+          icon: ListOrderedIcon,
+          id: MAILY_NODE_TYPES.ORDERED_LIST,
+          isActive: instance.isActive(MAILY_NODE_TYPES.ORDERED_LIST),
+          label: 'Numbered list',
+          onClick: () => instance.chain().focus().toggleOrderedList().run(),
+          type: 'option',
+        },
+      ];
+    },
   });
 }

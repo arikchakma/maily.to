@@ -1,32 +1,33 @@
-import { is, MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { AnyMailyNode } from '@maily-to/shared';
+import { is } from '@maily-to/shared';
 import juice from 'juice';
 import { parse } from 'node-html-parser';
 
 import type { RenderContext } from '../context';
 import { resolveVariableId } from '../lib/resolve-variable';
-import { shouldSuppressMarginBottom } from '../lib/spacing';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
-function resolveText(node: AnyMailyNode, ctx: RenderContext): string {
-  if (node.type === MAILY_NODE_TYPES.TEXT && 'text' in node) {
+function getResolvedText(node: AnyMailyNode, ctx: RenderContext): string {
+  if (is.text(node)) {
     return node.text;
   }
 
-  if (node.type === MAILY_NODE_TYPES.VARIABLE && 'attrs' in node) {
-    const { id, fallback } = node.attrs;
-    if (!id) {
-      return '';
-    }
+  if (is.variable(node)) {
+    const { fallback, id } = node.attrs;
 
-    return resolveVariableId(id, fallback, ctx);
+    return id ? resolveVariableId(id, fallback, ctx) : '';
   }
 
-  if (node.content && Array.isArray(node.content)) {
-    return node.content.map((child) => resolveText(child, ctx)).join('');
+  if (!node.content) {
+    return '';
   }
 
-  return '';
+  return node.content
+    .map((child) => {
+      return getResolvedText(child, ctx);
+    })
+    .join('');
 }
 
 export const htmlCodeBlock: NodeRenderer = (node, ctx) => {
@@ -34,30 +35,34 @@ export const htmlCodeBlock: NodeRenderer = (node, ctx) => {
     return null;
   }
 
-  const rawHtml = node.content
-    ? node.content.reduce((acc, child) => acc + resolveText(child, ctx), '')
+  const source = node.content
+    ? node.content
+        .map((child) => {
+          return getResolvedText(child, ctx);
+        })
+        .join('')
     : '';
 
-  const inlined = juice(rawHtml);
-  const doc = parse(inlined);
-  doc.querySelector('head')?.remove();
-  const html = doc.toString();
+  // Email clients drop a <style> block, so juice folds the rules into the
+  // elements they match before the head is thrown away.
+  const document = parse(juice(source));
+  document.querySelector('head')?.remove();
 
   return (
     <table
       align="left"
-      width="100%"
       border={0}
       cellPadding="0"
       cellSpacing="0"
       role="presentation"
-      style={{ marginBottom: shouldSuppressMarginBottom(ctx) ? 0 : 32 }}
+      style={getNodeStyle(node.attrs?.style)}
+      width="100%"
     >
       <tbody>
         <tr style={{ width: '100%' }}>
           <td
+            dangerouslySetInnerHTML={{ __html: document.toString() }}
             style={{ width: '100%' }}
-            dangerouslySetInnerHTML={{ __html: html }}
           />
         </tr>
       </tbody>

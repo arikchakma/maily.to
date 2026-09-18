@@ -1,23 +1,29 @@
-import { DEFAULT_FONT } from '@maily-to/shared';
-import type {
-  FontProps,
-  FontStyleAttributes,
-  NodeFontStyleDefaults,
+import type { AnyMailyNode, FallbackFont, FontProps } from '@maily-to/shared';
+import {
+  DEFAULT_FONT_FALLBACK,
+  getFontFamilyNames,
+  parseInlineStyles,
 } from '@maily-to/shared';
 
 import type { RenderContext } from '../context';
+
+export type RegisterFontFaceOptions = {
+  ctx: RenderContext;
+  font: FontProps;
+};
 
 /**
  * Registers a font face in the context's shared font collector.
  * Deduplicates by family+style+weight+fallback so each variant
  * only appears once in the final `<style>` block.
  */
-export function registerFontFace(ctx: RenderContext, font: FontProps): void {
+function registerFontFace(options: RegisterFontFaceOptions): void {
+  const { ctx, font } = options;
   const {
-    fontFamily,
-    fontWeight = 400,
     fallbackFontFamily,
+    fontFamily,
     fontStyle = 'normal',
+    fontWeight = 400,
   } = font;
 
   if (!fontFamily) {
@@ -32,40 +38,71 @@ export function registerFontFace(ctx: RenderContext, font: FontProps): void {
   ctx.font(key, font);
 }
 
-/**
- * Resolves a complete FontProps from a node's font style attributes
- * (falling back to the theme font and CDN entries) and registers it.
- * Called by node renderers that support per-node font overrides.
- */
-export function prepareAndRegisterFontFaceFromAttrs(
-  ctx: RenderContext,
-  attrs: FontStyleAttributes,
-  defaults?: Partial<NodeFontStyleDefaults>
-) {
-  const primaryFont = ctx.config.theme.font ?? DEFAULT_FONT;
-  if (!primaryFont) {
+function getFallbackFont(names: string[]): FallbackFont {
+  const last = names.length > 1 ? names.at(-1) : undefined;
+
+  return (last as FallbackFont | undefined) ?? DEFAULT_FONT_FALLBACK;
+}
+
+type StyledFontOptions = {
+  ctx: RenderContext;
+  style: string;
+};
+
+function registerStyledFont(options: StyledFontOptions): void {
+  const { ctx, style } = options;
+  const declarations = parseInlineStyles(style);
+  const value = declarations.fontFamily;
+  if (!value) {
     return;
   }
 
-  const { fontFamily, fontWeight, fontFallback, fontStyle } = attrs;
-  const family = fontFamily ?? primaryFont.fontFamily;
-  if (!family) {
+  const names = getFontFamilyNames(value);
+  const fontFamily = names[0];
+  if (!fontFamily) {
     return;
   }
 
-  const weight = fontWeight ?? defaults?.fontWeight ?? 400;
-  const style = fontStyle ?? defaults?.fontStyle ?? 'normal';
-  const fallback = fontFallback ?? primaryFont.fallbackFontFamily;
+  const weight = Number.parseInt(declarations.fontWeight ?? '', 10);
+  const webFont = ctx.config.fontFamilies.find((item) => {
+    return item.fontFamily === fontFamily;
+  })?.webFont;
 
-  const webFont = fontFamily
-    ? ctx.config.fontFamilies.find((f) => f.fontFamily === fontFamily)?.webFont
-    : primaryFont.webFont;
-
-  registerFontFace(ctx, {
-    fontFamily: family,
-    fontWeight: weight,
-    fallbackFontFamily: fallback,
-    fontStyle: style,
-    ...(webFont && { webFont }),
+  registerFontFace({
+    ctx,
+    font: {
+      fallbackFontFamily: getFallbackFont(names),
+      fontFamily,
+      fontStyle: declarations.fontStyle === 'italic' ? 'italic' : 'normal',
+      fontWeight: Number.isNaN(weight) ? 400 : weight,
+      ...(webFont ? { webFont } : {}),
+    },
   });
+}
+
+export type DocumentFontsOptions = {
+  ctx: RenderContext;
+  node: AnyMailyNode;
+};
+
+export function registerDocumentFonts(options: DocumentFontsOptions): void {
+  const { ctx, node } = options;
+  const style = (node.attrs as Record<string, unknown> | undefined)?.style;
+
+  if (typeof style === 'string' && style) {
+    registerStyledFont({ ctx, style });
+  }
+
+  for (const mark of node.marks ?? []) {
+    const markStyle = (mark.attrs as Record<string, unknown> | undefined)
+      ?.style;
+
+    if (typeof markStyle === 'string' && markStyle) {
+      registerStyledFont({ ctx, style: markStyle });
+    }
+  }
+
+  for (const child of node.content ?? []) {
+    registerDocumentFonts({ ctx, node: child });
+  }
 }

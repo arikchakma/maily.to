@@ -1,9 +1,7 @@
+import type { InlineStyle } from '@maily-to/shared';
+
 import type { BoxModel } from '../context';
 
-/**
- * Extracts a numeric pixel value from a CSS string (e.g. "12px" → 12).
- * Returns 0 for undefined, non-px strings, or NaN results.
- */
 export function parsePxValue(value: string | number | undefined): number {
   if (value === undefined || value === null) {
     return 0;
@@ -15,17 +13,13 @@ export function parsePxValue(value: string | number | undefined): number {
 
   const trimmed = value.trim();
   if (trimmed.endsWith('px')) {
-    const n = parseFloat(trimmed);
-    return isNaN(n) ? 0 : n;
+    const parsed = Number.parseFloat(trimmed);
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 
   return 0;
 }
 
-/**
- * Creates a fresh BoxModel with the given total width and zero
- * border/padding. Used as the starting point for layout calculations.
- */
 export function initSize(totalWidth: number): BoxModel {
   return { totalWidth, totalBorder: 0, totalPadding: 0 };
 }
@@ -33,39 +27,61 @@ export function initSize(totalWidth: number): BoxModel {
 type CssValue = string | number | undefined;
 
 type InsetBoxSpacing = {
-  paddingLeft: CssValue;
-  paddingRight: CssValue;
   borderLeft: CssValue;
   borderRight: CssValue;
+  paddingLeft: CssValue;
+  paddingRight: CssValue;
 };
 
-/**
- * Accumulates horizontal border and padding into a BoxModel.
- * The total width stays the same — the usable content area shrinks.
- */
-export function insetBox(size: BoxModel, spacing: InsetBoxSpacing): BoxModel {
-  const totalBorder =
-    size.totalBorder +
-    parsePxValue(spacing.borderLeft) +
-    parsePxValue(spacing.borderRight);
-  const totalPadding =
-    size.totalPadding +
-    parsePxValue(spacing.paddingLeft) +
-    parsePxValue(spacing.paddingRight);
-  return { totalWidth: size.totalWidth, totalBorder, totalPadding };
+function insetBox(size: BoxModel, spacing: InsetBoxSpacing): BoxModel {
+  return {
+    totalWidth: size.totalWidth,
+    totalBorder:
+      size.totalBorder +
+      parsePxValue(spacing.borderLeft) +
+      parsePxValue(spacing.borderRight),
+    totalPadding:
+      size.totalPadding +
+      parsePxValue(spacing.paddingLeft) +
+      parsePxValue(spacing.paddingRight),
+  };
 }
 
-/**
- * Creates a narrower BoxModel for percentage-width children (columns).
- * Computes the child's total width from the parent's content area,
- * subtracting horizontal gap space.
- */
-export function narrowBoxByPercent(
+function getShorthandSide(value: string | undefined, side: 'left' | 'right') {
+  const parts = value?.trim().split(/\s+/);
+  if (!parts?.length) {
+    return undefined;
+  }
+
+  return side === 'right'
+    ? (parts[1] ?? parts[0])
+    : (parts[3] ?? parts[1] ?? parts[0]);
+}
+
+function getBorderShorthandWidth(border: string | undefined) {
+  return border
+    ?.trim()
+    .split(/\s+/)
+    .find((token) => token.endsWith('px'));
+}
+
+export function insetXFromStyle(
   size: BoxModel,
-  widthPercent: number,
-  gapH: number
+  style: InlineStyle | undefined
 ): BoxModel {
-  const currentBox = size.totalWidth - size.totalBorder - size.totalPadding;
-  const totalWidth = currentBox * (widthPercent / 100) - gapH;
-  return { totalWidth, totalBorder: 0, totalPadding: 0 };
+  const border = getBorderShorthandWidth(style?.border);
+
+  return insetBox(size, {
+    borderLeft:
+      style?.borderLeftWidth ??
+      getShorthandSide(style?.borderWidth, 'left') ??
+      border,
+    borderRight:
+      style?.borderRightWidth ??
+      getShorthandSide(style?.borderWidth, 'right') ??
+      border,
+    paddingLeft: style?.paddingLeft ?? getShorthandSide(style?.padding, 'left'),
+    paddingRight:
+      style?.paddingRight ?? getShorthandSide(style?.padding, 'right'),
+  });
 }

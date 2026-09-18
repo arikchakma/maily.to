@@ -1,48 +1,27 @@
-import type { Editor, EditorOptions } from '@tiptap/react';
-import { useRef } from 'react';
+import { useId } from 'react';
 
-import { SkeletonEditor } from '../skeleton-editor/skeleton-editor';
+import { FieldInput, FieldLabel, FieldRoot } from '../interface/field';
 
-type ImageMetadataFieldProps = {
-  label: string;
+export type ImageMetadataFieldProps = {
   content: string;
+  label: string;
   onContentChange: (content: string) => void;
   placeholder: string;
-  autofocus: EditorOptions['autofocus'];
 };
 
 export function ImageMetadataField(props: ImageMetadataFieldProps) {
-  const { label, content, onContentChange, placeholder, autofocus } = props;
-
-  const editorRef = useRef<Editor | null>(null);
-
-  const focusEditor = () => {
-    const editor = editorRef.current;
-    if (!editor) {
-      return;
-    }
-
-    editor.commands.focus('end');
-  };
+  const { content, label, onContentChange, placeholder } = props;
+  const fieldId = useId();
 
   return (
-    <div className="mly:flex mly:items-center mly:gap-1">
-      <span
-        role="label"
-        className="mly:min-w-16 mly:pl-2 mly:text-sm mly:font-medium mly:text-gray-400"
-        onClick={focusEditor}
-        aria-label={label}
-      >
-        {label}
-      </span>
-      <SkeletonEditor
+    <FieldRoot data-mly-metadata-field="">
+      <FieldLabel htmlFor={fieldId}>{label}</FieldLabel>
+      <FieldInput
+        defaultValue={content}
+        id={fieldId}
+        onChange={(event) => onContentChange(event.target.value)}
         placeholder={placeholder}
-        editorRef={editorRef}
-        content={content}
-        autofocus={autofocus}
-        onContentChange={onContentChange}
-        className="mly:rounded-lg mly:bg-soft-gray"
       />
-    </div>
+    </FieldRoot>
   );
 }

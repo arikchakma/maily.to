@@ -2,35 +2,29 @@ import type {
   SuggestionKeyDownProps,
   SuggestionProps,
 } from '@tiptap/suggestion';
-import React, { useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 import type { Variable } from '~/utils/variable';
 
 import type { VariableSuggestionsPopoverRef } from './variable-suggestions-popover';
 import { VariableSuggestionsPopover } from './variable-suggestions-popover';
 
-type VariableSuggestionListRef = {
+export type VariableSuggestionListRef = {
   onKeyDown: (props: SuggestionKeyDownProps) => boolean;
 };
 
-type VariableSuggestionListProps = SuggestionProps<Variable>;
+export type VariableSuggestionListProps = SuggestionProps<Variable>;
 
-export const VariableSuggestionList = React.forwardRef<
+export const VariableSuggestionList = forwardRef<
   VariableSuggestionListRef,
   VariableSuggestionListProps
 >((props, ref) => {
-  const { items, command: selectItem } = props;
+  const { command: selectItem, items } = props;
 
   const popoverRef = useRef<VariableSuggestionsPopoverRef>(null);
 
   useImperativeHandle(ref, () => ({
-    onKeyDown: ({ event }) => {
-      if (!popoverRef.current) {
-        return false;
-      }
-
-      return popoverRef.current.onKeyDown(event);
-    },
+    onKeyDown: ({ event }) => popoverRef.current?.onKeyDown(event) ?? false,
   }));
 
   return (
@@ -38,10 +32,10 @@ export const VariableSuggestionList = React.forwardRef<
       items={items}
       onSelectItem={(value) => {
         selectItem({
-          id: value.id ?? value.name,
+          hideDefaultValue: value.hideDefaultValue ?? false,
+          id: value.id,
+          label: value.label,
           required: value.required ?? true,
-          hideDefaultValue: value?.hideDefaultValue ?? false,
-          label: value?.label,
         });
       }}
       ref={popoverRef}

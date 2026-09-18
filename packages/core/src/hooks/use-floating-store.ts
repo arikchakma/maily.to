@@ -11,15 +11,17 @@ type FloatingStoreContext = {
 
 type FloatingStoreState = {
   contexts: FloatingStoreContext[];
+  isDragContextOpen: boolean;
 };
 
 type FloatingStoreAction = {
-  register: (id: FloatingElementId, context: FloatingContext) => void;
+  getAll: () => FloatingStoreContext[];
+  getContext: (id: FloatingElementId) => FloatingContext | undefined;
+  register: (id: FloatingElementId, context: FloatingContext) => () => void;
+  reset: () => void;
+  setDragContextOpen: (open: boolean) => void;
   unregister: (id: FloatingElementId) => void;
   update: (id: FloatingElementId, context: FloatingContext) => void;
-  getContext: (id: FloatingElementId) => FloatingContext | undefined;
-  getAll: () => FloatingStoreContext[];
-  reset: () => void;
 };
 
 /**
@@ -32,14 +34,19 @@ export const useFloatingStore = create<
 >((set, get, store) => ({
   contexts: [],
 
+  isDragContextOpen: false,
+
+  setDragContextOpen: (open) => {
+    set({ isDragContextOpen: open });
+  },
+
   register: (id, context) => {
     set((state) => {
-      const contexts = state.contexts;
-      if (contexts.find((context) => context.id === id)) {
+      if (state.contexts.find((item) => item.id === id)) {
         return state;
       }
 
-      return { contexts: [...contexts, { id, value: context }] };
+      return { contexts: [...state.contexts, { id, value: context }] };
     });
 
     return () => {
@@ -48,28 +55,22 @@ export const useFloatingStore = create<
   },
 
   unregister: (id) => {
-    set((state) => {
-      const contexts = state.contexts.filter((context) => context.id !== id);
-      return { contexts };
-    });
+    set((state) => ({
+      contexts: state.contexts.filter((item) => item.id !== id),
+    }));
   },
 
   update: (id, context) => {
-    set((state) => {
-      const contexts = state.contexts.map((item) =>
+    set((state) => ({
+      contexts: state.contexts.map((item) =>
         item.id === id ? { ...item, value: context } : item
-      );
-      return { contexts };
-    });
+      ),
+    }));
   },
 
-  getContext: (id) => {
-    return get().contexts.find((context) => context.id === id)?.value;
-  },
+  getContext: (id) => get().contexts.find((item) => item.id === id)?.value,
 
-  getAll: () => {
-    return get().contexts;
-  },
+  getAll: () => get().contexts,
 
   reset: () => {
     set(store.getInitialState());
@@ -82,8 +83,8 @@ export function useRegisterFloatingContext(
   context: FloatingContext
 ) {
   const register = useFloatingStore((state) => state.register);
+
   useEffect(() => {
-    const unregister = register(id, context);
-    return unregister;
-  }, [id, context]);
+    return register(id, context);
+  }, [id, context, register]);
 }

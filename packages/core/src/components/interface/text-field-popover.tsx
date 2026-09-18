@@ -1,9 +1,8 @@
 import type { Editor } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
 import { CornerDownLeftIcon } from 'lucide-react';
-import { useCallback, useRef } from 'react';
+import { useRef, useState } from 'react';
 
-import { useControllableState } from '~/hooks/use-controllable-state';
 import type { FloatingUIContainer } from '~/types/floating-ui';
 import { arrowAlignOffset } from '~/utils/base-ui';
 
@@ -17,139 +16,114 @@ import {
   PopoverPositioner,
   PopoverTrigger,
 } from './popover';
+import { TooltipProvider } from './tooltip';
 
 export type TextFieldPopoverAction = {
   icon: LucideIcon;
+  onClick: (value: string) => void;
   tooltip: string;
-  onClick: (editor: Editor) => void;
 };
 
-type TextFieldPopoverProps = {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-
+export type TextFieldPopoverProps = {
+  actions?: TextFieldPopoverAction[];
   container: FloatingUIContainer;
-  value: string;
-  onValueChange: (val: string) => void;
+  enterTooltip: string;
   onClose?: () => void;
+  onValueChange: (value: string | null) => void;
   placeholder?: string;
-
   triggerIcon: LucideIcon;
   triggerTooltip: string;
-  enterTooltip: string;
-
-  actions?: TextFieldPopoverAction[];
+  value: string;
 };
 
 export function TextFieldPopover(props: TextFieldPopoverProps) {
   const {
-    open: controlledOpen,
-    onOpenChange,
-
+    actions = [],
     container,
-    value = '',
-    onValueChange,
+    enterTooltip,
     onClose,
+    onValueChange,
     placeholder,
     triggerIcon,
     triggerTooltip,
-    enterTooltip,
-    actions = [],
+    value,
   } = props;
 
-  const [open, setOpen] = useControllableState({
-    value: controlledOpen,
-    defaultValue: false,
-    onChange: onOpenChange,
-  });
-
+  const [open, setOpen] = useState(false);
   const editorRef = useRef<Editor | null>(null);
 
-  const handleEnter = useCallback(() => {
-    const editor = editorRef.current;
-    if (!editor) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      onClose?.();
+    }
+
+    setOpen(nextOpen);
+  };
+
+  const handleEnter = () => {
+    const instance = editorRef.current;
+    if (!instance) {
       return;
     }
 
-    const text = editor.getText();
-    onValueChange(text);
-    onClose?.();
-    setOpen(false);
-  }, [onValueChange, onClose, setOpen]);
-
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      if (!nextOpen) {
-        onClose?.();
-      }
-
-      setOpen(nextOpen);
-    },
-    [onClose, setOpen]
-  );
+    onValueChange(instance.getText() || null);
+    handleOpenChange(false);
+  };
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger
-        render={
-          <BubbleButton
-            label={triggerTooltip}
-            icon={triggerIcon}
-            tooltip={triggerTooltip}
-            container={container}
-            isActive={open || !!value}
-          />
-        }
+    <Popover onOpenChange={handleOpenChange} open={open}>
+      <BubbleButton
+        container={container}
+        icon={triggerIcon}
+        isActive={open || Boolean(value)}
+        label={triggerTooltip}
+        render={<PopoverTrigger />}
+        tooltip={triggerTooltip}
       />
 
       <PopoverPositioner
-        container={container}
         alignOffset={arrowAlignOffset}
+        container={container}
         side="bottom"
       >
-        <PopoverPopup
-          className="mly:flex mly:w-auto mly:gap-0.5"
-          finalFocus={false}
-        >
-          {open && (
-            <SkeletonEditor
-              editorRef={editorRef}
-              content={value}
-              onEnter={handleEnter}
-              placeholder={placeholder}
-            />
-          )}
+        <PopoverPopup data-variant="text-field" finalFocus={false}>
+          <TooltipProvider>
+            <div data-mly-text-field="">
+              {open ? (
+                <SkeletonEditor
+                  content={value}
+                  editorRef={editorRef}
+                  onEnter={handleEnter}
+                  placeholder={placeholder}
+                />
+              ) : null}
 
-          <BubbleButton
-            label={enterTooltip}
-            icon={CornerDownLeftIcon}
-            onClick={handleEnter}
-            tooltip={enterTooltip}
-            container={container}
-          />
-
-          {actions.length > 0 && <Divider />}
-          {actions.map((action, i) => {
-            const { tooltip, icon, onClick } = action;
-
-            return (
               <BubbleButton
-                key={i}
-                label={tooltip}
-                tooltip={tooltip}
                 container={container}
-                icon={icon}
-                onClick={() => {
-                  const editor = editorRef.current;
-                  if (!editor) {
-                    return;
-                  }
-
-                  onClick(editor);
-                }}
+                icon={CornerDownLeftIcon}
+                label={enterTooltip}
+                onClick={handleEnter}
+                tooltip={enterTooltip}
               />
-            );
-          })}
+
+              {actions.length > 0 ? <Divider /> : null}
+
+              {actions.map((action) => (
+                <BubbleButton
+                  container={container}
+                  icon={action.icon}
+                  key={action.tooltip}
+                  label={action.tooltip}
+                  onClick={() => {
+                    action.onClick(editorRef.current?.getText() ?? '');
+                    handleOpenChange(false);
+                  }}
+                  tooltip={action.tooltip}
+                />
+              ))}
+            </div>
+          </TooltipProvider>
+
           <PopoverArrow />
         </PopoverPopup>
       </PopoverPositioner>

@@ -1,193 +1,228 @@
-import { Editor, Toolbar } from '@maily-to/core';
-import type { EditorThemeOptions } from '@maily-to/core';
+import { Editor, ThemeSettings, Toolbar } from '@maily-to/core';
 import {
-  AIActions,
   ImageUploadExtension,
-  InlineSuggestion,
   LinkCardExtension,
+  ThemeExtension,
   VariableExtension,
 } from '@maily-to/core/extensions';
-import { ThemeProvider } from '@maily-to/ui';
-import type { Editor as TiptapEditor, EditorEvents } from '@tiptap/react';
-import { Loader2Icon } from 'lucide-react';
-import { lazy, Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import type {
+  AIActionsTransformContext,
+  AIActionsTransformParams,
+} from '@maily-to/extension-ai-actions';
+import { AIActions } from '@maily-to/extension-ai-actions';
+import { InlineSuggestion } from '@maily-to/extension-inline-suggestion';
+import type { DocumentNode } from '@maily-to/shared';
+import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { useCallback, useMemo, useState } from 'react';
 
-import defaultEditorJson from './default-editor-json.json';
+import { DEFAULT_DOCUMENT } from './default-document';
+import DEFAULT_EMAIL_HTML from './default-email.html?raw';
 import { Nav } from './nav';
-import * as ThemeSettings from './theme-settings/theme-settings';
-import { useReactEmailPreview } from './use-react-email-preview';
+import { PreviewPanel } from './preview-panel';
+import { useEmailPreview } from './use-email-preview';
 
-const IS_DEV = import.meta.env.DEV;
-const DevEmailPreview = IS_DEV
-  ? lazy(() =>
-      import('./react-email-preview').then((module) => ({
-        default: module.ReactEmailPreview,
-      }))
-    )
-  : null;
+const SEARCH_PARAMS = new URLSearchParams(window.location.search);
+
+const BLANK_DOCUMENT: DocumentNode = {
+  type: 'doc',
+  attrs: { version: 2 },
+  content: [
+    {
+      type: 'body',
+      content: [{ type: 'container', content: [{ type: 'paragraph' }] }],
+    },
+  ],
+};
+
+const getInitialContent = () => {
+  if (SEARCH_PARAMS.has('fixture')) {
+    return DEFAULT_DOCUMENT;
+  }
+
+  if (SEARCH_PARAMS.has('blank')) {
+    return BLANK_DOCUMENT;
+  }
+
+  return DEFAULT_EMAIL_HTML;
+};
+
+const INITIAL_CONTENT = getInitialContent();
+
+const AI_MODE = SEARCH_PARAMS.get('ai') ?? 'stream';
+
+const AI_STREAM_DELAY = 12;
+
+const AI_ONE_SHOT_DELAY = 500;
+
+const AI_ACTION_LABELS: Record<string, string> = {
+  'fix-grammar': 'Grammar fixed',
+  improve: 'Improved',
+  'make-longer': 'Longer',
+  'make-shorter': 'Shorter',
+  simplify: 'Simplified',
+};
+
+type GetAIResultOptions = {
+  ctx: AIActionsTransformContext;
+  params: AIActionsTransformParams;
+};
+
+const getAIDelay = (duration: number) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+};
+
+const getAIResult = async (options: GetAIResultOptions) => {
+  const { ctx, params } = options;
+  const label = AI_ACTION_LABELS[params.action] ?? params.action;
+  const result = `${label}: ${params.text}`;
+
+  if (AI_MODE === 'fail') {
+    await getAIDelay(AI_STREAM_DELAY);
+
+    throw new Error(`Demo AI action "${params.action}" failed.`);
+  }
+
+  if (AI_MODE === 'oneshot') {
+    await getAIDelay(AI_ONE_SHOT_DELAY);
+
+    return result;
+  }
+
+  for (let index = 1; index <= result.length; index += 1) {
+    await getAIDelay(AI_STREAM_DELAY);
+    ctx.write(result.slice(0, index));
+  }
+
+  return result;
+};
+
+const INLINE_SUGGESTIONS = [
+  ' and this completes your thought',
+  ' with some helpful context',
+  ' making your writing better',
+];
+
+const EDITOR_VARIABLES = [
+  { id: 'firstName' },
+  { id: 'lastName' },
+  { id: 'email' },
+];
+
+const PREVIEW_VARIABLES = {
+  email: 'ada@example.com',
+  firstName: 'Ada',
+  isSubscribed: false,
+  items: [
+    { joinedAt: 'March 2025', name: 'Ada Lovelace', role: 'Engineering' },
+    { joinedAt: 'June 2025', name: 'Grace Hopper', role: 'Design' },
+  ],
+  lastName: 'Lovelace',
+};
 
 export function App() {
-  const [theme, setTheme] = useState<EditorThemeOptions>(() => ({
-    body: {
-      backgroundColor: '#f9fafb',
-    },
-    container: {
-      backgroundColor: '#ffffff',
-      maxWidth: 600,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: '#e5e7eb',
-      paddingTop: 16,
-      paddingRight: 16,
-      paddingBottom: 16,
-      paddingLeft: 16,
-    },
-  }));
+  const [document, setDocument] = useState<DocumentNode | undefined>(undefined);
+  const [isThemed, setIsThemed] = useState(true);
+  const [status, setStatus] = useState('Ready');
 
-  const {
-    jsx,
-    html,
-    rawHtml,
-    json,
-    onUpdate: onUpdatePreview,
-  } = useReactEmailPreview(theme);
+  const theme = useMemo(
+    () => (isThemed ? DEFAULT_NODE_THEME : undefined),
+    [isThemed]
+  );
 
   const extensions = useMemo(
     () => [
+      VariableExtension.configure({ variables: EDITOR_VARIABLES }),
       ImageUploadExtension.configure({
-        onImageUpload: async (file) => {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          return URL.createObjectURL(file);
-        },
-        onImageUploadError(error, file, context) {
-          console.error(error);
-          console.log(file);
-          console.log(context);
-        },
+        onImageUpload: (file) => Promise.resolve(URL.createObjectURL(file)),
       }),
+      LinkCardExtension,
       AIActions.configure({
-        transform: async ({ text, action }, { write }) => {
-          const result = `[${action}] ${text}`;
-          for (let i = 1; i <= result.length; i++) {
-            await new Promise((resolve) => setTimeout(resolve, 30));
-            write(result.slice(0, i));
-          }
-          return result;
+        transform: (params, ctx) => {
+          return getAIResult({ ctx, params });
         },
       }),
       InlineSuggestion.configure({
-        triggerKey: ' ',
-        suggest: async (existingText) => {
-          console.log(
-            `API Call at ${new Date().toLocaleTimeString()}: "${existingText}"`
-          );
-
+        suggest: async (text) => {
           await new Promise((resolve) => setTimeout(resolve, 100));
 
-          const suggestions = [
-            ' and this completes your thought',
-            ' with some helpful context',
-            ' making your writing better',
-            ' that adds valuable information',
-            ' continuing this sentence naturally',
-          ];
-
-          return suggestions[existingText.length % suggestions.length];
+          return INLINE_SUGGESTIONS[text.length % INLINE_SUGGESTIONS.length]!;
         },
+        triggerKey: ' ',
       }),
-      LinkCardExtension,
-      VariableExtension.configure({
-        variables: [
-          { id: 'first_name' },
-          { id: 'last_name' },
-          { id: 'email' },
-          { id: 'phone_number' },
-        ],
-      }),
+      ...(theme ? [ThemeExtension.configure({ theme })] : []),
     ],
-    []
+    [theme]
   );
 
-  const editorRef = useRef<TiptapEditor | null>(null);
+  const preview = useEmailPreview({ document, variables: PREVIEW_VARIABLES });
 
-  const onUpdate = useCallback((props: EditorEvents['update']) => {
-    const { editor } = props;
-    editorRef.current = editor;
-
-    if (IS_DEV) {
-      void onUpdatePreview(editor);
-      console.log(editor.getJSON());
-    }
+  const updateDocument = useCallback((value: DocumentNode) => {
+    setDocument(value);
+    setStatus('Synced');
   }, []);
 
-  const onCreate = useCallback((props: EditorEvents['create']) => {
-    const { editor } = props;
-    editorRef.current = editor;
-
-    if (IS_DEV) {
-      void onUpdatePreview(editor);
-      console.log(editor.getJSON());
-    }
+  const reset = useCallback(() => {
+    setDocument(undefined);
+    setStatus('Ready');
   }, []);
-
-  const onThemeChange = useCallback(
-    (next: EditorThemeOptions) => {
-      setTheme(next);
-      if (IS_DEV && editorRef.current) {
-        void onUpdatePreview(editorRef.current);
-      }
-    },
-    [onUpdatePreview]
-  );
 
   return (
-    <ThemeProvider theme={theme} onThemeChange={onThemeChange}>
-      <div>
-        <Nav.Navigation />
-        <div className={`px-4 pt-4 ${IS_DEV ? 'grid grid-cols-2' : ''}`}>
-          <div className="mx-auto w-full max-w-[600px]">
-            <Editor.Root
-              content={defaultEditorJson}
-              onUpdate={onUpdate}
-              onCreate={onCreate}
-              extensions={extensions}
-              theme={theme}
-            >
-              <Toolbar.Root>
-                <Toolbar.CommonActions />
-              </Toolbar.Root>
+    <div>
+      <Nav.Root>
+        <Nav.Tab to="/">Editor</Nav.Tab>
+        <Nav.Tab to="/migration">Migration</Nav.Tab>
+        <Nav.Actions>
+          <Nav.Toggle checked={isThemed} onChange={setIsThemed}>
+            Node theme
+          </Nav.Toggle>
+          <Nav.Button onClick={reset}>Reset</Nav.Button>
+        </Nav.Actions>
+        <Nav.Status>{status}</Nav.Status>
+      </Nav.Root>
 
-              <Editor.Frame>
-                <Editor.Content />
-              </Editor.Frame>
-            </Editor.Root>
+      <div className="grid grid-cols-2 gap-4 px-4 pt-4">
+        <div className="mx-auto w-full max-w-155">
+          <Editor.Root
+            content={document ?? INITIAL_CONTENT}
+            extensions={extensions}
+            key={isThemed ? 'themed' : 'unstyled'}
+            onCreate={(event) =>
+              updateDocument(event.editor.getJSON() as DocumentNode)
+            }
+            onUpdate={(event) =>
+              updateDocument(event.editor.getJSON() as DocumentNode)
+            }
+          >
+            <Toolbar.Root>
+              <Toolbar.CommonActions />
+            </Toolbar.Root>
 
-            <ThemeSettings.Root>
-              <ThemeSettings.Font />
-              <ThemeSettings.Layout />
-              <ThemeSettings.Button />
-              <ThemeSettings.Link />
-            </ThemeSettings.Root>
-          </div>
+            <Editor.Frame>
+              <Editor.Content />
+              <Editor.BubbleMenus />
+              <Editor.DragContextHandle />
+            </Editor.Frame>
 
-          {IS_DEV && DevEmailPreview && (
-            <Suspense
-              fallback={
-                <div className="flex justify-center p-4">
-                  <Loader2Icon className="size-4 animate-spin" />
-                </div>
-              }
-            >
-              <DevEmailPreview
-                jsx={jsx}
-                html={html}
-                rawHtml={rawHtml}
-                json={json}
-              />
-            </Suspense>
-          )}
+            <div className="fixed bottom-4 left-1/4 z-20 -translate-x-1/2">
+              <ThemeSettings.Root>
+                <ThemeSettings.Font />
+                <ThemeSettings.Layout />
+                <ThemeSettings.Button />
+                <ThemeSettings.Text />
+              </ThemeSettings.Root>
+            </div>
+          </Editor.Root>
         </div>
+
+        <PreviewPanel
+          html={preview.html}
+          json={preview.json}
+          jsx={preview.jsx}
+          rawHtml={preview.rawHtml}
+        />
       </div>
-    </ThemeProvider>
+    </div>
   );
 }

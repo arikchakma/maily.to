@@ -1,8 +1,21 @@
-/**
- * Comparison operators for conditional visibility rules.
- * Used to evaluate a template variable against a value
- * to decide whether a node should be shown or hidden.
- */
+export const VISIBILITY_ACTIONS = {
+  SHOW: 'show',
+  HIDE: 'hide',
+} as const;
+
+export type AllowedVisibilityAction =
+  (typeof VISIBILITY_ACTIONS)[keyof typeof VISIBILITY_ACTIONS];
+
+const allowedVisibilityActions = Object.values(VISIBILITY_ACTIONS);
+
+export const VISIBILITY_ACTION_OPTIONS: {
+  label: string;
+  value: AllowedVisibilityAction;
+}[] = [
+  { label: 'Show if', value: VISIBILITY_ACTIONS.SHOW },
+  { label: 'Hide if', value: VISIBILITY_ACTIONS.HIDE },
+];
+
 export const VISIBILITY_OPERATORS = {
   IS_TRUE: 'is_true',
   IS_FALSE: 'is_false',
@@ -19,61 +32,82 @@ export const VISIBILITY_OPERATORS = {
 export type AllowedVisibilityOperator =
   (typeof VISIBILITY_OPERATORS)[keyof typeof VISIBILITY_OPERATORS];
 
+const allowedVisibilityOperators = Object.values(VISIBILITY_OPERATORS);
+
 export const VISIBILITY_OPERATOR_OPTIONS: {
-  value: AllowedVisibilityOperator;
   label: string;
+  value: AllowedVisibilityOperator;
 }[] = [
-  { value: VISIBILITY_OPERATORS.IS_TRUE, label: 'Is true' },
-  { value: VISIBILITY_OPERATORS.IS_FALSE, label: 'Is false' },
-  { value: VISIBILITY_OPERATORS.EQUALS, label: 'Equals' },
-  { value: VISIBILITY_OPERATORS.NOT_EQUALS, label: 'Not equals' },
-  { value: VISIBILITY_OPERATORS.CONTAINS, label: 'Contains' },
-  { value: VISIBILITY_OPERATORS.NOT_CONTAINS, label: 'Not contains' },
-  { value: VISIBILITY_OPERATORS.STARTS_WITH, label: 'Starts with' },
-  { value: VISIBILITY_OPERATORS.ENDS_WITH, label: 'Ends with' },
-  { value: VISIBILITY_OPERATORS.GREATER_THAN, label: 'Greater than' },
-  { value: VISIBILITY_OPERATORS.LESS_THAN, label: 'Less than' },
+  { label: 'Is true', value: VISIBILITY_OPERATORS.IS_TRUE },
+  { label: 'Is false', value: VISIBILITY_OPERATORS.IS_FALSE },
+  { label: 'Equals', value: VISIBILITY_OPERATORS.EQUALS },
+  { label: 'Not equals', value: VISIBILITY_OPERATORS.NOT_EQUALS },
+  { label: 'Contains', value: VISIBILITY_OPERATORS.CONTAINS },
+  { label: 'Not contains', value: VISIBILITY_OPERATORS.NOT_CONTAINS },
+  { label: 'Starts with', value: VISIBILITY_OPERATORS.STARTS_WITH },
+  { label: 'Ends with', value: VISIBILITY_OPERATORS.ENDS_WITH },
+  { label: 'Greater than', value: VISIBILITY_OPERATORS.GREATER_THAN },
+  { label: 'Less than', value: VISIBILITY_OPERATORS.LESS_THAN },
 ];
 
-/**
- * Unary operators that don't require a comparison value.
- * The UI hides the value input field when one of these is selected.
- */
-export const OPERATORS_WITHOUT_VALUE: AllowedVisibilityOperator[] = [
+const VISIBILITY_OPERATORS_WITHOUT_VALUE: AllowedVisibilityOperator[] = [
   VISIBILITY_OPERATORS.IS_TRUE,
   VISIBILITY_OPERATORS.IS_FALSE,
 ];
 
-export const VISIBILITY_ACTIONS = {
-  NONE: 'none',
-  SHOW: 'show',
-  HIDE: 'hide',
-} as const;
-
-export type AllowedVisibilityAction =
-  (typeof VISIBILITY_ACTIONS)[keyof typeof VISIBILITY_ACTIONS];
-
-export const VISIBILITY_ACTION_OPTIONS: {
-  value: AllowedVisibilityAction;
-  label: string;
-}[] = [
-  { value: VISIBILITY_ACTIONS.NONE, label: 'None' },
-  { value: VISIBILITY_ACTIONS.SHOW, label: 'Show if' },
-  { value: VISIBILITY_ACTIONS.HIDE, label: 'Hide if' },
-];
-
-/**
- * Defines when a node is conditionally shown or hidden based on
- * a template variable. Evaluated at render time by the renderer.
- */
 export type VisibilityRule = {
   action: AllowedVisibilityAction;
-  variable: string;
   operator: AllowedVisibilityOperator;
   value: string;
+  variable: string;
 };
 
-/** Mixin for nodes that support conditional visibility. */
 export type WithVisibilityAttrs = {
   visibilityRule?: VisibilityRule | null;
 };
+
+export const DEFAULT_VISIBILITY_RULE: VisibilityRule = {
+  action: VISIBILITY_ACTIONS.SHOW,
+  operator: VISIBILITY_OPERATORS.EQUALS,
+  value: '',
+  variable: '',
+};
+
+export function getVisibilityValueSupport(
+  operator: AllowedVisibilityOperator
+): boolean {
+  return !VISIBILITY_OPERATORS_WITHOUT_VALUE.includes(operator);
+}
+
+type VisibilityRuleOptions = {
+  action: string | null | undefined;
+  operator: string | null | undefined;
+  value: string | null | undefined;
+  variable: string | null | undefined;
+};
+
+export function getVisibilityRule(
+  options: VisibilityRuleOptions
+): VisibilityRule | null {
+  const { action, operator, value, variable } = options;
+
+  const isAllowedAction = allowedVisibilityActions.some((candidate) => {
+    return candidate === action;
+  });
+  const isAllowedOperator = allowedVisibilityOperators.some((candidate) => {
+    return candidate === operator;
+  });
+
+  if (!(isAllowedAction && isAllowedOperator)) {
+    return null;
+  }
+
+  return {
+    action: action as AllowedVisibilityAction,
+    operator: operator as AllowedVisibilityOperator,
+    value: getVisibilityValueSupport(operator as AllowedVisibilityOperator)
+      ? (value ?? '')
+      : '',
+    variable: variable ?? '',
+  };
+}

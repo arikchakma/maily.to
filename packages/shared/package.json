@@ -35,13 +35,14 @@
   "scripts": {
     "build": "vp pack",
     "clean": "rm -rf dist",
-    "dev": "vp pack --watch",
+    "dev": "vp pack --watch --no-clean",
     "release": "bumpp",
-    "test": "vp test run",
+    "test": "vp test run --passWithNoTests",
     "test:watch": "vp test"
   },
   "dependencies": {
-    "csstype": "^3.2.3"
+    "csstype": "^3.2.3",
+    "stylecast": "^0.2.0"
   },
   "devDependencies": {
     "@maily-to/tsconfig": "workspace:*",

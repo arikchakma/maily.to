@@ -1,89 +1,72 @@
+import { mergeProps } from '@base-ui/react/merge-props';
+import { useRender } from '@base-ui/react/use-render';
 import type { LucideIcon } from 'lucide-react';
-import { forwardRef } from 'react';
+import type { ComponentPropsWithRef, MouseEvent, ReactNode } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { cn } from '~/utils/classname';
 
-import type { ButtonProps } from './button';
-import { Button } from './button';
 import {
   Tooltip,
-  ToolTipArrow,
+  TooltipArrow,
   TooltipPopup,
   TooltipPositioner,
   TooltipTrigger,
 } from './tooltip';
 
-type BubbleButtonProps = {
-  label: string;
+export type BubbleButtonProps = ComponentPropsWithRef<'button'> & {
   isActive?: boolean;
-} & ButtonProps &
-  (
-    | {
-        tooltip?: never;
-        container?: never;
-      }
-    | {
-        tooltip: string;
-        container: FloatingUIContainer;
-      }
-  ) &
-  (
-    | { icon: LucideIcon; children?: never }
-    | { icon?: never; children: React.ReactNode }
+  label: string;
+  render?: useRender.RenderProp;
+  container?: FloatingUIContainer;
+  tooltip?: string;
+} & (
+    | { children: ReactNode; icon?: never }
+    | { children?: never; icon: LucideIcon }
   );
 
-export const BubbleButton = forwardRef<HTMLButtonElement, BubbleButtonProps>(
-  (props, ref) => {
-    const {
-      label,
-      icon: Icon,
-      size = 'icon',
-      variant = 'ghost',
-      tooltip,
-      isActive,
-      container,
-      children,
-      className,
-      ...rest
-    } = props;
+export function BubbleButton(props: BubbleButtonProps) {
+  const {
+    children,
+    container,
+    icon: Icon,
+    isActive,
+    label,
+    render,
+    tooltip,
+    ...rest
+  } = props;
 
-    const content = (
-      <Button
-        size={size}
-        variant={variant}
-        aria-label={label}
-        type="button"
-        ref={ref}
-        className={cn(
-          'mly:shrink-0 mly:rounded-bubble-button! mly:has-[+.mly-divider]:rounded-r-sm mly:[.mly-divider+&]:rounded-l-sm',
-          isActive && 'mly:bg-soft-gray/70 mly:text-gray-900',
-          className
-        )}
-        {...rest}
-      >
-        {children ||
-          (Icon && <Icon className="mly:size-3.5 mly:disabled:opacity-50" />)}
-        <span className="mly:sr-only">{label}</span>
-      </Button>
-    );
+  const content = useRender({
+    defaultTagName: 'button',
+    render,
+    props: mergeProps<'button'>(
+      {
+        'aria-label': label,
+        'aria-pressed': isActive,
+        'data-active': isActive ? '' : undefined,
+        'data-mly-bubble-button': '',
+        onMouseDown: (event: MouseEvent<HTMLButtonElement>) =>
+          event.preventDefault(),
+        type: 'button',
+      } as ComponentPropsWithRef<'button'>,
+      rest,
+      { children: children ?? (Icon ? <Icon size={14} /> : null) }
+    ),
+  });
 
-    if (!tooltip) {
-      return content;
-    }
-
-    return (
-      <Tooltip>
-        <TooltipTrigger render={content} />
-        <TooltipPositioner container={container}>
-          <TooltipPopup className="mly:whitespace-nowrap">
-            {tooltip}
-            <ToolTipArrow />
-          </TooltipPopup>
-        </TooltipPositioner>
-      </Tooltip>
-    );
+  if (!tooltip) {
+    return content;
   }
-);
 
-BubbleButton.displayName = 'BubbleButton';
+  return (
+    <Tooltip disableHoverablePopup>
+      <TooltipTrigger render={content} />
+      <TooltipPositioner container={container}>
+        <TooltipPopup>
+          {tooltip}
+          <TooltipArrow />
+        </TooltipPopup>
+      </TooltipPositioner>
+    </Tooltip>
+  );
+}

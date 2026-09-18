@@ -1,9 +1,10 @@
 import type { AllowedTextAlignment } from '@maily-to/shared';
-import { isAllowedTextAlignment } from '@maily-to/shared';
+import { TEXT_ALIGNMENTS } from '@maily-to/shared';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react';
+import type { ComponentProps } from 'react';
+import { useState } from 'react';
 
 import type { FloatingUIContainer } from '~/types/floating-ui';
-import { INVALID_ALIGNMENT_VALUE_ERROR } from '~/utils/text-align';
 
 import { BubbleButton } from './bubble-button';
 import {
@@ -13,90 +14,58 @@ import {
   PopoverPositioner,
   PopoverTrigger,
 } from './popover';
-import { ToggleGroup, ToggleGroupItem } from './toggle';
 import { TooltipProvider } from './tooltip';
 
-type ToggleAlignPopoverProps = {
-  container: FloatingUIContainer;
+const ALIGNMENTS = [
+  { icon: AlignLeftIcon, label: 'Align Left', value: TEXT_ALIGNMENTS.LEFT },
+  {
+    icon: AlignCenterIcon,
+    label: 'Align Center',
+    value: TEXT_ALIGNMENTS.CENTER,
+  },
+  { icon: AlignRightIcon, label: 'Align Right', value: TEXT_ALIGNMENTS.RIGHT },
+] as const;
+
+export type ToggleAlignPopoverProps = {
   align: AllowedTextAlignment;
+  container?: FloatingUIContainer;
   onAlignChange: (align: AllowedTextAlignment) => void;
-  onClose?: () => void;
+  trigger?: ComponentProps<typeof PopoverTrigger>['render'];
 };
 
 export function ToggleAlignPopover(props: ToggleAlignPopoverProps) {
-  const { container, align, onAlignChange, onClose } = props;
+  const { align, container, onAlignChange, trigger } = props;
+  const [open, setOpen] = useState(false);
 
-  const actions = [
-    {
-      label: 'Align Left',
-      icon: AlignLeftIcon,
-      value: 'left',
-    },
-    {
-      label: 'Align Center',
-      icon: AlignCenterIcon,
-      value: 'center',
-    },
-    {
-      label: 'Align Right',
-      icon: AlignRightIcon,
-      value: 'right',
-    },
-  ];
-
-  const activeAction = actions.find((action) => action.value === align);
-  const { icon: ActiveIcon = AlignLeftIcon } = activeAction || {};
+  const active = ALIGNMENTS.find((item) => item.value === align);
 
   return (
-    <Popover
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose?.();
-        }
-      }}
-    >
-      <PopoverTrigger
-        render={
-          <BubbleButton
-            label="Align"
-            icon={ActiveIcon}
-            tooltip="Alignment"
-            container={container}
-          />
-        }
+    <Popover onOpenChange={setOpen} open={open}>
+      <BubbleButton
+        container={container}
+        icon={active?.icon ?? AlignLeftIcon}
+        isActive={open}
+        label="Alignment"
+        render={<PopoverTrigger render={trigger} />}
+        tooltip="Alignment"
       />
 
-      <PopoverPositioner container={container} align="center" side="bottom">
-        <PopoverPopup className="mly:flex mly:w-auto mly:flex-col">
+      <PopoverPositioner align="center" container={container} side="bottom">
+        <PopoverPopup data-variant="align">
           <TooltipProvider>
-            <ToggleGroup
-              value={[align]}
-              onValueChange={(value) => {
-                const align = value[0];
-                if (!isAllowedTextAlignment(align)) {
-                  console.error(INVALID_ALIGNMENT_VALUE_ERROR);
-                  return;
-                }
-
-                onAlignChange(align);
-              }}
-              className="mly:flex mly:gap-0.5"
-            >
-              {actions.map((action) => (
-                <ToggleGroupItem
-                  key={action.value}
-                  render={
-                    <BubbleButton
-                      label={action.label}
-                      icon={action.icon}
-                      tooltip={action.label}
-                      container={container}
-                    />
-                  }
-                  value={action.value}
+            <div data-mly-align-group="" role="group">
+              {ALIGNMENTS.map((item) => (
+                <BubbleButton
+                  container={container}
+                  icon={item.icon}
+                  isActive={item.value === align}
+                  key={item.value}
+                  label={item.label}
+                  onClick={() => onAlignChange(item.value)}
+                  tooltip={item.label}
                 />
               ))}
-            </ToggleGroup>
+            </div>
           </TooltipProvider>
 
           <PopoverArrow />

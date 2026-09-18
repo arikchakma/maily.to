@@ -1,3 +1,7 @@
+import { Trash2Icon } from 'lucide-react';
+
+import type { ColorSwatchItem } from '~/components/color-picker/color-swatch';
+
 export const TRANSPARENT_COLOR = 'transparent';
 
 /**
@@ -5,76 +9,53 @@ export const TRANSPARENT_COLOR = 'transparent';
  * Each swatch has a background and text color designed to pair well.
  */
 export const DEFAULT_COLOR_SWATCHES = [
-  {
-    id: 'brown',
-    label: 'Brown',
-    background: '#F3EEEE',
-    text: '#976D57',
-  },
-  {
-    id: 'orange',
-    label: 'Orange',
-    background: '#F8ECDF',
-    text: '#CC782F',
-  },
-  {
-    id: 'yellow',
-    label: 'Yellow',
-    background: '#FAF3DD',
-    text: '#C29343',
-  },
-  {
-    id: 'green',
-    label: 'Green',
-    background: '#EEF3ED',
-    text: '#548164',
-  },
-  {
-    id: 'blue',
-    label: 'Blue',
-    background: '#E9F3F7',
-    text: '#487CA5',
-  },
-  {
-    id: 'purple',
-    label: 'Purple',
-    background: '#F6F3F8',
-    text: '#8A67AB',
-  },
-  {
-    id: 'pink',
-    label: 'Pink',
-    background: '#F9F2F5',
-    text: '#B35488',
-  },
-  {
-    id: 'red',
-    label: 'Red',
-    background: '#FAECEC',
-    text: '#C4554D',
-  },
-  {
-    id: 'gray',
-    label: 'Gray',
-    background: '#EEEEF0',
-    text: '#6B6F76',
-  },
-  {
-    id: 'teal',
-    label: 'Teal',
-    background: '#E6F4F1',
-    text: '#3D8B7A',
-  },
-  {
-    id: 'indigo',
-    label: 'Indigo',
-    background: '#ECEEF8',
-    text: '#5C6BC0',
-  },
-  {
-    id: 'lime',
-    label: 'Lime',
-    background: '#F0F4E4',
-    text: '#6E8B3D',
-  },
+  { background: '#F3EEEE', id: 'brown', label: 'Brown', text: '#976D57' },
+  { background: '#F8ECDF', id: 'orange', label: 'Orange', text: '#CC782F' },
+  { background: '#FAF3DD', id: 'yellow', label: 'Yellow', text: '#C29343' },
+  { background: '#EEF3ED', id: 'green', label: 'Green', text: '#548164' },
+  { background: '#E9F3F7', id: 'blue', label: 'Blue', text: '#487CA5' },
+  { background: '#F6F3F8', id: 'purple', label: 'Purple', text: '#8A67AB' },
+  { background: '#F9F2F5', id: 'pink', label: 'Pink', text: '#B35488' },
+  { background: '#FAECEC', id: 'red', label: 'Red', text: '#C4554D' },
+  { background: '#EEEEF0', id: 'gray', label: 'Gray', text: '#6B6F76' },
+  { background: '#E6F4F1', id: 'teal', label: 'Teal', text: '#3D8B7A' },
+  { background: '#ECEEF8', id: 'indigo', label: 'Indigo', text: '#5C6BC0' },
+  { background: '#F0F4E4', id: 'lime', label: 'Lime', text: '#6E8B3D' },
 ];
+
+const RESET_SWATCH: ColorSwatchItem = {
+  color: '',
+  icon: Trash2Icon,
+  id: 'reset',
+  label: 'Remove Color',
+};
+
+const TRANSPARENT_SWATCH: ColorSwatchItem = {
+  color: TRANSPARENT_COLOR,
+  id: 'transparent',
+  label: 'Transparent',
+};
+
+export function getBackgroundColorSwatches(): ColorSwatchItem[] {
+  return [
+    RESET_SWATCH,
+    ...DEFAULT_COLOR_SWATCHES.map((swatch) => ({
+      color: swatch.background,
+      id: swatch.id,
+      label: `${swatch.label} Background`,
+    })),
+    TRANSPARENT_SWATCH,
+  ];
+}
+
+export function getTextColorSwatches(): ColorSwatchItem[] {
+  return [
+    RESET_SWATCH,
+    ...DEFAULT_COLOR_SWATCHES.map((swatch) => ({
+      color: swatch.text,
+      id: swatch.id,
+      label: `${swatch.label} Text`,
+    })),
+    TRANSPARENT_SWATCH,
+  ];
+}

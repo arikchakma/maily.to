@@ -1,4 +1,8 @@
-import { TEXT_ALIGNMENTS } from '@maily-to/shared';
+import {
+  MAILY_MARK_TYPES,
+  MAILY_NODE_TYPES,
+  TEXT_ALIGNMENTS,
+} from '@maily-to/shared';
 import {
   CopyrightIcon,
   LayoutTemplateIcon,
@@ -7,11 +11,30 @@ import {
 
 import type { SlashCommandItem } from '~/utils/slash-command';
 
+const COMPANY_LINK_MARKS = [
+  {
+    type: MAILY_MARK_TYPES.LINK,
+    attrs: {
+      href: 'https://maily.to',
+      target: '_blank',
+      rel: 'noopener noreferrer nofollow',
+    },
+  },
+  { type: MAILY_MARK_TYPES.TEXT_STYLE, attrs: { color: '#64748b' } },
+  { type: MAILY_MARK_TYPES.UNDERLINE },
+];
+
+const COMPANY_LINK_SEPARATOR = {
+  type: MAILY_NODE_TYPES.TEXT,
+  marks: [{ type: MAILY_MARK_TYPES.TEXT_STYLE, attrs: { color: '#64748b' } }],
+  text: '  |  ',
+};
+
 export const footerCopyrightText: SlashCommandItem = {
   title: 'Footer Copyright',
+  icon: <CopyrightIcon size={16} />,
   description: 'Copyright text for the footer.',
   searchTerms: ['footer', 'copyright'],
-  icon: <CopyrightIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     const currentYear = new Date().getFullYear();
 
@@ -20,13 +43,18 @@ export const footerCopyrightText: SlashCommandItem = {
       .focus()
       .deleteRange(range)
       .insertContent({
-        type: 'paragraph',
-        attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
+        type: MAILY_NODE_TYPES.PARAGRAPH,
+        attrs: { style: 'text-align:center' },
         content: [
           {
-            type: 'text',
-            marks: [{ type: 'textStyle', attrs: { color: '#AAAAAA' } }],
-            text: `Maily \u00A9 ${currentYear}. All rights reserved.`,
+            type: MAILY_NODE_TYPES.TEXT,
+            marks: [
+              {
+                type: MAILY_MARK_TYPES.TEXT_STYLE,
+                attrs: { color: '#AAAAAA' },
+              },
+            ],
+            text: `Maily © ${currentYear}. All rights reserved.`,
           },
         ],
       })
@@ -36,9 +64,9 @@ export const footerCopyrightText: SlashCommandItem = {
 
 export const footerCommunityFeedbackCta: SlashCommandItem = {
   title: 'Footer Community Feedback',
+  icon: <RectangleHorizontalIcon size={16} />,
   description: 'Community feedback CTA for the footer.',
   searchTerms: ['footer', 'community', 'feedback', 'cta'],
-  icon: <RectangleHorizontalIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
@@ -46,31 +74,25 @@ export const footerCommunityFeedbackCta: SlashCommandItem = {
       .deleteRange(range)
       .insertContent([
         {
-          type: 'image',
+          type: MAILY_NODE_TYPES.IMAGE,
           attrs: {
             src: 'https://maily.to/brand/logo.png',
-            alt: null,
-            title: null,
             width: '8%',
-            alignment: TEXT_ALIGNMENTS.LEFT,
-            externalLink: null,
+            align: TEXT_ALIGNMENTS.LEFT,
           },
         },
-        { type: 'spacer', attrs: { height: 16 } },
+        { type: MAILY_NODE_TYPES.SPACER, attrs: { height: 16 } },
         {
-          type: 'footer',
-          attrs: { textAlign: null },
+          type: MAILY_NODE_TYPES.FOOTER,
           content: [
             {
-              type: 'text',
-              marks: [],
+              type: MAILY_NODE_TYPES.TEXT,
               text: "Enjoyed this month's update?",
             },
-            { type: 'hardBreak' },
+            { type: MAILY_NODE_TYPES.HARD_BREAK },
             {
-              type: 'text',
-              marks: [],
-              text: "And, as always, we'd love your feedback \u2013 simply reply to the email or reach out via the Discord community!",
+              type: MAILY_NODE_TYPES.TEXT,
+              text: "And, as always, we'd love your feedback – simply reply to the email or reach out via the Discord community!",
             },
           ],
         },
@@ -81,146 +103,89 @@ export const footerCommunityFeedbackCta: SlashCommandItem = {
 
 export const footerCompanySignature: SlashCommandItem = {
   title: 'Footer Company Signature',
+  icon: <LayoutTemplateIcon size={16} />,
   description: 'Company signature for the footer.',
   searchTerms: ['footer', 'company', 'signature'],
-  icon: <LayoutTemplateIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
       .focus()
       .deleteRange(range)
       .insertContent([
-        { type: 'horizontalRule' },
+        { type: MAILY_NODE_TYPES.HORIZONTAL_RULE },
         {
-          type: 'image',
+          type: MAILY_NODE_TYPES.IMAGE,
           attrs: {
             src: 'https://maily.to/brand/logo.png',
-            alt: null,
-            title: null,
             width: '8%',
             align: TEXT_ALIGNMENTS.CENTER,
-            externalLink: null,
           },
         },
-        { type: 'spacer', attrs: { height: 16 } },
+        { type: MAILY_NODE_TYPES.SPACER, attrs: { height: 16 } },
         {
-          type: 'heading',
-          attrs: {
-            textAlign: TEXT_ALIGNMENTS.CENTER,
-            level: 3,
-          },
-          content: [{ type: 'text', text: 'Maily' }],
+          type: MAILY_NODE_TYPES.HEADING,
+          attrs: { level: 3, style: 'text-align:center' },
+          content: [{ type: MAILY_NODE_TYPES.TEXT, text: 'Maily' }],
         },
-        { type: 'spacer', attrs: { height: 4 } },
+        { type: MAILY_NODE_TYPES.SPACER, attrs: { height: 4 } },
         {
-          type: 'footer',
-          attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
+          type: MAILY_NODE_TYPES.FOOTER,
+          attrs: { style: 'text-align:center' },
           content: [
             {
-              type: 'text',
-              marks: [],
+              type: MAILY_NODE_TYPES.TEXT,
               text: '1234 Example Street, Example, DE 19801, United States',
             },
-            { type: 'hardBreak' },
+            { type: MAILY_NODE_TYPES.HARD_BREAK },
             {
-              type: 'text',
-              marks: [
-                {
-                  type: 'link',
-                  attrs: {
-                    href: 'https://maily.to',
-                    target: '_blank',
-                    rel: 'noopener noreferrer nofollow',
-                    class: 'mly:no-underline',
-                  },
-                },
-                { type: 'textStyle', attrs: { color: '#64748b' } },
-                { type: 'underline' },
-              ],
+              type: MAILY_NODE_TYPES.TEXT,
+              marks: COMPANY_LINK_MARKS,
               text: 'VISIT COMPANY',
             },
+            COMPANY_LINK_SEPARATOR,
             {
-              type: 'text',
-              marks: [{ type: 'textStyle', attrs: { color: '#64748b' } }],
-              text: '  |  ',
-            },
-            {
-              type: 'text',
-              marks: [
-                {
-                  type: 'link',
-                  attrs: {
-                    href: 'https://maily.to',
-                    target: '_blank',
-                    rel: 'noopener noreferrer nofollow',
-                    class: 'mly:no-underline',
-                  },
-                },
-                { type: 'textStyle', attrs: { color: '#64748b' } },
-                { type: 'underline' },
-              ],
+              type: MAILY_NODE_TYPES.TEXT,
+              marks: COMPANY_LINK_MARKS,
               text: 'VISIT OUR BLOG',
             },
+            COMPANY_LINK_SEPARATOR,
             {
-              type: 'text',
-              marks: [{ type: 'textStyle', attrs: { color: '#64748b' } }],
-              text: '  |  ',
-            },
-            {
-              type: 'text',
-              marks: [
-                {
-                  type: 'link',
-                  attrs: {
-                    href: 'https://maily.to',
-                    target: '_blank',
-                    rel: 'noopener noreferrer nofollow',
-                    class: 'mly:no-underline',
-                  },
-                },
-                { type: 'textStyle', attrs: { color: '#64748b' } },
-                { type: 'underline' },
-              ],
+              type: MAILY_NODE_TYPES.TEXT,
+              marks: COMPANY_LINK_MARKS,
               text: 'UNSUBSCRIBE',
             },
           ],
         },
         {
-          type: 'paragraph',
-          attrs: { textAlign: TEXT_ALIGNMENTS.CENTER },
+          type: MAILY_NODE_TYPES.PARAGRAPH,
+          attrs: { style: 'text-align:center' },
           content: [
             {
-              type: 'inlineImage',
+              type: MAILY_NODE_TYPES.INLINE_IMAGE,
               attrs: {
-                height: 20,
-                width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/linkedin.png',
-                alt: null,
-                title: null,
+                width: 20,
+                height: 20,
                 externalLink: 'https://www.linkedin.com/in/arikchakma/',
               },
             },
-            { type: 'text', text: '  ' },
+            { type: MAILY_NODE_TYPES.TEXT, text: '  ' },
             {
-              type: 'inlineImage',
+              type: MAILY_NODE_TYPES.INLINE_IMAGE,
               attrs: {
-                height: 20,
-                width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/youtube.png',
-                alt: null,
-                title: null,
+                width: 20,
+                height: 20,
                 externalLink: 'https://www.youtube.com/arikchakma',
               },
             },
-            { type: 'text', text: '  ' },
+            { type: MAILY_NODE_TYPES.TEXT, text: '  ' },
             {
-              type: 'inlineImage',
+              type: MAILY_NODE_TYPES.INLINE_IMAGE,
               attrs: {
-                height: 20,
-                width: 20,
                 src: 'https://cdn.usemaily.com/images/icons/twitter.png',
-                alt: null,
-                title: null,
+                width: 20,
+                height: 20,
                 externalLink: 'https://x.com/imarikchakma',
               },
             },

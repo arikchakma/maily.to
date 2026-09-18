@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/core';
 import { ChevronRightIcon } from 'lucide-react';
-import type { ReactNode, RefObject } from 'react';
+import type { ComponentPropsWithRef } from 'react';
 
 import { FLOATING_ELEMENT_PADDING } from '~/components/interface/floating-element';
 import {
@@ -10,113 +10,82 @@ import {
   TooltipTrigger,
 } from '~/components/interface/tooltip';
 import { useDelayedState } from '~/hooks/use-delayed-state';
-import { cn } from '~/utils/classname';
-import type { SlashCommandItem } from '~/utils/slash-command';
+import type { SlashCommandItem as SlashCommandItemType } from '~/utils/slash-command';
 
-type SlashCommandItemProps = {
-  item: SlashCommandItem;
-  groupIndex: number;
-  commandIndex: number;
-  selectedGroupIndex: number;
-  selectedCommandIndex: number;
+export type SlashCommandItemProps = ComponentPropsWithRef<'button'> & {
   editor: Editor;
-  activeCommandRef: RefObject<HTMLButtonElement | null>;
-  selectItem: (groupIndex: number, commandIndex: number) => void;
-  hoveredItemKey: string | null;
+  hoveredKey: string | null;
+  isSelected: boolean;
+  item: SlashCommandItemType;
+  itemKey: string;
   onHover: (isHovered: boolean) => void;
 };
 
 export function SlashCommandItem(props: SlashCommandItemProps) {
-  const {
-    item,
-    groupIndex,
-    commandIndex,
-    selectedGroupIndex,
-    selectedCommandIndex,
-    editor,
-    activeCommandRef,
-    selectItem,
-    hoveredItemKey,
-    onHover,
-  } = props;
+  const { editor, hoveredKey, isSelected, item, itemKey, onHover, ...rest } =
+    props;
 
-  const isActive =
-    groupIndex === selectedGroupIndex && commandIndex === selectedCommandIndex;
-
-  const itemKey = `${groupIndex}-${commandIndex}`;
-  const isHovered = hoveredItemKey === itemKey;
-
-  const isSubCommand = item && 'commands' in item;
+  const isHovered = hoveredKey === itemKey;
+  const isNested = 'commands' in item;
 
   // show tooltip only if this item is hovered
   // OR (active/keyboard selected AND no other item is hovered)
-  const shouldOpenTooltip =
-    !!item?.preview && (isHovered || (isActive && !hoveredItemKey));
-
-  const open = useDelayedState(shouldOpenTooltip);
-
-  const hasRenderFunction = typeof item.render === 'function';
-  const renderFunctionValue = hasRenderFunction ? item.render?.(editor) : null;
-
-  let value: ReactNode = (
-    <>
-      <div className="mly:flex mly:h-6 mly:w-6 mly:shrink-0 mly:items-center mly:justify-center">
-        {item.icon}
-      </div>
-      <div className="mly:min-w-0 mly:grow">
-        <p className="mly:min-w-0 mly:truncate mly:font-medium">{item.title}</p>
-        <p className="mly:min-w-0 mly:truncate mly:text-xs mly:text-midnight-gray/60">
-          {item.description}
-        </p>
-      </div>
-
-      {isSubCommand && (
-        <span className="mly:block mly:px-1 mly:text-gray-400">
-          <ChevronRightIcon className="mly:size-3.5 mly:stroke-[2.5]" />
-        </span>
-      )}
-    </>
+  const open = useDelayedState(
+    Boolean(item.preview) && (isHovered || (isSelected && !hoveredKey))
   );
 
-  if (renderFunctionValue !== null && renderFunctionValue !== true) {
-    value = renderFunctionValue!;
-  }
+  const rendered = item.render ? item.render(editor) : null;
+  const isCustomRow =
+    rendered !== null && rendered !== true && rendered !== undefined;
 
   return (
     <Tooltip open={open}>
       <TooltipTrigger
         render={
           <button
-            className={cn(
-              'mly:flex mly:w-full mly:items-center mly:gap-2 mly:rounded-lg mly:px-2 mly:py-1 mly:text-left mly:text-sm mly:text-gray-900 mly:hover:bg-gray-100 mly:hover:text-gray-900',
-              isActive
-                ? 'mly:bg-gray-100 mly:text-gray-900'
-                : 'mly:bg-transparent'
-            )}
-            onClick={() => selectItem(groupIndex, commandIndex)}
+            {...rest}
+            data-mly-slash-command-item=""
+            data-selected={isSelected ? '' : undefined}
             onMouseEnter={() => onHover(true)}
             onMouseLeave={() => onHover(false)}
             type="button"
-            ref={isActive ? activeCommandRef : null}
           >
-            {value}
+            {isCustomRow ? (
+              rendered
+            ) : (
+              <>
+                {item.icon ? (
+                  <span data-mly-slash-command-icon="">{item.icon}</span>
+                ) : null}
+                <span data-mly-slash-command-text="">
+                  <span data-mly-slash-command-title="">{item.title}</span>
+                  {item.description ? (
+                    <span data-mly-slash-command-description="">
+                      {item.description}
+                    </span>
+                  ) : null}
+                </span>
+                {isNested ? (
+                  <span data-mly-slash-command-chevron="">
+                    <ChevronRightIcon size={14} strokeWidth={2.5} />
+                  </span>
+                ) : null}
+              </>
+            )}
           </button>
         }
       />
+
       <TooltipPositioner side="right" sideOffset={FLOATING_ELEMENT_PADDING}>
-        <TooltipPopup className="mly:w-52 mly:rounded-lg mly:border-none mly:p-1 mly:shadow">
+        <TooltipPopup data-variant="preview">
           {typeof item.preview === 'function' ? (
-            item?.preview(editor)
+            item.preview(editor)
           ) : (
             <>
-              <figure className="mly:relative mly:aspect-[2.5] mly:w-full mly:overflow-hidden mly:rounded-md mly:border mly:border-gray-200">
-                <img
-                  src={item?.preview}
-                  alt={item?.title}
-                  className="mly:absolute mly:inset-0 mly:h-full mly:w-full mly:object-cover"
-                />
+              <figure data-mly-slash-command-preview="">
+                <img alt={item.title} src={item.preview} />
               </figure>
-              <p className="mly:mt-2 mly:px-0.5 mly:text-gray-500">
+              <p data-mly-slash-command-preview-description="">
                 {item.description}
               </p>
             </>

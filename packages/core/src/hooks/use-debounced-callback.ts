@@ -1,5 +1,6 @@
-import { useValueAsRef } from '@maily-to/ui';
 import { useCallback, useEffect, useRef } from 'react';
+
+import { useValueAsRef } from './use-value-as-ref';
 
 export function useDebouncedCallback<T extends (...args: never[]) => void>(
   callback: T,

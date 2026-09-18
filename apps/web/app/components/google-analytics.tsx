@@ -14,7 +14,7 @@ export function GoogleAnalytics() {
       <script async src={scriptUrl} />
       <script
         dangerouslySetInnerHTML={{
-          __html: /*html*/ `
+          __html: `
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());

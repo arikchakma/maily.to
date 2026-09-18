@@ -1,23 +1,30 @@
-import type { MigrationWarning } from '../types';
-import { uid } from '../utils/id';
+import {
+  MAILY_NODE_TYPES,
+  parseInlineStyles,
+  stringifyInlineStyles,
+} from '@maily-to/shared';
 
-/**
- * Applies transforms common to every node in the document tree.
- * Handles three conversions that apply regardless of node type:
- *   1. showIfKey → visibilityRule: converts the v1 conditional
- *      visibility string into a structured v2 VisibilityRule object
- *      with action "show", operator "is_true".
- *   2. textDirection → dir: renames the attribute to match the v2
- *      schema (mirrors the HTML `dir` attribute).
- *   3. id generation: assigns a crypto UUID to any node that lacks
- *      an id, except for `doc` and `text` nodes which don't use ids.
- */
+import type { MigrationWarning } from '../types';
+
+const ID_NODE_TYPES: string[] = [
+  MAILY_NODE_TYPES.HEADING,
+  MAILY_NODE_TYPES.PARAGRAPH,
+  MAILY_NODE_TYPES.SECTION,
+  MAILY_NODE_TYPES.REPEAT,
+  MAILY_NODE_TYPES.COLUMNS,
+  MAILY_NODE_TYPES.COLUMN,
+  MAILY_NODE_TYPES.BULLET_LIST,
+  MAILY_NODE_TYPES.ORDERED_LIST,
+  MAILY_NODE_TYPES.LIST_ITEM,
+  MAILY_NODE_TYPES.HORIZONTAL_RULE,
+  MAILY_NODE_TYPES.BLOCKQUOTE,
+];
+
 export function global(
   node: Record<string, any>,
   warnings: MigrationWarning[]
 ): void {
-  // Text nodes don't have attrs
-  if (node.type === 'text') {
+  if (node.type === MAILY_NODE_TYPES.TEXT) {
     return;
   }
 
@@ -27,7 +34,6 @@ export function global(
 
   const attrs = node.attrs;
 
-  // showIfKey → visibilityRule
   if (attrs.showIfKey) {
     warnings.push({
       nodeType: node.type,
@@ -43,7 +49,6 @@ export function global(
   }
   delete attrs.showIfKey;
 
-  // textDirection → dir
   if ('textDirection' in attrs) {
     if (attrs.textDirection) {
       warnings.push({
@@ -56,8 +61,22 @@ export function global(
     delete attrs.textDirection;
   }
 
-  // Generate id if missing (skip doc node)
-  if (node.type !== 'doc' && !attrs.id) {
-    attrs.id = uid();
+  if ('textAlign' in attrs) {
+    if (attrs.textAlign && attrs.textAlign !== 'left') {
+      warnings.push({
+        nodeType: node.type,
+        field: 'textAlign',
+        message: 'Migrated "textAlign" → "style"',
+      });
+
+      const declarations = parseInlineStyles(attrs.style ?? '');
+      declarations.textAlign = attrs.textAlign;
+      attrs.style = stringifyInlineStyles(declarations);
+    }
+    delete attrs.textAlign;
+  }
+
+  if (ID_NODE_TYPES.includes(node.type) && !attrs.id) {
+    attrs.id = crypto.randomUUID();
   }
 }

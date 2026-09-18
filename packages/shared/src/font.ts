@@ -20,7 +20,7 @@ export const allowedFallbackFonts = [
 
 export type FallbackFont = (typeof allowedFallbackFonts)[number];
 
-export const allowedFontFormats = [
+const allowedFontFormats = [
   'woff',
   'woff2',
   'truetype',
@@ -57,21 +57,31 @@ export const DEFAULT_FONT: FontProps = {
   fallbackFontFamily: 'sans-serif',
   fontFamily: 'Inter',
   webFont: {
-    url: 'https://cdn.usemaily.com/fonts/v0/inter.woff2',
     format: 'woff2',
+    url: 'https://cdn.usemaily.com/fonts/v0/inter.woff2',
   },
 };
 
-/**
- * Injects a @font-face style element into the document head to load
- * the given font. Only works in browser environments.
- */
-export function loadFont(font: FontProps): void {
-  const style = getFontFaceStyle(font);
+export function getFontFamilyNames(value: string): string[] {
+  return value
+    .split(',')
+    .map((font) => {
+      return font.trim().replace(/['"]/g, '');
+    })
+    .filter(Boolean);
+}
 
-  const styleElement = document.createElement('style');
-  styleElement.textContent = style;
-  document.head.appendChild(styleElement);
+export type FontFamilyValueOptions = {
+  fallbackFontFamily?: string | null;
+  fontFamily?: string | null;
+};
+
+export function getFontFamilyValue(options: FontFamilyValueOptions): string {
+  const { fallbackFontFamily, fontFamily } = options;
+
+  return [fontFamily ? `'${fontFamily}'` : null, fallbackFontFamily]
+    .filter(Boolean)
+    .join(', ');
 }
 
 /**
@@ -81,18 +91,26 @@ export function loadFont(font: FontProps): void {
  */
 export function getFontFaceStyle(font: FontProps): string {
   const {
-    fontFamily,
     fallbackFontFamily,
-    webFont,
-    fontWeight = 400,
+    fontFamily,
     fontStyle = 'normal',
+    fontWeight = 400,
+    webFont,
   } = font;
 
   const src = webFont
     ? `src: url(${webFont.url}) format('${webFont.format}');`
     : '';
 
-  const style = /* css */ `@font-face {font-family: '${fontFamily}';font-style: ${fontStyle};font-weight: ${fontWeight};mso-font-alt: '${fallbackFontFamily}';${src}}`;
+  return /* css */ `@font-face {font-family: '${fontFamily}';font-style: ${fontStyle};font-weight: ${fontWeight};mso-font-alt: '${fallbackFontFamily}';${src}}`;
+}
 
-  return style;
+/**
+ * Injects a @font-face style element into the document head to load
+ * the given font. Only works in browser environments.
+ */
+export function loadFont(font: FontProps): void {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = getFontFaceStyle(font);
+  document.head.appendChild(styleElement);
 }

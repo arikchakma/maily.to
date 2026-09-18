@@ -2,174 +2,175 @@ import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { Editor } from '@tiptap/core';
 import { findParentNode } from '@tiptap/core';
 import type { Node } from '@tiptap/pm/model';
-import { Fragment } from '@tiptap/pm/model';
 import { TextSelection } from '@tiptap/pm/state';
 
-function getClosestNodeByName(editor: Editor, name: string) {
-  const { state } = editor.view;
-  return findParentNode((node) => node.type.name === name)(state.selection);
+function getClosestColumns(editor: Editor) {
+  return findParentNode((node) => node.type.name === MAILY_NODE_TYPES.COLUMNS)(
+    editor.state.selection
+  );
 }
 
-/**
- * Updates the width attribute of a single column inside the nearest
- * columns node. Preserves the cursor position after the transaction.
- */
+export function getColumnWidths(editor: Editor): (number | null)[] {
+  const columns = getClosestColumns(editor);
+  if (!columns) {
+    return [];
+  }
+
+  const widths: (number | null)[] = [];
+  columns.node.forEach((child) => {
+    if (child.type.name === MAILY_NODE_TYPES.COLUMN) {
+      const width = child.attrs.width;
+      widths.push(typeof width === 'number' ? width : null);
+    }
+  });
+
+  return widths;
+}
+
 export function updateColumnWidth(
   editor: Editor,
   columnIndex: number,
   width: number | null
 ): boolean {
-  const columnsResult = getClosestNodeByName(editor, MAILY_NODE_TYPES.COLUMNS);
-  if (!columnsResult) {
+  const columns = getClosestColumns(editor);
+  if (!columns) {
     return false;
   }
 
-  const { node: columnsNode, pos: columnsNodePos } = columnsResult;
-  const { state, dispatch } = editor.view;
-  const { tr, selection } = state;
+  const { node: columnsNode, pos: columnsPos } = columns;
+  const { dispatch, state } = editor.view;
+  const { selection, tr } = state;
 
-  const beforeNodeEnd = columnsNodePos + columnsNode.nodeSize;
   const selectionRelative = {
-    from: selection.from - columnsNodePos,
-    to: selection.to - columnsNodePos,
+    from: selection.from - columnsPos,
+    to: selection.to - columnsPos,
   };
 
   const updatedContent: Node[] = [];
-  columnsNode.content.forEach((child, _, i) => {
+  columnsNode.content.forEach((child, _, index) => {
     updatedContent.push(
       child.type.create(
         {
-          ...child?.attrs,
-          width: i === columnIndex ? width : child?.attrs?.width,
+          ...child.attrs,
+          width: index === columnIndex ? width : child.attrs.width,
         },
         child.content
       )
     );
   });
 
-  const updatedColumnsNode = columnsNode.copy(Fragment.from(updatedContent));
   const transaction = tr.replaceWith(
-    columnsNodePos,
-    beforeNodeEnd,
-    updatedColumnsNode
+    columnsPos,
+    columnsPos + columnsNode.nodeSize,
+    columnsNode.type.create(
+      columnsNode.attrs,
+      updatedContent,
+      columnsNode.marks
+    )
   );
 
-  const newSelection = TextSelection.create(
-    transaction.doc,
-    columnsNodePos + selectionRelative.from,
-    columnsNodePos + selectionRelative.to
+  dispatch(
+    transaction.setSelection(
+      TextSelection.create(
+        transaction.doc,
+        columnsPos + selectionRelative.from,
+        columnsPos + selectionRelative.to
+      )
+    )
   );
 
-  dispatch(transaction.setSelection(newSelection));
   return true;
 }
 
-/** Inserts a new empty column after the given index (-1 = append). */
-export function addColumnByIndex(editor: Editor, index: number = -1): boolean {
-  const columnsResult = getClosestNodeByName(editor, MAILY_NODE_TYPES.COLUMNS);
-  if (!columnsResult) {
+export function addColumn(editor: Editor): boolean {
+  const columns = getClosestColumns(editor);
+  if (!columns) {
     return false;
   }
 
-  const { node: columnsNode, pos: columnsNodePos } = columnsResult;
-  const { state, dispatch } = editor.view;
+  const { node: columnsNode, pos: columnsPos } = columns;
+  const { dispatch, state } = editor.view;
   const { tr } = state;
 
   const newColumn = state.schema.nodes[MAILY_NODE_TYPES.COLUMN].create(
     { width: null },
-    state.schema.nodes.paragraph.create(null)
+    state.schema.nodes[MAILY_NODE_TYPES.PARAGRAPH].create()
   );
 
   const updatedContent: Node[] = [];
-  columnsNode.content.forEach((child, _, i) => {
+  columnsNode.content.forEach((child) => {
     updatedContent.push(child);
-    if (i === index) {
-      updatedContent.push(newColumn);
-    }
   });
+  updatedContent.push(newColumn);
 
-  if (index === -1) {
-    updatedContent.push(newColumn);
-  }
-
-  const newColumnCount = columnsNode.childCount + 1;
   const updatedColumnsNode = columnsNode.type.create(
-    { ...columnsNode.attrs, columnCount: newColumnCount },
-    Fragment.from(updatedContent)
+    { ...columnsNode.attrs, columnCount: columnsNode.childCount + 1 },
+    updatedContent
   );
 
   const transaction = tr.replaceWith(
-    columnsNodePos,
-    columnsNodePos + columnsNode.nodeSize,
+    columnsPos,
+    columnsPos + columnsNode.nodeSize,
     updatedColumnsNode
   );
 
-  const newSelection = TextSelection.create(
-    transaction.doc,
-    columnsNodePos + 3
+  dispatch(
+    transaction.setSelection(
+      TextSelection.create(transaction.doc, columnsPos + 3)
+    )
   );
-  dispatch(transaction.setSelection(newSelection));
+
   return true;
 }
 
-/**
- * Removes the column at the given index (-1 = last). Refuses to
- * remove the last remaining column.
- */
-export function removeColumnByIndex(
-  editor: Editor,
-  index: number = -1
-): boolean {
-  const columnsResult = getClosestNodeByName(editor, MAILY_NODE_TYPES.COLUMNS);
-  if (!columnsResult) {
+export function removeColumn(editor: Editor): boolean {
+  const columns = getClosestColumns(editor);
+  if (!columns) {
     return false;
   }
 
-  const { node: columnsNode, pos: columnsNodePos } = columnsResult;
-
+  const { node: columnsNode, pos: columnsPos } = columns;
   if (columnsNode.childCount <= 1) {
     return false;
   }
 
-  const { state, dispatch } = editor.view;
-  const { tr, selection } = state;
+  const { dispatch, state } = editor.view;
+  const { selection, tr } = state;
 
-  const removeIndex = index === -1 ? columnsNode.childCount - 1 : index;
+  const removeIndex = columnsNode.childCount - 1;
 
   const updatedContent: Node[] = [];
-  columnsNode.content.forEach((child, _, i) => {
-    if (i !== removeIndex) {
+  columnsNode.content.forEach((child, _, childIndex) => {
+    if (childIndex !== removeIndex) {
       updatedContent.push(child);
     }
   });
 
-  const newColumnCount = columnsNode.childCount - 1;
   const updatedColumnsNode = columnsNode.type.create(
-    { ...columnsNode.attrs, columnCount: newColumnCount },
-    Fragment.from(updatedContent)
+    { ...columnsNode.attrs, columnCount: columnsNode.childCount - 1 },
+    updatedContent
   );
 
-  const selectionRelative = {
-    from: selection.from - columnsNodePos,
-    to: selection.to - columnsNodePos,
-  };
-
+  const selectionFrom = selection.from - columnsPos;
   const transaction = tr.replaceWith(
-    columnsNodePos,
-    columnsNodePos + columnsNode.nodeSize,
+    columnsPos,
+    columnsPos + columnsNode.nodeSize,
     updatedColumnsNode
   );
 
-  const maxPos = columnsNodePos + updatedColumnsNode.nodeSize - 1;
-  const newFrom = Math.min(columnsNodePos + selectionRelative.from, maxPos);
+  const maxPos = columnsPos + updatedColumnsNode.nodeSize - 1;
 
-  const newSelection = TextSelection.near(transaction.doc.resolve(newFrom));
+  dispatch(
+    transaction.setSelection(
+      TextSelection.near(
+        transaction.doc.resolve(Math.min(columnsPos + selectionFrom, maxPos))
+      )
+    )
+  );
 
-  dispatch(transaction.setSelection(newSelection));
   return true;
 }
 
-/** Moves the cursor into the next or previous sibling column. */
 export function goToSiblingColumn(
   editor: Editor,
   direction: 'next' | 'previous'
@@ -177,9 +178,9 @@ export function goToSiblingColumn(
   const { $from } = editor.state.selection;
 
   let columnDepth = -1;
-  for (let d = $from.depth; d > 0; d--) {
-    if ($from.node(d).type.name === MAILY_NODE_TYPES.COLUMN) {
-      columnDepth = d;
+  for (let depth = $from.depth; depth > 0; depth--) {
+    if ($from.node(depth).type.name === MAILY_NODE_TYPES.COLUMN) {
+      columnDepth = depth;
       break;
     }
   }
@@ -189,32 +190,23 @@ export function goToSiblingColumn(
   }
 
   const columnsDepth = columnDepth - 1;
-  const columns = $from.node(columnsDepth);
   const columnIndex = $from.index(columnsDepth);
   const targetIndex = direction === 'next' ? columnIndex + 1 : columnIndex - 1;
 
-  if (targetIndex < 0 || targetIndex >= columns.childCount) {
+  if (targetIndex < 0 || targetIndex >= $from.node(columnsDepth).childCount) {
     return false;
   }
 
-  // Resolve a position inside the target column
   const targetPos =
     direction === 'next'
       ? $from.after(columnDepth) + 1
       : $from.before(columnDepth) - 1;
 
   const { tr } = editor.state;
-  const bias = direction === 'next' ? 1 : -1;
-  tr.setSelection(TextSelection.near(tr.doc.resolve(targetPos), bias));
+  tr.setSelection(
+    TextSelection.near(tr.doc.resolve(targetPos), direction === 'next' ? 1 : -1)
+  );
   editor.view.dispatch(tr);
 
   return true;
-}
-
-export function addColumn(editor: Editor): boolean {
-  return addColumnByIndex(editor, -1);
-}
-
-export function removeColumn(editor: Editor): boolean {
-  return removeColumnByIndex(editor, -1);
 }

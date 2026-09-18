@@ -1,7 +1,7 @@
 import type { AllowedHtmlCodeBlockTab } from '@maily-to/shared';
 import { HTML_CODE_BLOCK_TABS, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { CodeXmlIcon, EyeIcon, Trash2Icon } from 'lucide-react';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useEditorInstance } from '~/hooks/use-editor-instance';
 import { useHtmlCodeBlockState } from '~/hooks/use-html-code-block-state';
@@ -14,64 +14,59 @@ import { ToggleTabGroup, ToggleTabItem } from '../interface/toggle-tab';
 
 export function HtmlCodeBlockBubbleMenu() {
   const editor = useEditorInstance();
-  const state = useHtmlCodeBlockState(editor);
+  const { activeTab, open, setOpen } = useHtmlCodeBlockState(editor);
   const container = useRef<HTMLDivElement | null>(null);
-
-  const { open, setOpen, activeTab } = state;
-
-  const handleDelete = useCallback(() => {
-    editor.chain().focus().deleteNode(MAILY_NODE_TYPES.HTML_CODE_BLOCK).run();
-  }, [editor]);
 
   if (!open) {
     return null;
   }
 
+  const handleTabChange = (value: unknown[]) => {
+    const tab = value[0] as AllowedHtmlCodeBlockTab | undefined;
+    if (!tab) {
+      return;
+    }
+
+    editor.commands.updateHtmlCodeBlock({ activeTab: tab });
+  };
+
+  const handleDelete = () => {
+    editor.chain().focus().deleteNode(MAILY_NODE_TYPES.HTML_CODE_BLOCK).run();
+  };
+
   return (
     <BubbleMenu
-      ref={container}
-      open={open}
-      onOpenChange={setOpen}
       floatingId={FLOATING_ELEMENT_IDS.HTML_CODE_BLOCK_BUBBLE_MENU}
+      onOpenChange={setOpen}
+      open={open}
+      ref={container}
     >
-      <ToggleTabGroup
-        value={[activeTab]}
-        onValueChange={(value) => {
-          const tab = value[0] as AllowedHtmlCodeBlockTab | undefined;
-          if (!tab) {
-            return;
-          }
-
-          editor.commands.updateHtmlCodeBlock({ activeTab: tab });
-        }}
-      >
+      <ToggleTabGroup onValueChange={handleTabChange} value={[activeTab]}>
         <ToggleTabItem
-          value={HTML_CODE_BLOCK_TABS.CODE}
-          label="HTML Code"
-          icon={CodeXmlIcon}
-          tooltip="HTML Code"
           container={container}
-          className="mly:rounded-r-none"
+          icon={CodeXmlIcon}
+          label="HTML Code"
+          tooltip="HTML Code"
+          value={HTML_CODE_BLOCK_TABS.CODE}
         />
         <ToggleTabItem
-          value={HTML_CODE_BLOCK_TABS.PREVIEW}
-          label="Preview"
-          icon={EyeIcon}
-          tooltip="Preview"
           container={container}
-          className="mly:rounded-l-none"
+          icon={EyeIcon}
+          label="Preview"
+          tooltip="Preview"
+          value={HTML_CODE_BLOCK_TABS.PREVIEW}
         />
       </ToggleTabGroup>
 
       <Divider />
 
       <BubbleButton
-        label="Delete HTML Block"
-        icon={Trash2Icon}
-        tooltip="Delete HTML Block"
         container={container}
+        data-variant="danger"
+        icon={Trash2Icon}
+        label="Delete HTML Block"
         onClick={handleDelete}
-        className="mly:text-red-500 mly:hover:bg-red-50 mly:hover:text-red-600"
+        tooltip="Delete HTML Block"
       />
     </BubbleMenu>
   );

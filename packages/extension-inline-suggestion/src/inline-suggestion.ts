@@ -1,6 +1,6 @@
 import { MAILY_ERROR_PREFIX } from '@maily-to/shared';
-import { Extension } from '@tiptap/core';
 import type { Editor } from '@tiptap/core';
+import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 
@@ -35,6 +35,18 @@ export type SuggestContext = {
 
 export type InlineSuggestionOptions = {
   /**
+   * Key that accepts/inserts the current suggestion.
+   * @default "Tab"
+   */
+  acceptKey?: string;
+
+  /**
+   * Debounce time for fetching suggestions in milliseconds.
+   * @default 250
+   */
+  debounceTime?: number;
+
+  /**
    * Fetch inline suggestions.
    *
    * @param text - existing text in the current node
@@ -44,23 +56,11 @@ export type InlineSuggestionOptions = {
   suggest: (text: string, ctx: SuggestContext) => Promise<string>;
 
   /**
-   * Debounce time for fetching suggestions in milliseconds.
-   * @default 250
-   */
-  debounceTime?: number;
-
-  /**
    * Key that triggers fetching a suggestion.
    * Set to null to disable key-based triggering (use fetchSuggestion command manually).
    * @default " " (space)
    */
   triggerKey?: string | null;
-
-  /**
-   * Key that accepts/inserts the current suggestion.
-   * @default "Tab"
-   */
-  acceptKey?: string;
 };
 
 export type InlineSuggestionStorage = {
@@ -71,262 +71,289 @@ export type InlineSuggestionStorage = {
 };
 
 declare module '@tiptap/core' {
-  interface ExtensionStorage {
+  interface Storage {
     inlineSuggestion: InlineSuggestionStorage;
+  }
+}
+
+type InflightRequest = {
+  abortController: AbortController | null;
+  debounceTimer: ReturnType<typeof setTimeout> | null;
+  /** Monotonic counter used to discard stale async responses. */
+  requestVersion: number;
+};
+
+/**
+ * Held per editor rather than per extension: an extension's config object is
+ * built once and shared by every editor that registers it, so a closure here
+ * would let one editor's teardown cancel another's in-flight request.
+ */
+const inflightRequests = new WeakMap<Editor, InflightRequest>();
+
+function getInflightRequest(editor: Editor): InflightRequest {
+  const existing = inflightRequests.get(editor);
+  if (existing) {
+    return existing;
+  }
+
+  const request: InflightRequest = {
+    abortController: null,
+    debounceTimer: null,
+    requestVersion: 0,
+  };
+  inflightRequests.set(editor, request);
+
+  return request;
+}
+
+function abortInflight(editor: Editor) {
+  const request = getInflightRequest(editor);
+
+  if (request.abortController) {
+    request.abortController.abort();
+    request.abortController = null;
+  }
+
+  if (request.debounceTimer) {
+    clearTimeout(request.debounceTimer);
+    request.debounceTimer = null;
   }
 }
 
 export const InlineSuggestion: Extension<
   InlineSuggestionOptions,
   InlineSuggestionStorage
-> = Extension.create<InlineSuggestionOptions, InlineSuggestionStorage>(() => {
-  // Monotonic counter used to discard stale async responses.
-  let requestVersion = 0;
-  let abortController: AbortController | null = null;
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+> = Extension.create<InlineSuggestionOptions, InlineSuggestionStorage>({
+  name: INLINE_SUGGESTION_PLUGIN_KEY,
 
-  function abortInflight() {
-    if (abortController) {
-      abortController.abort();
-      abortController = null;
-    }
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-      debounceTimer = null;
-    }
-  }
+  addOptions() {
+    return {
+      acceptKey: TAB_KEY,
+      debounceTime: 250,
+      suggest: async () => {
+        console.warn(
+          `${MAILY_ERROR_PREFIX}: You must provide a "suggest" function to the InlineSuggestion extension.`
+        );
 
-  return {
-    name: INLINE_SUGGESTION_PLUGIN_KEY,
+        return '';
+      },
+      triggerKey: SPACE_KEY,
+    };
+  },
 
-    addOptions() {
-      return {
-        suggest: async () => {
-          console.warn(
-            `${MAILY_ERROR_PREFIX}: You must provide a "suggest" function to the InlineSuggestion extension.`
-          );
-          return '';
-        },
-        debounceTime: 250,
-        triggerKey: SPACE_KEY,
-        acceptKey: TAB_KEY,
-      };
-    },
+  addStorage() {
+    return {
+      currentSuggestion: undefined,
+      nodeDetails: undefined,
+    };
+  },
 
-    addStorage() {
-      return {
-        currentSuggestion: undefined,
-        nodeDetails: undefined,
-      };
-    },
+  onDestroy() {
+    abortInflight(this.editor);
+  },
 
-    onDestroy() {
-      abortInflight();
-    },
-
-    onSelectionUpdate({ editor }) {
-      const { currentSuggestion } = this.storage;
-      if (!currentSuggestion) {
-        return;
-      }
-
-      editor.commands.dismissSuggestion();
+  onSelectionUpdate({ editor }) {
+    if (!this.storage.currentSuggestion) {
       return;
-    },
+    }
 
-    addCommands() {
-      return {
-        fetchSuggestion:
-          () =>
-          ({ editor }) => {
-            abortInflight();
+    editor.commands.dismissSuggestion();
+  },
 
-            const version = ++requestVersion;
-            const debounceMs = this.options.debounceTime ?? 250;
+  addCommands() {
+    return {
+      fetchSuggestion:
+        () =>
+        ({ editor }) => {
+          abortInflight(editor);
 
-            debounceTimer = setTimeout(() => {
-              const { state } = editor;
-              const { $from } = state.selection;
-              const node = $from.parent;
-              const existingText = node.textContent;
+          const request = getInflightRequest(editor);
+          request.requestVersion += 1;
+          const version = request.requestVersion;
+          const debounceTime = this.options.debounceTime ?? 250;
 
-              if (!existingText) {
-                return;
-              }
+          request.debounceTimer = setTimeout(() => {
+            const { $from } = editor.state.selection;
+            const node = $from.parent;
+            const existingText = node.textContent;
 
-              // Only suggest when the cursor is at the end of the node
-              // (no text or inline content after the cursor).
-              if ($from.parentOffset < node.content.size) {
-                return;
-              }
-
-              abortController = new AbortController();
-              const { signal } = abortController;
-
-              this.options
-                .suggest(existingText, { editor, signal })
-                .then((response) => {
-                  if (version !== requestVersion || signal.aborted) {
-                    return;
-                  }
-
-                  const trimmed = response.replace(/^\s+/, '');
-                  if (!trimmed) {
-                    return;
-                  }
-
-                  // Re-resolve positions from the current editor state
-                  // to avoid stale from/to captured before the async call.
-                  const { $from: current$from } = editor.state.selection;
-                  const freshFrom = current$from.start() - 1;
-                  const freshTo = current$from.end() + 1;
-
-                  this.storage.currentSuggestion = trimmed;
-                  this.storage.nodeDetails = {
-                    from: freshFrom,
-                    to: freshTo,
-                  };
-
-                  editor.view.dispatch(
-                    editor.view.state.tr.setMeta('addToHistory', false)
-                  );
-                })
-                .catch((err: unknown) => {
-                  if (
-                    err instanceof DOMException &&
-                    err.name === 'AbortError'
-                  ) {
-                    return;
-                  }
-                  console.error(
-                    `${MAILY_ERROR_PREFIX}: Failed to fetch inline suggestion for "${existingText}".`,
-                    err
-                  );
-                });
-            }, debounceMs);
-
-            return true;
-          },
-
-        insertSuggestion:
-          () =>
-          ({ chain }) => {
-            const suggestion = this.storage.currentSuggestion;
-            if (!suggestion) {
-              return false;
+            if (!existingText) {
+              return;
             }
 
-            abortInflight();
-            this.storage.currentSuggestion = undefined;
-            this.storage.nodeDetails = undefined;
-
-            return chain().insertContent(suggestion).run();
-          },
-
-        dismissSuggestion:
-          () =>
-          ({ tr, dispatch }) => {
-            if (!this.storage.currentSuggestion) {
-              return false;
+            // Only suggest when the cursor is at the end of the node
+            // (no text or inline content after the cursor).
+            if ($from.parentOffset < node.content.size) {
+              return;
             }
 
-            abortInflight();
-            this.storage.currentSuggestion = undefined;
-            this.storage.nodeDetails = undefined;
+            request.abortController = new AbortController();
+            const { signal } = request.abortController;
 
-            if (dispatch) {
-              dispatch(tr.setMeta('addToHistory', false));
-            }
-
-            return true;
-          },
-      };
-    },
-
-    addProseMirrorPlugins() {
-      const { storage, editor } = this;
-      const acceptKey = this.options.acceptKey ?? TAB_KEY;
-      const triggerKey = this.options.triggerKey;
-
-      // Identity-check cache to short-circuit `apply` when storage is unchanged.
-      let lastData: InlineSuggestionStorage = {
-        currentSuggestion: undefined,
-        nodeDetails: undefined,
-      };
-
-      return [
-        new Plugin({
-          key: inlineSuggestionPluginKey,
-
-          state: {
-            init() {
-              return DecorationSet.empty;
-            },
-
-            apply(tr, oldDecorations) {
-              const { currentSuggestion, nodeDetails } = storage;
-
-              if (
-                currentSuggestion === lastData.currentSuggestion &&
-                nodeDetails === lastData.nodeDetails
-              ) {
-                return oldDecorations.map(tr.mapping, tr.doc);
-              }
-
-              lastData = { currentSuggestion, nodeDetails };
-
-              if (currentSuggestion && nodeDetails) {
-                const { from, to } = nodeDetails;
-                if (from < 0 || to > tr.doc.content.size || from >= to) {
-                  return DecorationSet.empty;
+            this.options
+              .suggest(existingText, { editor, signal })
+              .then((response) => {
+                if (version !== request.requestVersion || signal.aborted) {
+                  return;
                 }
 
-                const decoration = Decoration.node(from, to, {
-                  'data-inline-suggestion': currentSuggestion,
-                });
+                const trimmed = response.replace(/^\s+/, '');
+                if (!trimmed) {
+                  return;
+                }
 
-                return DecorationSet.create(tr.doc, [decoration]);
-              }
+                // Re-resolve positions from the current editor state
+                // to avoid stale from/to captured before the async call.
+                const { $from: currentFrom } = editor.state.selection;
 
-              return DecorationSet.empty;
-            },
+                this.storage.currentSuggestion = trimmed;
+                this.storage.nodeDetails = {
+                  from: currentFrom.start() - 1,
+                  to: currentFrom.end() + 1,
+                };
+
+                editor.view.dispatch(
+                  editor.view.state.tr.setMeta('addToHistory', false)
+                );
+              })
+              .catch((error: unknown) => {
+                if (
+                  error instanceof DOMException &&
+                  error.name === 'AbortError'
+                ) {
+                  return;
+                }
+
+                console.error(
+                  `${MAILY_ERROR_PREFIX}: Failed to fetch inline suggestion for "${existingText}".`,
+                  error
+                );
+              });
+          }, debounceTime);
+
+          return true;
+        },
+
+      insertSuggestion:
+        () =>
+        ({ chain, editor }) => {
+          const suggestion = this.storage.currentSuggestion;
+          if (!suggestion) {
+            return false;
+          }
+
+          abortInflight(editor);
+          this.storage.currentSuggestion = undefined;
+          this.storage.nodeDetails = undefined;
+
+          return chain().insertContent(suggestion).run();
+        },
+
+      dismissSuggestion:
+        () =>
+        ({ dispatch, editor, tr }) => {
+          if (!this.storage.currentSuggestion) {
+            return false;
+          }
+
+          abortInflight(editor);
+          this.storage.currentSuggestion = undefined;
+          this.storage.nodeDetails = undefined;
+
+          if (dispatch) {
+            dispatch(tr.setMeta('addToHistory', false));
+          }
+
+          return true;
+        },
+    };
+  },
+
+  addProseMirrorPlugins() {
+    const { editor, storage } = this;
+    const acceptKey = this.options.acceptKey ?? TAB_KEY;
+    const triggerKey = this.options.triggerKey;
+
+    // Identity-check cache to short-circuit `apply` when storage is unchanged.
+    let lastData: InlineSuggestionStorage = {
+      currentSuggestion: undefined,
+      nodeDetails: undefined,
+    };
+
+    return [
+      new Plugin({
+        key: inlineSuggestionPluginKey,
+
+        state: {
+          init() {
+            return DecorationSet.empty;
           },
 
-          props: {
-            decorations(state) {
-              return this.getState(state);
-            },
+          apply(tr, oldDecorations) {
+            const { currentSuggestion, nodeDetails } = storage;
 
-            handleKeyDown(_view, event) {
-              const hasSuggestion = !!storage.currentSuggestion;
+            if (
+              currentSuggestion === lastData.currentSuggestion &&
+              nodeDetails === lastData.nodeDetails
+            ) {
+              return oldDecorations.map(tr.mapping, tr.doc);
+            }
 
-              if (event.key === acceptKey && hasSuggestion) {
-                event.preventDefault();
-                event.stopPropagation();
-                editor.commands.insertSuggestion();
-                return true;
+            lastData = { currentSuggestion, nodeDetails };
+
+            if (currentSuggestion && nodeDetails) {
+              const { from, to } = nodeDetails;
+              if (from < 0 || to > tr.doc.content.size || from >= to) {
+                return DecorationSet.empty;
               }
 
-              if (event.key === ESCAPE_KEY && hasSuggestion) {
-                editor.commands.dismissSuggestion();
-                return true;
-              }
+              const decoration = Decoration.node(from, to, {
+                'data-inline-suggestion': currentSuggestion,
+              });
 
-              if (hasSuggestion) {
-                editor.commands.dismissSuggestion();
-              }
+              return DecorationSet.create(tr.doc, [decoration]);
+            }
 
-              if (triggerKey !== null && event.key === triggerKey) {
-                requestAnimationFrame(() => {
-                  editor.commands.fetchSuggestion();
-                });
-              }
-
-              return false;
-            },
+            return DecorationSet.empty;
           },
-        }),
-      ];
-    },
-  };
+        },
+
+        props: {
+          decorations(state) {
+            return this.getState(state);
+          },
+
+          handleKeyDown(_view, event) {
+            const hasSuggestion = Boolean(storage.currentSuggestion);
+
+            if (event.key === acceptKey && hasSuggestion) {
+              event.preventDefault();
+              event.stopPropagation();
+              editor.commands.insertSuggestion();
+
+              return true;
+            }
+
+            if (event.key === ESCAPE_KEY && hasSuggestion) {
+              editor.commands.dismissSuggestion();
+
+              return true;
+            }
+
+            if (hasSuggestion) {
+              editor.commands.dismissSuggestion();
+            }
+
+            if (triggerKey !== null && event.key === triggerKey) {
+              requestAnimationFrame(() => {
+                editor.commands.fetchSuggestion();
+              });
+            }
+
+            return false;
+          },
+        },
+      }),
+    ];
+  },
 });

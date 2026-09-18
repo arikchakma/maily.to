@@ -1,32 +1,32 @@
 import type { LucideIcon } from 'lucide-react';
 
 type TurnIntoOption = {
-  type: 'option';
-  id: string;
-  label: string;
-  icon: LucideIcon;
   disabled?: boolean;
+  icon: LucideIcon;
+  id: string;
   isActive: boolean;
+  label: string;
   onClick: () => void;
+  type: 'option';
 };
 
 type TurnIntoCategory = {
-  type: 'category';
   id: string;
   label: string;
+  type: 'category';
 };
 
-export type TurnIntoItem = TurnIntoOption | TurnIntoCategory;
-export type TurnIntoItems = Array<TurnIntoItem>;
+export type TurnIntoItem = TurnIntoCategory | TurnIntoOption;
+export type TurnIntoItems = TurnIntoItem[];
 
-function isTurnIntoOption(option: TurnIntoItem): option is TurnIntoOption {
-  return option.type === 'option';
+function isTurnIntoOption(item: TurnIntoItem): item is TurnIntoOption {
+  return item.type === 'option';
 }
 
 export function isTurnIntoCategory(
-  option: TurnIntoItem
-): option is TurnIntoCategory {
-  return option.type === 'category';
+  item: TurnIntoItem
+): item is TurnIntoCategory {
+  return item.type === 'category';
 }
 
 export function isActiveTurnIntoItem(

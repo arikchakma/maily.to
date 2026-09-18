@@ -1,9 +1,11 @@
 import type { Editor } from '@tiptap/react';
 
+import type { Variables } from '~/utils/variable';
+
 import { useEditorInstance } from './use-editor-instance';
 
-/** Returns the current variable list from the variable extension's storage. */
-export function useEditorVariables(editor?: Editor | null) {
+export function useEditorVariables(editor?: Editor | null): Variables {
   const editorInstance = useEditorInstance(editor);
-  return editorInstance.storage.variable?.variables;
+
+  return editorInstance.storage.variable?.variables ?? [];
 }

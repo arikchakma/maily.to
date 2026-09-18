@@ -1,4 +1,3 @@
-import { getNodeFontStyleDefaults, MAILY_NODE_TYPES } from '@maily-to/shared';
 import {
   DivideIcon,
   EraserIcon,
@@ -14,102 +13,84 @@ import type { SlashCommandItem } from '~/utils/slash-command';
 
 export const text: SlashCommandItem = {
   title: 'Text',
+  icon: <TextIcon size={16} />,
   description: 'Just start typing with plain text.',
-  searchTerms: ['p', 'paragraph'],
-  icon: <TextIcon className="mly:h-4 mly:w-4" />,
+  searchTerms: ['p', 'paragraph', 'text'],
   command: ({ editor, range }) => {
-    editor
-      .chain()
-      .focus()
-      .deleteRange(range)
-      .toggleNode(
-        'paragraph',
-        'paragraph',
-        getNodeFontStyleDefaults(MAILY_NODE_TYPES.PARAGRAPH)
-      )
-      .run();
+    editor.chain().focus().deleteRange(range).setParagraph().run();
   },
 };
 
 export const heading1: SlashCommandItem = {
   title: 'Heading 1',
+  icon: <Heading1Icon size={16} />,
   description: 'Big heading.',
   searchTerms: ['h1', 'title', 'big', 'large'],
-  icon: <Heading1Icon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
       .focus()
       .deleteRange(range)
-      .setNode('heading', {
-        level: 1,
-        ...getNodeFontStyleDefaults(MAILY_NODE_TYPES.HEADING, 1),
-      })
+      .setNode('heading', { level: 1 })
       .run();
   },
 };
 
 export const heading2: SlashCommandItem = {
   title: 'Heading 2',
+  icon: <Heading2Icon size={16} />,
   description: 'Medium heading.',
   searchTerms: ['h2', 'subtitle', 'medium'],
-  icon: <Heading2Icon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
       .focus()
       .deleteRange(range)
-      .setNode('heading', {
-        level: 2,
-        ...getNodeFontStyleDefaults(MAILY_NODE_TYPES.HEADING, 2),
-      })
+      .setNode('heading', { level: 2 })
       .run();
   },
 };
 
 export const heading3: SlashCommandItem = {
   title: 'Heading 3',
+  icon: <Heading3Icon size={16} />,
   description: 'Small heading.',
   searchTerms: ['h3', 'subtitle', 'small'],
-  icon: <Heading3Icon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
     editor
       .chain()
       .focus()
       .deleteRange(range)
-      .setNode('heading', {
-        level: 3,
-        ...getNodeFontStyleDefaults(MAILY_NODE_TYPES.HEADING, 3),
-      })
+      .setNode('heading', { level: 3 })
       .run();
   },
 };
 
 export const hardBreak: SlashCommandItem = {
   title: 'Hard Break',
+  icon: <DivideIcon size={16} />,
   description: 'Add a break between lines.',
   searchTerms: ['break', 'line'],
-  icon: <DivideIcon className="mly:h-4 mly:w-4" />,
   command: ({ editor, range }) => {
-    return editor.chain().focus().deleteRange(range).setHardBreak().run();
+    editor.chain().focus().deleteRange(range).setHardBreak().run();
   },
 };
 
 export const blockquote: SlashCommandItem = {
   title: 'Blockquote',
+  icon: <TextQuoteIcon size={16} />,
   description: 'Add a blockquote.',
-  searchTerms: ['quote', 'blockquote'],
-  icon: <TextQuoteIcon className="mly:h-4 mly:w-4" />,
+  searchTerms: ['quote', 'blockquote', 'citation'],
   command: ({ editor, range }) => {
-    return editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+    editor.chain().focus().deleteRange(range).setBlockquote().run();
   },
 };
 
 export const footer: SlashCommandItem = {
   title: 'Footer',
+  icon: <FootprintsIcon size={16} />,
   description: 'Add a footer text.',
-  searchTerms: ['footer', 'muted', 'small', 'copyright'],
-  icon: <FootprintsIcon className="mly:h-4 mly:w-4" />,
+  searchTerms: ['footer', 'small', 'legal', 'unsubscribe'],
   command: ({ editor, range }) => {
     editor.chain().focus().deleteRange(range).setFooter().run();
   },
@@ -117,10 +98,10 @@ export const footer: SlashCommandItem = {
 
 export const clearLine: SlashCommandItem = {
   title: 'Clear Line',
+  icon: <EraserIcon size={16} />,
   description: 'Clear the current line.',
   searchTerms: ['clear', 'line'],
-  icon: <EraserIcon className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range: _range }) => {
-    return editor.chain().focus().selectParentNode().deleteSelection().run();
+  command: ({ editor }) => {
+    editor.chain().focus().selectParentNode().deleteSelection().run();
   },
 };

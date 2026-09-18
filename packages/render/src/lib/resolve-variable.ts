@@ -24,18 +24,56 @@ export function resolveVariableId(
     return String(item[id]);
   }
 
-  const varValue = config.variableValues.get(id);
-  if (varValue !== undefined) {
-    if (typeof varValue === 'object') {
-      return JSON.stringify(varValue);
-    }
-    return String(varValue);
+  const value = config.variableValues.get(id);
+  if (value !== undefined) {
+    return typeof value === 'object' ? JSON.stringify(value) : String(value);
   }
 
   return config.variableFormatter({
-    variable: id,
     fallback: fallback ?? undefined,
+    variable: id,
   });
+}
+
+export function getVariableId(text: string): string | null {
+  if (!hasVariableInText(text)) {
+    return text.trim() || null;
+  }
+
+  const paragraph = buildDocFromVariableText(text).content.find(
+    (node) => node.type === MAILY_NODE_TYPES.PARAGRAPH
+  );
+
+  for (const node of paragraph?.content ?? []) {
+    if (node.type === MAILY_NODE_TYPES.VARIABLE) {
+      return node.attrs.id || null;
+    }
+  }
+
+  return null;
+}
+
+type VariableValueOptions = {
+  ctx: RenderContext;
+  id: string;
+};
+
+export function getVariableValue(options: VariableValueOptions): unknown {
+  const { ctx, id } = options;
+  const item = ctx.get('item');
+
+  return item && id in item ? item[id] : ctx.config.variableValues.get(id);
+}
+
+export function getVariableList(each: string, ctx: RenderContext): unknown[] {
+  const id = getVariableId(each);
+  if (!id) {
+    return [];
+  }
+
+  const value = getVariableValue({ ctx, id });
+
+  return Array.isArray(value) ? value : [];
 }
 
 /**
@@ -47,8 +85,7 @@ export function resolveVariableText(text: string, ctx: RenderContext): string {
     return text;
   }
 
-  const doc = buildDocFromVariableText(text);
-  const paragraph = doc.content.find(
+  const paragraph = buildDocFromVariableText(text).content.find(
     (node) => node.type === MAILY_NODE_TYPES.PARAGRAPH
   );
   if (!paragraph) {
@@ -62,12 +99,9 @@ export function resolveVariableText(text: string, ctx: RenderContext): string {
       }
 
       if (node.type === MAILY_NODE_TYPES.VARIABLE) {
-        const { id, fallback } = node.attrs;
-        if (!id) {
-          return '';
-        }
+        const { fallback, id } = node.attrs ?? {};
 
-        return resolveVariableId(id, fallback, ctx);
+        return id ? resolveVariableId(id, fallback, ctx) : '';
       }
 
       return '';

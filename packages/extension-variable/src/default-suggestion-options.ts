@@ -3,39 +3,19 @@ import type { Editor } from '@tiptap/core';
 import { PluginKey } from '@tiptap/pm/state';
 import type { SuggestionOptions } from '@tiptap/suggestion';
 
-/**
- * Arguments for the `getSuggestionOptions` function
- * @see getSuggestionOptions
- */
+import { getMarksAt } from './marks';
+
 export type GetSuggestionOptionsConfig = {
-  /**
-   * The Tiptap editor instance.
-   */
-  editor: Editor;
-  /**
-   * The suggestion options configuration provided to the
-   * Variable extension.
-   */
-  overrideSuggestionOptions: Omit<SuggestionOptions, 'editor'>;
-  /**
-   * The name of the Variable extension
-   */
-  extensionName: string;
-  /**
-   * The character that triggers the suggestion.
-   * @default '{{'
-   */
-  char?: string;
-  /**
-   * Whether to scroll into view when the suggestion is selected.
-   * @default false
-   */
-  shouldScrollIntoView?: boolean;
-  /**
-   * Whether to add a space suffix to the suggestion.
-   * @default true
-   */
+  /** Whether to add a space suffix to the suggestion. */
   addSpaceSuffix?: boolean;
+  /** The character that triggers the suggestion. */
+  char?: string;
+  editor: Editor;
+  /** The name of the Variable extension. */
+  extensionName: string;
+  overrideSuggestionOptions: Omit<SuggestionOptions, 'editor'>;
+  /** Whether to scroll into view when the suggestion is selected. */
+  shouldScrollIntoView?: boolean;
 };
 
 /**
@@ -49,28 +29,27 @@ export function getSuggestionOptions(
   options: GetSuggestionOptionsConfig
 ): SuggestionOptions {
   const {
-    editor: tiptapEditor,
-    overrideSuggestionOptions,
-    extensionName,
-    char = DEFAULT_VARIABLE_START_TRIGGER,
-    shouldScrollIntoView = false,
     addSpaceSuffix = true,
+    char = DEFAULT_VARIABLE_START_TRIGGER,
+    editor: tiptapEditor,
+    extensionName,
+    overrideSuggestionOptions,
+    shouldScrollIntoView = false,
   } = options;
-  const pluginKey = new PluginKey();
 
   return {
     editor: tiptapEditor,
     char,
-    pluginKey,
-    command: ({ editor, range, props }) => {
+    pluginKey: new PluginKey(`variable-${char}`),
+    command: ({ editor, props, range }) => {
       // increase range.to by one when the next node is of type "text"
       // and starts with a space character
       const nodeAfter = editor.view.state.selection.$to.nodeAfter;
-      const overrideSpace = nodeAfter?.text?.startsWith(' ');
-
-      if (overrideSpace) {
+      if (nodeAfter?.text?.startsWith(' ')) {
         range.to += 1;
       }
+
+      const marks = getMarksAt({ pos: range.from, state: editor.view.state });
 
       let chain = editor
         .chain()
@@ -79,15 +58,9 @@ export function getSuggestionOptions(
           {
             type: extensionName,
             attrs: { ...props, variableSuggestionChar: char },
+            marks,
           },
-          ...(addSpaceSuffix
-            ? [
-                {
-                  type: 'text',
-                  text: ' ',
-                },
-              ]
-            : []),
+          ...(addSpaceSuffix ? [{ type: 'text', text: ' ', marks }] : []),
         ]);
 
       if (shouldScrollIntoView) {
@@ -101,12 +74,12 @@ export function getSuggestionOptions(
         ?.getSelection()
         ?.collapseToEnd();
     },
-    allow: ({ state, range }: { state: any; range: any }) => {
+    allow: ({ range, state }) => {
       const $from = state.doc.resolve(range.from);
-      const type = state.schema.nodes[extensionName];
-      const allow = !!$from.parent.type.contentMatch.matchType(type);
 
-      return allow;
+      return !!$from.parent.type.contentMatch.matchType(
+        state.schema.nodes[extensionName]
+      );
     },
     ...overrideSuggestionOptions,
   };

@@ -1,4 +1,4 @@
-export const TRUSTED_COMPANIES = [
+const TRUSTED_COMPANIES = [
   {
     name: 'Novu',
     url: 'https://novu.co?ref=maily.to',

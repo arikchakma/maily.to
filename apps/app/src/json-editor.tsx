@@ -3,7 +3,10 @@ import { foldGutter, syntaxHighlighting } from '@codemirror/language';
 import CodeMirror from '@uiw/react-codemirror';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { editorLightHighlightStyle, editorLightTheme } from './migration-theme';
+import {
+  editorLightHighlightStyle,
+  editorLightTheme,
+} from './codemirror-theme';
 
 type JsonEditorProps = {
   value: string;
@@ -29,11 +32,14 @@ const EDITABLE_BASIC_SETUP = {
 };
 
 function createFoldGutterMarker(open: boolean) {
-  const div = document.createElement('div');
+  const div = window.document.createElement('div');
   div.style.cssText =
     'display:flex;align-items:center;justify-content:center;height:100%;width:100%;cursor:pointer;opacity:0.7';
 
-  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const icon = window.document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'svg'
+  );
   icon.setAttribute('viewBox', '0 0 24 24');
   icon.setAttribute('fill', 'none');
   icon.setAttribute('stroke', 'currentColor');
@@ -46,7 +52,10 @@ function createFoldGutterMarker(open: boolean) {
     icon.style.transform = 'rotate(90deg)';
   }
 
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const path = window.document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'path'
+  );
   path.setAttribute('d', 'm9 18 6-6-6-6');
   icon.appendChild(path);
 

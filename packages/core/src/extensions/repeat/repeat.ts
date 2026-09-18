@@ -1,18 +1,11 @@
 import type { RepeatAttributes } from '@maily-to/shared';
-import {
-  DATA_NODE_TYPE_KEY,
-  DATA_VISIBILITY_RULE_KEY,
-  MAILY_NODE_TYPES,
-} from '@maily-to/shared';
+import { DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES } from '@maily-to/shared';
 import { mergeAttributes, Node } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
-
-import { RepeatView } from './repeat-view';
 
 export const DEFAULT_REPEAT_EACH = '{{items}}';
 
 export type RepeatOptions = {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: Record<string, unknown>;
 };
 
 declare module '@tiptap/core' {
@@ -27,10 +20,16 @@ declare module '@tiptap/core' {
 export const RepeatExtension = Node.create<RepeatOptions>({
   name: MAILY_NODE_TYPES.REPEAT,
   group: 'block',
-  content: '(block|columns)+',
+  content: 'block+',
   defining: true,
   isolating: true,
   draggable: true,
+
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
 
   addAttributes() {
     return {
@@ -39,75 +38,47 @@ export const RepeatExtension = Node.create<RepeatOptions>({
         parseHTML: (element) => {
           return element.getAttribute('data-each') || DEFAULT_REPEAT_EACH;
         },
-        renderHTML: (attributes) => {
-          return {
-            'data-each': attributes.each,
-          };
-        },
+        renderHTML: (attributes) => ({ 'data-each': attributes.each }),
       },
     };
-  },
-
-  parseHTML() {
-    return [
-      {
-        tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]`,
-      },
-    ];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      'div',
-      mergeAttributes(HTMLAttributes, {
-        [DATA_NODE_TYPE_KEY]: this.name,
-      }),
-      0,
-    ];
   },
 
   addCommands() {
     return {
       setRepeat:
         (attrs) =>
-        ({ commands }) => {
-          return commands.insertContent({
+        ({ commands }) =>
+          commands.insertContent({
             type: this.name,
-            attrs,
-            content: [
-              {
-                type: MAILY_NODE_TYPES.PARAGRAPH,
-              },
-            ],
-          });
-        },
+            attrs: { ...attrs },
+            content: [{ type: MAILY_NODE_TYPES.PARAGRAPH }],
+          }),
       updateRepeat:
         (attrs) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, attrs);
-        },
+        ({ commands }) =>
+          commands.updateAttributes(this.name, attrs),
     };
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(RepeatView, {
-      className: 'mly:relative',
-      attrs: (props) => {
-        return {
-          [DATA_NODE_TYPE_KEY]: this.name,
-          ...(props.node.attrs.visibilityRule
-            ? { [DATA_VISIBILITY_RULE_KEY]: '' }
-            : {}),
-        };
-      },
-    });
   },
 
   addKeyboardShortcuts() {
     return {
-      'Mod-Backspace': ({ editor }) => {
-        return editor.commands.deleteNode(this.name);
-      },
+      'Mod-Backspace': ({ editor }) => editor.commands.deleteNode(this.name),
     };
+  },
+
+  parseHTML() {
+    return [{ tag: `div[${DATA_NODE_TYPE_KEY}="${this.name}"]` }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'div',
+      mergeAttributes(
+        { [DATA_NODE_TYPE_KEY]: this.name },
+        this.options.HTMLAttributes,
+        HTMLAttributes
+      ),
+      0,
+    ];
   },
 });

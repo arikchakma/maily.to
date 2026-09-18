@@ -1,4 +1,4 @@
-import type { ComputePositionConfig, Middleware } from '@floating-ui/react';
+import type { ComputePositionConfig, VirtualElement } from '@floating-ui/react';
 import { offset } from '@floating-ui/react';
 import { MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { NestedOptions } from '@tiptap/extension-drag-handle';
@@ -9,22 +9,43 @@ import { PlusIcon } from 'lucide-react';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
+import { useBlockMenuShortcut } from '~/hooks/use-block-menu-shortcut';
 import { useEditorInstance } from '~/hooks/use-editor-instance';
+import { useFloatingStore } from '~/hooks/use-floating-store';
 
 import { Button } from '../interface/button';
 import {
   Tooltip,
+  TooltipArrow,
   TooltipPopup,
   TooltipPositioner,
   TooltipProvider,
   TooltipTrigger,
 } from '../interface/tooltip';
+import type { DragContextOpenSource } from './drag-context-menu';
 import { DragContextMenu } from './drag-context-menu';
 
 const DRAG_HANDLE_PLUGIN_KEY = 'drag-context';
 const TALL_BLOCK_THRESHOLD = 40;
 
 type OnNodeChange = NonNullable<DragHandleProps['onNodeChange']>;
+
+/**
+ * How far below the block's top the handle sits. A tall block gets a handle at
+ * its first line; a short one gets it centred.
+ */
+type HandleShiftOptions = {
+  blockHeight: number;
+  handleHeight: number;
+};
+
+function getHandleShift(options: HandleShiftOptions) {
+  const { blockHeight, handleHeight } = options;
+
+  return blockHeight > TALL_BLOCK_THRESHOLD
+    ? 0
+    : (blockHeight - handleHeight) / 2;
+}
 
 export function DragContextHandle() {
   const editor = useEditorInstance();
@@ -33,21 +54,52 @@ export function DragContextHandle() {
   const currentNodeRef = useRef<Node | null>(null);
   const currentNodePosRef = useRef<number | null>(null);
   const currentNodeDomRef = useRef<HTMLElement | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const bridgeRef = useRef<HTMLSpanElement | null>(null);
+  const isMenuOpenRef = useRef(false);
+  const openSourceRef = useRef<DragContextOpenSource>('pointer');
+  const [open, setOpen] = useState(false);
+
+  const setDragContextOpen = useFloatingStore((state) => {
+    return state.setDragContextOpen;
+  });
 
   const handleNodeChange: OnNodeChange = (data) => {
+    if (isMenuOpenRef.current) {
+      return;
+    }
+
     currentNodeRef.current = data.node;
     currentNodePosRef.current = data.pos;
 
     const dom = data.pos >= 0 ? editor.view.nodeDOM(data.pos) : null;
-    currentNodeDomRef.current = dom instanceof HTMLElement ? dom : null;
+    const element = dom instanceof HTMLElement ? dom : null;
+    currentNodeDomRef.current = element;
+
+    const bridge = bridgeRef.current;
+    const handle = bridge?.parentElement;
+    if (!(bridge && handle && element)) {
+      return;
+    }
+
+    const blockHeight = element.getBoundingClientRect().height;
+    bridge.style.height = `${blockHeight}px`;
+    const shift = getHandleShift({
+      blockHeight,
+      handleHeight: handle.offsetHeight,
+    });
+
+    bridge.style.top = `${-shift}px`;
+  };
+
+  // `DragHandle` owns the positioned element and exposes only `className`, so
+  // the presence attribute the stylesheet needs is set through a child.
+  const setBridgeElement = (element: HTMLSpanElement | null) => {
+    bridgeRef.current = element;
+    element?.parentElement?.setAttribute('data-mly-drag-handle', '');
   };
 
   const handleDragStart = () => {
-    setMenuOpen(false);
-
-    // Dispatch dragstart so FloatingElement can hide bubble menus
-    // TODO: find a better way to do this (e.g., editor meta)
+    setOpen(false);
     editor.view.dom.dispatchEvent(
       new DragEvent('dragstart', { bubbles: true })
     );
@@ -56,25 +108,22 @@ export function DragContextHandle() {
   const handleAddBlock = () => {
     const node = currentNodeRef.current;
     const pos = currentNodePosRef.current;
-    if (pos == null || node == null || pos === -1) {
+    if (node === null || pos === null || pos === -1) {
       return;
     }
 
     const { doc, schema } = editor.state;
     const paragraphType = schema.nodes.paragraph;
     const insertPos = pos + node.nodeSize;
-    const currentNodeIsEmptyParagraph =
-      node.type.name === MAILY_NODE_TYPES.PARAGRAPH && node.content.size === 0;
 
-    if (currentNodeIsEmptyParagraph) {
+    if (
+      node.type.name === MAILY_NODE_TYPES.PARAGRAPH &&
+      node.content.size === 0
+    ) {
       editor
         .chain()
-        .command((props) => {
-          if (!props.dispatch) {
-            return true;
-          }
-
-          return props.dispatch(props.tr.insertText('/', pos, pos + 1));
+        .command(({ dispatch, tr }) => {
+          return dispatch ? dispatch(tr.insertText('/', pos, pos + 1)) : true;
         })
         .focus(pos + 2)
         .run();
@@ -101,31 +150,45 @@ export function DragContextHandle() {
 
     editor
       .chain()
-      .command((props) => {
-        if (!props.dispatch) {
-          return true;
-        }
-
-        return props.dispatch(props.tr.insert(insertPos, block));
+      .command(({ dispatch, tr }) => {
+        return dispatch ? dispatch(tr.insert(insertPos, block)) : true;
       })
       .focus(insertPos + focusOffset)
       .run();
   };
 
-  const handleMenuOpenChange = (open: boolean) => {
+  const handleOpenChange = (nextOpen: boolean) => {
     const pos = currentNodePosRef.current;
-    if (open && pos != null) {
+    if (nextOpen && pos !== null && openSourceRef.current === 'pointer') {
       editor.commands.setNodeSelection(pos);
     }
 
-    setMenuOpen(open);
-    editor.commands.setMeta('lockDragHandle', open);
+    if (!nextOpen) {
+      openSourceRef.current = 'pointer';
+    }
+
+    isMenuOpenRef.current = nextOpen;
+    setOpen(nextOpen);
+    setDragContextOpen(nextOpen);
+    editor.commands.setMeta('lockDragHandle', nextOpen);
   };
+
+  const handleShortcutOpen = () => {
+    const pos = currentNodePosRef.current;
+    if (isMenuOpenRef.current || pos === null || pos < 0) {
+      return;
+    }
+
+    openSourceRef.current = 'shortcut';
+    handleOpenChange(true);
+  };
+
+  useBlockMenuShortcut({ editor, onOpen: handleShortcutOpen });
 
   /**
    * A list paints its marker in its own padding, which the item box excludes,
-   * so floating-ui anchoring to the item puts the handle on top of the marker.
-   * Anchoring to the list clears it and leaves every depth its own column.
+   * so anchoring to the item puts the handle on top of the marker. Anchoring
+   * to the list clears it and leaves every depth its own column.
    *
    *      anchored to the item        anchored to the list
    *
@@ -136,35 +199,40 @@ export function DragContextHandle() {
    *        the handle                  a deeper list indents
    *                                    its handle with it
    */
-  const clearListMarker = useMemo<Middleware>(
-    () => ({
-      name: 'clearListMarker',
-      fn: (state) => {
-        const list = currentNodeDomRef.current?.parentElement;
-        const isListItem =
-          currentNodeRef.current?.type.name === MAILY_NODE_TYPES.LIST_ITEM;
+  const getPinnedElement = () => {
+    const pos = currentNodePosRef.current;
+    if (!isMenuOpenRef.current || pos === null || pos < 0) {
+      return null;
+    }
 
-        const reference = state.elements.reference.getBoundingClientRect();
-        const marker =
-          isListItem && list
-            ? reference.left - list.getBoundingClientRect().left
-            : 0;
+    const dom = editor.view.nodeDOM(pos);
 
-        const style = state.elements.floating.style;
-        style.setProperty(
-          '--mly-drag-bridge-top',
-          `${state.rects.reference.y - state.y}px`
-        );
-        style.setProperty(
-          '--mly-drag-bridge-height',
-          `${state.rects.reference.height}px`
-        );
+    return dom instanceof HTMLElement ? dom : null;
+  };
 
-        return { x: state.x - marker };
+  const getHandleAnchor = (): VirtualElement | null => {
+    const element = getPinnedElement() ?? currentNodeDomRef.current;
+    const list = element?.parentElement;
+    const isListItem =
+      currentNodeRef.current?.type.name === MAILY_NODE_TYPES.LIST_ITEM;
+
+    if (!element || !(isMenuOpenRef.current || (list && isListItem))) {
+      return null;
+    }
+
+    return {
+      getBoundingClientRect: () => {
+        if (!(list && isListItem)) {
+          return element.getBoundingClientRect();
+        }
+
+        const item = element.getBoundingClientRect();
+        const left = list.getBoundingClientRect().left;
+
+        return new DOMRect(left, item.y, item.right - left, item.height);
       },
-    }),
-    []
-  );
+    };
+  };
 
   // The bridge covers editor content once a list indents it, so hand clicks
   // that land there back to the editor.
@@ -180,29 +248,23 @@ export function DragContextHandle() {
     editor.commands.focus(coords.pos);
   };
 
-  const computePositionConfig = useMemo<ComputePositionConfig>(
-    () => ({
+  const computePositionConfig = useMemo<ComputePositionConfig>(() => {
+    return {
       placement: 'left-start',
       strategy: 'absolute',
       middleware: [
         offset(({ rects }) => {
-          const blockHeight = rects.reference.height;
-          const handleHeight = rects.floating.height;
-
-          if (blockHeight > TALL_BLOCK_THRESHOLD) {
-            return { alignmentAxis: 0, mainAxis: 0 };
-          }
-
           return {
-            alignmentAxis: (blockHeight - handleHeight) / 2,
+            alignmentAxis: getHandleShift({
+              blockHeight: rects.reference.height,
+              handleHeight: rects.floating.height,
+            }),
             mainAxis: 0,
           };
         }),
-        clearListMarker,
       ],
-    }),
-    [clearListMarker]
-  );
+    };
+  }, []);
 
   /**
    * Edge detection hands the handle to the parent whenever the pointer comes
@@ -219,93 +281,91 @@ export function DragContextHandle() {
    *                                     handle to the list, so
    *                                     it is gone on arrival
    */
-  const nestedOptions = useMemo<NestedOptions>(
-    () => ({
+  const nestedOptions = useMemo<NestedOptions>(() => {
+    return {
       edgeDetection: 'none',
       rules: [
         {
           id: 'excludeColumn',
-          evaluate: (context) =>
-            context.node.type.name === MAILY_NODE_TYPES.COLUMN ? 1000 : 0,
+          evaluate: (context) => {
+            return context.node.type.name === MAILY_NODE_TYPES.COLUMN
+              ? 1000
+              : 0;
+          },
         },
       ],
-    }),
-    []
-  );
+    };
+  }, []);
 
   return (
-    // for some reason the dependencies array breaks when
-    // the DragContextHandle is not wrapped in a div
+    // The dependency arrays inside DragHandle break unless it is wrapped.
     // @see https://github.com/ueberdosis/tiptap/issues/4619
-    <div>
+    <div ref={containerRef}>
       <DragHandle
-        pluginKey={DRAG_HANDLE_PLUGIN_KEY}
-        editor={editor}
-        onNodeChange={handleNodeChange}
-        onElementDragStart={handleDragStart}
-        className="mly:z-50"
         computePositionConfig={computePositionConfig}
+        editor={editor}
+        getReferencedVirtualElement={getHandleAnchor}
         nested={nestedOptions}
+        onElementDragStart={handleDragStart}
+        onNodeChange={handleNodeChange}
+        pluginKey={DRAG_HANDLE_PLUGIN_KEY}
       >
+        {/**
+         * The handle is one row tall next to a block that may be many rows
+         * tall, and the plugin hides it the moment the pointer leaves the
+         * editor for anything that is not the handle. Reaching for it
+         * sideways would drop it, so this stretches its hit area down the
+         * whole block.
+         *
+         *      | editor edge      : bridge edge      x pointer
+         *
+         *      without it                    with it
+         *
+         *      [+][::]|first line of a       [+][::]:first line of a
+         *             |block that wraps        x    :block that wraps
+         *        x    |onto a third line            :onto a third line
+         *
+         *        the pointer exits            the exit lands on the
+         *        beside nothing and           handle at any height,
+         *        the handle is gone           so it survives the trip
+         */}
         <span
           aria-hidden="true"
+          data-mly-drag-bridge=""
           draggable={false}
-          className="mly:absolute mly:left-0 mly:w-full"
-          /**
-           * The handle is one row tall next to a block that may be many rows
-           * tall, and the plugin hides it the moment the pointer leaves the
-           * editor for anything that is not the handle. Reaching for it
-           * sideways would drop it, so this stretches its hit area down the
-           * whole block.
-           *
-           *      | editor edge      : bridge edge      x pointer
-           *
-           *      without it                    with it
-           *
-           *      [+][::]|first line of a       [+][::]:first line of a
-           *             |block that wraps        x    :block that wraps
-           *        x    |onto a third line            :onto a third line
-           *
-           *        the pointer exits            the exit lands on the
-           *        beside nothing and           handle at any height,
-           *        the handle is gone           so it survives the trip
-           */
-          style={{
-            top: 'var(--mly-drag-bridge-top, 0px)',
-            height: 'var(--mly-drag-bridge-height, 100%)',
-          }}
           onMouseDown={handleBridgeMouseDown}
+          ref={setBridgeElement}
         />
+
         <TooltipProvider>
-          <div
-            ref={containerRef}
-            className="mly:relative mly:flex mly:items-center mly:gap-0.5 mly:px-1.5"
-          >
-            <Tooltip>
+          <div data-mly-drag-context="">
+            <Tooltip disableHoverablePopup>
               <TooltipTrigger
                 render={
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mly:size-6"
+                    aria-label="Add block"
+                    data-mly-drag-context-add=""
                     onClick={handleAddBlock}
                   >
-                    <PlusIcon className="mly:size-3.5 mly:shrink-0" />
+                    <PlusIcon size={14} />
                   </Button>
                 }
               />
               <TooltipPositioner container={containerRef}>
-                <TooltipPopup className="mly:whitespace-nowrap">
+                <TooltipPopup>
                   Add block
+                  <TooltipArrow />
                 </TooltipPopup>
               </TooltipPositioner>
             </Tooltip>
+
             <DragContextMenu
-              editor={editor}
-              open={menuOpen}
-              onOpenChange={handleMenuOpenChange}
               container={containerRef}
+              editor={editor}
               nodeRef={currentNodeRef}
+              onOpenChange={handleOpenChange}
+              open={open}
+              openSourceRef={openSourceRef}
               posRef={currentNodePosRef}
             />
           </div>

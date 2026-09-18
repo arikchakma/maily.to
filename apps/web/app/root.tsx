@@ -73,7 +73,6 @@ export const meta: Route.MetaFunction = () => [
   { property: 'og:image:height', content: '630' },
   { property: 'og:image:alt', content: 'Maily Preview' },
   { name: 'theme-color', content: '#ffffff' },
-  // Indexing
   { name: 'robots', content: 'index, follow' },
   {
     name: 'googlebot',
@@ -86,6 +85,7 @@ type LayoutProps = { children: React.ReactNode };
 
 export function Layout(props: LayoutProps) {
   const { children } = props;
+
   return (
     <html lang="en">
       <head>

@@ -2,34 +2,26 @@ import type { Editor } from '@tiptap/react';
 import { isNodeSelection } from '@tiptap/react';
 import { useEffect } from 'react';
 
-import { useEditorInstance } from './use-editor-instance';
+import { useValueAsRef } from './use-value-as-ref';
 
-export function useOnNodeSelect(editor: Editor, onSelect: () => void) {
-  const editorInstance = useEditorInstance(editor);
+export function useOnNodeSelect(editor: Editor, onNodeSelect: () => void) {
+  const callback = useValueAsRef(onNodeSelect);
 
   useEffect(() => {
-    const view = editorInstance.view;
-    if (!view) {
-      return;
-    }
+    const editorViewDom = editor.view.dom;
 
     const handleMouseDown = (event: MouseEvent) => {
-      const isLeftButton = event.button === 0;
-      if (!isLeftButton) {
+      if (event.button !== 0 || !isNodeSelection(editor.state.selection)) {
         return;
       }
 
-      const selection = editorInstance.state.selection;
-      if (!isNodeSelection(selection)) {
-        return;
-      }
-
-      onSelect();
+      callback.current();
     };
 
-    view.dom.addEventListener('mousedown', handleMouseDown);
+    editorViewDom.addEventListener('mousedown', handleMouseDown);
+
     return () => {
-      view.dom.removeEventListener('mousedown', handleMouseDown);
+      editorViewDom.removeEventListener('mousedown', handleMouseDown);
     };
-  }, [editorInstance]);
+  }, [callback, editor]);
 }

@@ -1,9 +1,4 @@
-<div align="center"><img height="150" src="https://maily.to/brand/icon.svg" /></div>
-<br>
-
-<div align="center"><strong>@maily-to/extension-inline-suggestion</strong></div>
-<div align="center">Tiptap extension for inline autocomplete suggestions in <a href="https://maily.to">Maily</a>.</div>
-<br />
+[![@maily-to/extension-inline-suggestion](../../_static/extension-inline-suggestion.jpg)](https://maily.to)
 
 <p align="center">
   <a href="https://github.com/arikchakma/maily.to/blob/main/LICENSE">
@@ -18,19 +13,20 @@
 
 ### Install
 
-Install `@maily-to/extension-inline-suggestion` from your command line.
+This package is not published on its own. It is bundled into
+[`@maily-to/core`](../core) at build time.
 
 ```sh
-pnpm add @maily-to/extension-inline-suggestion
+pnpm add @maily-to/core
 ```
 
-#### Peer Dependencies
-
-```sh
-pnpm add @tiptap/core @tiptap/pm
-```
+<br>
 
 ### Usage
+
+The extension draws ghost text ahead of the caret, the way an AI autocomplete
+does in a code editor. Writers accept a suggestion with `Tab`, or dismiss it by
+carrying on typing.
 
 ```ts
 import { InlineSuggestion } from '@maily-to/extension-inline-suggestion';
@@ -38,13 +34,33 @@ import { InlineSuggestion } from '@maily-to/extension-inline-suggestion';
 const editor = new Editor({
   extensions: [
     InlineSuggestion.configure({
-      // your configuration
+      suggest: async (text) => {
+        return getCompletion(text);
+      },
+      triggerKey: ' ',
     }),
   ],
 });
 ```
 
-This extension adds ghost-text style inline suggestions to the editor, similar to AI autocomplete in code editors. Users can accept suggestions with `Tab` or dismiss them by continuing to type.
+`suggest` receives the text before the caret and returns the completion to draw.
+`triggerKey` is the key that asks for one — a space in the example above.
+
+#### Types
+
+```ts
+import type {
+  InlineSuggestionOptions,
+  InlineSuggestionStorage,
+  SuggestContext,
+} from '@maily-to/extension-inline-suggestion';
+```
+
+#### Peer dependencies
+
+```sh
+pnpm add @tiptap/core @tiptap/pm
+```
 
 ### Contributions
 

@@ -1,8 +1,9 @@
 import type { VariableAttributes } from '@maily-to/shared';
 import {
   DATA_NODE_TYPE_KEY,
+  DEFAULT_VARIABLE_ATTRIBUTES,
   DEFAULT_VARIABLE_START_TRIGGER,
-  MAILY_ERROR_PREFIX,
+  MAILY_NODE_TYPES,
 } from '@maily-to/shared';
 import type { Editor } from '@tiptap/core';
 import { mergeAttributes, Node } from '@tiptap/core';
@@ -11,6 +12,7 @@ import type { SuggestionOptions } from '@tiptap/suggestion';
 import { Suggestion } from '@tiptap/suggestion';
 
 import { getSuggestionOptions } from './default-suggestion-options';
+import { getMarksAt } from './marks';
 
 /**
  * The attributes for a variable node. This is an alias for
@@ -18,103 +20,47 @@ import { getSuggestionOptions } from './default-suggestion-options';
  */
 export type VariableNodeAttrs = VariableAttributes;
 
-export type VariableOptions<
-  SuggestionItem = any,
-  Attrs extends Record<string, any> = VariableNodeAttrs,
-> = {
-  /**
-   * The HTML attributes for a variable node.
-   * @default {}
-   * @example { class: 'foo' }
-   */
-  HTMLAttributes: Record<string, any>;
-
-  /**
-   * A function to render the label of a variable.
-   * @deprecated use renderText and renderHTML instead
-   * @param props The render props
-   * @returns The label
-   * @example ({ options, node }) => `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`
-   */
-  renderLabel?: (props: {
-    options: VariableOptions<SuggestionItem, Attrs>;
-    node: ProseMirrorNode;
-    suggestion: SuggestionOptions | null;
-  }) => string;
-
-  /**
-   * A function to render the text of a variable.
-   * @param props The render props
-   * @returns The text
-   * @example ({ options, node }) => `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`
-   */
-  renderText: (props: {
-    options: VariableOptions<SuggestionItem, Attrs>;
-    node: ProseMirrorNode;
-    suggestion: SuggestionOptions | null;
-  }) => string;
-
-  /**
-   * A function to render the HTML of a variable.
-   * @param props The render props
-   * @returns The HTML as a ProseMirror DOM Output Spec
-   * @example ({ options, node }) => ['span', { [DATA_NODE_TYPE_KEY]: 'variable' }, `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`]
-   */
-  renderHTML: (props: {
-    options: VariableOptions<SuggestionItem, Attrs>;
-    node: ProseMirrorNode;
-    suggestion: SuggestionOptions | null;
-  }) => DOMOutputSpec;
-
-  /**
-   * Whether to delete the trigger character with backspace.
-   * @default false
-   */
-  deleteTriggerWithBackspace: boolean;
-
-  /**
-   * The suggestion options, when you want to support multiple triggers.
-   *
-   * With this parameter, you can define multiple types of variable triggers. For example, you can use the `{{`
-   * character to insert variables and the `#` character to insert tags.
-   *
-   * @default [{ char: '{{', pluginKey: VariablePluginKey }]
-   * @example [{ char: '{{', pluginKey: VariablePluginKey }, { char: '#', pluginKey: new PluginKey('hashtag') }]
-   */
-  suggestions: Array<Omit<SuggestionOptions<SuggestionItem, Attrs>, 'editor'>>;
-
-  /**
-   * The suggestion options, when you want to support only one trigger. To support multiple triggers, use the
-   * `suggestions` parameter instead.
-   *
-   * @default {}
-   * @example { char: '@', pluginKey: VariablePluginKey, command: ({ editor, range, props }) => { ... } }
-   */
-  suggestion: Omit<SuggestionOptions<SuggestionItem, Attrs>, 'editor'>;
-
-  shouldScrollIntoView: boolean;
-  addSpaceSuffix: boolean;
-
-  /**
-   * Disable input is the boolean that will be used to disable the input of the variable
-   * when the variable is selected.
-   * @default false
-   */
-  disableInput: boolean;
+type RenderProps = {
+  node: ProseMirrorNode;
+  options: VariableOptions;
+  suggestion: SuggestionOptions | null;
 };
+
+export type VariableOptions = {
+  /** Whether to add a space suffix after an inserted variable. */
+  addSpaceSuffix: boolean;
+  /** Whether backspace deletes the trigger character with the node. */
+  deleteTriggerWithBackspace: boolean;
+  HTMLAttributes: Record<string, unknown>;
+  renderHTML: (props: RenderProps) => DOMOutputSpec;
+  renderText: (props: RenderProps) => string;
+  shouldScrollIntoView: boolean;
+  /**
+   * The suggestion options, when you want to support only one trigger. To
+   * support multiple triggers, use `suggestions` instead.
+   */
+  suggestion: Omit<SuggestionOptions, 'editor'>;
+  /**
+   * The suggestion options, when you want to support multiple triggers. For
+   * example, `{{` to insert variables and `#` to insert tags.
+   */
+  suggestions: Array<Omit<SuggestionOptions, 'editor'>>;
+};
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    variable: {
+      insertVariable: (attrs: VariableAttributes) => ReturnType;
+    };
+  }
+}
 
 type GetSuggestionsOptions = {
   editor?: Editor;
-  options: VariableOptions;
   name: string;
+  options: VariableOptions;
 };
 
-/**
- * Returns the suggestions for the variable extension.
- *
- * @param options The extension options
- * @returns the suggestions
- */
 function getSuggestions(options: GetSuggestionsOptions) {
   return (
     options.options.suggestions.length
@@ -122,279 +68,195 @@ function getSuggestions(options: GetSuggestionsOptions) {
       : [options.options.suggestion]
   ).map((suggestion) =>
     getSuggestionOptions({
-      // @ts-expect-error `editor` can be `undefined` when converting the document to HTML with the HTML utility
-      editor: options.editor,
-      overrideSuggestionOptions: suggestion,
-      extensionName: options.name,
-      char: suggestion.char,
-      shouldScrollIntoView: options.options.shouldScrollIntoView,
       addSpaceSuffix: options.options.addSpaceSuffix,
+      char: suggestion.char,
+      editor: options.editor as Editor,
+      extensionName: options.name,
+      overrideSuggestionOptions: suggestion,
+      shouldScrollIntoView: options.options.shouldScrollIntoView,
     })
   );
 }
 
-/**
- * Returns the suggestion options of the variable that has a given character trigger. If not
- * found, it returns the first suggestion.
- *
- * @param options The extension options
- * @param char The character that triggers the variable
- * @returns The suggestion options
- */
 function getSuggestionFromChar(options: GetSuggestionsOptions, char: string) {
   const suggestions = getSuggestions(options);
 
-  const suggestion = suggestions.find((s) => s.char === char);
-  if (suggestion) {
-    return suggestion;
-  }
+  return (
+    suggestions.find((item) => item.char === char) ?? suggestions[0] ?? null
+  );
+}
 
-  if (suggestions.length) {
-    return suggestions[0];
-  }
+function getVariableLabel(
+  node: ProseMirrorNode,
+  suggestion: SuggestionOptions | null
+) {
+  const char = suggestion?.char ?? DEFAULT_VARIABLE_START_TRIGGER;
 
-  return null;
+  return `${char}${node.attrs.label ?? node.attrs.id}`;
 }
 
 export const Variable: Node<VariableOptions> = Node.create<VariableOptions>({
-  name: 'variable',
-
+  name: MAILY_NODE_TYPES.VARIABLE,
   priority: 101,
+  group: 'inline',
+  inline: true,
+  selectable: true,
+  atom: true,
 
   addOptions() {
     return {
-      HTMLAttributes: {},
-      renderText({ node, suggestion }) {
-        return `${suggestion?.char ?? DEFAULT_VARIABLE_START_TRIGGER}${node.attrs.label ?? node.attrs.id}`;
-      },
+      addSpaceSuffix: true,
       deleteTriggerWithBackspace: false,
-      renderHTML({ options, node, suggestion }) {
+      HTMLAttributes: {},
+      renderHTML({ node, options, suggestion }) {
         return [
           'span',
-          mergeAttributes(this.HTMLAttributes, options.HTMLAttributes),
-          `${suggestion?.char ?? DEFAULT_VARIABLE_START_TRIGGER}${node.attrs.label ?? node.attrs.id}`,
+          mergeAttributes(options.HTMLAttributes),
+          getVariableLabel(node, suggestion),
         ];
       },
-      suggestions: [],
-      suggestion: {},
+      renderText({ node, suggestion }) {
+        return getVariableLabel(node, suggestion);
+      },
       shouldScrollIntoView: false,
-      addSpaceSuffix: true,
-      disableInput: false,
+      suggestion: {},
+      suggestions: [],
     };
   },
 
-  group: 'inline',
-
-  inline: true,
-
-  selectable: true,
-
-  atom: true,
-
   addAttributes() {
     return {
+      // No default: a variable without an id means nothing, and leaving it
+      // fillable lets ProseMirror invent one to satisfy a `(inline)+` node
+      // that the user just emptied.
       id: {
-        default: null,
         parseHTML: (element) => element.getAttribute('data-id'),
-        renderHTML: (attributes) => {
-          if (!attributes.id) {
-            return {};
-          }
-
-          return {
-            'data-id': attributes.id,
-          };
-        },
+        renderHTML: (attributes) =>
+          attributes.id ? { 'data-id': attributes.id } : {},
       },
-
       label: {
-        default: null,
+        default: DEFAULT_VARIABLE_ATTRIBUTES.label,
         parseHTML: (element) => element.getAttribute('data-label'),
-        renderHTML: (attributes) => {
-          if (!attributes.label) {
-            return {};
-          }
-
-          return {
-            'data-label': attributes.label,
-          };
-        },
+        renderHTML: (attributes) =>
+          attributes.label ? { 'data-label': attributes.label } : {},
       },
-
-      // When there are multiple types of variables, this attribute helps distinguish them
+      // When there are multiple types of variables, this attribute helps
+      // distinguish them
       variableSuggestionChar: {
         default: DEFAULT_VARIABLE_START_TRIGGER,
         parseHTML: (element) =>
-          element.getAttribute('data-variable-suggestion-char'),
-        renderHTML: (attributes) => {
-          return {
-            'data-variable-suggestion-char': attributes.variableSuggestionChar,
-          };
-        },
+          element.getAttribute('data-variable-suggestion-char') ??
+          DEFAULT_VARIABLE_START_TRIGGER,
+        renderHTML: (attributes) => ({
+          'data-variable-suggestion-char': attributes.variableSuggestionChar,
+        }),
       },
-
       fallback: {
-        default: null,
+        default: DEFAULT_VARIABLE_ATTRIBUTES.fallback,
         parseHTML: (element) => element.getAttribute('data-fallback'),
-        renderHTML: (attributes) => {
-          if (!attributes.fallback) {
-            return {};
-          }
-
-          return {
-            'data-fallback': attributes.fallback,
-          };
-        },
+        renderHTML: (attributes) =>
+          attributes.fallback ? { 'data-fallback': attributes.fallback } : {},
       },
-
       required: {
-        default: true,
-        parseHTML: (element) => {
-          const value = element.getAttribute('data-required');
-          if (value === null) {
-            return true;
-          }
-
-          return value === 'true';
-        },
-        renderHTML: (attributes) => {
-          return {
-            'data-required': String(attributes.required),
-          };
-        },
+        default: DEFAULT_VARIABLE_ATTRIBUTES.required,
+        parseHTML: (element) =>
+          element.getAttribute('data-required') !== 'false',
+        renderHTML: (attributes) => ({
+          'data-required': String(attributes.required),
+        }),
       },
-
       hideDefaultValue: {
-        default: false,
-        parseHTML: (element) => {
-          const value = element.getAttribute('data-hide-default-value');
-          if (value === null) {
-            return false;
-          }
-
-          return value === 'true';
-        },
-        renderHTML: (attributes) => {
-          return {
-            'data-hide-default-value': String(attributes.hideDefaultValue),
-          };
-        },
+        default: DEFAULT_VARIABLE_ATTRIBUTES.hideDefaultValue,
+        parseHTML: (element) =>
+          element.getAttribute('data-hide-default-value') === 'true',
+        renderHTML: (attributes) => ({
+          'data-hide-default-value': String(attributes.hideDefaultValue),
+        }),
       },
+    };
+  },
+
+  addCommands() {
+    return {
+      insertVariable:
+        (attrs) =>
+        ({ commands, state }) =>
+          commands.insertContent({
+            type: this.name,
+            attrs,
+            marks: getMarksAt({ pos: state.selection.from, state }),
+          }),
     };
   },
 
   parseHTML() {
-    return [
-      {
-        tag: `span[${DATA_NODE_TYPE_KEY}="${this.name}"]`,
-      },
-    ];
+    return [{ tag: `span[${DATA_NODE_TYPE_KEY}="${this.name}"]` }];
   },
 
-  renderHTML({ node, HTMLAttributes }) {
-    const suggestion = getSuggestionFromChar(
-      this,
-      node.attrs.variableSuggestionChar
-    );
+  renderHTML({ HTMLAttributes, node }) {
+    const options = {
+      ...this.options,
+      HTMLAttributes: mergeAttributes(
+        { [DATA_NODE_TYPE_KEY]: this.name },
+        this.options.HTMLAttributes,
+        HTMLAttributes
+      ),
+    };
 
-    if (this.options.renderLabel !== undefined) {
-      console.warn(
-        `${MAILY_ERROR_PREFIX}: "renderLabel" is deprecated use "renderText" and "renderHTML" instead`
-      );
-      return [
-        'span',
-        mergeAttributes(
-          { [DATA_NODE_TYPE_KEY]: this.name },
-          this.options.HTMLAttributes,
-          HTMLAttributes
-        ),
-        this.options.renderLabel({
-          options: this.options,
-          node,
-          suggestion,
-        }),
-      ];
-    }
-    const mergedOptions = { ...this.options };
-
-    mergedOptions.HTMLAttributes = mergeAttributes(
-      { [DATA_NODE_TYPE_KEY]: this.name },
-      this.options.HTMLAttributes,
-      HTMLAttributes
-    );
-
-    const html = this.options.renderHTML({
-      options: mergedOptions,
+    return this.options.renderHTML({
       node,
-      suggestion,
-    });
-
-    if (typeof html === 'string') {
-      return [
-        'span',
-        mergeAttributes(
-          { [DATA_NODE_TYPE_KEY]: this.name },
-          this.options.HTMLAttributes,
-          HTMLAttributes
-        ),
-        html,
-      ];
-    }
-    return html;
-  },
-
-  renderText({ node }) {
-    const args = {
-      options: this.options,
-      node,
+      options,
       suggestion: getSuggestionFromChar(
         this,
         node.attrs.variableSuggestionChar
       ),
-    };
-    if (this.options.renderLabel !== undefined) {
-      console.warn(
-        `${MAILY_ERROR_PREFIX}: "renderLabel" is deprecated use "renderText" and "renderHTML" instead`
-      );
-      return this.options.renderLabel(args);
-    }
+    });
+  },
 
-    return this.options.renderText(args);
+  renderText({ node }) {
+    return this.options.renderText({
+      node,
+      options: this.options,
+      suggestion: getSuggestionFromChar(
+        this,
+        node.attrs.variableSuggestionChar
+      ),
+    });
   },
 
   addKeyboardShortcuts() {
     return {
       Backspace: () =>
-        this.editor.commands.command(({ tr, state }) => {
-          const { selection } = state;
-          const { empty, anchor } = selection;
-
+        this.editor.commands.command(({ state, tr }) => {
+          const { anchor, empty } = state.selection;
           if (!empty) {
             return false;
           }
 
-          let variableNode: ProseMirrorNode | null = null;
-          let variablePos = 0;
+          let matched: ProseMirrorNode | null = null;
+          let matchedPos = 0;
 
           state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
             if (node.type.name === this.name) {
-              variableNode = node;
-              variablePos = pos;
+              matched = node;
+              matchedPos = pos;
               return false;
             }
+
+            return true;
           });
 
-          if (!variableNode) {
+          if (!matched) {
             return false;
           }
 
-          const matchedNode = variableNode as ProseMirrorNode;
+          const variableNode = matched as ProseMirrorNode;
           tr.insertText(
             this.options.deleteTriggerWithBackspace
               ? ''
-              : matchedNode.attrs.variableSuggestionChar,
-            variablePos,
-            variablePos + matchedNode.nodeSize
+              : variableNode.attrs.variableSuggestionChar,
+            matchedPos,
+            matchedPos + variableNode.nodeSize
           );
 
           return true;

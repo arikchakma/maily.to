@@ -14,55 +14,51 @@ import {
   DropdownPositioner,
 } from '../interface/dropdown-menu';
 
-type TurnIntoBlockProps = {
+export type TurnIntoBlockProps = {
+  container?: FloatingUIContainer;
   items: TurnIntoItems;
-  container: FloatingUIContainer;
 };
 
 export function TurnIntoBlock(props: TurnIntoBlockProps) {
-  const { items, container } = props;
+  const { container, items } = props;
 
   const [open, setOpen] = useState(false);
 
   const activeItem = items.find(isActiveTurnIntoItem);
-  const { icon: ActiveIcon = LetterTextIcon } = activeItem || {};
+  const { icon: ActiveIcon = LetterTextIcon } = activeItem ?? {};
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger
-        render={
-          <BubbleButton
-            label="Turn into"
-            variant="ghost"
-            size="default"
-            className="mly:gap-1 mly:px-1.5"
-            data-active={open}
-            tooltip="Turn into"
-            container={container}
-          >
-            <ActiveIcon className="mly:size-3.5" />
-            <ChevronDownIcon className="mly:size-3" />
-          </BubbleButton>
-        }
-      />
+    <DropdownMenu onOpenChange={setOpen} open={open}>
+      <BubbleButton
+        container={container}
+        data-variant="turn-into"
+        isActive={open}
+        label="Turn into"
+        render={<DropdownMenuTrigger />}
+        tooltip="Turn into"
+      >
+        <ActiveIcon size={14} />
+        <ChevronDownIcon size={12} />
+      </BubbleButton>
 
       <DropdownPositioner container={container}>
-        <DropdownMenuPopup className="mly:flex mly:w-[160px] mly:flex-col">
+        <DropdownMenuPopup data-variant="turn-into">
           {items.map((item) => {
             if (isTurnIntoCategory(item)) {
               return (
-                <label
-                  key={item.id}
-                  className="mly:my-2 mly:px-2 mly:text-xs mly:font-medium mly:text-midnight-gray/60 mly:first:mt-1"
-                >
+                <span data-mly-dropdown-menu-category="" key={item.id}>
                   {item.label}
-                </label>
+                </span>
               );
             }
 
             return (
-              <DropdownMenuItem key={item.id} onClick={item.onClick}>
-                <item.icon className="mly:size-[15px] mly:shrink-0" />
+              <DropdownMenuItem
+                disabled={item.disabled}
+                key={item.id}
+                onClick={item.onClick}
+              >
+                <item.icon size={15} />
                 {item.label}
               </DropdownMenuItem>
             );

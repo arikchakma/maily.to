@@ -1,34 +1,31 @@
-import { migrate } from '@maily-to/migration';
-import { is } from '@maily-to/shared';
-import { render as reactEmailRender } from '@react-email/render';
-import type { JSONContent } from '@tiptap/core';
+import type { AnyMailyNode } from '@maily-to/shared';
+import { invariant, is } from '@maily-to/shared';
+import { render as renderReactEmail } from '@react-email/render';
 
 import { buildConfig } from './config';
 import type { MailyConfig } from './config';
 import { defineRenderContext } from './context';
-import { document } from './nodes/document';
+import { getNormalizedDocument } from './lib/normalize';
+import { getThemedDocument } from './lib/theme';
 
-/**
- * Converts a Maily JSON document into React elements. Returns null
- * if the input is not a valid Maily node.
- */
-export function markup(json: JSONContent, config: MailyConfig = {}) {
-  const { json: migrated } = migrate(json);
-  if (!is.node(migrated)) {
-    return null;
-  }
+export function markup(json: AnyMailyNode, config: MailyConfig = {}) {
+  invariant(
+    is.doc(json),
+    `Expected a Maily document, received "${json?.type}"`
+  );
 
-  return document(
-    migrated,
-    defineRenderContext({ config: buildConfig(config) })
+  return defineRenderContext({ config: buildConfig(config) }).render(
+    getThemedDocument({
+      document: getNormalizedDocument({ document: json }),
+      theme: config.theme,
+    })
   );
 }
 
-/** Renders a Maily JSON document to an HTML string using @react-email/render. */
-export async function render(json: JSONContent, config: MailyConfig = {}) {
-  if (!is.node(json)) {
-    return '';
-  }
+export async function render(json: AnyMailyNode, config: MailyConfig = {}) {
+  return renderReactEmail(markup(json, config));
+}
 
-  return reactEmailRender(markup(json, config));
+export async function renderText(json: AnyMailyNode, config: MailyConfig = {}) {
+  return renderReactEmail(markup(json, config), { plainText: true });
 }

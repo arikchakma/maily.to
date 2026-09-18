@@ -1,56 +1,116 @@
-import { MAILY_NODE_TYPES } from './node';
+import { DEFAULT_VARIABLE_ATTRIBUTES, MAILY_NODE_TYPES } from './node';
 import type { VariableAttributes } from './node';
 
-/** Default opening delimiter for variable placeholders in text. */
 export const DEFAULT_VARIABLE_START_TRIGGER = '{{';
 
-/** Default closing delimiter for variable placeholders in text. */
 export const DEFAULT_VARIABLE_END_TRIGGER = '}}';
 
-/**
- * Regex that matches variable placeholders like {{name}} in a string.
- * Uses a non-greedy match to handle multiple variables in one string.
- */
-export const VARIABLE_PLACEHOLDER_REGEX = /({{.*?}})/g;
+type VariableAttributeName = keyof typeof DEFAULT_VARIABLE_ATTRIBUTES;
 
-/**
- * Delimiter used between fields inside a serialized variable string.
- * Format: {{id|label|required|hideDefaultValue}}.
- */
-export const VARIABLE_TEXT_DELIMITER = '|';
+function getQuotedValue(value: string): string {
+  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+}
 
-/**
- * Serializes a variable node's attributes into a delimited string.
- * Output format: `{{id|label|required|hideDefaultValue}}`.
- * Used to represent structured variable data as a template string
- * in plain text contexts.
- */
+type SerializedAttributeOptions = {
+  name: VariableAttributeName;
+  value: VariableAttributes[VariableAttributeName];
+};
+
+function getSerializedAttribute(
+  options: SerializedAttributeOptions
+): string | null {
+  const { name, value } = options;
+
+  if (value === undefined || value === DEFAULT_VARIABLE_ATTRIBUTES[name]) {
+    return null;
+  }
+
+  if (typeof value === 'boolean') {
+    return `${name}=${value}`;
+  }
+
+  return typeof value === 'string' ? `${name}=${getQuotedValue(value)}` : null;
+}
+
 export function serializeVariableToText(variable: VariableAttributes): string {
-  const { id, label, required = true, hideDefaultValue = false } = variable;
+  const { fallback, hideDefaultValue, id, label, required, style } = variable;
+
+  const attributes = [
+    getSerializedAttribute({ name: 'fallback', value: fallback }),
+    getSerializedAttribute({
+      name: 'hideDefaultValue',
+      value: hideDefaultValue,
+    }),
+    getSerializedAttribute({
+      name: 'label',
+      value: label === id ? null : label,
+    }),
+    getSerializedAttribute({ name: 'required', value: required }),
+    getSerializedAttribute({ name: 'style', value: style }),
+  ].filter((attribute) => {
+    return attribute !== null;
+  });
 
   return [
     DEFAULT_VARIABLE_START_TRIGGER,
-    defaultStringifyValue(id),
-    VARIABLE_TEXT_DELIMITER,
-    defaultStringifyValue(label),
-    VARIABLE_TEXT_DELIMITER,
-    required,
-    VARIABLE_TEXT_DELIMITER,
-    hideDefaultValue,
+    [id, ...attributes].join(' '),
     DEFAULT_VARIABLE_END_TRIGGER,
   ].join('');
 }
 
-function defaultStringifyValue(value: string | null | undefined) {
-  return value ?? '';
+function getReferenceTokens(inner: string): string[] {
+  const tokens: string[] = [];
+  let token = '';
+  let quoted = false;
+
+  for (let index = 0; index < inner.length; index += 1) {
+    const character = inner[index]!;
+
+    if (quoted && character === '\\' && index + 1 < inner.length) {
+      token += character + inner[index + 1];
+      index += 1;
+      continue;
+    }
+
+    if (character === '"') {
+      quoted = !quoted;
+      token += character;
+      continue;
+    }
+
+    if (!quoted && /\s/.test(character)) {
+      if (token) {
+        tokens.push(token);
+        token = '';
+      }
+      continue;
+    }
+
+    token += character;
+  }
+
+  if (token) {
+    tokens.push(token);
+  }
+
+  return tokens;
 }
 
-/**
- * Deserializes a variable string back into VariableAttributes.
- * Expected input format: `{{id|label|required|hideDefaultValue}}`.
- * Missing fields default to undefined; boolean fields are parsed
- * from "true"/"false" strings.
- */
+function getUnquotedValue(value: string): unknown {
+  if (value.startsWith('"') && value.endsWith('"') && value.length > 1) {
+    return value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+  }
+
+  if (value === 'true') {
+    return true;
+  }
+  if (value === 'false') {
+    return false;
+  }
+
+  return value;
+}
+
 export function deserializeVariableFromText(text: string): VariableAttributes {
   const inner = text
     .slice(
@@ -59,61 +119,120 @@ export function deserializeVariableFromText(text: string): VariableAttributes {
     )
     .trim();
 
-  const [id, label, required, hideDefaultValue] = inner.split(
-    VARIABLE_TEXT_DELIMITER
-  );
+  const [id = '', ...pairs] = getReferenceTokens(inner);
+  const attributes: Record<string, unknown> = { id };
+
+  for (const pair of pairs) {
+    const separator = pair.indexOf('=');
+    if (separator <= 0) {
+      continue;
+    }
+
+    const key = pair.slice(0, separator);
+    const value = getUnquotedValue(pair.slice(separator + 1));
+
+    attributes[key] = value;
+  }
 
   return {
-    id,
-    label: label || null,
-    required: parseBoolean(required, true),
-    hideDefaultValue: parseBoolean(hideDefaultValue, false),
-  };
+    ...DEFAULT_VARIABLE_ATTRIBUTES,
+    ...attributes,
+  } as VariableAttributes;
 }
 
-/**
- * Parses a string containing variable placeholders (e.g. "Hello {{name}}")
- * into a Tiptap-compatible document JSON with text and variable nodes.
- * Splits on {{...}} boundaries and creates the appropriate node type
- * for each segment.
- */
-export function buildDocFromVariableText(content: string) {
-  const parts = content.split(VARIABLE_PLACEHOLDER_REGEX);
+type VariableSegment = {
+  isReference: boolean;
+  text: string;
+};
 
+export function getVariableSegments(content: string): VariableSegment[] {
+  const segments: VariableSegment[] = [];
+  let plain = '';
+  let index = 0;
+
+  while (index < content.length) {
+    if (!content.startsWith(DEFAULT_VARIABLE_START_TRIGGER, index)) {
+      plain += content[index];
+      index += 1;
+      continue;
+    }
+
+    const end = getReferenceEnd({ content, start: index });
+    if (end === -1) {
+      plain += content[index];
+      index += 1;
+      continue;
+    }
+
+    if (plain) {
+      segments.push({ isReference: false, text: plain });
+      plain = '';
+    }
+
+    segments.push({ isReference: true, text: content.slice(index, end) });
+    index = end;
+  }
+
+  if (plain) {
+    segments.push({ isReference: false, text: plain });
+  }
+
+  return segments;
+}
+
+type ReferenceEndOptions = {
+  content: string;
+  start: number;
+};
+
+function getReferenceEnd(options: ReferenceEndOptions): number {
+  const { content, start } = options;
+  let quoted = false;
+
+  for (
+    let index = start + DEFAULT_VARIABLE_START_TRIGGER.length;
+    index < content.length;
+    index += 1
+  ) {
+    const character = content[index]!;
+
+    if (quoted && character === '\\') {
+      index += 1;
+      continue;
+    }
+
+    if (character === '"') {
+      quoted = !quoted;
+      continue;
+    }
+
+    if (!quoted && content.startsWith(DEFAULT_VARIABLE_END_TRIGGER, index)) {
+      return index + DEFAULT_VARIABLE_END_TRIGGER.length;
+    }
+  }
+
+  return -1;
+}
+
+export function buildDocFromVariableText(content: string) {
   return {
     type: MAILY_NODE_TYPES.DOCUMENT,
     content: [
       {
         type: MAILY_NODE_TYPES.PARAGRAPH,
-        content: parts
-          .flatMap((part) => {
-            if (
-              part.startsWith(DEFAULT_VARIABLE_START_TRIGGER) &&
-              part.endsWith(DEFAULT_VARIABLE_END_TRIGGER)
-            ) {
-              return {
+        content: getVariableSegments(content).map((segment) => {
+          return segment.isReference
+            ? {
                 type: MAILY_NODE_TYPES.VARIABLE,
-                attrs: deserializeVariableFromText(part),
-              };
-            }
-
-            if (part) {
-              return { type: MAILY_NODE_TYPES.TEXT, text: part };
-            }
-
-            return [];
-          })
-          .filter(Boolean),
+                attrs: deserializeVariableFromText(segment.text),
+              }
+            : { type: MAILY_NODE_TYPES.TEXT, text: segment.text };
+        }),
       },
     ],
   };
 }
 
-/**
- * Checks if a string contains at least one variable placeholder.
- * Returns true for strings like "Hello {{name}}", false for plain text.
- * Uses index-based scanning instead of regex for performance.
- */
 export function hasVariableInText(text: string): boolean {
   const start = text.indexOf(DEFAULT_VARIABLE_START_TRIGGER);
   if (start === -1) {
@@ -126,18 +245,4 @@ export function hasVariableInText(text: string): boolean {
       start + DEFAULT_VARIABLE_START_TRIGGER.length
     ) !== -1
   );
-}
-
-function parseBoolean(
-  value?: string,
-  defaultValue?: boolean
-): boolean | undefined {
-  if (value === 'true') {
-    return true;
-  }
-  if (value === 'false') {
-    return false;
-  }
-
-  return defaultValue;
 }

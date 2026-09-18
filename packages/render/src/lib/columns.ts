@@ -1,16 +1,16 @@
-import { roundTo } from '@maily-to/shared';
 import type { ColumnNode } from '@maily-to/shared';
+import { getColumnWidthPercent, roundTo } from '@maily-to/shared';
 
 type ColumnLayout = {
-  node: ColumnNode;
   containerPercent: number;
+  node: ColumnNode;
   tdWidthPercent: number;
 };
 
 type ColumnLayoutResult = {
   columns: ColumnLayout[];
-  rowWidthPercent: number;
   gapTdWidthPercent: number;
+  rowWidthPercent: number;
 };
 
 /**
@@ -54,7 +54,7 @@ export function calculateColumnLayout(
 ): ColumnLayoutResult {
   const count = columnNodes.length;
   if (count === 0) {
-    return { columns: [], rowWidthPercent: 0, gapTdWidthPercent: 0 };
+    return { columns: [], gapTdWidthPercent: 0, rowWidthPercent: 0 };
   }
 
   // Step 1: Convert the gap from pixels into a percentage of the container
@@ -68,20 +68,23 @@ export function calculateColumnLayout(
   // Step 2: Separate fixed-width and auto-width columns
   // Fixed columns keep their defined width.
   // Auto columns divide the remaining available space.
-  const fixedSum = columnNodes.reduce(
-    (sum, col) => sum + (col.attrs.width ?? 0),
+  const percents = columnNodes.map((node) =>
+    getColumnWidthPercent({
+      containerWidth: containerBox,
+      width: node.attrs.width,
+    })
+  );
+  const fixedSum = percents.reduce<number>(
+    (sum, percent) => sum + (percent ?? 0),
     0
   );
-  const autoCount = columnNodes.filter(
-    (col) => col.attrs.width === null
-  ).length;
-
+  const autoCount = percents.filter((percent) => percent === null).length;
   const autoEach =
     autoCount > 0
       ? roundTo(Math.max(0, 100 - fixedSum - totalGapPercent) / autoCount, 3)
       : 0;
-  let containerPercents = columnNodes.map((col) => col.attrs.width ?? autoEach);
 
+  let containerPercents = percents.map((percent) => percent ?? autoEach);
   // Step 3: Calculate the row width
   //
   // If there are auto columns, the row fills the full container (100%).
@@ -96,7 +99,9 @@ export function calculateColumnLayout(
   // proportionally so the row still fits inside the container.
   if (autoCount === 0 && rowWidthPercent > 100) {
     const scale = 100 / rowWidthPercent;
-    containerPercents = containerPercents.map((p) => roundTo(p * scale, 3));
+    containerPercents = containerPercents.map((percent) =>
+      roundTo(percent * scale, 3)
+    );
     effectiveGapPercent = roundTo(gapPercent * scale, 3);
     rowWidthPercent = 100;
   }
@@ -106,27 +111,22 @@ export function calculateColumnLayout(
   // Table `<td>` width values are relative to the row `<table>`,
   // not the container. If the row is smaller than 100%, the
   // percentages need to be adjusted accordingly.
-  const gapTdWidthPercent =
-    rowWidthPercent > 0
-      ? roundTo((effectiveGapPercent / rowWidthPercent) * 100, 3)
-      : 0;
+  const toRowRelative = (percent: number) =>
+    rowWidthPercent > 0 ? roundTo((percent / rowWidthPercent) * 100, 3) : 0;
 
-  const columns: ColumnLayout[] = columnNodes.map((col, i) => {
-    const containerPercent = containerPercents[i];
-    const tdWidthPercent =
-      rowWidthPercent > 0
-        ? roundTo((containerPercent / rowWidthPercent) * 100, 3)
-        : 0;
-
-    return {
+  return {
+    columns: columnNodes.map((node, index) => ({
+      containerPercent: containerPercents[index],
       node: {
-        ...col,
-        attrs: { ...col.attrs, width: col.attrs.width ?? containerPercent },
+        ...node,
+        attrs: {
+          ...node.attrs,
+          width: percents[index] ?? containerPercents[index],
+        },
       },
-      containerPercent,
-      tdWidthPercent,
-    };
-  });
-
-  return { columns, rowWidthPercent, gapTdWidthPercent };
+      tdWidthPercent: toRowRelative(containerPercents[index]),
+    })),
+    gapTdWidthPercent: toRowRelative(effectiveGapPercent),
+    rowWidthPercent,
+  };
 }

@@ -14,6 +14,7 @@ import type {
 import { Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { Container } from '~/components/container';
 import { cn } from '~/lib/classname';
 
 type EmailEditorProps = {
@@ -56,9 +57,11 @@ export function EmailEditor(props: EmailEditorProps) {
           setEditor(editor);
         }}
       >
-        <Toolbar.Root className={cn(isLoading && 'hidden')}>
-          <Toolbar.CommonActions />
-        </Toolbar.Root>
+        <Container>
+          <Toolbar.Root className={cn(isLoading && 'hidden')}>
+            <Toolbar.CommonActions />
+          </Toolbar.Root>
+        </Container>
 
         <Editor.Frame className={cn(isLoading && 'hidden')}>
           <Editor.Content />

@@ -19,7 +19,6 @@ import {
   repeat,
   section,
   spacer,
-  table,
 } from '~/blocks/layout';
 import { linkCard } from '~/blocks/link-card';
 import { bulletList, orderedList } from '~/blocks/list';
@@ -53,7 +52,6 @@ export const DEFAULT_SLASH_COMMANDS: SlashCommandGroupItem[] = [
       section,
       columns,
       repeat,
-      table,
       button,
       linkCard,
       footer,

@@ -334,10 +334,10 @@ const EDITOR_COMPONENTS = [
   { name: 'Social', icon: Share2Icon },
   { name: 'AI Extension', icon: SparklesIcon },
   { name: 'Inline Suggestion', icon: MessageSquareTextIcon },
+  { name: 'Table', icon: TableIcon },
 ];
 
 const COMING_SOON_COMPONENTS = [
   { name: 'Video', icon: PlayIcon },
-  { name: 'Table', icon: TableIcon },
   { name: 'Countdown', icon: TimerIcon },
 ];

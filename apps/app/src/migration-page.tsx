@@ -3,7 +3,7 @@ import { migrate } from '@maily-to/migration';
 import type { VariableValue } from '@maily-to/render';
 import { render } from '@maily-to/render';
 import type { AnyMailyNode } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { MAILY_NODE_THEME } from '@maily-to/shared';
 import {
   lazy,
   Suspense,
@@ -230,7 +230,7 @@ export function MigrationPage() {
     const build = async () => {
       try {
         const html = await render(document, {
-          theme: DEFAULT_NODE_THEME,
+          theme: MAILY_NODE_THEME,
           variables: PREVIEW_VARIABLES,
         });
 

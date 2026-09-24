@@ -1,11 +1,11 @@
-import { Editor, ThemeSettings, Toolbar } from '@maily-to/core';
+import { Editor, Toolbar } from '@maily-to/core';
 import {
   ImageUploadExtension,
   LinkCardExtension,
   ThemeExtension,
   VariableExtension,
 } from '@maily-to/core/extensions';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import type {
   FocusPosition,
   JSONContent,
@@ -31,7 +31,7 @@ const EDITOR_EXTENSIONS = [
     },
   }),
   LinkCardExtension,
-  ThemeExtension.configure({ theme: DEFAULT_NODE_THEME }),
+  ThemeExtension.configure({ theme: BASIC_NODE_THEME }),
 ];
 
 export function EmailEditor(props: EmailEditorProps) {
@@ -68,20 +68,6 @@ export function EmailEditor(props: EmailEditorProps) {
           <Editor.BubbleMenus />
           <Editor.DragContextHandle />
         </Editor.Frame>
-
-        <div
-          className={cn(
-            'fixed bottom-6 left-1/2 z-20 -translate-x-1/2',
-            isLoading && 'hidden'
-          )}
-        >
-          <ThemeSettings.Root>
-            <ThemeSettings.Font />
-            <ThemeSettings.Layout />
-            <ThemeSettings.Button />
-            <ThemeSettings.Text />
-          </ThemeSettings.Root>
-        </div>
       </Editor.Root>
     </>
   );

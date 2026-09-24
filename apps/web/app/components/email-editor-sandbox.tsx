@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import { toast } from 'sonner';
 
 import { Icons } from '~/components/icons';
-import { getDefaultDocument } from '~/lib/default-document';
+import { DEFAULT_DOCUMENT } from '~/lib/default-document';
 import { FetchError, httpPost } from '~/lib/http';
 
 import {
@@ -24,8 +24,6 @@ import { Label } from './ui/label';
 type EmailEditorSandboxProps = {
   autofocus?: FocusPosition;
 };
-
-const DEFAULT_DOCUMENT = getDefaultDocument();
 
 export function EmailEditorSandbox(props: EmailEditorSandboxProps) {
   const { autofocus } = props;

@@ -9,6 +9,9 @@ type NavRootProps = {
 function Root(props: NavRootProps) {
   return (
     <nav className="sticky top-0 z-20 flex shrink-0 items-center border-b border-gray-200 bg-gray-50">
+      <span className="flex h-full items-center border-r border-gray-200 px-3">
+        <img alt="Maily" className="h-4 w-auto" src="/logo.svg" />
+      </span>
       {props.children}
     </nav>
   );

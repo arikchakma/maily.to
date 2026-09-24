@@ -56,7 +56,7 @@ export function PreviewPanel(props: PreviewPanelProps) {
       }
       window.addEventListener('load', function() {
         sendHeight();
-        new MutationObserver(sendHeight).observe(document.body, { childList: true, subtree: true });
+        new ResizeObserver(sendHeight).observe(document.body);
       });
     </script>`;
 

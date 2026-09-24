@@ -17,26 +17,8 @@ import { queryClient } from './lib/query-client';
 import stylesheet from './app.css?url';
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-  {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
-  },
-  {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-  },
   { rel: 'stylesheet', href: stylesheet },
-  {
-    rel: 'icon',
-    type: 'image/svg+xml',
-    href: '/brand/logo.svg',
-  },
-  {
-    rel: 'icon',
-    href: '/brand/logo.svg',
-  },
+  { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg?v=4' },
 ];
 
 export const meta: Route.MetaFunction = () => [

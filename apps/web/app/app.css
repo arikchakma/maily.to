@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @import '@maily-to/core/style.css';
 
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter.woff2') format('woff2');
+}
+
 @theme {
   --font-inter:
     'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',

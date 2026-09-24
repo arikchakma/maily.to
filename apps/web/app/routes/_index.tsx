@@ -75,10 +75,10 @@ export default function Home(_props: Route.ComponentProps) {
             </div>
             <div className="hidden shrink-0 lg:flex">
               <img
-                alt="Maily Icon"
-                className="h-[240px] w-[240px] lg:h-[270px] lg:w-[270px]"
+                alt="Maily Logo"
+                className="h-[240px] w-auto lg:h-[270px]"
                 loading="eager"
-                src="/brand/icon.svg"
+                src="/brand/logo.svg"
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { Editor, ThemeSettings, Toolbar } from '@maily-to/core';
+import { Editor, Toolbar } from '@maily-to/core';
 import {
   ImageUploadExtension,
   LinkCardExtension,
@@ -12,7 +12,7 @@ import type {
 import { AIActions } from '@maily-to/extension-ai-actions';
 import { InlineSuggestion } from '@maily-to/extension-inline-suggestion';
 import type { DocumentNode } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import { useCallback, useMemo, useState } from 'react';
 
 import { DEFAULT_DOCUMENT } from './default-document';
@@ -127,7 +127,7 @@ export function App() {
   const [status, setStatus] = useState('Ready');
 
   const theme = useMemo(
-    () => (isThemed ? DEFAULT_NODE_THEME : undefined),
+    () => (isThemed ? BASIC_NODE_THEME : undefined),
     [isThemed]
   );
 
@@ -204,15 +204,6 @@ export function App() {
               <Editor.BubbleMenus />
               <Editor.DragContextHandle />
             </Editor.Frame>
-
-            <div className="fixed bottom-4 left-1/4 z-20 -translate-x-1/2">
-              <ThemeSettings.Root>
-                <ThemeSettings.Font />
-                <ThemeSettings.Layout />
-                <ThemeSettings.Button />
-                <ThemeSettings.Text />
-              </ThemeSettings.Root>
-            </div>
           </Editor.Root>
         </div>
 

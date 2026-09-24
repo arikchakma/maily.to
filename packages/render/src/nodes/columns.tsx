@@ -3,6 +3,7 @@ import { Column as EmailColumn, Row, Section } from '@react-email/components';
 import { Fragment } from 'react';
 
 import { calculateColumnLayout } from '../lib/columns';
+import { getNodeStyle } from '../lib/styles';
 import type { NodeRenderer } from '../node';
 
 const COLUMNS_RESPONSIVE_CSS = `@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-gap{display:none!important}}`;
@@ -29,7 +30,7 @@ export const columns: NodeRenderer = (node, ctx) => {
   const gapWidth = `${gapTdWidthPercent}%`;
 
   return (
-    <Section>
+    <Section style={getNodeStyle(node.attrs.style)}>
       <Row
         align="left"
         className="tab-row-full"

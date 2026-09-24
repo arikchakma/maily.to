@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vite-plus/test';
 
 import {
   DEFAULT_FONT,
-  DEFAULT_NODE_THEME,
+  BASIC_NODE_THEME,
   getFontFaceStyle,
   getFontFamilyNames,
   getFontFamilyValue,
@@ -58,7 +58,7 @@ describe('font', () => {
   });
 
   it('authors the font on the body of the default theme', () => {
-    expect(DEFAULT_NODE_THEME.body).toEqual({
+    expect(BASIC_NODE_THEME.body).toEqual({
       fontFamily: "'Inter', sans-serif",
     });
   });

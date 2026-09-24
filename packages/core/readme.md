@@ -372,17 +372,17 @@ renderer reads — so `@maily-to/render` applies no theme of its own and the ema
 matches the canvas.
 
 ```tsx
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import { ThemeExtension } from '@maily-to/core/extensions';
 
 <Editor.Root
-  extensions={[ThemeExtension.configure({ theme: DEFAULT_NODE_THEME })]}
+  extensions={[ThemeExtension.configure({ theme: BASIC_NODE_THEME })]}
 >
   ...
 </Editor.Root>;
 ```
 
-`DEFAULT_NODE_THEME` is the look Maily ships with. Omit `ThemeExtension`
+`BASIC_NODE_THEME` is a plain starter theme. Omit `ThemeExtension`
 entirely for an unthemed document — the editor stays fully usable and applies no
 Maily appearance.
 

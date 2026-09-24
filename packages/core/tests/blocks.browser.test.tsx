@@ -1,5 +1,5 @@
 import { render as renderMaily } from '@maily-to/render';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import { describe, expect, it } from 'vite-plus/test';
 
 import { createRenderer, getContainerContent } from '#test-utils';
@@ -185,7 +185,7 @@ describe('blocks', () => {
 
       const json = ref.current!.getJSON();
       const exported = getExportedNode({
-        html: await renderMaily(json, { theme: DEFAULT_NODE_THEME }),
+        html: await renderMaily(json, { theme: BASIC_NODE_THEME }),
         selector: 'small',
       });
 

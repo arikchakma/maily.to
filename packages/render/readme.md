@@ -66,9 +66,9 @@ from the `style` attribute the document carries, so the email matches what the
 editor showed. Pass `theme` only to render a document that has none of its own.
 
 ```ts
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 
-const html = await render(doc, { theme: DEFAULT_NODE_THEME });
+const html = await render(doc, { theme: BASIC_NODE_THEME });
 ```
 
 The `<head>` carries an `@font-face` rule for every family the document's style

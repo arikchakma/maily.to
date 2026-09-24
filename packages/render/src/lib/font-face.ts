@@ -63,10 +63,15 @@ function registerStyledFont(options: StyledFontOptions): void {
     return;
   }
 
+  const item = ctx.config.fontFamilies.find((entry) => {
+    return entry.fontFamily === fontFamily;
+  });
+  if (!item) {
+    return;
+  }
+
   const weight = Number.parseInt(declarations.fontWeight ?? '', 10);
-  const webFont = ctx.config.fontFamilies.find((item) => {
-    return item.fontFamily === fontFamily;
-  })?.webFont;
+  const { webFont } = item;
 
   registerFontFace({
     ctx,

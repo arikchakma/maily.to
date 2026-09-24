@@ -1,5 +1,5 @@
 import type { DocumentNode, NodeThemeOptions } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME, extendNodeTheme } from '@maily-to/shared';
+import { BASIC_NODE_THEME, extendNodeTheme } from '@maily-to/shared';
 import { waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vite-plus/test';
 import { userEvent } from 'vite-plus/test/browser/context';
@@ -175,7 +175,7 @@ describe('<ThemeSettings />', () => {
       content = DOCUMENT,
       frame = false,
       styled = true,
-      theme = DEFAULT_NODE_THEME,
+      theme = BASIC_NODE_THEME,
     } = options;
 
     return render({
@@ -278,7 +278,7 @@ describe('<ThemeSettings />', () => {
       await mountEditor({
         theme: extendNodeTheme({
           extension: { button: { padding: '11px 33px' } },
-          preset: DEFAULT_NODE_THEME,
+          preset: BASIC_NODE_THEME,
         }),
       });
 

@@ -1,6 +1,6 @@
 import type { InlineStyle, NodeThemeOptions } from '@maily-to/shared';
 import {
-  DEFAULT_NODE_THEME,
+  BASIC_NODE_THEME,
   expandInlineStyles,
   parseInlineStyles,
 } from '@maily-to/shared';
@@ -29,7 +29,7 @@ export function getResolvedThemeDeclarations(
 ): InlineStyle {
   const { editor, type } = options;
 
-  return { ...DEFAULT_NODE_THEME[type], ...getNodeTheme(editor)[type] };
+  return { ...BASIC_NODE_THEME[type], ...getNodeTheme(editor)[type] };
 }
 
 export type ResolvedShellDeclarationsOptions = {

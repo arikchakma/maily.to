@@ -3,7 +3,7 @@ import type {
   NodeThemeOptions,
   TextDirection,
 } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import {
   cleanup,
   render as renderReact,
@@ -91,7 +91,7 @@ async function renderEditor(
   const themeExtensions = theme
     ? [
         ThemeExtension.configure({
-          theme: theme === true ? DEFAULT_NODE_THEME : theme,
+          theme: theme === true ? BASIC_NODE_THEME : theme,
         }),
       ]
     : [];

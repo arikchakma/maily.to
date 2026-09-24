@@ -1,5 +1,5 @@
 import type { DocumentNode, MailyNodeType } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import { parse } from 'node-html-parser';
 import { describe, expect, it } from 'vite-plus/test';
 
@@ -144,7 +144,7 @@ describe('repeat', () => {
     } as DocumentNode;
 
     const html = await render(document, {
-      theme: DEFAULT_NODE_THEME,
+      theme: BASIC_NODE_THEME,
       variables: {
         items: [
           { name: 'Ada', role: 'One' },

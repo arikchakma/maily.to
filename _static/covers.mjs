@@ -64,7 +64,7 @@ const COVERS = [
 const text = await renderText(document);
 
 const themed = await render(document, {
-  theme: DEFAULT_NODE_THEME,
+  theme: BASIC_NODE_THEME,
   preview: 'Your weekly digest',
 });`,
   },
@@ -76,7 +76,7 @@ const themed = await render(document, {
     tagline:
       'The document, style, and theme contracts<br />every Maily package speaks.',
     code: `const theme: NodeThemeOptions = {
-  ...DEFAULT_NODE_THEME,
+  ...BASIC_NODE_THEME,
   body: { backgroundColor: '#ffffff' },
   container: { maxWidth: '600px' },
   button: { backgroundColor: '#4f46e5', color: '#ffffff' },

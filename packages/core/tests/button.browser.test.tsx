@@ -1,5 +1,5 @@
 import { render as renderMaily } from '@maily-to/render';
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import type { JSONContent } from '@tiptap/core';
 import { describe, expect, it } from 'vite-plus/test';
 
@@ -90,7 +90,7 @@ describe('<ButtonExtension />', () => {
         .run();
 
       const anchor = getExportedDocument(
-        await renderMaily(ref.current!.getJSON(), { theme: DEFAULT_NODE_THEME })
+        await renderMaily(ref.current!.getJSON(), { theme: BASIC_NODE_THEME })
       ).querySelector('a');
 
       expect({

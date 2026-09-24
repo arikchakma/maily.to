@@ -1,5 +1,5 @@
 import { render as renderMaily } from '@maily-to/render';
-import { DEFAULT_NODE_THEME, invariant } from '@maily-to/shared';
+import { BASIC_NODE_THEME, invariant } from '@maily-to/shared';
 import { waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
 
@@ -247,7 +247,7 @@ describe('render parity', () => {
     });
 
     const html = await renderMaily(ref.current!.getJSON(), {
-      theme: DEFAULT_NODE_THEME,
+      theme: BASIC_NODE_THEME,
     });
 
     return {

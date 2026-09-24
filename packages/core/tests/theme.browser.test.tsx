@@ -1,6 +1,6 @@
 import { render as renderMaily } from '@maily-to/render';
 import type { BulletListNode, OrderedListNode } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME, extendNodeTheme } from '@maily-to/shared';
+import { BASIC_NODE_THEME, extendNodeTheme } from '@maily-to/shared';
 import { waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vite-plus/test';
 
@@ -10,7 +10,7 @@ const SPACED_THEME = extendNodeTheme({
   extension: {
     paragraph: { marginBottom: '20px', marginTop: '20px' },
   },
-  preset: DEFAULT_NODE_THEME,
+  preset: BASIC_NODE_THEME,
 });
 
 function getListNode(
@@ -198,7 +198,7 @@ describe('<ThemeExtension />', () => {
             content: [{ type: 'text', text: 'Authored' }],
           },
         ]),
-        { theme: DEFAULT_NODE_THEME }
+        { theme: BASIC_NODE_THEME }
       );
 
       const paragraph = new DOMParser()
@@ -224,7 +224,7 @@ describe('<ThemeExtension />', () => {
       const anchor = new DOMParser()
         .parseFromString(
           await renderMaily(ref.current!.getJSON(), {
-            theme: DEFAULT_NODE_THEME,
+            theme: BASIC_NODE_THEME,
           }),
           'text/html'
         )
@@ -317,7 +317,7 @@ describe('<ThemeExtension />', () => {
     it('gives a list its marker gutter when rendering', async () => {
       const html = await renderMaily(
         getDocument([getListNode('orderedList')]),
-        { theme: DEFAULT_NODE_THEME }
+        { theme: BASIC_NODE_THEME }
       );
 
       const exported = new DOMParser().parseFromString(html, 'text/html');
@@ -338,7 +338,7 @@ describe('<ThemeExtension />', () => {
     it('zeroes the trailing margin on the last list item when rendering', async () => {
       const html = await renderMaily(
         getDocument([getListNode('orderedList')]),
-        { theme: DEFAULT_NODE_THEME }
+        { theme: BASIC_NODE_THEME }
       );
 
       const items = new DOMParser()
@@ -476,7 +476,7 @@ describe('<ThemeExtension />', () => {
             content: [{ type: 'text', text: 'Titled' }],
           },
         ]),
-        { theme: DEFAULT_NODE_THEME }
+        { theme: BASIC_NODE_THEME }
       );
 
       const exported = new DOMParser().parseFromString(html, 'text/html');
@@ -492,7 +492,7 @@ describe('<ThemeExtension />', () => {
         extension: {
           button: { backgroundColor: '#0000ff', borderRadius: '4px' },
         },
-        preset: DEFAULT_NODE_THEME,
+        preset: BASIC_NODE_THEME,
       });
 
       const { ref } = await render({ theme });
@@ -532,7 +532,7 @@ describe('<ThemeExtension />', () => {
       ref.current?.getEditor().chain().focus().setButton().run();
 
       const json = ref.current!.getJSON();
-      const getButtonBackground = async (theme: typeof DEFAULT_NODE_THEME) => {
+      const getButtonBackground = async (theme: typeof BASIC_NODE_THEME) => {
         return new DOMParser()
           .parseFromString(await renderMaily(json, { theme }), 'text/html')
           .querySelector('a')?.style.backgroundColor;
@@ -544,10 +544,10 @@ describe('<ThemeExtension />', () => {
             extension: {
               button: { backgroundColor: '#00ff00' },
             },
-            preset: DEFAULT_NODE_THEME,
+            preset: BASIC_NODE_THEME,
           })
         ),
-        before: await getButtonBackground(DEFAULT_NODE_THEME),
+        before: await getButtonBackground(BASIC_NODE_THEME),
       }).toEqual({ after: 'rgb(0, 255, 0)', before: 'rgb(0, 0, 0)' });
     });
   });

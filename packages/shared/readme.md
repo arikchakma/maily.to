@@ -32,7 +32,7 @@ it depends on none of them.
 | Document types | `DocumentNode`, `AnyMailyNode`, node and mark attribute types      |
 | Guards         | `guard<T>()`-derived type guards for every node and mark           |
 | Style          | `InlineStyle` and the helpers that read and write a `style` object |
-| Theme          | `NodeThemeOptions`, `DEFAULT_NODE_THEME`                           |
+| Theme          | `NodeThemeOptions`, `BASIC_NODE_THEME`                             |
 | Constants      | `MAILY_NODE_TYPES`, `MAILY_MARK_TYPES`, trigger and limit values   |
 
 #### Documents
@@ -44,20 +44,20 @@ renderer applies no theme of its own.
 
 ```ts
 import type { DocumentNode } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME, MAILY_NODE_TYPES } from '@maily-to/shared';
+import { BASIC_NODE_THEME, MAILY_NODE_TYPES } from '@maily-to/shared';
 ```
 
 #### Themes
 
-`NodeThemeOptions` maps a node type to an `InlineStyle`. `DEFAULT_NODE_THEME` is
-the theme Maily ships with — pass it to `ThemeExtension` to start from Maily's
-look, or omit it for an unthemed document.
+`NodeThemeOptions` maps a node type to an `InlineStyle`. `BASIC_NODE_THEME` is
+a plain starter theme. Pass it to `ThemeExtension` to start from it, or omit it
+for an unthemed document.
 
 ```ts
-import { DEFAULT_NODE_THEME } from '@maily-to/shared';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
 import { ThemeExtension } from '@maily-to/core/extensions';
 
-ThemeExtension.configure({ theme: DEFAULT_NODE_THEME });
+ThemeExtension.configure({ theme: BASIC_NODE_THEME });
 ```
 
 ### Contributions

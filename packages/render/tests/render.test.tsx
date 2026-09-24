@@ -1,5 +1,5 @@
 import type { AnyMailyMark, DocumentNode } from '@maily-to/shared';
-import { DEFAULT_NODE_THEME, parseInlineStyles } from '@maily-to/shared';
+import { BASIC_NODE_THEME, parseInlineStyles } from '@maily-to/shared';
 import type { HTMLElement } from 'node-html-parser';
 import { parse } from 'node-html-parser';
 import { describe, expect, it } from 'vite-plus/test';
@@ -601,7 +601,7 @@ describe('render', () => {
         ],
       };
 
-      const root = parse(await render(themed, { theme: DEFAULT_NODE_THEME }));
+      const root = parse(await render(themed, { theme: BASIC_NODE_THEME }));
 
       expect({
         css: root.querySelector('head style')?.textContent,
@@ -648,6 +648,34 @@ describe('render', () => {
         "@font-face {font-family: 'Lato';font-style: normal;font-weight: 600;mso-font-alt: 'serif';src: url(https://cdn.usemaily.com/fonts/v0/lato.woff2) format('woff2');}",
         "@font-face {font-family: 'Helvetica';font-style: normal;font-weight: 400;mso-font-alt: 'sans-serif';}",
       ]);
+    });
+
+    it('declares no font face for a family it does not offer', async () => {
+      const unoffered: DocumentNode = {
+        type: 'doc',
+        attrs: { version: 2 },
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: 'monospaced',
+                marks: [
+                  {
+                    type: 'code',
+                    attrs: { style: 'font-family:ui-monospace, monospace' },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      expect(
+        parse(await render(unoffered)).querySelector('head style')?.textContent
+      ).toBe('');
     });
   });
 

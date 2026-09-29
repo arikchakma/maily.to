@@ -39,7 +39,7 @@
   }
 }
 
-::selection {
+:not([data-mly-editor-content], [data-mly-editor-content] *)::selection {
   background: var(--color-ink-dim);
   color: var(--color-ink);
 }

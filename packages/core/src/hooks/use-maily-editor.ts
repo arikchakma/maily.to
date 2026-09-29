@@ -198,6 +198,12 @@ export function useMailyEditor(
         typeof content === 'string' ? getNormalizedHtml(content) : content,
       editorProps: {
         ...editorProps,
+        attributes: {
+          spellcheck: 'false',
+          ...(typeof editorProps?.attributes === 'function'
+            ? {}
+            : editorProps?.attributes),
+        },
         handlePaste: (view, event, slice) => {
           return (
             pasteHtmlSource({ event, view }) ||

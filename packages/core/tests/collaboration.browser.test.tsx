@@ -8,7 +8,7 @@ import type { JSONContent } from '@tiptap/core';
 import { Collaboration } from '@tiptap/extension-collaboration';
 import { createRef } from 'react';
 import { afterEach, describe, expect, it } from 'vite-plus/test';
-import { Doc } from 'yjs';
+import { applyUpdate, Doc, encodeStateAsUpdate } from 'yjs';
 
 import { getDocument } from '#test-utils';
 import { CollaborationAttributesExtension, ThemeExtension } from '~/extensions';
@@ -86,6 +86,45 @@ describe('collaboration', () => {
 
     await waitFor(() => {
       expect(getLate().getJSON()).toEqual(getFirst().getJSON());
+    });
+  });
+
+  it('keeps concurrent changes to different theme properties', async () => {
+    const firstDocument = new Doc();
+    const secondDocument = new Doc();
+    const sync = () => {
+      applyUpdate(secondDocument, encodeStateAsUpdate(firstDocument));
+      applyUpdate(firstDocument, encodeStateAsUpdate(secondDocument));
+    };
+
+    const getFirst = await renderCollaborator(firstDocument);
+    const getSecond = await renderCollaborator(secondDocument);
+
+    getFirst().commands.setNodeTheme(BASIC_NODE_THEME);
+    sync();
+
+    await waitFor(() => {
+      expect(getSecond().state.doc.attrs.theme).toEqual(BASIC_NODE_THEME);
+    });
+
+    getFirst().commands.updateNodeTheme({
+      button: { backgroundColor: '#ff0000' },
+    });
+    getSecond().commands.updateNodeTheme({ paragraph: { color: '#00ff00' } });
+    sync();
+
+    await waitFor(() => {
+      const theme = getFirst().state.doc.attrs.theme;
+
+      expect({
+        button: theme.button.backgroundColor,
+        paragraph: theme.paragraph.color,
+        same: getSecond().state.doc.attrs.theme,
+      }).toEqual({
+        button: '#ff0000',
+        paragraph: '#00ff00',
+        same: theme,
+      });
     });
   });
 });

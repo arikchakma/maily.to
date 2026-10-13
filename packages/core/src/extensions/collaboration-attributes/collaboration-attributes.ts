@@ -1,3 +1,4 @@
+import { isMergeableObject } from '@maily-to/shared';
 import type { Editor } from '@tiptap/core';
 import { Extension } from '@tiptap/core';
 import type { Doc, YMapEvent } from 'yjs';
@@ -17,17 +18,45 @@ declare module '@tiptap/core' {
   }
 }
 
+type Attributes = Record<string, unknown>;
+
 const COLLABORATION_ATTRIBUTES_META = 'collaborationAttributes';
 
-function isSame(a: unknown, b: unknown) {
-  return JSON.stringify(a) === JSON.stringify(b);
+function getAttributePaths(
+  attributes: Attributes,
+  prefix = ''
+): [string, unknown][] {
+  return Object.entries(attributes).flatMap(([name, value]) => {
+    return isMergeableObject(value)
+      ? getAttributePaths(value, `${prefix}${name}.`)
+      : [[`${prefix}${name}`, value]];
+  });
 }
 
-function applyAttributes(editor: Editor, attributes: Map<string, unknown>) {
+function setAttributes(editor: Editor, changes: [string, unknown][]) {
+  const attributes = structuredClone(editor.state.doc.attrs) as Attributes;
+
+  for (const [path, value] of changes) {
+    const names = path.split('.');
+    const last = names.pop()!;
+    let target = attributes;
+
+    for (const name of names) {
+      target[name] = isMergeableObject(target[name]) ? target[name] : {};
+      target = target[name] as Attributes;
+    }
+
+    if (value === undefined) {
+      delete target[last];
+    } else {
+      target[last] = value;
+    }
+  }
+
   const { tr } = editor.state;
 
-  for (const [name, value] of attributes) {
-    if (!isSame(tr.doc.attrs[name], value)) {
+  for (const [name, value] of Object.entries(attributes)) {
+    if (JSON.stringify(tr.doc.attrs[name]) !== JSON.stringify(value)) {
       tr.setDocAttribute(name, value);
     }
   }
@@ -43,9 +72,6 @@ function applyAttributes(editor: Editor, attributes: Map<string, unknown>) {
   );
 }
 
-// Yjs syncs only the document content, not `doc.attrs`. This extension keeps
-// the document attributes, such as the theme and the text direction, in a
-// shared Y.Map so that every collaborator sees the same values.
 export const CollaborationAttributesExtension = Extension.create<
   CollaborationAttributesOptions,
   CollaborationAttributesStorage
@@ -77,12 +103,13 @@ export const CollaborationAttributesExtension = Extension.create<
         return;
       }
 
-      applyAttributes(this.editor, new Map(map.entries()));
+      setAttributes(
+        this.editor,
+        [...event.keysChanged].map((path) => [path, map.get(path)])
+      );
     };
 
-    // A new collaborator does not write its defaults. Otherwise it can
-    // overwrite the values that the other collaborators already set.
-    applyAttributes(this.editor, new Map(map.entries()));
+    setAttributes(this.editor, [...map.entries()]);
     map.observe(observer);
     this.storage.unobserve = () => map.unobserve(observer);
   },
@@ -98,12 +125,19 @@ export const CollaborationAttributesExtension = Extension.create<
     }
 
     const map = document.getMap<unknown>(field);
-    const { attrs } = transaction.doc;
+    const before = new Map(getAttributePaths(transaction.before.attrs));
+    const after = new Map(getAttributePaths(transaction.doc.attrs));
 
     document.transact(() => {
-      for (const [name, value] of Object.entries(attrs)) {
-        if (!isSame(map.get(name), value)) {
-          map.set(name, value);
+      for (const [path, value] of after) {
+        if (before.get(path) !== value) {
+          map.set(path, value);
+        }
+      }
+
+      for (const path of before.keys()) {
+        if (!after.has(path)) {
+          map.delete(path);
         }
       }
     }, this.editor);

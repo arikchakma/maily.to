@@ -222,8 +222,8 @@ function getVariableElement(document: Document, variable: VariableAttributes) {
   element.setAttribute('data-id', variable.id);
   element.setAttribute('data-required', String(variable.required));
   element.setAttribute(
-    'data-hide-default-value',
-    String(variable.hideDefaultValue)
+    'data-is-default-editable',
+    String(variable.isDefaultEditable)
   );
 
   if (variable.fallback) {

@@ -14,8 +14,8 @@ export function useVariableBubbleState(editor?: Editor) {
 
       return {
         fallback: attrs.fallback ?? '',
-        hideDefaultValue: attrs.hideDefaultValue ?? false,
         id: attrs.id ?? '',
+        isDefaultEditable: attrs.isDefaultEditable ?? true,
       };
     },
     type: MAILY_NODE_TYPES.VARIABLE,

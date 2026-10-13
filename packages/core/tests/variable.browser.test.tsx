@@ -355,6 +355,18 @@ describe('<VariableExtension />', () => {
     ).toBe('Hello Alice');
   });
 
+  it('reads the legacy hide default value html attribute', async () => {
+    const { ref } = await render({
+      content:
+        '<p><span data-node-type="variable" data-id="name" data-hide-default-value="true"></span></p>',
+      extensions: [VariableExtension],
+    });
+
+    expect(getInsertedVariable(ref.current!)?.attrs?.isDefaultEditable).toBe(
+      false
+    );
+  });
+
   it('commits a variable field with the enter key it advertises', async () => {
     const { ref } = await render({
       children: <VariableBubbleMenu />,

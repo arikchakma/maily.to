@@ -314,8 +314,10 @@ export type TextNode = BaseMailyNode & {
 
 export type VariableAttributes = WithExtraAttrs & {
   fallback?: string | null;
+  /** @deprecated Use `isDefaultEditable` instead. */
   hideDefaultValue?: boolean;
   id: string;
+  isDefaultEditable?: boolean;
   label?: string | null;
   required?: boolean;
   style?: string | null;
@@ -323,7 +325,7 @@ export type VariableAttributes = WithExtraAttrs & {
 
 export const DEFAULT_VARIABLE_ATTRIBUTES = {
   fallback: null,
-  hideDefaultValue: false,
+  isDefaultEditable: true,
   label: null,
   required: true,
   style: null,

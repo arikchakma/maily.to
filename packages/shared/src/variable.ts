@@ -7,6 +7,8 @@ export const DEFAULT_VARIABLE_END_TRIGGER = '}}';
 
 type VariableAttributeName = keyof typeof DEFAULT_VARIABLE_ATTRIBUTES;
 
+const LEGACY_HIDE_DEFAULT_VALUE = 'hideDefaultValue';
+
 function getQuotedValue(value: string): string {
   return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
@@ -33,13 +35,13 @@ function getSerializedAttribute(
 }
 
 export function serializeVariableToText(variable: VariableAttributes): string {
-  const { fallback, hideDefaultValue, id, label, required, style } = variable;
+  const { fallback, id, isDefaultEditable, label, required, style } = variable;
 
   const attributes = [
     getSerializedAttribute({ name: 'fallback', value: fallback }),
     getSerializedAttribute({
-      name: 'hideDefaultValue',
-      value: hideDefaultValue,
+      name: 'isDefaultEditable',
+      value: isDefaultEditable,
     }),
     getSerializedAttribute({
       name: 'label',
@@ -130,6 +132,11 @@ export function deserializeVariableFromText(text: string): VariableAttributes {
 
     const key = pair.slice(0, separator);
     const value = getUnquotedValue(pair.slice(separator + 1));
+
+    if (key === LEGACY_HIDE_DEFAULT_VALUE) {
+      attributes.isDefaultEditable ??= value !== true;
+      continue;
+    }
 
     attributes[key] = value;
   }

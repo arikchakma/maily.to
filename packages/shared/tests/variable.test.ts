@@ -22,7 +22,7 @@ describe('variables', () => {
     it('writes only the attributes that differ from their default', () => {
       expect(
         serializeVariableToText({
-          hideDefaultValue: false,
+          isDefaultEditable: true,
           id: 'name',
           label: 'First name',
           required: false,
@@ -43,7 +43,7 @@ describe('variables', () => {
         deserializeVariableFromText(serializeVariableToText(attributes))
       ).toEqual({
         fallback: 'Guest',
-        hideDefaultValue: false,
+        isDefaultEditable: true,
         id: 'name',
         label: null,
         required: true,
@@ -61,7 +61,7 @@ describe('variables', () => {
       }).toEqual({
         parsed: {
           fallback: null,
-          hideDefaultValue: false,
+          isDefaultEditable: true,
           id: 'total',
           label: 'Order | Total',
           required: true,
@@ -110,10 +110,28 @@ describe('variables', () => {
     });
   });
 
+  it('writes and reads a default that is not editable', () => {
+    const text = serializeVariableToText({
+      id: 'name',
+      isDefaultEditable: false,
+    });
+
+    expect({
+      legacy: deserializeVariableFromText('{{name hideDefaultValue=true}}')
+        .isDefaultEditable,
+      parsed: deserializeVariableFromText(text).isDefaultEditable,
+      text,
+    }).toEqual({
+      legacy: false,
+      parsed: false,
+      text: '{{name isDefaultEditable=false}}',
+    });
+  });
+
   it('reads a bare reference, trimming the padding people type', () => {
     expect(deserializeVariableFromText('{{ name }}')).toEqual({
       fallback: null,
-      hideDefaultValue: false,
+      isDefaultEditable: true,
       id: 'name',
       label: null,
       required: true,
@@ -128,7 +146,7 @@ describe('variables', () => {
         {
           attrs: {
             fallback: null,
-            hideDefaultValue: false,
+            isDefaultEditable: true,
             id: 'name',
             label: null,
             required: true,

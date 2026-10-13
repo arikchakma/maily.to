@@ -165,12 +165,13 @@ export const Variable: Node<VariableOptions> = Node.create<VariableOptions>({
           'data-required': String(attributes.required),
         }),
       },
-      hideDefaultValue: {
-        default: DEFAULT_VARIABLE_ATTRIBUTES.hideDefaultValue,
+      isDefaultEditable: {
+        default: DEFAULT_VARIABLE_ATTRIBUTES.isDefaultEditable,
         parseHTML: (element) =>
-          element.getAttribute('data-hide-default-value') === 'true',
+          element.getAttribute('data-is-default-editable') !== 'false' &&
+          element.getAttribute('data-hide-default-value') !== 'true',
         renderHTML: (attributes) => ({
-          'data-hide-default-value': String(attributes.hideDefaultValue),
+          'data-is-default-editable': String(attributes.isDefaultEditable),
         }),
       },
     };

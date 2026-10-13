@@ -18,7 +18,7 @@ import {
 
 export function VariableBubbleMenu() {
   const editor = useEditorInstance();
-  const { fallback, hideDefaultValue, id, open, setOpen } =
+  const { fallback, id, isDefaultEditable, open, setOpen } =
     useVariableBubbleState(editor);
 
   const variableFieldRef = useRef<HTMLInputElement>(null);
@@ -29,7 +29,7 @@ export function VariableBubbleMenu() {
 
   const isIdEditable = editor.storage.variable?.isIdEditable ?? true;
 
-  if (!open || (!isIdEditable && hideDefaultValue)) {
+  if (!open || (!isIdEditable && !isDefaultEditable)) {
     return null;
   }
 
@@ -89,7 +89,7 @@ export function VariableBubbleMenu() {
         </form>
       ) : null}
 
-      {hideDefaultValue ? null : (
+      {isDefaultEditable ? (
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -126,7 +126,7 @@ export function VariableBubbleMenu() {
             </FieldControl>
           </FieldRoot>
         </form>
-      )}
+      ) : null}
     </BubbleMenu>
   );
 }

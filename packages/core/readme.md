@@ -277,7 +277,7 @@ import { VariableExtension } from '@maily-to/core/extensions';
       variables: [
         { id: 'currentDate' },
         { id: 'currentTime', required: false },
-        { id: 'first_name', required: false, hideDefaultValue: true },
+        { id: 'first_name', required: false, isDefaultEditable: false },
       ],
     }),
   ]}

@@ -230,8 +230,8 @@ exports[`fixture kitchen-sink > matches the migrated snapshot 1`] = `
         {
           "attrs": {
             "fallback": "there",
-            "hideDefaultValue": false,
             "id": "firstName",
+            "isDefaultEditable": true,
             "label": null,
             "required": true,
           },
@@ -575,8 +575,8 @@ exports[`fixture kitchen-sink > matches the migrated snapshot 1`] = `
             {
               "attrs": {
                 "fallback": null,
-                "hideDefaultValue": false,
                 "id": "releases.title",
+                "isDefaultEditable": true,
                 "label": null,
                 "required": true,
               },
@@ -589,8 +589,8 @@ exports[`fixture kitchen-sink > matches the migrated snapshot 1`] = `
             {
               "attrs": {
                 "fallback": null,
-                "hideDefaultValue": false,
                 "id": "releases.date",
+                "isDefaultEditable": true,
                 "label": null,
                 "required": true,
               },

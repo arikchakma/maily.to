@@ -49,7 +49,7 @@ export function filterVariableSuggestions(
       id: opts.query,
       label: opts.query,
       required: true,
-      hideDefaultValue: false,
+      isDefaultEditable: true,
     });
   }
 

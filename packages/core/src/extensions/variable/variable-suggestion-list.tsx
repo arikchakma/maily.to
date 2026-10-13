@@ -32,8 +32,9 @@ export const VariableSuggestionList = forwardRef<
       items={items}
       onSelectItem={(value) => {
         selectItem({
-          hideDefaultValue: value.hideDefaultValue ?? false,
           id: value.id,
+          isDefaultEditable:
+            value.isDefaultEditable ?? value.hideDefaultValue !== true,
           label: value.label,
           required: value.required ?? true,
         });

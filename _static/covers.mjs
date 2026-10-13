@@ -121,7 +121,7 @@ if (warnings.length > 0) {
     { id: 'firstName' },
     { id: 'lastName' },
     { id: 'email', required: false },
-    { id: 'currentDate', hideDefaultValue: true },
+    { id: 'currentDate', isDefaultEditable: false },
   ],
 });
 

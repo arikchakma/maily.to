@@ -12,6 +12,7 @@ import { logo } from './transforms/logo';
 import { repeat } from './transforms/repeat';
 import { section } from './transforms/section';
 import { spacer } from './transforms/spacer';
+import { variable } from './transforms/variable';
 import type { MigrationResult, MigrationWarning } from './types';
 import { annotateContainerWidths } from './utils/container-width';
 
@@ -39,6 +40,7 @@ const NODE_TRANSFORMS: Record<string, NodeTransform> = {
   inlineImage,
   linkCard,
   listItem,
+  variable,
 };
 
 const MARK_TRANSFORMS: Record<string, MarkTransform> = {

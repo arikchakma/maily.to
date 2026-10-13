@@ -1,4 +1,4 @@
-import { Editor, Toolbar } from '@maily-to/core';
+import { Editor, ThemeSettings, Toolbar } from '@maily-to/core';
 import {
   ImageUploadExtension,
   LinkCardExtension,
@@ -47,6 +47,9 @@ const getInitialContent = () => {
 };
 
 const INITIAL_CONTENT = getInitialContent();
+
+const HAS_THEME_SETTINGS =
+  SEARCH_PARAMS.has('fixture') || SEARCH_PARAMS.has('blank');
 
 const AI_MODE = SEARCH_PARAMS.get('ai') ?? 'stream';
 
@@ -204,6 +207,17 @@ export function App() {
               <Editor.BubbleMenus />
               <Editor.DragContextHandle />
             </Editor.Frame>
+
+            {HAS_THEME_SETTINGS && (
+              <div className="fixed bottom-4 left-1/4 z-20 -translate-x-1/2">
+                <ThemeSettings.Root>
+                  <ThemeSettings.Font />
+                  <ThemeSettings.Layout />
+                  <ThemeSettings.Button />
+                  <ThemeSettings.Text />
+                </ThemeSettings.Root>
+              </div>
+            )}
           </Editor.Root>
         </div>
 

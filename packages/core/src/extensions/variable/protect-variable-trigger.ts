@@ -5,6 +5,8 @@ import {
 import { Extension } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 
+import { isRemoteChange } from '~/utils/collaboration';
+
 export const ProtectVariableTrigger = Extension.create({
   name: 'protectVariableTrigger',
 
@@ -12,7 +14,12 @@ export const ProtectVariableTrigger = Extension.create({
     return [
       new Plugin({
         appendTransaction(transactions, _oldState, newState) {
-          if (!transactions.some((tr) => tr.docChanged)) {
+          // The sender already fixed a remote change. A second fix from each
+          // collaborator would conflict.
+          if (
+            !transactions.some((tr) => tr.docChanged) ||
+            transactions.some(isRemoteChange)
+          ) {
             return null;
           }
 

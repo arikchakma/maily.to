@@ -111,6 +111,8 @@
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.1.0",
     "@testing-library/react": "^16.3.3",
+    "@tiptap/extension-collaboration": "^3.30.5",
+    "@tiptap/y-tiptap": "^3.0.10",
     "@types/react": "catalog:",
     "@vitest/browser-playwright": "4.1.11",
     "bumpp": "catalog:",
@@ -118,9 +120,16 @@
     "playwright": "^1.62.1",
     "react-dom": "catalog:",
     "typescript": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "yjs": "^13.6.33"
   },
   "peerDependencies": {
-    "react": "catalog:"
+    "react": "catalog:",
+    "yjs": "^13.6.0"
+  },
+  "peerDependenciesMeta": {
+    "yjs": {
+      "optional": true
+    }
   }
 }

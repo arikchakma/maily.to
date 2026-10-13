@@ -2,6 +2,8 @@ export { BlockquoteExtension } from './extensions/blockquote/blockquote';
 export { BodyExtension } from './extensions/body/body';
 export { BoldExtension } from './extensions/bold/bold';
 export { ButtonExtension } from './extensions/button/button';
+export { CollaborationAttributesExtension } from './extensions/collaboration-attributes/collaboration-attributes';
+export type { CollaborationAttributesOptions } from './extensions/collaboration-attributes/collaboration-attributes';
 export { ColumnExtension } from './extensions/columns/column';
 export { ColumnsExtension } from './extensions/columns/columns';
 export { ContainerExtension } from './extensions/container/container';

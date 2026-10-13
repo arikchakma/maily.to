@@ -57,6 +57,7 @@ import { TableHeaderExtension } from '~/extensions/table/table-header';
 import { TableRowExtension } from '~/extensions/table/table-row';
 import { VariableExtension } from '~/extensions/variable/variable';
 import { VisibilityExtension } from '~/extensions/visibility/visibility';
+import { isRemoteChange } from '~/utils/collaboration';
 import { mergeExtensions } from '~/utils/extensions';
 import { getNormalizedHtml } from '~/utils/html';
 import { pasteHtmlSource } from '~/utils/paste';
@@ -175,6 +176,8 @@ const DEFAULT_EXTENSIONS: AnyExtension[] = [
       MAILY_NODE_TYPES.HORIZONTAL_RULE,
       MAILY_NODE_TYPES.BLOCKQUOTE,
     ],
+    // A remote change already carries the ids of its sender.
+    filterTransaction: (tr) => !isRemoteChange(tr),
   }),
 ];
 
@@ -183,9 +186,15 @@ export function useMailyEditor(
   dependencies?: DependencyList
 ) {
   const { content, editorProps, extensions: userExtensions, ...rest } = options;
-  const extensions = userExtensions
+  const merged = userExtensions
     ? mergeExtensions(DEFAULT_EXTENSIONS, userExtensions)
     : DEFAULT_EXTENSIONS;
+  // Collaboration has its own undo history and does not work with UndoRedo.
+  const extensions = merged.some(
+    (extension) => extension.name === 'collaboration'
+  )
+    ? merged.filter((extension) => extension.name !== UndoRedo.name)
+    : merged;
 
   return useEditor(
     {

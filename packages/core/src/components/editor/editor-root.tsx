@@ -2,7 +2,10 @@ import type { DocumentNode, TextDirection } from '@maily-to/shared';
 import { DEFAULT_TEXT_DIRECTION, invariant } from '@maily-to/shared';
 import type { AnyExtension, Editor, JSONContent } from '@tiptap/core';
 import type { EditorEvents, UseEditorOptions } from '@tiptap/react';
-import { EditorContext as TiptapEditorContext } from '@tiptap/react';
+import {
+  EditorContext as TiptapEditorContext,
+  useEditorState,
+} from '@tiptap/react';
 import {
   useEffect,
   useImperativeHandle,
@@ -113,6 +116,29 @@ export function EditorRoot(props: EditorRoot.Props) {
     },
     [editable, textDirection]
   );
+
+  // In collaboration, another person can change the direction. The editor
+  // reads the direction only at creation, so it follows the shared value.
+  const sharedDirection = useEditorState({
+    editor,
+    selector: (context) => {
+      return context.editor?.storage.collaborationAttributes
+        ? (context.editor.state.doc.attrs[DIRECTION_ATTRIBUTE] as
+            | TextDirection
+            | undefined)
+        : undefined;
+    },
+  });
+  const [previousSharedDirection, setPreviousSharedDirection] =
+    useState(sharedDirection);
+
+  if (previousSharedDirection !== sharedDirection) {
+    setPreviousSharedDirection(sharedDirection);
+
+    if (sharedDirection) {
+      setTextDirection(sharedDirection);
+    }
+  }
 
   useEffect(() => {
     if (!editor || content === undefined) {

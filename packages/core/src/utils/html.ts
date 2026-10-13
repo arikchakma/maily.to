@@ -1,6 +1,9 @@
-import type { InlineStyle } from '@maily-to/shared';
+import type { InlineStyle, VariableAttributes } from '@maily-to/shared';
 import {
   DATA_NODE_TYPE_KEY,
+  deserializeVariableFromText,
+  getVariableSegments,
+  hasVariableInText,
   MAILY_NODE_TYPES,
   mergeInlineStyles,
   parseInlineStyles,
@@ -9,6 +12,14 @@ import {
 
 import { getWrapperStyle } from './style';
 import { getSingleCell, isBodyTable } from './table';
+
+const LITERAL_SELECTORS = [
+  'code',
+  'pre',
+  'script',
+  'style',
+  `[${DATA_NODE_TYPE_KEY}="${MAILY_NODE_TYPES.VARIABLE}"]`,
+].join(',');
 
 const HIDDEN_SELECTORS = ['[data-skip-in-text="true"]', '.preheader'].join(',');
 
@@ -205,6 +216,60 @@ function getBodyStyle(document: Document): string | null {
   return stringifyInlineStyles(merged) || null;
 }
 
+function getVariableElement(document: Document, variable: VariableAttributes) {
+  const element = document.createElement('span');
+  element.setAttribute(DATA_NODE_TYPE_KEY, MAILY_NODE_TYPES.VARIABLE);
+  element.setAttribute('data-id', variable.id);
+  element.setAttribute('data-required', String(variable.required));
+  element.setAttribute(
+    'data-hide-default-value',
+    String(variable.hideDefaultValue)
+  );
+
+  if (variable.fallback) {
+    element.setAttribute('data-fallback', variable.fallback);
+  }
+
+  if (variable.label) {
+    element.setAttribute('data-label', variable.label);
+  }
+
+  if (variable.style) {
+    element.setAttribute('style', variable.style);
+  }
+
+  return element;
+}
+
+function setVariables(document: Document) {
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const texts: Text[] = [];
+
+  while (walker.nextNode()) {
+    const text = walker.currentNode as Text;
+
+    if (
+      hasVariableInText(text.data) &&
+      !text.parentElement?.closest(LITERAL_SELECTORS)
+    ) {
+      texts.push(text);
+    }
+  }
+
+  for (const text of texts) {
+    text.replaceWith(
+      ...getVariableSegments(text.data).map((segment) => {
+        return segment.isReference
+          ? getVariableElement(
+              document,
+              deserializeVariableFromText(segment.text)
+            )
+          : segment.text;
+      })
+    );
+  }
+}
+
 export function getNormalizedHtml(html: string) {
   const parsed = new DOMParser().parseFromString(html, 'text/html');
   if (!parsed.body) {
@@ -214,6 +279,7 @@ export function getNormalizedHtml(html: string) {
   setRuleStyles(parsed);
   removeHidden(parsed);
   setLinkedImages(parsed);
+  setVariables(parsed);
 
   const style = getBodyStyle(parsed);
   if (!style) {

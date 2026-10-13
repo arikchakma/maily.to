@@ -84,6 +84,9 @@ export { useSkeletonEditor } from './hooks/use-skeleton-editor';
 export type { UseSkeletonEditorOptions } from './hooks/use-skeleton-editor';
 export { VariableOnlyEditor } from './components/variable-only-editor/variable-only-editor';
 export type { VariableOnlyEditorProps } from './components/variable-only-editor/variable-only-editor';
+export { PlainVariableInput } from './components/plain-variable-input/plain-variable-input';
+export type { PlainVariableInputProps } from './components/plain-variable-input/plain-variable-input';
+export { getContentFromHtml } from './utils/content';
 export { useEditorVariables } from './hooks/use-editor-variables';
 export { filterVariableSuggestions } from './utils/variable';
 export type {

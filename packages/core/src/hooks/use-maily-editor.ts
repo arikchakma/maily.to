@@ -66,7 +66,7 @@ type UseMailyEditorOptions = {
   extensions?: AnyExtension[];
 } & Omit<UseEditorOptions, 'extensions'>;
 
-const DEFAULT_EXTENSIONS: AnyExtension[] = [
+export const DEFAULT_EXTENSIONS: AnyExtension[] = [
   Document,
   BodyExtension,
   ContainerExtension,

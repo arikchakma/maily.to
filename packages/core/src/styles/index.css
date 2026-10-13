@@ -1124,6 +1124,29 @@
   pointer-events: none;
 }
 
+[data-mly-plain-variable-input] .tiptap {
+  outline: none;
+}
+
+[data-mly-plain-variable-input-line] {
+  margin: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+[data-mly-plain-variable-input-line]::-webkit-scrollbar {
+  display: none;
+}
+
+[data-mly-plain-variable-input-line].is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--mly-color-gray-500);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 [data-mly-field-input]:focus-visible {
   box-shadow: 0 0 0 1px var(--mly-color-gray-300);
 }

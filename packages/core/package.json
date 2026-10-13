@@ -65,7 +65,6 @@
     "@floating-ui/react": "^0.27.20",
     "@floating-ui/utils": "^0.2.12",
     "@maily-to/shared": "workspace:*",
-    "@tiptap/core": "catalog:",
     "@tiptap/extension-blockquote": "^3.29.2",
     "@tiptap/extension-bold": "^3.29.2",
     "@tiptap/extension-code": "^3.29.2",
@@ -91,8 +90,6 @@
     "@tiptap/extension-underline": "^3.29.2",
     "@tiptap/extension-unique-id": "^3.29.2",
     "@tiptap/extensions": "^3.29.2",
-    "@tiptap/pm": "catalog:",
-    "@tiptap/react": "catalog:",
     "@tiptap/suggestion": "^3.29.2",
     "@vitejs/plugin-react": "^6.1.1",
     "cromia": "^0.0.1",
@@ -111,7 +108,10 @@
     "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.1.0",
     "@testing-library/react": "^16.3.3",
+    "@tiptap/core": "catalog:",
     "@tiptap/extension-collaboration": "^3.30.5",
+    "@tiptap/pm": "catalog:",
+    "@tiptap/react": "catalog:",
     "@tiptap/y-tiptap": "^3.0.10",
     "@types/react": "catalog:",
     "@vitest/browser-playwright": "4.1.11",
@@ -124,6 +124,9 @@
     "yjs": "^13.6.33"
   },
   "peerDependencies": {
+    "@tiptap/core": "catalog:",
+    "@tiptap/pm": "catalog:",
+    "@tiptap/react": "catalog:",
     "react": "catalog:",
     "yjs": "^13.6.0"
   },

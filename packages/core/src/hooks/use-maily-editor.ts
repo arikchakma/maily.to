@@ -198,12 +198,15 @@ export function useMailyEditor(
         typeof content === 'string' ? getNormalizedHtml(content) : content,
       editorProps: {
         ...editorProps,
-        attributes: {
+        // Tiptap adds the textbox role only at mount. A re-render replaces
+        // these attributes, so the role must stay here too.
+        attributes: (state) => ({
+          role: 'textbox',
           spellcheck: 'false',
           ...(typeof editorProps?.attributes === 'function'
-            ? {}
+            ? editorProps.attributes(state)
             : editorProps?.attributes),
-        },
+        }),
         handlePaste: (view, event, slice) => {
           return (
             pasteHtmlSource({ event, view }) ||

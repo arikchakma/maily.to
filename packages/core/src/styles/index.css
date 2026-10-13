@@ -243,11 +243,13 @@
   border: none !important;
 }
 
-[data-mly-editor-content] .ProseMirror-selectednode {
+[data-mly-editor-content] .ProseMirror-selectednode,
+[data-mly-plain-variable-input] .ProseMirror-selectednode {
   position: relative;
 }
 
-[data-mly-editor-content] .ProseMirror-selectednode::after {
+[data-mly-editor-content] .ProseMirror-selectednode::after,
+[data-mly-plain-variable-input] .ProseMirror-selectednode::after {
   position: absolute;
   inset: -2px;
   border-radius: 6px;
@@ -1129,8 +1131,9 @@
 }
 
 [data-mly-plain-variable-input-line] {
-  margin: 0;
-  white-space: nowrap;
+  margin: -2px;
+  padding: 2px;
+  white-space: pre;
   overflow-x: auto;
   scrollbar-width: none;
 }

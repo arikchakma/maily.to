@@ -9,10 +9,12 @@ import { getVariableSuggestions } from './variable-suggestion';
 import { VariableView } from './variable-view';
 
 type CoreVariableOptions = VariableOptions & {
+  isIdEditable: boolean;
   variables?: Variables;
 };
 
 type CoreVariableStorage = {
+  isIdEditable: boolean;
   variables?: Variables;
 };
 
@@ -29,12 +31,14 @@ export const VariableExtension = Variable.extend<
   addOptions() {
     return {
       ...this.parent?.(),
+      isIdEditable: true,
       variables: undefined,
     } as CoreVariableOptions;
   },
 
   addStorage() {
     return {
+      isIdEditable: this.options.isIdEditable,
       variables: this.options.variables,
     };
   },

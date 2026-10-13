@@ -381,4 +381,21 @@ describe('<VariableExtension />', () => {
       expect(getInsertedVariable(ref.current!)?.attrs?.fallback).toBe('Ada');
     });
   });
+
+  it('shows only the default field when the id is not editable', async () => {
+    const { ref } = await render({
+      children: <VariableBubbleMenu />,
+      content: VARIABLE_DOCUMENT,
+      extensions: [VariableExtension.configure({ isIdEditable: false })],
+    });
+
+    ref.current!.getEditor().commands.setNodeSelection(3);
+
+    await waitFor(() => {
+      expect(
+        document.querySelector('input[aria-label="Default Value"]')
+      ).not.toBeNull();
+    });
+    expect(document.querySelector('input[aria-label="Variable"]')).toBeNull();
+  });
 });

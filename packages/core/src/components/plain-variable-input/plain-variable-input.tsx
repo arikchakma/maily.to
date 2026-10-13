@@ -1,3 +1,4 @@
+import { FloatingPortal } from '@floating-ui/react';
 import type { VariableNodeAttrs } from '@maily-to/extension-variable';
 import {
   buildDocFromVariableText,
@@ -5,10 +6,16 @@ import {
 } from '@maily-to/shared';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
-import { Placeholder } from '@tiptap/extensions';
+import { Placeholder, UndoRedo } from '@tiptap/extensions';
 import type { EditorOptions } from '@tiptap/react';
-import { EditorContent, useCurrentEditor, useEditor } from '@tiptap/react';
+import {
+  EditorContent,
+  EditorContext,
+  useCurrentEditor,
+  useEditor,
+} from '@tiptap/react';
 
+import { VariableBubbleMenu } from '~/components/variable-bubble-menu/variable-bubble-menu';
 import { Document } from '~/extensions/document/document';
 import { VariableExtension } from '~/extensions/variable/variable';
 import { getVariableSuggestions } from '~/extensions/variable/variable-suggestion';
@@ -20,6 +27,7 @@ export type PlainVariableInputProps = {
   autofocus?: EditorOptions['autofocus'];
   content: string;
   id?: string;
+  isIdEditable?: boolean;
   onContentChange?: (content: string) => void;
   onEnter?: () => void;
   placeholder?: string;
@@ -32,6 +40,7 @@ export function PlainVariableInput(props: PlainVariableInputProps) {
     autofocus = false,
     content,
     id,
+    isIdEditable = true,
     onContentChange,
     onEnter,
     placeholder,
@@ -50,8 +59,10 @@ export function PlainVariableInput(props: PlainVariableInputProps) {
       }),
       Text,
       Placeholder.configure({ placeholder }),
+      UndoRedo,
       VariableExtension.configure({
         addSpaceSuffix: false,
+        isIdEditable,
         renderText(renderProps) {
           return serializeVariableToText(
             renderProps.node.attrs as VariableNodeAttrs
@@ -92,8 +103,15 @@ export function PlainVariableInput(props: PlainVariableInputProps) {
   });
 
   return (
-    <div data-mly-plain-variable-input="">
-      <EditorContent editor={editor} />
-    </div>
+    <EditorContext.Provider value={{ editor }}>
+      <div data-mly-plain-variable-input="">
+        <EditorContent editor={editor} />
+      </div>
+      {editor && (
+        <FloatingPortal>
+          <VariableBubbleMenu />
+        </FloatingPortal>
+      )}
+    </EditorContext.Provider>
   );
 }

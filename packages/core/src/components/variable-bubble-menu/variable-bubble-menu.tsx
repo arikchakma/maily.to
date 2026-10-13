@@ -27,7 +27,9 @@ export function VariableBubbleMenu() {
   const variableFieldId = useId();
   const fallbackFieldId = useId();
 
-  if (!open) {
+  const isIdEditable = editor.storage.variable?.isIdEditable ?? true;
+
+  if (!open || (!isIdEditable && hideDefaultValue)) {
     return null;
   }
 
@@ -48,42 +50,44 @@ export function VariableBubbleMenu() {
       onOpenChange={setOpen}
       open={open}
     >
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          const field = variableFieldRef.current;
-          if (!field) {
-            return;
-          }
+      {isIdEditable ? (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            const field = variableFieldRef.current;
+            if (!field) {
+              return;
+            }
 
-          updateVariable({ id: field.value, label: null });
-          field.blur();
-        }}
-      >
-        <FieldRoot>
-          <FieldLabel htmlFor={variableFieldId}>Variable</FieldLabel>
-          <FieldControl>
-            <FieldInput
-              aria-label="Variable"
-              defaultValue={id}
-              id={variableFieldId}
-              key={id}
-              onBlur={(event) => {
-                if (event.target.value === id) {
-                  return;
-                }
+            updateVariable({ id: field.value, label: null });
+            field.blur();
+          }}
+        >
+          <FieldRoot>
+            <FieldLabel htmlFor={variableFieldId}>Variable</FieldLabel>
+            <FieldControl>
+              <FieldInput
+                aria-label="Variable"
+                defaultValue={id}
+                id={variableFieldId}
+                key={id}
+                onBlur={(event) => {
+                  if (event.target.value === id) {
+                    return;
+                  }
 
-                updateVariable({ id: event.target.value, label: null });
-              }}
-              placeholder="ie. Full Name"
-              ref={variableFieldRef}
-            />
-            <FieldIcon>
-              <CornerDownLeftIcon />
-            </FieldIcon>
-          </FieldControl>
-        </FieldRoot>
-      </form>
+                  updateVariable({ id: event.target.value, label: null });
+                }}
+                placeholder="ie. Full Name"
+                ref={variableFieldRef}
+              />
+              <FieldIcon>
+                <CornerDownLeftIcon />
+              </FieldIcon>
+            </FieldControl>
+          </FieldRoot>
+        </form>
+      ) : null}
 
       {hideDefaultValue ? null : (
         <form

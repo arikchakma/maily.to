@@ -8,16 +8,33 @@ import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { userEvent } from 'vite-plus/test/browser/context';
 
 import { getContentFromHtml, PlainVariableInput } from '~/index';
+import type { PlainVariableInputProps } from '~/index';
+import { VARIABLE_SUGGESTION_POPOVER_ID } from '~/utils/variable';
+
+import editorCss from '~/styles/index.css?raw';
 
 afterEach(() => {
   cleanup();
+  document.head.querySelectorAll('style').forEach((style) => style.remove());
 });
+
+const MODIFIER = navigator.platform.includes('Mac') ? 'Meta' : 'Control';
+
+const HISTORY_GROUP_DELAY = 600;
+
+function waitForNewHistoryGroup() {
+  return new Promise((resolve) => setTimeout(resolve, HISTORY_GROUP_DELAY));
+}
 
 const CONTENT = 'Hi {{firstName fallback="there"}}, meet {{company}}';
 
-async function renderInput() {
+async function renderInput(props: Partial<PlainVariableInputProps> = {}) {
   const onContentChange = vi.fn();
   const onEnter = vi.fn();
+
+  const style = document.createElement('style');
+  style.textContent = editorCss;
+  document.head.append(style);
 
   renderReact(
     <PlainVariableInput
@@ -26,6 +43,7 @@ async function renderInput() {
       onContentChange={onContentChange}
       onEnter={onEnter}
       variables={[{ id: 'firstName' }, { id: 'company' }]}
+      {...props}
     />
   );
 
@@ -64,6 +82,135 @@ describe('<PlainVariableInput />', () => {
     expect(onEnter).toHaveBeenCalledOnce();
     expect(onContentChange).not.toHaveBeenCalled();
     expect(textbox.querySelectorAll('p').length).toBe(1);
+  });
+
+  it('edits a variable fallback from the bubble menu', async () => {
+    const { onContentChange, textbox } = await renderInput();
+    const chip = textbox.querySelector<HTMLElement>('[data-mly-variable]')!;
+
+    await userEvent.click(chip);
+
+    const selected = chip.closest<HTMLElement>('.ProseMirror-selectednode');
+    const line = textbox.querySelector('p')!.getBoundingClientRect();
+    const highlight = selected!.getBoundingClientRect();
+
+    expect({
+      background: getComputedStyle(selected!, '::after').backgroundColor,
+      clipped:
+        highlight.top - 2 < line.top || highlight.bottom + 2 > line.bottom,
+    }).toEqual({
+      background: expect.not.stringMatching(
+        /^(transparent|rgba\(0, 0, 0, 0\))$/
+      ),
+      clipped: false,
+    });
+
+    const fallback = await waitFor(() => {
+      const element = document.querySelector<HTMLInputElement>(
+        'input[aria-label="Default Value"]'
+      );
+      expect(element).not.toBeNull();
+
+      return element!;
+    });
+
+    await userEvent.clear(fallback);
+    await userEvent.type(fallback, 'friend{Enter}');
+
+    await waitFor(() => {
+      expect(onContentChange).toHaveBeenLastCalledWith(
+        'Hi {{firstName fallback="friend"}}, meet {{company}}'
+      );
+    });
+  });
+
+  it('shows only the default field when the id is not editable', async () => {
+    const { textbox } = await renderInput({ isIdEditable: false });
+
+    await userEvent.click(textbox.querySelector('[data-mly-variable]')!);
+
+    await waitFor(() => {
+      expect(
+        document.querySelector('input[aria-label="Default Value"]')
+      ).not.toBeNull();
+    });
+    expect(document.querySelector('input[aria-label="Variable"]')).toBeNull();
+  });
+
+  it('keeps a typed trailing space as a regular space', async () => {
+    const { onContentChange, textbox } = await renderInput({ content: '' });
+
+    await userEvent.click(textbox);
+    await userEvent.keyboard('Hi ');
+
+    await waitFor(() => {
+      expect(onContentChange).toHaveBeenLastCalledWith('Hi ');
+    });
+  });
+
+  it('undoes and redoes text, variables and fallback edits', async () => {
+    const { onContentChange, textbox } = await renderInput({ content: '' });
+    const getLast = () => onContentChange.mock.lastCall?.[0];
+
+    await userEvent.click(textbox);
+    await userEvent.keyboard('Hi,');
+    await waitForNewHistoryGroup();
+    await userEvent.keyboard('{{{{');
+    await waitFor(() => {
+      expect(
+        document.getElementById(VARIABLE_SUGGESTION_POPOVER_ID)
+      ).not.toBeNull();
+    });
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => {
+      expect(getLast()).toBe('Hi,{{firstName}}');
+    });
+
+    await waitForNewHistoryGroup();
+    await userEvent.click(textbox.querySelector('[data-mly-variable]')!);
+    const fallback = await waitFor(() => {
+      const element = document.querySelector<HTMLInputElement>(
+        'input[aria-label="Default Value"]'
+      );
+      expect(element).not.toBeNull();
+
+      return element!;
+    });
+    await userEvent.type(fallback, 'friend{Enter}');
+    await waitFor(() => {
+      expect(getLast()).toBe('Hi,{{firstName fallback="friend"}}');
+    });
+
+    const emitted: string[] = [];
+    for (const shortcut of [
+      `{${MODIFIER}>}z{/${MODIFIER}}`,
+      `{${MODIFIER}>}z{/${MODIFIER}}`,
+      `{${MODIFIER}>}z{/${MODIFIER}}`,
+      `{${MODIFIER}>}{Shift>}z{/Shift}{/${MODIFIER}}`,
+      `{${MODIFIER}>}y{/${MODIFIER}}`,
+      `{${MODIFIER}>}y{/${MODIFIER}}`,
+    ]) {
+      textbox.focus();
+      await userEvent.keyboard(shortcut);
+      emitted.push(getLast());
+    }
+
+    expect({
+      emitted,
+      isSuggestionOpen: Boolean(
+        document.getElementById(VARIABLE_SUGGESTION_POPOVER_ID)
+      ),
+    }).toEqual({
+      emitted: [
+        'Hi,{{firstName}}',
+        'Hi,',
+        '',
+        'Hi,',
+        'Hi,{{firstName}}',
+        'Hi,{{firstName fallback="friend"}}',
+      ],
+      isSuggestionOpen: false,
+    });
   });
 });
 

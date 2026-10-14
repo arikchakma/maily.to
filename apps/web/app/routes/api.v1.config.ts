@@ -1,8 +1,10 @@
 import { z } from 'zod';
-import type { Route } from './+types/api.v1.emails.preview';
+
 import { apiConfigCookie } from '~/lib/api-config.server';
-import { json } from '~/lib/response';
 import { serializeZodError } from '~/lib/errors';
+import { json } from '~/lib/response';
+
+import type { Route } from './+types/api.v1.config';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;

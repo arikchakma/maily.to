@@ -3,6 +3,7 @@ import type { Editor } from '@tiptap/core';
 import { ClipboardCheckIcon, ClipboardIcon, Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
 import { useCopyToClipboard } from '~/hooks/use-copy-to-clipboard';
 import { cn } from '~/lib/classname';
 import { isSafari } from '~/lib/detect-browser';
@@ -36,12 +37,12 @@ export function CopyEmailHtml(props: CopyEmailHtmlProps) {
   return (
     <button
       className={cn(
-        'flex min-h-[28px] cursor-pointer items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed max-lg:w-7',
+        'flex min-h-[28px] cursor-pointer items-center justify-center border border-black px-2 py-1 text-sm transition-colors disabled:cursor-not-allowed max-lg:w-7',
         isCopied
-          ? 'bg-green-200 text-green-600'
-          : 'bg-black disabled:opacity-50'
+          ? 'border-green-600 bg-green-200 text-green-600'
+          : 'bg-black text-white hover:bg-white hover:text-black disabled:opacity-50'
       )}
-      onClick={async (e) => {
+      onClick={async () => {
         if (!editor) {
           toast.error('No email content to copy');
           return;

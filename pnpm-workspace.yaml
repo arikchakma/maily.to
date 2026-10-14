@@ -1,3 +1,31 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+catalog:
+  '@oxlint/plugins': ^1.76.0
+  '@tiptap/core': ^3.29.2
+  '@tiptap/pm': ^3.29.2
+  '@tiptap/react': ^3.29.2
+  '@types/react': ^19.2.18
+  '@types/react-dom': ^19.2.4
+  bumpp: ^12.1.1
+  oxc-transform-react: 0.145.0
+  react: ^19.2.8
+  react-dom: ^19.2.8
+  typescript: ^7.0.2
+  vite: npm:@voidzero-dev/vite-plus-core@0.3.0
+  vite-plus: 0.3.0
+  vitest: 4.1.11
+
+overrides:
+  vite: 'catalog:'
+  vitest: 'catalog:'
+
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'

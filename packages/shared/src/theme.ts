@@ -1,237 +1,304 @@
-import type * as CSS from 'csstype';
+import { DEFAULT_FONT, getFontFamilyValue } from './font';
+import { MAILY_NODE_TYPES } from './node';
+import { deepMerge } from './object';
+import type { InlineStyle } from './style';
 
-export const allowedFallbackFonts = [
-  'Arial',
-  'Helvetica',
-  'Verdana',
-  'Georgia',
-  'Times New Roman',
-  'serif',
-  'sans-serif',
-  'monospace',
-  'cursive',
-  'fantasy',
-] as const;
-
-export type FallbackFont = (typeof allowedFallbackFonts)[number];
-
-export const allowedFontFormats = [
-  'woff',
-  'woff2',
-  'truetype',
-  'opentype',
-  'embedded-opentype',
-  'svg',
-] as const;
-
-export type FontFormat = (typeof allowedFontFormats)[number];
-
-type FontWeight = CSS.Properties['fontWeight'];
-type FontStyle = CSS.Properties['fontStyle'];
-
-export interface FontProps {
-  /** The font you want to use. NOTE: Do not insert multiple fonts here, use fallbackFontFamily for that */
-  fontFamily: string;
-  /** An array is possible, but the order of the array is the priority order */
-  fallbackFontFamily: FallbackFont;
-  /** Not all clients support web fonts. For support check: https://www.caniemail.com/features/css-at-font-face/ */
-  webFont?: {
-    url: string;
-    format: FontFormat;
-  };
-  /** Default: 'normal' */
-  fontStyle?: FontStyle;
-  /** Default: 400 */
-  fontWeight?: FontWeight;
-}
-
-export interface BaseThemeOptions {
-  container?: Partial<
-    Pick<
-      CSS.Properties,
-      | 'backgroundColor'
-      | 'maxWidth'
-      | 'minWidth'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'borderRadius'
-      | 'borderWidth'
-      | 'borderColor'
-    >
-  >;
-  body?: Partial<
-    Pick<
-      CSS.Properties,
-      | 'backgroundColor'
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-    >
-  >;
-  button?: Partial<
-    Pick<
-      CSS.Properties,
-      | 'paddingTop'
-      | 'paddingRight'
-      | 'paddingBottom'
-      | 'paddingLeft'
-      | 'backgroundColor'
-      | 'color'
-    >
-  >;
-  link?: Partial<Pick<CSS.Properties, 'color'>>;
-  font?: Pick<
-    FontProps,
-    'fontFamily' | 'fallbackFontFamily' | 'webFont'
-  > | null;
-}
-
-/**
- * The theme options for the editor.
- * currently, we don't allow any customizations for the colors in the editor.
- * that's why we have a separate theme for the editor.
- */
-export interface EditorThemeOptions extends BaseThemeOptions {}
-
-/**
- * The theme options for the renderer.
- * currently, we don't allow any customizations for the colors in the editor.
- * that's why we have a separate theme for the renderer.
- */
-export interface RendererThemeOptions extends BaseThemeOptions {
-  colors?: Partial<{
-    heading: string;
-    paragraph: string;
-    horizontal: string;
-    footer: string;
-    blockquoteBorder: string;
-    codeBackground: string;
-    codeText: string;
-    linkCardTitle: string;
-    linkCardDescription: string;
-    linkCardBadgeText: string;
-    linkCardBadgeBackground: string;
-    linkCardSubTitle: string;
-  }>;
-  fontSize?: Partial<{
-    paragraph: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-    footer: Partial<{
-      size: string;
-      lineHeight: string;
-    }>;
-  }>;
-}
-
-export const DEFAULT_FONT: FontProps = {
-  fallbackFontFamily: 'sans-serif',
-  fontFamily: 'Inter',
-  webFont: {
-    url: 'https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19',
-    format: 'woff2',
-  },
+export type NodeThemeOptions = {
+  blockquote?: InlineStyle;
+  body?: InlineStyle;
+  bulletList?: InlineStyle;
+  button?: InlineStyle;
+  code?: InlineStyle;
+  container?: InlineStyle;
+  footer?: InlineStyle;
+  h1?: InlineStyle;
+  h2?: InlineStyle;
+  h3?: InlineStyle;
+  heading?: InlineStyle;
+  horizontalRule?: InlineStyle;
+  htmlCodeBlock?: InlineStyle;
+  link?: InlineStyle;
+  listItem?: InlineStyle;
+  orderedList?: InlineStyle;
+  paragraph?: InlineStyle;
+  section?: InlineStyle;
+  table?: InlineStyle;
+  tableCell?: InlineStyle;
+  tableRow?: InlineStyle;
 };
 
-export const DEFAULT_LINK_TEXT_COLOR = '#111827';
+export const DEFAULT_CONTAINER_MAX_WIDTH = 600;
 
-export const DEFAULT_RENDERER_THEME: RendererThemeOptions = {
-  colors: {
-    heading: '#111827',
-    paragraph: '#374151',
-    horizontal: '#EAEAEA',
-    footer: '#64748B',
-    blockquoteBorder: '#D1D5DB',
-    codeBackground: '#EFEFEF',
-    codeText: '#111827',
-    linkCardTitle: '#111827',
-    linkCardDescription: '#6B7280',
-    linkCardBadgeText: '#111827',
-    linkCardBadgeBackground: '#FEF08A',
-    linkCardSubTitle: '#6B7280',
-  },
-  fontSize: {
-    paragraph: {
-      size: '15px',
-      lineHeight: '26.25px',
-    },
-    footer: {
-      size: '14px',
-      lineHeight: '24px',
-    },
-  },
-
-  container: {
-    backgroundColor: '#ffffff',
-    maxWidth: '600px',
-    minWidth: '300px',
-    paddingTop: '0.5rem',
-    paddingRight: '0.5rem',
-    paddingBottom: '0.5rem',
-    paddingLeft: '0.5rem',
-
-    borderRadius: '0px',
-    borderWidth: '0px',
-    borderColor: 'transparent',
+export const BASIC_NODE_THEME: NodeThemeOptions = {
+  blockquote: {
+    borderColor: '#d1d5db',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '4px',
+    color: '#374151',
+    fontSize: '15px',
+    fontStyle: 'italic',
+    fontWeight: '500',
+    lineHeight: '26px',
+    marginBottom: '20px',
+    marginLeft: '0',
+    marginRight: '0',
+    marginTop: '20px',
+    paddingLeft: '16px',
   },
   body: {
-    backgroundColor: '#ffffff',
-
-    paddingTop: '0px',
-    paddingRight: '0px',
-    paddingBottom: '0px',
-    paddingLeft: '0px',
+    fontFamily: getFontFamilyValue({
+      fallbackFontFamily: DEFAULT_FONT.fallbackFontFamily,
+      fontFamily: DEFAULT_FONT.fontFamily,
+    }),
+  },
+  bulletList: {
+    listStyleType: 'disc',
+    margin: '0',
+    paddingLeft: '26px',
   },
   button: {
     backgroundColor: '#000000',
+    borderRadius: '9999px',
     color: '#ffffff',
-    paddingTop: '10px',
-    paddingRight: '32px',
-    paddingBottom: '10px',
-    paddingLeft: '32px',
+    fontSize: '14px',
+    fontWeight: '500',
+    lineHeight: '20px',
+    padding: '10px 32px',
+  },
+  code: {
+    borderRadius: '8px',
+    fontFamily: 'ui-monospace, monospace',
+    fontSize: '85%',
+    padding: '2px 6px',
+  },
+  h1: {
+    fontSize: '36px',
+    fontWeight: '800',
+    lineHeight: '40px',
+  },
+  h2: {
+    fontSize: '30px',
+    fontWeight: '700',
+    lineHeight: '40px',
+  },
+  h3: {
+    fontSize: '24px',
+    fontWeight: '600',
+    lineHeight: '38px',
+  },
+  heading: {
+    color: '#101828',
+    marginBottom: '12px',
+    marginTop: '0',
+  },
+  horizontalRule: {
+    border: 'none',
+    borderTop: '1px solid #eaeaea',
+    marginBottom: '32px',
+    marginTop: '32px',
+  },
+  htmlCodeBlock: {
+    marginBottom: '32px',
   },
   link: {
-    color: DEFAULT_LINK_TEXT_COLOR,
+    color: '#0000ee',
+    textDecoration: 'underline',
   },
-  font: DEFAULT_FONT,
+  listItem: {
+    marginBottom: '8px',
+    paddingLeft: '6px',
+  },
+  orderedList: {
+    listStyleType: 'decimal',
+    margin: '0',
+    paddingLeft: '26px',
+  },
+  footer: {
+    color: '#64748B',
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '400',
+    lineHeight: '24px',
+    marginBottom: '0',
+    marginTop: '0',
+  },
+  paragraph: {
+    color: '#18181b',
+    fontSize: '14px',
+    lineHeight: '24px',
+  },
+  section: {
+    padding: '8px',
+  },
 };
 
-export const DEFAULT_EDITOR_THEME: EditorThemeOptions = {
-  container: {
-    backgroundColor: '#ffffff',
-    maxWidth: '600px',
-    minWidth: '300px',
-    paddingTop: '8px',
-    paddingRight: '8px',
-    paddingBottom: '8px',
-    paddingLeft: '8px',
-
-    borderRadius: '0px',
-    borderWidth: '0px',
-    borderColor: 'transparent',
+export const MAILY_NODE_THEME: NodeThemeOptions = {
+  blockquote: {
+    borderLeftColor: '#d1d5db',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '4px',
+    color: '#374151',
+    fontSize: '15px',
+    fontStyle: 'italic',
+    fontWeight: '500',
+    lineHeight: '1.75',
+    marginBottom: '20px',
+    marginLeft: '0',
+    marginRight: '0',
+    marginTop: '20px',
+    paddingLeft: '16px',
   },
   body: {
     backgroundColor: '#ffffff',
-
-    paddingTop: '0px',
-    paddingRight: '0px',
-    paddingBottom: '0px',
-    paddingLeft: '0px',
+    fontFamily: getFontFamilyValue({
+      fallbackFontFamily: DEFAULT_FONT.fallbackFontFamily,
+      fontFamily: DEFAULT_FONT.fontFamily,
+    }),
+    padding: '0',
+  },
+  bulletList: {
+    listStyleType: 'disc',
+    marginBottom: '20px',
+    marginLeft: '0',
+    marginRight: '0',
+    marginTop: '0',
+    paddingLeft: '26px',
   },
   button: {
     backgroundColor: '#000000',
+    borderRadius: '9999px',
     color: '#ffffff',
-    paddingTop: '10px',
-    paddingRight: '32px',
-    paddingBottom: '10px',
-    paddingLeft: '32px',
+    fontSize: '14px',
+    fontWeight: '600',
+    lineHeight: '1.4285714',
+    marginBottom: '20px',
+    padding: '10px 32px',
+  },
+  code: {
+    backgroundColor: '#efefef',
+    borderRadius: '8px',
+    color: '#111827',
+    fontFamily: 'ui-monospace, monospace',
+    fontSize: '85%',
+    padding: '2px 6px',
+  },
+  container: {
+    backgroundColor: '#ffffff',
+    maxWidth: `${DEFAULT_CONTAINER_MAX_WIDTH}px`,
+    minWidth: '300px',
+    padding: '8px',
+  },
+  footer: {
+    color: '#64748b',
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '400',
+    lineHeight: '1.7142857',
+    marginBottom: '20px',
+    marginTop: '0',
+  },
+  h1: {
+    fontSize: '36px',
+    fontWeight: '600',
+    lineHeight: '1.1111111',
+  },
+  h2: {
+    fontSize: '30px',
+    fontWeight: '600',
+    lineHeight: '1.3333333',
+  },
+  h3: {
+    fontSize: '24px',
+    fontWeight: '600',
+    lineHeight: '1.6',
+  },
+  heading: {
+    color: '#111827',
+    marginBottom: '12px',
+    marginTop: '0',
+  },
+  horizontalRule: {
+    border: 'none',
+    borderTop: '1px solid #eaeaea',
+    marginBottom: '32px',
+    marginTop: '32px',
+  },
+  htmlCodeBlock: {
+    marginBottom: '32px',
   },
   link: {
-    color: DEFAULT_LINK_TEXT_COLOR,
+    color: '#111827',
+    textDecoration: 'underline',
   },
-  font: DEFAULT_FONT,
+  listItem: {
+    color: '#d1d5dc',
+    marginBottom: '8px',
+    marginTop: '8px',
+    paddingLeft: '6px',
+  },
+  orderedList: {
+    listStyleType: 'decimal',
+    marginBottom: '20px',
+    marginLeft: '0',
+    marginRight: '0',
+    marginTop: '0',
+    paddingLeft: '26px',
+  },
+  paragraph: {
+    color: '#374151',
+    fontSize: '15px',
+    fontWeight: '400',
+    lineHeight: '1.75',
+    marginBottom: '20px',
+    marginTop: '0',
+    MozOsxFontSmoothing: 'grayscale',
+    WebkitFontSmoothing: 'antialiased',
+  },
+  section: {
+    backgroundColor: '#f7f7f7',
+    border: '2px solid #e2e2e2',
+    borderRadius: '0',
+    marginBottom: '20px',
+    padding: '0',
+  },
 };
+
+export type ExtendNodeThemeOptions = {
+  extension: NodeThemeOptions;
+  preset: NodeThemeOptions;
+};
+
+export function extendNodeTheme(
+  options: ExtendNodeThemeOptions
+): NodeThemeOptions {
+  const { extension, preset } = options;
+
+  return deepMerge(preset, extension);
+}
+
+export type ThemeDeclarationsOptions = {
+  attrs?: Record<string, unknown> | undefined;
+  theme: NodeThemeOptions;
+  type: string;
+};
+
+export function getThemeDeclarations(
+  options: ThemeDeclarationsOptions
+): InlineStyle | undefined {
+  const { attrs, theme, type } = options;
+  const declarations = theme[type as keyof NodeThemeOptions];
+
+  if (type !== MAILY_NODE_TYPES.HEADING) {
+    return declarations;
+  }
+
+  const level =
+    typeof attrs?.level === 'number'
+      ? theme[`h${attrs.level}` as keyof NodeThemeOptions]
+      : undefined;
+  if (!(declarations || level)) {
+    return;
+  }
+
+  return { ...declarations, ...level };
+}

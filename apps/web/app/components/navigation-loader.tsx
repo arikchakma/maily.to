@@ -1,6 +1,7 @@
+import NProgress from 'nprogress';
 import { useEffect } from 'react';
 import { useNavigation } from 'react-router';
-import NProgress from 'nprogress';
+
 import 'nprogress/nprogress.css';
 
 NProgress.configure({

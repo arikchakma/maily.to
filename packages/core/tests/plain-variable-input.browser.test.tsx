@@ -4,8 +4,10 @@ import {
   waitFor,
 } from '@testing-library/react';
 import type { JSONContent } from '@tiptap/core';
+import { Collaboration } from '@tiptap/extension-collaboration';
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { userEvent } from 'vite-plus/test/browser/context';
+import { Doc } from 'yjs';
 
 import { getContentFromHtml, PlainVariableInput } from '~/index';
 import type { PlainVariableInputProps } from '~/index';
@@ -135,6 +137,46 @@ describe('<PlainVariableInput />', () => {
       ).not.toBeNull();
     });
     expect(document.querySelector('input[aria-label="Variable"]')).toBeNull();
+  });
+
+  it('shares text between collaborators through a yjs field', async () => {
+    const document = new Doc();
+    const onFirstChange = vi.fn();
+    const onSecondChange = vi.fn();
+
+    renderReact(
+      <>
+        <PlainVariableInput
+          aria-label="First"
+          content="ignored"
+          extensions={[Collaboration.configure({ document, field: 'subject' })]}
+          onContentChange={onFirstChange}
+        />
+        <PlainVariableInput
+          aria-label="Second"
+          content="ignored"
+          extensions={[Collaboration.configure({ document, field: 'subject' })]}
+          onContentChange={onSecondChange}
+        />
+      </>
+    );
+
+    const first = await waitFor(() => {
+      const element = window.document.querySelector<HTMLElement>(
+        '[aria-label="First"]'
+      );
+      expect(element).not.toBeNull();
+
+      return element!;
+    });
+
+    await userEvent.click(first);
+    await userEvent.keyboard('Hi');
+
+    await waitFor(() => {
+      expect(onSecondChange).toHaveBeenLastCalledWith('Hi');
+    });
+    expect(onFirstChange).toHaveBeenLastCalledWith('Hi');
   });
 
   it('keeps a typed trailing space as a regular space', async () => {

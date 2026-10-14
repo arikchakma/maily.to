@@ -4,6 +4,7 @@ import {
   buildDocFromVariableText,
   serializeVariableToText,
 } from '@maily-to/shared';
+import type { AnyExtension } from '@tiptap/core';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Placeholder, UndoRedo } from '@tiptap/extensions';
@@ -19,6 +20,7 @@ import { VariableBubbleMenu } from '~/components/variable-bubble-menu/variable-b
 import { Document } from '~/extensions/document/document';
 import { VariableExtension } from '~/extensions/variable/variable';
 import { getVariableSuggestions } from '~/extensions/variable/variable-suggestion';
+import { mergeExtensions } from '~/utils/extensions';
 import type { Variables } from '~/utils/variable';
 import { VARIABLE_SUGGESTION_POPOVER_ID } from '~/utils/variable';
 
@@ -26,6 +28,7 @@ export type PlainVariableInputProps = {
   'aria-label'?: string;
   autofocus?: EditorOptions['autofocus'];
   content: string;
+  extensions?: AnyExtension[];
   id?: string;
   isIdEditable?: boolean;
   onContentChange?: (content: string) => void;
@@ -39,6 +42,7 @@ export function PlainVariableInput(props: PlainVariableInputProps) {
     'aria-label': ariaLabel,
     autofocus = false,
     content,
+    extensions = [],
     id,
     isIdEditable = true,
     onContentChange,
@@ -49,30 +53,40 @@ export function PlainVariableInput(props: PlainVariableInputProps) {
 
   const { editor: parentEditor } = useCurrentEditor();
 
+  const isCollaborative = extensions.some((extension) => {
+    return extension.name === 'collaboration';
+  });
+
   const editor = useEditor({
     autofocus,
-    content: content ? buildDocFromVariableText(content) : '',
-    extensions: [
-      Document.extend({ content: 'paragraph' }),
-      Paragraph.configure({
-        HTMLAttributes: { 'data-mly-plain-variable-input-line': '' },
-      }),
-      Text,
-      Placeholder.configure({ placeholder }),
-      UndoRedo,
-      VariableExtension.configure({
-        addSpaceSuffix: false,
-        isIdEditable,
-        renderText(renderProps) {
-          return serializeVariableToText(
-            renderProps.node.attrs as VariableNodeAttrs
-          );
-        },
-        shouldScrollIntoView: true,
-        suggestion: { ...getVariableSuggestions(), allowedPrefixes: null },
-        variables: variables ?? parentEditor?.storage.variable?.variables ?? [],
-      }),
-    ],
+    ...(isCollaborative
+      ? {}
+      : { content: content ? buildDocFromVariableText(content) : '' }),
+    extensions: mergeExtensions(
+      [
+        Document.extend({ content: 'paragraph' }),
+        Paragraph.configure({
+          HTMLAttributes: { 'data-mly-plain-variable-input-line': '' },
+        }),
+        Text,
+        Placeholder.configure({ placeholder }),
+        ...(isCollaborative ? [] : [UndoRedo]),
+        VariableExtension.configure({
+          addSpaceSuffix: false,
+          isIdEditable,
+          renderText(renderProps) {
+            return serializeVariableToText(
+              renderProps.node.attrs as VariableNodeAttrs
+            );
+          },
+          shouldScrollIntoView: true,
+          suggestion: { ...getVariableSuggestions(), allowedPrefixes: null },
+          variables:
+            variables ?? parentEditor?.storage.variable?.variables ?? [],
+        }),
+      ],
+      extensions
+    ),
     editorProps: {
       attributes: {
         role: 'textbox',

@@ -21,6 +21,30 @@ const LITERAL_SELECTORS = [
   `[${DATA_NODE_TYPE_KEY}="${MAILY_NODE_TYPES.VARIABLE}"]`,
 ].join(',');
 
+const PHRASING_TAGS = new Set([
+  'A',
+  'ABBR',
+  'B',
+  'BR',
+  'CITE',
+  'CODE',
+  'EM',
+  'FONT',
+  'I',
+  'IMG',
+  'KBD',
+  'MARK',
+  'Q',
+  'S',
+  'SMALL',
+  'SPAN',
+  'STRIKE',
+  'STRONG',
+  'SUB',
+  'SUP',
+  'U',
+]);
+
 const HIDDEN_SELECTORS = ['[data-skip-in-text="true"]', '.preheader'].join(',');
 
 const INHERITED_PROPERTIES = new Set([
@@ -126,6 +150,36 @@ function removeHidden(document: Document) {
   for (const element of document.querySelectorAll<HTMLElement>('[style]')) {
     if (element.style.display === 'none') {
       element.remove();
+    }
+  }
+}
+
+function isPhrasing(node: ChildNode) {
+  return node.nodeType === Node.TEXT_NODE || PHRASING_TAGS.has(node.nodeName);
+}
+
+// The editor wraps loose cell text in a bare paragraph. Email clients give a
+// bare paragraph a default margin, so the cell gets taller than the source.
+function setCellParagraphs(document: Document) {
+  for (const parent of document.querySelectorAll('td, th')) {
+    const runs: ChildNode[][] = [[]];
+    for (const child of parent.childNodes) {
+      if (isPhrasing(child)) {
+        runs.at(-1)!.push(child);
+      } else {
+        runs.push([]);
+      }
+    }
+
+    for (const run of runs) {
+      if (!run.some((node) => node.textContent?.trim())) {
+        continue;
+      }
+
+      const paragraph = document.createElement('p');
+      paragraph.setAttribute('style', 'margin:0');
+      run[0]!.before(paragraph);
+      paragraph.append(...run);
     }
   }
 }
@@ -280,6 +334,7 @@ export function getNormalizedHtml(html: string) {
   removeHidden(parsed);
   setLinkedImages(parsed);
   setVariables(parsed);
+  setCellParagraphs(parsed);
 
   const style = getBodyStyle(parsed);
   if (!style) {

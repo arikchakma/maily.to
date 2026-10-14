@@ -544,4 +544,25 @@ describe('html import', () => {
 
     expect(JSON.stringify(ref.current!.getJSON())).not.toContain('Preheader');
   });
+
+  it('removes the margin from text written straight in a cell', async () => {
+    const source = `<table><tr><td style="padding:5px 12px">Invite only <b>now</b><p style="margin:8px">Own</p></td></tr></table>`;
+    const { ref } = await render({ content: source });
+
+    const paragraphs: AnyMailyNode[] = [];
+    const visit = (node: AnyMailyNode) => {
+      if (node.type === 'paragraph') {
+        paragraphs.push(node);
+      }
+      node.content?.forEach(visit);
+    };
+    visit(ref.current!.getJSON() as AnyMailyNode);
+
+    expect(
+      paragraphs.map((node) => [node.attrs?.style, node.content?.length])
+    ).toEqual([
+      ['margin:0', 2],
+      ['margin:8px', 1],
+    ]);
+  });
 });

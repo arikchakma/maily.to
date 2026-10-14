@@ -44,3 +44,5 @@ export {
   VISIBILITY_SUPPORTED_TYPES,
 } from './extensions/visibility/visibility';
 export type { VisibilityOptions } from './extensions/visibility/visibility';
+export { DEFAULT_EXTENSIONS } from './hooks/use-maily-editor';
+export { getNormalizedHtml } from './utils/html';

@@ -63,6 +63,8 @@ async function highlight(code: string, language: string) {
   return shiki.codeToHtml(code, { lang: language, theme: 'github-light' });
 }
 
+const PREVIEW_DELAY = 150;
+
 export type EmailPreview = {
   html: string;
   json: string;
@@ -134,10 +136,11 @@ export function useEmailPreview(options: EmailPreviewOptions): EmailPreview {
       }));
     }
 
-    void build();
+    const timer = setTimeout(build, PREVIEW_DELAY);
 
     return () => {
       active = false;
+      clearTimeout(timer);
     };
   }, [document, theme, variables]);
 

@@ -18,18 +18,12 @@ async function insertLinkCard(page: Page) {
   return { textbox };
 }
 
-test('inserts a link card from the slash menu', async ({ page }) => {
-  const { textbox } = await insertLinkCard(page);
-
-  await expect(textbox.locator('[data-mly-link-card]')).toBeVisible();
-  await expect(textbox.locator('[data-mly-image-state]')).toBeVisible();
-});
-
 test('fills a card field from its bubble menu and renders it', async ({
   page,
 }) => {
   const { textbox } = await insertLinkCard(page);
 
+  await expect(textbox.locator('[data-mly-image-state]')).toBeVisible();
   await textbox.locator('[data-mly-link-card]').click();
 
   const menu = page.locator('[data-mly-bubble-menu]');

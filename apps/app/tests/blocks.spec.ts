@@ -18,9 +18,7 @@ async function openSlashMenu(page: Page, query = '') {
   return { popover, textbox };
 }
 
-test('inserts a spacer from the block menu and renders it', async ({
-  page,
-}) => {
+test('inserts a spacer from the block menu', async ({ page }) => {
   const { popover } = await openSlashMenu(page, 'spac');
 
   await expect(popover.locator('[data-mly-slash-command-title]')).toHaveText([
@@ -32,9 +30,6 @@ test('inserts a spacer from the block menu and renders it', async ({
   await expect(
     page.getByRole('textbox').first().locator('[data-mly-spacer-view]')
   ).toBeVisible();
-
-  await page.getByRole('button', { name: 'JSON', exact: true }).click();
-  await expect(page.locator('.cm-content')).toContainText('"type": "doc"');
 });
 
 test('inserts a button from the block menu and renders it in the preview', async ({

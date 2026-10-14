@@ -18,17 +18,13 @@ async function insertHtmlBlock(page: Page) {
   return { textbox };
 }
 
-test('inserts an html block from the slash menu', async ({ page }) => {
+test('renders the authored markup into the email', async ({ page }) => {
   const { textbox } = await insertHtmlBlock(page);
 
-  await expect(textbox.locator('[data-mly-html-code-block]')).toBeVisible();
   await expect(
     textbox.locator('[data-node-type="htmlCodeBlock"]')
   ).toHaveAttribute('data-active-tab', 'code');
-});
 
-test('renders the authored markup into the email', async ({ page }) => {
-  await insertHtmlBlock(page);
   await page.keyboard.type('<p id="from-html">Hand written</p>');
 
   const preview = page.frameLocator('iframe[title="Rendered email preview"]');

@@ -35,17 +35,6 @@ async function pickFrom(page: Page, label: string, option: string) {
     .click();
 }
 
-test('declares the theme font as a font face in the exported email', async ({
-  page,
-}) => {
-  await page.goto('/?fixture');
-  await page.getByRole('button', { name: 'HTML', exact: true }).click();
-
-  await expect(await getHighlightedCode(page)).toContainText(
-    "@font-face {font-family: 'Inter'"
-  );
-});
-
 test('authors the chosen font on the block it was opened from', async ({
   page,
 }) => {

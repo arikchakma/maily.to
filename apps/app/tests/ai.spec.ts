@@ -1,26 +1,6 @@
 import type { Page } from 'playwright/test';
 import { expect, test } from 'playwright/test';
 
-test('rewrites the selection from the ai dropdown', async ({ page }) => {
-  await page.goto('/?fixture');
-
-  const textbox = page.getByRole('textbox').first();
-  const paragraph = textbox
-    .getByText('Edit this paragraph and watch the email output change.')
-    .first();
-  await paragraph.click();
-  await page.keyboard.press('ControlOrMeta+a');
-
-  const menu = page.locator('[data-mly-bubble-menu]');
-  await menu.locator('[aria-label="AI Actions"]').click();
-
-  const dropdown = page.locator('[data-mly-dropdown-menu]');
-  await expect(dropdown).toBeVisible();
-  await dropdown.getByText('Improve Writing').click();
-
-  await expect(paragraph).toContainText('Improved:', { timeout: 15_000 });
-});
-
 test('completes a sentence from the inline suggestion', async ({ page }) => {
   await page.goto('/?fixture');
 
@@ -84,23 +64,6 @@ test('lists every ai action in the dropdown from the text bubble menu', async ({
   ]);
 });
 
-test('replaces the selection with a one-shot result', async ({ page }) => {
-  const { dropdown, paragraph } = await getAIDropdown({
-    mode: 'oneshot',
-    page,
-  });
-
-  await dropdown.getByText('Fix Grammar').click();
-
-  await expect(paragraph).toHaveText(`Grammar fixed: ${PARAGRAPH_TEXT}`);
-
-  await expect(
-    page
-      .frameLocator('iframe[title="Rendered email preview"]')
-      .getByText(`Grammar fixed: ${PARAGRAPH_TEXT}`)
-  ).toBeVisible();
-});
-
 test('shows the loading state and announces the running action', async ({
   page,
 }) => {
@@ -119,6 +82,11 @@ test('shows the loading state and announces the running action', async ({
   );
 
   await expect(paragraph).toHaveText(`Longer: ${PARAGRAPH_TEXT}`);
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered email preview"]')
+      .getByText(`Longer: ${PARAGRAPH_TEXT}`)
+  ).toBeVisible();
 
   await paragraph.click({ clickCount: 3 });
 

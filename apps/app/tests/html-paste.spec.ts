@@ -38,23 +38,18 @@ async function getEmptyEditor(page: Page) {
   return textbox;
 }
 
-test('turns markup pasted as text into editable blocks', async ({ page }) => {
+test('turns markup pasted as text into blocks and renders them', async ({
+  page,
+}) => {
   const textbox = await getEmptyEditor(page);
 
   await paste({ target: textbox, text: SOURCE });
 
   await expect(textbox.locator('h2')).toHaveText('Pasted title');
   await expect(textbox.locator('strong')).toHaveText('Pasted bold');
-});
-
-test('renders the pasted markup into the email', async ({ page }) => {
-  const textbox = await getEmptyEditor(page);
-
-  await paste({ target: textbox, text: SOURCE });
-
-  const preview = page.frameLocator('iframe[title="Rendered email preview"]');
-
-  await expect(preview.locator('h2')).toHaveText('Pasted title');
+  await expect(
+    page.frameLocator('iframe[title="Rendered email preview"]').locator('h2')
+  ).toHaveText('Pasted title');
 });
 
 test('leaves the markup as text when the paste is undone', async ({ page }) => {

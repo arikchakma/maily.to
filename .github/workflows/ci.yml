@@ -48,4 +48,4 @@ jobs:
       - run: vp run -F '@maily-to/core' test
         env:
           TEST_BROWSER: ${{ matrix.browser }}
-      - run: vp exec playwright test --project=${{ matrix.browser }} --retries=2
+      - run: vp exec playwright test --project=${{ matrix.browser }} --retries=2 --workers=4

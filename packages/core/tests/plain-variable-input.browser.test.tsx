@@ -67,8 +67,11 @@ describe('<PlainVariableInput />', () => {
 
     expect(textbox.querySelectorAll('[data-mly-variable]').length).toBe(2);
 
-    await userEvent.click(textbox);
-    await userEvent.keyboard('{ArrowRight}!');
+    const { height, width } = textbox.getBoundingClientRect();
+    await userEvent.click(textbox, {
+      position: { x: width - 2, y: height / 2 },
+    });
+    await userEvent.keyboard('!');
 
     await waitFor(() => {
       expect(onContentChange).toHaveBeenLastCalledWith(`${CONTENT}!`);

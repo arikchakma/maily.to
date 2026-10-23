@@ -52,6 +52,8 @@ export const BASIC_NODE_THEME: NodeThemeOptions = {
     }),
   },
   bulletList: {
+    fontSize: '14px',
+    lineHeight: '24px',
     listStyleType: 'disc',
     margin: '0',
     paddingLeft: '26px',
@@ -105,10 +107,12 @@ export const BASIC_NODE_THEME: NodeThemeOptions = {
     textDecoration: 'underline',
   },
   listItem: {
-    marginBottom: '8px',
+    marginBottom: '4px',
     paddingLeft: '6px',
   },
   orderedList: {
+    fontSize: '14px',
+    lineHeight: '24px',
     listStyleType: 'decimal',
     margin: '0',
     paddingLeft: '26px',

@@ -28,6 +28,11 @@ jobs:
 
   browser:
     runs-on: ubuntu-latest
+    # The image holds the browsers and their system packages. Keep its tag on
+    # the playwright version in pnpm-lock.yaml.
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
 
     strategy:
       fail-fast: false
@@ -43,7 +48,6 @@ jobs:
           cache: true
 
       - run: vp install
-      - run: vp exec playwright install --with-deps ${{ matrix.browser }}
       - run: vp run -r build
       - run: vp run -F '@maily-to/core' test
         env:

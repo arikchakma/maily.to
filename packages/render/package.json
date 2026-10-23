@@ -1,6 +1,6 @@
 {
   "name": "@maily-to/render",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "private": false,
   "description": "A transformer that converts Maily content into HTML email templates.",
   "keywords": [

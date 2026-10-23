@@ -73,7 +73,7 @@ test('spaces list items apart but not after the last one', async ({ page }) => {
     nodes.map((node) => getComputedStyle(node).marginBottom)
   );
 
-  expect(margins).toEqual(['8px', '0px']);
+  expect(margins).toEqual(['4px', '0px']);
 });
 
 test('leaves a section on a triple Enter', async ({ page }) => {

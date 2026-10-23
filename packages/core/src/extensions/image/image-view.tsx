@@ -1,5 +1,5 @@
 import type { ImageAttributes } from '@maily-to/shared';
-import { hasVariableInText } from '@maily-to/shared';
+import { hasVariableInText, parseInlineStyles } from '@maily-to/shared';
 import type { Editor } from '@tiptap/core';
 import type { ReactNodeViewProps } from '@tiptap/react';
 import { NodeViewWrapper, useEditorState } from '@tiptap/react';
@@ -39,7 +39,13 @@ function useUploadStatus(
 
 export function ImageView(props: ReactNodeViewProps) {
   const { editor, getPos, node, updateAttributes } = props;
-  const { align, alt, src, width } = node.attrs as ImageAttributes;
+  const { align, alt, src, width, style } = node.attrs as ImageAttributes;
+  const {
+    width: _width,
+    maxWidth: _maxWidth,
+    height: _height,
+    ...authoredStyle
+  } = parseInlineStyles(style ?? '');
 
   const isSrcVariable = !!src && hasVariableInText(src);
   const status = useUploadStatus(editor, isSrcVariable ? undefined : src);
@@ -130,6 +136,7 @@ export function ImageView(props: ReactNodeViewProps) {
               data-mly-image=""
               draggable={editor.isEditable}
               src={src}
+              style={authoredStyle}
             />
             {shouldShowDragHandles || isResizing ? (
               <>

@@ -323,6 +323,24 @@ describe('<ImageExtension />', () => {
       });
     });
 
+    it('shows the authored style but keeps the width on the wrapper', async () => {
+      const { view } = await render({
+        content:
+          '<img src="https://maily.to/hero.png" style="width:520px;border-radius:12px;margin:0 0 32px" />',
+      });
+
+      const image = await waitFor(() => {
+        const found =
+          view.container.querySelector<HTMLElement>('[data-mly-image]');
+        expect(found).not.toBeNull();
+        return found!;
+      });
+
+      expect(image.style.borderRadius).toBe('12px');
+      expect(image.style.margin).toBe('0px 0px 32px');
+      expect(image.style.width).toBe('');
+    });
+
     it('shrinks the drag handles on a narrow image', async () => {
       const { ref, view } = await render({ styled: true });
 

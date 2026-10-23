@@ -58,6 +58,30 @@ describe('variable', () => {
         src: 'https://maily.to/avatar.png',
       });
     });
+
+    it('resolves variables inside a text link', async () => {
+      const html = await render(
+        documentWith([
+          {
+            type: 'paragraph',
+            content: [
+              {
+                type: 'text',
+                text: 'Unsubscribe',
+                marks: [
+                  { type: 'link', attrs: { href: '{{unsubscribeUrl}}' } },
+                ],
+              },
+            ],
+          },
+        ]),
+        { variables: { unsubscribeUrl: 'https://maily.to/unsubscribe' } }
+      );
+
+      expect(parse(html).querySelector('a')?.getAttribute('href')).toBe(
+        'https://maily.to/unsubscribe'
+      );
+    });
   });
 
   describe('unresolved variables', () => {

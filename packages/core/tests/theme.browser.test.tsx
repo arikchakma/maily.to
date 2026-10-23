@@ -301,16 +301,18 @@ describe('<ThemeExtension />', () => {
 
       expect({
         listPadding: list && getComputedStyle(list).paddingLeft,
+        listFontSize: list && getComputedStyle(list).fontSize,
         marker: list && getComputedStyle(list).listStyleType,
         itemPadding: item && getComputedStyle(item).paddingLeft,
         itemMarginTop: item && getComputedStyle(item).marginTop,
         itemMarginBottom: item && getComputedStyle(item).marginBottom,
       }).toEqual({
         listPadding: '26px',
+        listFontSize: '14px',
         marker: 'disc',
         itemPadding: '6px',
         itemMarginTop: '0px',
-        itemMarginBottom: '8px',
+        itemMarginBottom: '4px',
       });
     });
 
@@ -348,7 +350,7 @@ describe('<ThemeExtension />', () => {
       expect({
         between: (items[0] as HTMLElement).style.marginBottom,
         trailing: (items[1] as HTMLElement).style.marginBottom,
-      }).toEqual({ between: '8px', trailing: '0px' });
+      }).toEqual({ between: '4px', trailing: '0px' });
     });
   });
 

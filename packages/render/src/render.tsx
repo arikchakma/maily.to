@@ -27,5 +27,13 @@ export async function render(json: AnyMailyNode, config: MailyConfig = {}) {
 }
 
 export async function renderText(json: AnyMailyNode, config: MailyConfig = {}) {
-  return renderReactEmail(markup(json, config), { plainText: true });
+  return renderReactEmail(markup(json, config), {
+    htmlToTextOptions: {
+      selectors: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((selector) => ({
+        selector,
+        options: { uppercase: false },
+      })),
+    },
+    plainText: true,
+  });
 }

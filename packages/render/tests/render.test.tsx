@@ -704,6 +704,22 @@ describe('render', () => {
     expect(await renderText(document)).toBe('Plain text output');
   });
 
+  it('keeps the case of headings in the plain text', async () => {
+    const document: DocumentNode = {
+      type: 'doc',
+      attrs: { version: 2 },
+      content: [
+        {
+          type: 'heading',
+          attrs: { level: 1 },
+          content: [{ type: 'text', text: 'Hi Arik,' }],
+        },
+      ],
+    };
+
+    expect(await renderText(document)).toBe('Hi Arik,');
+  });
+
   it('surfaces a renderer failure instead of returning empty output', async () => {
     const notADocument = {
       type: 'paragraph',

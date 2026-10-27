@@ -1,9 +1,9 @@
 {
-  "extends": "tsconfig/react-library.json",
+  "extends": "@maily-to/tsconfig/react-library.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["src/*"]
+      "~/*": ["./src/*"]
     }
   },
   "include": ["."],

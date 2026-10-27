@@ -1,0 +1,970 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture default-editor > matches the migrated snapshot 1`] = `
+{
+  "attrs": {
+    "version": 2,
+  },
+  "content": [
+    {
+      "attrs": {
+        "align": "left",
+        "alt": null,
+        "src": "https://maily.to/brand/logo.png",
+        "title": null,
+        "width": "8%",
+      },
+      "type": "image",
+    },
+    {
+      "attrs": {
+        "height": 64,
+      },
+      "type": "spacer",
+    },
+    {
+      "attrs": {
+        "level": 2,
+      },
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold",
+            },
+          ],
+          "text": "Discover Maily",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Are you ready to transform your email communication? Introducing Maily, the powerful email editor that enables you to craft captivating emails effortlessly.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Elevate your email communication with Maily! Click below to try it out:",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {
+        "align": "left",
+        "kind": "tight",
+        "style": "border-radius:9999px",
+        "url": "",
+      },
+      "content": [
+        {
+          "text": "Try Maily Now →",
+          "type": "text",
+        },
+      ],
+      "type": "button",
+    },
+    {
+      "attrs": {
+        "height": 64,
+      },
+      "type": "spacer",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Join our vibrant community of users and developers on GitHub, where Maily is an ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "attrs": {
+                "class": null,
+                "href": "https://github.com/arikchakma/maily.to",
+                "rel": "noopener noreferrer nofollow",
+                "target": "_blank",
+              },
+              "type": "link",
+            },
+            {
+              "type": "italic",
+            },
+          ],
+          "text": "open-source",
+          "type": "text",
+        },
+        {
+          "text": " project. Together, we'll shape the future of email editing.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Regards,",
+          "type": "text",
+        },
+        {
+          "attrs": {},
+          "type": "hardBreak",
+        },
+        {
+          "text": "Arikko",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`fixture default-editor > matches the warnings snapshot 1`] = `
+[
+  {
+    "field": "size",
+    "message": "Migrated "size: md" → "width: 8%"",
+    "nodeType": "logo",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "logo",
+  },
+  {
+    "field": "maily-component",
+    "message": "Attribute "maily-component" is not supported in v2 and was dropped",
+    "nodeType": "logo",
+  },
+  {
+    "field": "height",
+    "message": "Migrated "height" from string enum to number: xl → 64",
+    "nodeType": "spacer",
+  },
+  {
+    "field": "text",
+    "message": "Migrated "text" → inline content node",
+    "nodeType": "button",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "button",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" enum → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "height",
+    "message": "Migrated "height" from string enum to number: xl → 64",
+    "nodeType": "spacer",
+  },
+]
+`;
+
+exports[`fixture kitchen-sink > matches the migrated snapshot 1`] = `
+{
+  "attrs": {
+    "version": 2,
+  },
+  "content": [
+    {
+      "attrs": {
+        "align": "left",
+        "alt": "Maily",
+        "src": "https://maily.to/brand/logo.png",
+        "title": null,
+        "width": "8%",
+      },
+      "type": "image",
+    },
+    {
+      "attrs": {
+        "height": 64,
+      },
+      "type": "spacer",
+    },
+    {
+      "attrs": {
+        "level": 2,
+        "style": "text-align:center",
+      },
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold",
+            },
+          ],
+          "text": "Maily Monthly — March",
+          "type": "text",
+        },
+      ],
+      "type": "heading",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Hey ",
+          "type": "text",
+        },
+        {
+          "attrs": {
+            "fallback": "there",
+            "id": "firstName",
+            "isDefaultEditable": true,
+            "label": null,
+            "required": true,
+          },
+          "type": "variable",
+        },
+        {
+          "text": ", here is everything we shipped this month.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold",
+            },
+          ],
+          "text": "Three things",
+          "type": "text",
+        },
+        {
+          "text": " are worth ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "type": "italic",
+            },
+          ],
+          "text": "your",
+          "type": "text",
+        },
+        {
+          "text": " time: a ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "type": "underline",
+            },
+          ],
+          "text": "faster editor",
+          "type": "text",
+        },
+        {
+          "text": ", ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "type": "strike",
+            },
+          ],
+          "text": "no more",
+          "type": "text",
+        },
+        {
+          "text": " broken exports, and a new ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "type": "code",
+            },
+          ],
+          "text": "@maily-to/render",
+          "type": "text",
+        },
+        {
+          "text": " release. ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "attrs": {
+                "color": "#7c3aed",
+              },
+              "type": "textStyle",
+            },
+          ],
+          "text": "The highlights are below",
+          "type": "text",
+        },
+        {
+          "text": ", or ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "attrs": {
+                "class": null,
+                "href": "{{changelogUrl}}",
+                "rel": "noopener noreferrer nofollow",
+                "target": "_blank",
+              },
+              "type": "link",
+            },
+          ],
+          "text": "jump straight to the changelog",
+          "type": "text",
+        },
+        {
+          "text": ".",
+          "type": "text",
+        },
+        {
+          "attrs": {},
+          "type": "hardBreak",
+        },
+        {
+          "text": "— the Maily team",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "attrs": {
+            "style": "color:#7c3aed",
+          },
+          "content": [
+            {
+              "attrs": {},
+              "content": [
+                {
+                  "text": "Sections keep their padding on export.",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+        {
+          "attrs": {},
+          "content": [
+            {
+              "attrs": {},
+              "content": [
+                {
+                  "text": "Columns collapse on mobile clients again.",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+      ],
+      "type": "bulletList",
+    },
+    {
+      "attrs": {
+        "start": 1,
+      },
+      "content": [
+        {
+          "attrs": {},
+          "content": [
+            {
+              "attrs": {},
+              "content": [
+                {
+                  "text": "Open the editor and paste a URL.",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+        {
+          "attrs": {},
+          "content": [
+            {
+              "attrs": {},
+              "content": [
+                {
+                  "text": "Pick a template and hit send.",
+                  "type": "text",
+                },
+              ],
+              "type": "paragraph",
+            },
+          ],
+          "type": "listItem",
+        },
+      ],
+      "type": "orderedList",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "attrs": {},
+          "content": [
+            {
+              "text": "We cut our newsletter build time from an afternoon to ten minutes.",
+              "type": "text",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "blockquote",
+    },
+    {
+      "attrs": {},
+      "type": "horizontalRule",
+    },
+    {
+      "attrs": {
+        "align": "center",
+        "alt": "The new editor canvas",
+        "externalLink": "https://maily.to/blog/faster-editor",
+        "src": "{{heroImageUrl}}",
+        "style": "border-radius:8px",
+        "title": null,
+        "width": "50%",
+      },
+      "type": "image",
+    },
+    {
+      "attrs": {
+        "style": "background-color:#f7f7f7;border-color:#e2e2e2;border-style:solid;border-width:2px;border-radius:12px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;margin-top:16px;margin-right:0px;margin-bottom:16px;margin-left:0px;text-align:center",
+        "visibilityRule": {
+          "action": "show",
+          "operator": "is_true",
+          "value": "",
+          "variable": "isSubscriber",
+        },
+      },
+      "content": [
+        {
+          "attrs": {
+            "columnCount": 2,
+            "gap": 8,
+          },
+          "content": [
+            {
+              "attrs": {
+                "style": "background-color:#ffffff;border-color:#e2e2e2;border-style:solid;border-width:1px;border-radius:8px;padding-top:12px;padding-right:12px;padding-bottom:12px;padding-left:12px",
+                "verticalAlign": "top",
+                "width": 50,
+              },
+              "content": [
+                {
+                  "attrs": {},
+                  "content": [
+                    {
+                      "text": "Free — every core block.",
+                      "type": "text",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "column",
+            },
+            {
+              "attrs": {
+                "verticalAlign": "top",
+                "width": null,
+              },
+              "content": [
+                {
+                  "attrs": {},
+                  "content": [
+                    {
+                      "text": "Pro — variables and repeats.",
+                      "type": "text",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "column",
+            },
+          ],
+          "type": "columns",
+        },
+      ],
+      "type": "section",
+    },
+    {
+      "attrs": {
+        "align": "center",
+        "kind": "tight",
+        "style": "background-color:#0a0a0a;color:#ffffff;border-radius:9999px;padding-top:10px;padding-right:32px;padding-bottom:10px;padding-left:32px",
+        "url": "{{ctaUrl}}",
+      },
+      "content": [
+        {
+          "attrs": {
+            "id": "ctaLabel",
+          },
+          "type": "variable",
+        },
+      ],
+      "type": "button",
+    },
+    {
+      "attrs": {
+        "align": "center",
+        "kind": "tight",
+        "style": "color:#7c3aed;background-color:transparent;border-width:2px;border-style:solid;border-color:#7c3aed;border-radius:6px",
+        "url": "https://maily.to/templates",
+      },
+      "content": [
+        {
+          "text": "Browse the templates",
+          "type": "text",
+        },
+      ],
+      "type": "button",
+    },
+    {
+      "attrs": {
+        "each": "{{releases}}",
+      },
+      "content": [
+        {
+          "attrs": {},
+          "content": [
+            {
+              "attrs": {
+                "fallback": null,
+                "id": "releases.title",
+                "isDefaultEditable": true,
+                "label": null,
+                "required": true,
+              },
+              "type": "variable",
+            },
+            {
+              "text": " shipped on ",
+              "type": "text",
+            },
+            {
+              "attrs": {
+                "fallback": null,
+                "id": "releases.date",
+                "isDefaultEditable": true,
+                "label": null,
+                "required": true,
+              },
+              "type": "variable",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "repeat",
+    },
+    {
+      "attrs": {
+        "each": "{{upcomingEvents}}",
+      },
+      "content": [
+        {
+          "attrs": {},
+          "content": [
+            {
+              "text": "See you at the next community call.",
+              "type": "text",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ],
+      "type": "repeat",
+    },
+    {
+      "attrs": {
+        "activeTab": "code",
+        "language": "html",
+      },
+      "content": [
+        {
+          "text": "<p style="margin:0">Rendered exactly as written.</p>",
+          "type": "text",
+        },
+      ],
+      "type": "htmlCodeBlock",
+    },
+    {
+      "attrs": {
+        "badgeText": "New",
+        "description": "A rewrite of the editor core, and a new renderer.",
+        "image": "https://maily.to/brand/cover.png",
+        "link": "https://maily.to/blog/maily-2",
+        "linkTitle": "Read the post",
+        "subTitle": "5 min read",
+        "title": "Maily 2.0 is in beta",
+      },
+      "type": "linkCard",
+    },
+    {
+      "attrs": {
+        "dir": "rtl",
+      },
+      "content": [
+        {
+          "text": "النسخة العربية من النشرة متاحة الآن.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {},
+      "content": [
+        {
+          "text": "Written by ",
+          "type": "text",
+        },
+        {
+          "attrs": {
+            "alt": "Arik",
+            "externalLink": "{{authorProfileUrl}}",
+            "height": 20,
+            "src": "",
+            "title": null,
+            "width": 20,
+          },
+          "type": "inlineImage",
+        },
+        {
+          "text": " Arik Chakma.",
+          "type": "text",
+        },
+      ],
+      "type": "paragraph",
+    },
+    {
+      "attrs": {
+        "style": "text-align:center",
+      },
+      "content": [
+        {
+          "text": "You are receiving this because you signed up at maily.to. ",
+          "type": "text",
+        },
+        {
+          "marks": [
+            {
+              "attrs": {
+                "class": null,
+                "href": "https://maily.to/unsubscribe",
+                "rel": "noopener noreferrer nofollow",
+                "target": "_blank",
+              },
+              "type": "link",
+            },
+          ],
+          "text": "Unsubscribe",
+          "type": "text",
+        },
+      ],
+      "type": "footer",
+    },
+  ],
+  "type": "doc",
+}
+`;
+
+exports[`fixture kitchen-sink > matches the warnings snapshot 1`] = `
+[
+  {
+    "field": "size",
+    "message": "Migrated "size: md" → "width: 8%"",
+    "nodeType": "logo",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "logo",
+  },
+  {
+    "field": "maily-component",
+    "message": "Attribute "maily-component" is not supported in v2 and was dropped",
+    "nodeType": "logo",
+  },
+  {
+    "field": "height",
+    "message": "Migrated "height" from string enum to number: xl → 64",
+    "nodeType": "spacer",
+  },
+  {
+    "field": "textAlign",
+    "message": "Migrated "textAlign" → "style"",
+    "nodeType": "heading",
+  },
+  {
+    "field": "isUrlVariable",
+    "message": "Migrated "isUrlVariable" → variable reference in "href"",
+    "nodeType": "link",
+  },
+  {
+    "field": "color",
+    "message": "Migrated "color" → "style"",
+    "nodeType": "listItem",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "image",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" → "style"",
+    "nodeType": "image",
+  },
+  {
+    "field": "isSrcVariable",
+    "message": "Migrated "isSrcVariable" → variable reference in "src"",
+    "nodeType": "image",
+  },
+  {
+    "field": "height",
+    "message": "Attribute "height" is not supported in v2 and was dropped",
+    "nodeType": "image",
+  },
+  {
+    "field": "lockAspectRatio",
+    "message": "Attribute "lockAspectRatio" is not supported in v2 and was dropped",
+    "nodeType": "image",
+  },
+  {
+    "field": "aspectRatio",
+    "message": "Attribute "aspectRatio" is not supported in v2 and was dropped",
+    "nodeType": "image",
+  },
+  {
+    "field": "showIfKey",
+    "message": "Migrated "showIfKey" → "visibilityRule"",
+    "nodeType": "section",
+  },
+  {
+    "field": "backgroundColor",
+    "message": "Migrated "backgroundColor" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "borderWidth",
+    "message": "Migrated "borderWidth" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "borderColor",
+    "message": "Migrated "borderColor" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "padding",
+    "message": "Migrated "padding*" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "margin",
+    "message": "Migrated "margin*" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "align",
+    "message": "Migrated "align" → "style"",
+    "nodeType": "section",
+  },
+  {
+    "field": "backgroundColor",
+    "message": "Migrated "backgroundColor" → "style"",
+    "nodeType": "column",
+  },
+  {
+    "field": "borderWidth",
+    "message": "Migrated "borderWidth" → "style"",
+    "nodeType": "column",
+  },
+  {
+    "field": "borderColor",
+    "message": "Migrated "borderColor" → "style"",
+    "nodeType": "column",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" → "style"",
+    "nodeType": "column",
+  },
+  {
+    "field": "padding",
+    "message": "Migrated "padding*" → "style"",
+    "nodeType": "column",
+  },
+  {
+    "field": "columnId",
+    "message": "Column attribute "columnId" is not supported in v2 and was dropped",
+    "nodeType": "column",
+  },
+  {
+    "field": "columnId",
+    "message": "Column attribute "columnId" is not supported in v2 and was dropped",
+    "nodeType": "column",
+  },
+  {
+    "field": "text",
+    "message": "Migrated "text" → inline content node",
+    "nodeType": "button",
+  },
+  {
+    "field": "isTextVariable",
+    "message": "Migrated "isTextVariable" → variable content node",
+    "nodeType": "button",
+  },
+  {
+    "field": "isUrlVariable",
+    "message": "Migrated "isUrlVariable" → variable reference in "url"",
+    "nodeType": "button",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "button",
+  },
+  {
+    "field": "buttonColor",
+    "message": "Migrated "buttonColor" → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "textColor",
+    "message": "Migrated "textColor" → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" enum → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "text",
+    "message": "Migrated "text" → inline content node",
+    "nodeType": "button",
+  },
+  {
+    "field": "isTextVariable",
+    "message": "Migrated "isTextVariable" → variable content node",
+    "nodeType": "button",
+  },
+  {
+    "field": "alignment",
+    "message": "Migrated "alignment" → "align"",
+    "nodeType": "button",
+  },
+  {
+    "field": "textColor",
+    "message": "Migrated "textColor" → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "variant",
+    "message": "Migrated "variant: outline" → transparent background + border in "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "borderRadius",
+    "message": "Migrated "borderRadius" enum → "style"",
+    "nodeType": "button",
+  },
+  {
+    "field": "each",
+    "message": "Migrated "each: releases" → "each: {{releases}}"",
+    "nodeType": "repeat",
+  },
+  {
+    "field": "isUpdatingKey",
+    "message": "Editor-only attribute "isUpdatingKey" is not supported in v2 and was dropped",
+    "nodeType": "repeat",
+  },
+  {
+    "field": "type",
+    "message": "Migrated deprecated "for" node → "repeat"",
+    "nodeType": "for",
+  },
+  {
+    "field": "isUpdatingKey",
+    "message": "Editor-only attribute "isUpdatingKey" is not supported in v2 and was dropped",
+    "nodeType": "repeat",
+  },
+  {
+    "field": "mailyComponent",
+    "message": "v1 marker attribute "mailyComponent" is not needed in v2 and was dropped",
+    "nodeType": "linkCard",
+  },
+  {
+    "field": "textDirection",
+    "message": "Migrated "textDirection" → "dir"",
+    "nodeType": "paragraph",
+  },
+  {
+    "field": "isExternalLinkVariable",
+    "message": "Migrated "isExternalLinkVariable" → variable reference in "externalLink"",
+    "nodeType": "inlineImage",
+  },
+  {
+    "field": "textAlign",
+    "message": "Migrated "textAlign" → "style"",
+    "nodeType": "footer",
+  },
+  {
+    "field": "maily-component",
+    "message": "v1 marker attribute "maily-component" is not needed in v2 and was dropped",
+    "nodeType": "footer",
+  },
+]
+`;

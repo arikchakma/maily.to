@@ -1114,6 +1114,13 @@
   display: none;
 }
 
+[data-mly-variable-only-line] .node-variable,
+[data-mly-variable-only-line] [data-mly-variable],
+[data-mly-plain-variable-input-line] .node-variable,
+[data-mly-plain-variable-input-line] [data-mly-variable] {
+  white-space: nowrap !important;
+}
+
 [data-mly-variable-only-editor] .tiptap {
   outline: none;
 }

@@ -36,7 +36,7 @@ export const image: NodeRenderer = (node, ctx) => {
   );
 
   return (
-    <Row>
+    <Row data-skip-in-text="true">
       <Column align={align}>
         {resolvedExternalLink ? (
           <a

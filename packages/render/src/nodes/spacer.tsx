@@ -11,6 +11,7 @@ export const spacer: NodeRenderer = (node) => {
 
   return (
     <Container
+      data-skip-in-text="true"
       style={{
         height: `${node.attrs.height}px`,
         ...getNodeStyle(node.attrs.style),

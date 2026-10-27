@@ -23,7 +23,9 @@ function getStyledDocument(style: string) {
 }
 
 async function openDragMenu(selector: string) {
-  await userEvent.hover(document.querySelector<HTMLElement>(selector)!);
+  await userEvent.hover(document.querySelector<HTMLElement>(selector)!, {
+    force: true,
+  });
 
   const trigger = await waitFor(() => {
     const found = document.querySelector<HTMLElement>(

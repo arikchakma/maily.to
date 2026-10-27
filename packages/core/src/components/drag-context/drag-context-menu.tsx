@@ -449,6 +449,7 @@ export function DragContextMenu(props: DragContextMenuProps) {
       <PopoverPositioner align="start" container={container} side="bottom">
         <PopoverPopup
           data-variant="drag-context"
+          finalFocus={() => editor.view.dom}
           initialFocus={getInitialFocus}
         >
           {isFontStyleOpen && nodeType ? (

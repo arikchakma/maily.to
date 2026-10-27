@@ -15,7 +15,7 @@ import {
   TypeIcon,
 } from 'lucide-react';
 import type { KeyboardEvent, RefObject } from 'react';
-import { Fragment, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 import {
   getBlockMenuShortcutKeys,
@@ -143,8 +143,16 @@ export function DragContextMenu(props: DragContextMenuProps) {
     onOpenChange(nextOpen);
   };
 
+  const isKeyboardOnTriggerRef = useRef(false);
+
   const getInitialFocus: PopoverPopupProps['initialFocus'] = (openType) => {
-    return openSourceRef.current === 'shortcut' || openType === 'keyboard';
+    const isShortcut = openSourceRef.current === 'shortcut';
+    isKeyboardOnTriggerRef.current = !isShortcut && openType === 'keyboard';
+    return isShortcut || openType === 'keyboard';
+  };
+
+  const getFinalFocus: PopoverPopupProps['finalFocus'] = () => {
+    return isKeyboardOnTriggerRef.current || editor.view.dom;
   };
 
   const handleItemsKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -449,7 +457,7 @@ export function DragContextMenu(props: DragContextMenuProps) {
       <PopoverPositioner align="start" container={container} side="bottom">
         <PopoverPopup
           data-variant="drag-context"
-          finalFocus={() => editor.view.dom}
+          finalFocus={getFinalFocus}
           initialFocus={getInitialFocus}
         >
           {isFontStyleOpen && nodeType ? (

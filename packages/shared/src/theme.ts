@@ -130,6 +130,8 @@ export const BASIC_NODE_THEME: NodeThemeOptions = {
     color: '#18181b',
     fontSize: '14px',
     lineHeight: '24px',
+    marginBottom: '14px',
+    marginTop: '0',
   },
   section: {
     padding: '8px',

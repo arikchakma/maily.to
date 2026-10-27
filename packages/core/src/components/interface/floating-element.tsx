@@ -193,9 +193,14 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       const preventShow = preventShowRef.current;
       const rect = getCurrentSelectionRect(editor);
 
+      const reference = {
+        contextElement: editor.view.dom,
+        getBoundingClientRect: () => getCurrentSelectionRect(editor) ?? rect,
+      };
+
       if (rect && defaultOpen !== undefined && !preventShow) {
         setIsOpen(defaultOpen);
-        refs.setReference({ getBoundingClientRect: () => rect });
+        refs.setReference(reference);
         return;
       }
 
@@ -209,7 +214,7 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       }
 
       setIsOpen(true);
-      refs.setReference({ getBoundingClientRect: () => rect });
+      refs.setReference(reference);
     }, [defaultOpen, editor, refs]);
 
     useOnSelectionUpdate(editor, handleSelectionChange);
@@ -272,8 +277,6 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
 
       // https://github.com/ueberdosis/tiptap/blob/82e03b50b716c18b45f3e0ad02e108b147dc6ceb/packages/extension-bubble-menu/src/bubble-menu-plugin.ts#L362-L363
       window.addEventListener('resize', handleResize);
-      // TODO: maybe we can also attach the listener to the editor view root
-      // instead of the window, to narrow down the scope of the listener
       window.addEventListener('scroll', handleResize);
 
       return () => {

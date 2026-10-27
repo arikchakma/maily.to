@@ -250,7 +250,7 @@ describe('<Editor.Root />', () => {
         const { to } = getParagraphRange({ editor, text });
 
         editor.commands.focus();
-        editor.commands.setTextSelection(to);
+        editor.chain().focus().setTextSelection(to).run();
         for (let index = 0; index < enters; index += 1) {
           editor.commands.keyboardShortcut('Enter');
         }
@@ -266,7 +266,7 @@ describe('<Editor.Root />', () => {
       const { from } = getParagraphRange({ editor, text: 'Inside' });
 
       editor.commands.focus();
-      editor.commands.setTextSelection(from);
+      editor.chain().focus().setTextSelection(from).run();
       editor.commands.keyboardShortcut('Backspace');
       editor.commands.keyboardShortcut('Backspace');
 

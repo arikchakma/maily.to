@@ -61,7 +61,7 @@ describe('turn into block', () => {
     });
 
     const editor = ref.current!.getEditor();
-    editor.commands.setTextSelection({ from: 3, to: 10 });
+    editor.chain().focus().setTextSelection({ from: 3, to: 10 }).run();
 
     return editor;
   };

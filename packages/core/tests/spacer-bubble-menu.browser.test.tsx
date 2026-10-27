@@ -30,7 +30,7 @@ function selectSpacer(handle: Editor.Root.Handle) {
     }
   });
 
-  instance.commands.setNodeSelection(position!);
+  instance.chain().focus().setNodeSelection(position!).run();
 }
 
 async function findHeightField() {

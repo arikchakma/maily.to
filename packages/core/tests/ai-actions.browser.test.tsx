@@ -105,7 +105,7 @@ describe('<AIActions />', () => {
     });
 
     const editor = ref.current!.getEditor();
-    editor.commands.setTextSelection(HELLO_SELECTION);
+    editor.chain().focus().setTextSelection(HELLO_SELECTION).run();
 
     return editor;
   };
@@ -132,7 +132,7 @@ describe('<AIActions />', () => {
         },
       });
 
-      editor.commands.setTextSelection(3);
+      editor.chain().focus().setTextSelection(3).run();
 
       expect(editor.commands.runAIAction('shout')).toBe(false);
     });
@@ -298,7 +298,7 @@ describe('<AIActions />', () => {
           return editor;
         },
         then: async (editor) => {
-          editor.commands.setTextSelection({ from: 3, to: 6 });
+          editor.chain().focus().setTextSelection({ from: 3, to: 6 }).run();
 
           await waitFor(() => {
             const alert = document.querySelector('[data-mly-ai-error]');
@@ -553,7 +553,7 @@ describe('<AIActions />', () => {
         transform: undefined,
         withMenu: true,
       });
-      editor.commands.setTextSelection(HELLO_SELECTION);
+      editor.chain().focus().setTextSelection(HELLO_SELECTION).run();
 
       await waitFor(() => {
         expect(document.querySelector('[data-mly-bubble-menu]')).not.toBeNull();

@@ -189,7 +189,11 @@ describe('<ButtonExtension />', () => {
     it('deletes the button with the delete shortcut', async () => {
       const { editor, position, ref } = await mountButton();
 
-      editor.commands.setTextSelection(position + 1);
+      editor
+        .chain()
+        .focus()
+        .setTextSelection(position + 1)
+        .run();
       editor.commands.keyboardShortcut('Mod-Backspace');
 
       expect(getButtonNode(ref)).toBeUndefined();
@@ -206,7 +210,11 @@ describe('<ButtonExtension />', () => {
 
       expect(getButtonNode(ref)).not.toBeUndefined();
 
-      editor.commands.setTextSelection(position + 1);
+      editor
+        .chain()
+        .focus()
+        .setTextSelection(position + 1)
+        .run();
       expect(editor.state.selection.$anchor.parent.type.name).toBe('button');
 
       editor.commands.keyboardShortcut('Backspace');
@@ -217,7 +225,11 @@ describe('<ButtonExtension />', () => {
     it('keeps a button with text on backspace', async () => {
       const { editor, position, ref } = await mountButton();
 
-      editor.commands.setTextSelection(position + 3);
+      editor
+        .chain()
+        .focus()
+        .setTextSelection(position + 3)
+        .run();
       editor.commands.keyboardShortcut('Backspace');
 
       expect(getButtonNode(ref)).not.toBeUndefined();
@@ -226,7 +238,11 @@ describe('<ButtonExtension />', () => {
     it('leaves the button on enter at the end', async () => {
       const { editor, position } = await mountButton();
 
-      editor.commands.setTextSelection(position + 7);
+      editor
+        .chain()
+        .focus()
+        .setTextSelection(position + 7)
+        .run();
       editor.commands.keyboardShortcut('Enter');
 
       const siblings: string[] = [];

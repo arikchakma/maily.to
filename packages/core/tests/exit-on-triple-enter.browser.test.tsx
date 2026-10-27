@@ -67,7 +67,7 @@ function selectBlockEdge(options: SelectBlockEdgeOptions) {
     }
   });
 
-  editor.commands.setTextSelection(position!);
+  editor.chain().focus().setTextSelection(position!).run();
 }
 
 function getContainerNode(handle: Editor.Root.Handle) {

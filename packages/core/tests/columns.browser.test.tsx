@@ -132,7 +132,7 @@ describe('<ColumnsExtension />', () => {
       const { ref } = await render({ content: PIXEL_COLUMNS });
       const instance = ref.current!.getEditor();
 
-      instance.commands.setTextSelection(3);
+      instance.chain().focus().setTextSelection(3).run();
       instance.commands.updateColumn({ width: 30 });
 
       expect(

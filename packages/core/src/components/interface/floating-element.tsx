@@ -88,7 +88,9 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
     });
 
     const preventShowRef = useRef(false);
-    const [isOpen, setIsOpen] = useState(defaultOpen ?? false);
+    const [isOpen, setIsOpen] = useState(
+      () => (defaultOpen ?? false) && editor.isFocused
+    );
     const openRef = useValueAsRef(isOpen);
 
     const elementRef = useRef<HTMLDivElement | null>(null);
@@ -199,7 +201,7 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       };
 
       if (rect && defaultOpen !== undefined && !preventShow) {
-        setIsOpen(defaultOpen);
+        setIsOpen(defaultOpen && (openRef.current || editor.isFocused));
         refs.setReference(reference);
         return;
       }
@@ -207,7 +209,8 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
       if (
         !isValidSelection(editor, NOT_ALLOWED_NODES) ||
         preventShow ||
-        !editor.isEditable
+        !editor.isEditable ||
+        (!openRef.current && !editor.isFocused)
       ) {
         setIsOpen(false);
         return;
@@ -215,9 +218,17 @@ export const FloatingElement = forwardRef<HTMLDivElement, FloatingElementProps>(
 
       setIsOpen(true);
       refs.setReference(reference);
-    }, [defaultOpen, editor, refs]);
+    }, [defaultOpen, editor, openRef, refs]);
 
     useOnSelectionUpdate(editor, handleSelectionChange);
+
+    useEffect(() => {
+      editor.on('focus', handleSelectionChange);
+
+      return () => {
+        editor.off('focus', handleSelectionChange);
+      };
+    }, [editor, handleSelectionChange]);
 
     useEffect(() => {
       const editorView = editor.view;

@@ -34,7 +34,7 @@ function selectInlineImage(handle: Editor.Root.Handle) {
     }
   });
 
-  editor.commands.setNodeSelection(position!);
+  editor.chain().focus().setNodeSelection(position!).run();
 }
 
 function getInlineImage(handle: Editor.Root.Handle) {

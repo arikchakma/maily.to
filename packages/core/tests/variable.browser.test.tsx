@@ -114,7 +114,11 @@ describe('<VariableExtension />', () => {
       });
       const editor = ref.current!.getEditor();
 
-      editor.commands.setTextSelection(editor.state.doc.content.size - 3);
+      editor
+        .chain()
+        .focus()
+        .setTextSelection(editor.state.doc.content.size - 3)
+        .run();
       editor.commands.insertVariable({ id: 'firstName' });
 
       expect(getInsertedMarks(ref.current!)).toEqual(['link']);
@@ -374,7 +378,7 @@ describe('<VariableExtension />', () => {
       extensions: [VariableExtension],
     });
 
-    ref.current!.getEditor().commands.setNodeSelection(3);
+    ref.current!.getEditor().chain().focus().setNodeSelection(3).run();
 
     const field = await waitFor(() => {
       const found = document.querySelector<HTMLInputElement>(
@@ -401,7 +405,7 @@ describe('<VariableExtension />', () => {
       extensions: [VariableExtension.configure({ isIdEditable: false })],
     });
 
-    ref.current!.getEditor().commands.setNodeSelection(3);
+    ref.current!.getEditor().chain().focus().setNodeSelection(3).run();
 
     await waitFor(() => {
       expect(

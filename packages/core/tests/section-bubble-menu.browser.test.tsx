@@ -33,7 +33,7 @@ function selectOutsideSection(handle: Editor.Root.Handle) {
     }
   });
 
-  editor.commands.setTextSelection(position!);
+  editor.chain().focus().setTextSelection(position!).run();
 }
 
 function selectInsideSection(handle: Editor.Root.Handle) {
@@ -46,7 +46,7 @@ function selectInsideSection(handle: Editor.Root.Handle) {
     }
   });
 
-  editor.commands.setTextSelection(position!);
+  editor.chain().focus().setTextSelection(position!).run();
 }
 
 async function findButton(label: string) {

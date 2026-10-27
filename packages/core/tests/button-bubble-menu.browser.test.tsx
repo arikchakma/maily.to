@@ -33,7 +33,7 @@ function selectInsideButton(handle: Editor.Root.Handle) {
     }
   });
 
-  editor.commands.setTextSelection(position!);
+  editor.chain().focus().setTextSelection(position!).run();
 }
 
 async function findBubbleButton(label: string) {

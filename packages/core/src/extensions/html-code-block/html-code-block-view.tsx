@@ -2,9 +2,12 @@ import type { HtmlCodeBlockAttributes } from '@maily-to/shared';
 import { HTML_CODE_BLOCK_TABS, MAILY_NODE_TYPES } from '@maily-to/shared';
 import type { ReactNodeViewProps } from '@tiptap/react';
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
-import { useMemo } from 'react';
+import type { SyntheticEvent } from 'react';
+import { useMemo, useState } from 'react';
 
 const PREVIEW_RESET = `
+  html { overflow: hidden; }
+  body { margin: 0; }
   * { font-family: 'Inter', sans-serif; }
   blockquote, h1, h2, h3, img, li, ol, p, ul {
     margin-top: 0;
@@ -41,22 +44,21 @@ export function HtmlCodeBlockView(props: ReactNodeViewProps) {
 
   const isEmpty = html === '<style></style>';
 
-  // The preview is a shadow root so the pasted markup cannot restyle the
-  // editor around it, and the editor's own stylesheet cannot restyle the
-  // preview.
-  const setPreviewElement = (element: HTMLDivElement | null) => {
-    if (!element || element.shadowRoot) {
+  // A sandbox without allow-scripts keeps the markup from running in the
+  // editor's origin. allow-same-origin only lets the editor measure the height.
+  const [height, setHeight] = useState(0);
+  const onPreviewLoad = (event: SyntheticEvent<HTMLIFrameElement>) => {
+    const frameWindow = event.currentTarget.contentWindow as
+      | (Window & typeof globalThis)
+      | null;
+    const root = frameWindow?.document.documentElement;
+    if (!frameWindow || !root) {
       return;
     }
 
-    const shadow = element.attachShadow({ mode: 'open' });
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(PREVIEW_RESET);
-    shadow.adoptedStyleSheets = [sheet];
-
-    const container = document.createElement('div');
-    container.innerHTML = html;
-    shadow.append(container);
+    new frameWindow.ResizeObserver(() => {
+      setHeight(root.offsetHeight);
+    }).observe(root);
   };
 
   return (
@@ -80,8 +82,23 @@ export function HtmlCodeBlockView(props: ReactNodeViewProps) {
               updateAttributes({ activeTab: HTML_CODE_BLOCK_TABS.CODE });
             }
           }}
-          ref={setPreviewElement}
-        />
+        >
+          {!isEmpty && (
+            <iframe
+              onLoad={onPreviewLoad}
+              sandbox="allow-same-origin"
+              srcDoc={`<!DOCTYPE html><style>${PREVIEW_RESET}</style>${html}`}
+              style={{
+                border: 0,
+                display: 'block',
+                height,
+                pointerEvents: 'none',
+                width: '100%',
+              }}
+              title="HTML preview"
+            />
+          )}
+        </div>
       )}
     </NodeViewWrapper>
   );

@@ -43,7 +43,9 @@ test('switches to the preview tab from its bubble menu', async ({ page }) => {
   await expect(block).toHaveAttribute('data-active-tab', 'preview');
   await expect(textbox.locator('[data-mly-html-code-block]')).toHaveCount(0);
   await expect(
-    textbox.locator('[data-mly-html-code-block-preview] p')
+    textbox
+      .frameLocator('[data-mly-html-code-block-preview] iframe')
+      .locator('p')
   ).toHaveText('Hand written');
 });
 

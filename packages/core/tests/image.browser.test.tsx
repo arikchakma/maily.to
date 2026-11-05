@@ -474,6 +474,54 @@ describe('<ImageExtension />', () => {
       });
     }
 
+    it('shows the upload progress the caller reports', async () => {
+      const { resolve, uploaded } = getDeferredUpload();
+      let setProgress: (fraction: number) => void = () => {};
+
+      const { ref, view } = await render({
+        extensions: [
+          ImageUploadExtension.configure({
+            onImageUpload: (_file, context) => {
+              setProgress = context.setProgress;
+              return uploaded;
+            },
+          }),
+        ],
+      });
+
+      uploadImageFile(
+        ref.current!.getEditor(),
+        getImageFile(),
+        getContainerStartPosition(ref.current!)
+      );
+
+      const getProgress = () =>
+        view.container.querySelector('[data-mly-image-progress]');
+
+      await waitFor(() => {
+        expect(
+          view.container.querySelector('[data-mly-image-loading]')
+        ).not.toBeNull();
+      });
+      expect(getProgress()).toBeNull();
+
+      setProgress(0.42);
+      await waitFor(() => {
+        expect(getProgress()?.getAttribute('aria-valuenow')).toBe('42');
+      });
+      expect(getProgress()?.getAttribute('data-state')).toBe('uploading');
+
+      setProgress(1);
+      await waitFor(() => {
+        expect(getProgress()?.getAttribute('data-state')).toBe('done');
+      });
+
+      resolve('https://maily.to/progress.png');
+      await waitFor(() => {
+        expect(getProgress()).toBeNull();
+      });
+    });
+
     it('announces a failed upload and reports it through the error state', async () => {
       const errors: unknown[] = [];
 

@@ -103,11 +103,20 @@ export function uploadImageFile(
     return;
   }
 
+  const { uploads, progress } = editor.storage.imageUpload;
   const context: ImageUploadContext = {
     position,
     removeImage: () => removeImageByBlobUrl(editor, blobUrl),
+    setProgress: (fraction) => {
+      const percent = Math.round(Math.min(Math.max(fraction, 0), 1) * 100);
+      if (!uploads.has(blobUrl) || progress.get(blobUrl) === percent) {
+        return;
+      }
+
+      progress.set(blobUrl, percent);
+      notifyUploadStatusChanged(editor);
+    },
   };
-  const { uploads } = editor.storage.imageUpload;
 
   uploads.set(blobUrl, IMAGE_UPLOAD_STATUSES.LOADING);
   notifyUploadStatusChanged(editor);
@@ -115,12 +124,14 @@ export function uploadImageFile(
   onImageUpload(file, context)
     .then((url) => {
       uploads.delete(blobUrl);
+      progress.delete(blobUrl);
       notifyUploadStatusChanged(editor);
       updateImageByBlobUrl(editor, blobUrl, { src: url });
       URL.revokeObjectURL(blobUrl);
     })
     .catch((error: unknown) => {
       uploads.set(blobUrl, IMAGE_UPLOAD_STATUSES.ERROR);
+      progress.delete(blobUrl);
       notifyUploadStatusChanged(editor);
       onImageUploadError?.(error, file, context);
       URL.revokeObjectURL(blobUrl);

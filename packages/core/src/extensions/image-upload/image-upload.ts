@@ -17,6 +17,7 @@ export type ImageUploadStatus =
 
 export type ImageUploadStorage = {
   uploads: Map<string, ImageUploadStatus>;
+  progress: Map<string, number>;
 };
 
 declare module '@tiptap/core' {
@@ -36,6 +37,7 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
 export type ImageUploadContext = {
   position: number;
   removeImage: () => void;
+  setProgress: (fraction: number) => void;
 };
 
 export type ImageUploadOptions = {
@@ -63,6 +65,7 @@ export const ImageUploadExtension = Extension.create<
   addStorage() {
     return {
       uploads: new Map<string, ImageUploadStatus>(),
+      progress: new Map<string, number>(),
     };
   },
 

@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import type { ComponentPropsWithRef } from 'react';
+import type { ComponentPropsWithRef, CSSProperties } from 'react';
 
 import { VisuallyHidden } from '~/components/interface/visually-hidden';
 import { ALLOWED_IMAGE_MIME_TYPES } from '~/extensions/image-upload/image-upload';
@@ -46,15 +46,33 @@ export function ImageVariableState() {
 type ImageLoadingStateProps = {
   alt?: string | null;
   src: string;
+  progress?: number;
 };
 
 export function ImageLoadingState(props: ImageLoadingStateProps) {
-  const { alt, src } = props;
+  const { alt, src, progress } = props;
+
+  const isUploading = progress !== undefined && progress < 100;
 
   return (
     <div aria-busy="true" data-mly-image-loading="">
       <img alt={alt ?? undefined} data-mly-image-preview="" src={src} />
-      <span data-mly-image-spinner="" />
+      {progress !== undefined && (
+        <span
+          aria-label="Uploading image"
+          aria-valuemax={100}
+          aria-valuemin={0}
+          aria-valuenow={progress}
+          data-mly-image-progress=""
+          data-state={isUploading ? 'uploading' : 'done'}
+          role="progressbar"
+          style={{ '--mly-image-progress': progress / 100 } as CSSProperties}
+        />
+      )}
+      <span
+        data-mly-image-spinner=""
+        data-variant={progress === undefined ? 'center' : 'corner'}
+      />
       <VisuallyHidden role="status">Uploading image</VisuallyHidden>
     </div>
   );

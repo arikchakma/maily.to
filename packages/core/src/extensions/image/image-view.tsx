@@ -37,6 +37,14 @@ function useUploadStatus(
   return status ?? IMAGE_UPLOAD_STATUSES.LOADED;
 }
 
+function useUploadProgress(editor: Editor, src: string | undefined) {
+  return useEditorState({
+    editor,
+    selector: (ctx) =>
+      src ? ctx.editor.storage.imageUpload?.progress?.get(src) : undefined,
+  });
+}
+
 export function ImageView(props: ReactNodeViewProps) {
   const { editor, getPos, node, updateAttributes } = props;
   const { align, alt, src, width, style } = node.attrs as ImageAttributes;
@@ -49,6 +57,10 @@ export function ImageView(props: ReactNodeViewProps) {
 
   const isSrcVariable = !!src && hasVariableInText(src);
   const status = useUploadStatus(editor, isSrcVariable ? undefined : src);
+  const progress = useUploadProgress(
+    editor,
+    status === IMAGE_UPLOAD_STATUSES.LOADING ? src : undefined
+  );
 
   const {
     containerRef,
@@ -123,7 +135,7 @@ export function ImageView(props: ReactNodeViewProps) {
         ) : null}
 
         {!isSrcVariable && status === IMAGE_UPLOAD_STATUSES.LOADING ? (
-          <ImageLoadingState alt={alt} src={src} />
+          <ImageLoadingState alt={alt} src={src} progress={progress} />
         ) : null}
 
         {status === IMAGE_UPLOAD_STATUSES.ERROR ? <ImageErrorState /> : null}

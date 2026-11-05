@@ -1,10 +1,13 @@
-import { z } from 'zod';
-import type { Route } from './+types/api.v1.emails.preview';
-import { serializeZodError } from '~/lib/errors';
-import { apiConfigCookie } from '~/lib/api-config.server';
-import { json } from '~/lib/response';
+import { migrate, requireContentMigration } from '@maily-to/migration';
 import { render } from '@maily-to/render';
 import { Resend } from 'resend';
+import { z } from 'zod';
+
+import { apiConfigCookie } from '~/lib/api-config.server';
+import { serializeZodError } from '~/lib/errors';
+import { json } from '~/lib/response';
+
+import type { Route } from './+types/api.v1.emails.send';
 
 export async function action(args: Route.ActionArgs) {
   const { request } = args;
@@ -42,8 +45,11 @@ export async function action(args: Route.ActionArgs) {
   }
 
   const { content, previewText, from, to, replyTo, subject } = bodyData;
-  const jsonContent = JSON.parse(content);
-  const html = await render(jsonContent, {
+  const parsed = JSON.parse(content);
+  const document = requireContentMigration(parsed)
+    ? migrate(parsed).json
+    : parsed;
+  const html = await render(document, {
     preview: previewText,
   });
 
@@ -51,7 +57,9 @@ export async function action(args: Route.ActionArgs) {
 
   const enrichedTo = Array.isArray(to)
     ? to
-    : to.split(',').map((email) => email.trim());
+    : to.split(',').map((email) => {
+        return email.trim();
+      });
   const { error: sendError } = await resend.emails.send({
     to: enrichedTo,
     from,

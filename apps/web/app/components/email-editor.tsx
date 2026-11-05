@@ -1,23 +1,41 @@
-import type { FocusPosition, Editor as TiptapEditor } from '@tiptap/core';
+import { Editor, Toolbar } from '@maily-to/core';
+import {
+  ImageUploadExtension,
+  LinkCardExtension,
+  ThemeExtension,
+  VariableExtension,
+} from '@maily-to/core/extensions';
+import { BASIC_NODE_THEME } from '@maily-to/shared';
+import type {
+  FocusPosition,
+  JSONContent,
+  Editor as TiptapEditor,
+} from '@tiptap/core';
 import { Loader2Icon } from 'lucide-react';
-import { lazy, Suspense, useState } from 'react';
-import { cn } from '~/lib/classname';
-import type { Database } from '~/types/database';
+import { useState } from 'react';
 
-const Editor = lazy(() =>
-  import('@maily-to/core').then((module) => ({
-    default: module.Editor,
-  }))
-);
+import { Container } from '~/components/container';
+import { cn } from '~/lib/classname';
 
 type EmailEditorProps = {
-  defaultContent: Database['public']['Tables']['mails']['Row']['content'];
+  defaultContent?: JSONContent;
   setEditor: (editor: TiptapEditor) => void;
   autofocus?: FocusPosition;
 };
 
+const EDITOR_EXTENSIONS = [
+  VariableExtension,
+  ImageUploadExtension.configure({
+    onImageUpload: (file) => {
+      return Promise.resolve(URL.createObjectURL(file));
+    },
+  }),
+  LinkCardExtension,
+  ThemeExtension.configure({ theme: BASIC_NODE_THEME }),
+];
+
 export function EmailEditor(props: EmailEditorProps) {
-  const { defaultContent, setEditor, autofocus } = props;
+  const { defaultContent, setEditor, autofocus = false } = props;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,30 +47,28 @@ export function EmailEditor(props: EmailEditorProps) {
         </div>
       )}
 
-      <Suspense>
-        <Editor
-          config={{
-            hasMenuBar: false,
-            wrapClassName: cn('editor-wrap', isLoading && 'hidden'),
-            bodyClassName: '!mt-0 !border-0 !p-0',
-            contentClassName: `editor-content mx-auto max-w-[calc(600px+80px)]! px-10! pb-10!`,
-            toolbarClassName: 'flex-wrap !items-start',
-            spellCheck: false,
-            autofocus,
-            immediatelyRender: false,
-          }}
-          contentJson={
-            defaultContent ? JSON.parse(defaultContent as string) : null
-          }
-          onCreate={(editor) => {
-            setIsLoading(false);
-            setEditor(editor);
-          }}
-          onUpdate={(editor) => {
-            setEditor(editor);
-          }}
-        />
-      </Suspense>
+      <Editor.Root
+        content={defaultContent}
+        extensions={EDITOR_EXTENSIONS}
+        immediatelyRender={false}
+        autofocus={autofocus}
+        onCreate={({ editor }) => {
+          setIsLoading(false);
+          setEditor(editor);
+        }}
+      >
+        <Container>
+          <Toolbar.Root className={cn(isLoading && 'hidden')}>
+            <Toolbar.CommonActions />
+          </Toolbar.Root>
+        </Container>
+
+        <Editor.Frame className={cn(isLoading && 'hidden')}>
+          <Editor.Content />
+          <Editor.BubbleMenus />
+          <Editor.DragContextHandle />
+        </Editor.Frame>
+      </Editor.Root>
     </>
   );
 }

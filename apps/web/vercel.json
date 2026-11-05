@@ -1,0 +1,3 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @maily-to/web... run build"
+}

@@ -1,24 +1,23 @@
-import type { BlockItem } from './types';
-import { List, ListOrdered } from 'lucide-react';
+import { ListIcon, ListOrderedIcon } from 'lucide-react';
 
-export const bulletList: BlockItem = {
+import type { SlashCommandItem } from '~/utils/slash-command';
+
+export const bulletList: SlashCommandItem = {
   title: 'Bullet List',
+  icon: <ListIcon size={16} />,
   description: 'Create a simple bullet list.',
-  searchTerms: ['unordered', 'point'],
-  icon: <List className="mly:h-4 mly:w-4" />,
+  searchTerms: ['unordered', 'point', 'bullet'],
   command: ({ editor, range }) => {
-    // @ts-ignore
     editor.chain().focus().deleteRange(range).toggleBulletList().run();
   },
 };
 
-export const orderedList: BlockItem = {
+export const orderedList: SlashCommandItem = {
   title: 'Numbered List',
+  icon: <ListOrderedIcon size={16} />,
   description: 'Create a list with numbering.',
-  searchTerms: ['ordered'],
-  icon: <ListOrdered className="mly:h-4 mly:w-4" />,
+  searchTerms: ['ordered', 'number'],
   command: ({ editor, range }) => {
-    // @ts-ignore
     editor.chain().focus().deleteRange(range).toggleOrderedList().run();
   },
 };

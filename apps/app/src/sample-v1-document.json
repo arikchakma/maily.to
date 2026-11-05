@@ -1,0 +1,298 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "logo",
+      "attrs": {
+        "src": "https://maily.to/brand/logo.png",
+        "alt": "Maily",
+        "size": "md",
+        "alignment": "left",
+        "maily-component": "logo"
+      }
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2,
+        "textAlign": "left",
+        "textDirection": "ltr"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "The Monthly Dispatch"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": "left",
+        "textDirection": "ltr"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Hi "
+        },
+        {
+          "type": "variable",
+          "attrs": {
+            "id": "firstName",
+            "fallback": "there"
+          }
+        },
+        {
+          "type": "text",
+          "text": ", here is everything that shipped this month. You can also "
+        },
+        {
+          "type": "text",
+          "text": "read it on the web",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "webUrl",
+                "target": "_blank",
+                "rel": "noopener noreferrer",
+                "isUrlVariable": true
+              }
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": "."
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "attrs": {
+        "height": "xl"
+      }
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "src": "https://maily.to/brand/cover.png",
+        "alt": "Release cover",
+        "width": 480,
+        "height": 240,
+        "alignment": "center",
+        "borderRadius": 12,
+        "externalLink": "https://maily.to/changelog",
+        "isExternalLinkVariable": false,
+        "lockAspectRatio": true
+      }
+    },
+    {
+      "type": "section",
+      "attrs": {
+        "backgroundColor": "#f4f4f5",
+        "borderRadius": 8,
+        "borderWidth": 1,
+        "borderColor": "#e4e4e7",
+        "paddingTop": 24,
+        "paddingRight": 24,
+        "paddingBottom": 24,
+        "paddingLeft": 24,
+        "marginTop": 16,
+        "marginBottom": 16,
+        "align": "center",
+        "showIfKey": "isSubscribed"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": "center",
+            "textDirection": "ltr"
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Members get the deep dive a week early."
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "attrs": {
+            "text": "Read the deep dive",
+            "url": "deepDiveUrl",
+            "isUrlVariable": true,
+            "isTextVariable": false,
+            "alignment": "center",
+            "variant": "outline",
+            "borderRadius": "smooth",
+            "buttonColor": "#18181b",
+            "textColor": "#18181b",
+            "paddingTop": 10,
+            "paddingRight": 20,
+            "paddingBottom": 10,
+            "paddingLeft": 20
+          }
+        }
+      ]
+    },
+    {
+      "type": "columns",
+      "attrs": {},
+      "content": [
+        {
+          "type": "column",
+          "attrs": {
+            "columnId": "col-left",
+            "width": "60%",
+            "verticalAlign": "top",
+            "backgroundColor": "#ffffff",
+            "paddingTop": 8,
+            "paddingBottom": 8
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left",
+                "textDirection": "ltr"
+              },
+              "content": [
+                {
+                  "type": "inlineImage",
+                  "attrs": {
+                    "src": "https://maily.to/brand/spark.png",
+                    "alt": "Spark",
+                    "height": 16,
+                    "width": 16,
+                    "isSrcVariable": false,
+                    "externalLink": "https://maily.to/changelog",
+                    "isExternalLinkVariable": false
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": " Faster rendering across the board."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "column",
+          "attrs": {
+            "columnId": "col-right",
+            "width": "auto",
+            "verticalAlign": "top"
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "right",
+                "textDirection": "rtl"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "شكرا لقراءتك"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "repeat",
+      "attrs": {
+        "each": "items",
+        "isUpdatingKey": false
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": "left",
+            "textDirection": "ltr"
+          },
+          "content": [
+            {
+              "type": "variable",
+              "attrs": {
+                "id": "items.name",
+                "fallback": "Someone"
+              }
+            },
+            {
+              "type": "text",
+              "text": " joined "
+            },
+            {
+              "type": "variable",
+              "attrs": {
+                "id": "items.role",
+                "fallback": "the team"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "for",
+      "attrs": {
+        "each": "archive",
+        "isUpdatingKey": false
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": "left",
+            "textDirection": "ltr"
+          },
+          "content": [
+            {
+              "type": "variable",
+              "attrs": {
+                "id": "archive.title",
+                "fallback": "Past issue"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "attrs": {
+        "text": "Subscribe",
+        "url": "https://maily.to/subscribe",
+        "isUrlVariable": false,
+        "alignment": "center",
+        "variant": "filled",
+        "borderRadius": "round",
+        "buttonColor": "#18181b",
+        "textColor": "#ffffff",
+        "showIfKey": "showSubscribeCta"
+      }
+    },
+    {
+      "type": "footer",
+      "attrs": {
+        "maily-component": "footer",
+        "textAlign": "center",
+        "textDirection": "ltr"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "You are receiving this because you subscribed at maily.to."
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+
 import { resolveRobots, resolveSitemap } from '~/lib/metadata';
 
 console.log('🆕 Generating metadata files...');

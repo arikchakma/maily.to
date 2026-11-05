@@ -1,13 +1,15 @@
-import type {
-  ClientLoaderFunction,
-  LoaderFunction,
-  MetaDescriptor,
-  MetaFunction,
-} from 'react-router';
-import type {
-  CreateMetaArgs,
-  MetaDescriptors,
-} from 'react-router/route-module';
+import type { MetaDescriptor } from 'react-router';
+
+type MetaDescriptors = MetaDescriptor[];
+
+type RouteMatch = {
+  meta?: MetaDescriptor[];
+} & Record<string, unknown>;
+
+type CreateMetaArgs<T = unknown> = {
+  data: T;
+  matches: RouteMatch[];
+} & Record<string, unknown>;
 
 /**
  * Merging helper that works with Route Module Type Safety
@@ -39,7 +41,6 @@ import type {
  * ```
  * The resulting meta will contain both `title: 'My Leaf Route'` and `description: 'This is the parent route'`.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mergeRouteModuleMeta<TMetaArgs extends CreateMetaArgs<any>>(
   leafMetaFn: (args: TMetaArgs) => MetaDescriptors
 ): (args: TMetaArgs) => MetaDescriptors {

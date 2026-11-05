@@ -1,0 +1,467 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "logo",
+      "attrs": {
+        "src": "https://maily.to/brand/logo.png",
+        "alt": "Maily",
+        "title": null,
+        "maily-component": "logo",
+        "size": "md",
+        "alignment": "left",
+        "isSrcVariable": false,
+        "showIfKey": null
+      }
+    },
+    { "type": "spacer", "attrs": { "height": "xl", "showIfKey": null } },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2,
+        "textAlign": "center",
+        "textDirection": null,
+        "showIfKey": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }],
+          "text": "Maily Monthly — March"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": null, "textDirection": null, "showIfKey": null },
+      "content": [
+        { "type": "text", "text": "Hey " },
+        {
+          "type": "variable",
+          "attrs": {
+            "id": "firstName",
+            "label": null,
+            "fallback": "there",
+            "required": true,
+            "hideDefaultValue": false
+          }
+        },
+        {
+          "type": "text",
+          "text": ", here is everything we shipped this month."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": null, "textDirection": null, "showIfKey": null },
+      "content": [
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }],
+          "text": "Three things"
+        },
+        { "type": "text", "text": " are worth " },
+        {
+          "type": "text",
+          "marks": [{ "type": "italic" }],
+          "text": "your"
+        },
+        { "type": "text", "text": " time: a " },
+        {
+          "type": "text",
+          "marks": [{ "type": "underline" }],
+          "text": "faster editor"
+        },
+        { "type": "text", "text": ", " },
+        {
+          "type": "text",
+          "marks": [{ "type": "strike" }],
+          "text": "no more"
+        },
+        { "type": "text", "text": " broken exports, and a new " },
+        {
+          "type": "text",
+          "marks": [{ "type": "code" }],
+          "text": "@maily-to/render"
+        },
+        { "type": "text", "text": " release. " },
+        {
+          "type": "text",
+          "marks": [{ "type": "textStyle", "attrs": { "color": "#7c3aed" } }],
+          "text": "The highlights are below"
+        },
+        { "type": "text", "text": ", or " },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "changelogUrl",
+                "target": "_blank",
+                "rel": "noopener noreferrer nofollow",
+                "class": null,
+                "isUrlVariable": true
+              }
+            }
+          ],
+          "text": "jump straight to the changelog"
+        },
+        { "type": "text", "text": "." },
+        { "type": "hardBreak" },
+        { "type": "text", "text": "— the Maily team" }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "attrs": { "showIfKey": null },
+      "content": [
+        {
+          "type": "listItem",
+          "attrs": { "color": "#7c3aed" },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": null, "textDirection": null },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Sections keep their padding on export."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "attrs": { "color": null },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": null, "textDirection": null },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Columns collapse on mobile clients again."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "orderedList",
+      "attrs": { "start": 1, "showIfKey": null },
+      "content": [
+        {
+          "type": "listItem",
+          "attrs": { "color": null },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": null, "textDirection": null },
+              "content": [
+                { "type": "text", "text": "Open the editor and paste a URL." }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "attrs": { "color": null },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": null, "textDirection": null },
+              "content": [
+                { "type": "text", "text": "Pick a template and hit send." }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "blockquote",
+      "attrs": {},
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null, "textDirection": null },
+          "content": [
+            {
+              "type": "text",
+              "text": "We cut our newsletter build time from an afternoon to ten minutes."
+            }
+          ]
+        }
+      ]
+    },
+    { "type": "horizontalRule", "attrs": { "showIfKey": null } },
+    {
+      "type": "image",
+      "attrs": {
+        "src": "heroImageUrl",
+        "alt": "The new editor canvas",
+        "title": null,
+        "width": 300,
+        "height": 180,
+        "alignment": "center",
+        "externalLink": "https://maily.to/blog/faster-editor",
+        "isExternalLinkVariable": false,
+        "borderRadius": 8,
+        "isSrcVariable": true,
+        "aspectRatio": "5/3",
+        "lockAspectRatio": true,
+        "showIfKey": null
+      }
+    },
+    {
+      "type": "section",
+      "attrs": {
+        "borderRadius": 12,
+        "backgroundColor": "#f7f7f7",
+        "align": "center",
+        "borderWidth": 2,
+        "borderColor": "#e2e2e2",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "marginTop": 16,
+        "marginRight": 0,
+        "marginBottom": 16,
+        "marginLeft": 0,
+        "showIfKey": "isSubscriber"
+      },
+      "content": [
+        {
+          "type": "columns",
+          "attrs": { "gap": 8, "showIfKey": null },
+          "content": [
+            {
+              "type": "column",
+              "attrs": {
+                "columnId": "d1f0e0a0-0000-4000-8000-000000000001",
+                "width": "50%",
+                "verticalAlign": "top",
+                "backgroundColor": "#ffffff",
+                "borderRadius": 8,
+                "borderWidth": 1,
+                "borderColor": "#e2e2e2",
+                "paddingTop": 12,
+                "paddingRight": 12,
+                "paddingBottom": 12,
+                "paddingLeft": 12
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": null, "textDirection": null },
+                  "content": [
+                    { "type": "text", "text": "Free — every core block." }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "attrs": {
+                "columnId": "d1f0e0a0-0000-4000-8000-000000000002",
+                "width": "auto",
+                "verticalAlign": "top"
+              },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": null, "textDirection": null },
+                  "content": [
+                    { "type": "text", "text": "Pro — variables and repeats." }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "attrs": {
+        "text": "ctaLabel",
+        "isTextVariable": true,
+        "url": "ctaUrl",
+        "isUrlVariable": true,
+        "alignment": "center",
+        "variant": "filled",
+        "borderRadius": "round",
+        "buttonColor": "#0a0a0a",
+        "textColor": "#ffffff",
+        "paddingTop": 10,
+        "paddingRight": 32,
+        "paddingBottom": 10,
+        "paddingLeft": 32,
+        "showIfKey": null
+      }
+    },
+    {
+      "type": "button",
+      "attrs": {
+        "text": "Browse the templates",
+        "isTextVariable": false,
+        "url": "https://maily.to/templates",
+        "isUrlVariable": false,
+        "alignment": "center",
+        "variant": "outline",
+        "borderRadius": "smooth",
+        "buttonColor": "#7c3aed",
+        "textColor": "#7c3aed",
+        "paddingTop": null,
+        "paddingRight": null,
+        "paddingBottom": null,
+        "paddingLeft": null,
+        "showIfKey": null
+      }
+    },
+    {
+      "type": "repeat",
+      "attrs": {
+        "each": "releases",
+        "isUpdatingKey": false,
+        "showIfKey": null
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null, "textDirection": null },
+          "content": [
+            {
+              "type": "variable",
+              "attrs": {
+                "id": "releases.title",
+                "label": null,
+                "fallback": null,
+                "required": true,
+                "hideDefaultValue": false
+              }
+            },
+            { "type": "text", "text": " shipped on " },
+            {
+              "type": "variable",
+              "attrs": {
+                "id": "releases.date",
+                "label": null,
+                "fallback": null,
+                "required": true,
+                "hideDefaultValue": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "for",
+      "attrs": { "each": "{{upcomingEvents}}", "isUpdatingKey": false },
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null, "textDirection": null },
+          "content": [
+            { "type": "text", "text": "See you at the next community call." }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "htmlCodeBlock",
+      "attrs": { "language": "html", "activeTab": "code", "showIfKey": null },
+      "content": [
+        {
+          "type": "text",
+          "text": "<p style=\"margin:0\">Rendered exactly as written.</p>"
+        }
+      ]
+    },
+    {
+      "type": "linkCard",
+      "attrs": {
+        "mailyComponent": "linkCard",
+        "title": "Maily 2.0 is in beta",
+        "description": "A rewrite of the editor core, and a new renderer.",
+        "link": "https://maily.to/blog/maily-2",
+        "linkTitle": "Read the post",
+        "image": "https://maily.to/brand/cover.png",
+        "subTitle": "5 min read",
+        "badgeText": "New"
+      }
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null,
+        "textDirection": "rtl",
+        "showIfKey": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "النسخة العربية من النشرة متاحة الآن."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": null, "textDirection": null, "showIfKey": null },
+      "content": [
+        { "type": "text", "text": "Written by " },
+        {
+          "type": "inlineImage",
+          "attrs": {
+            "src": null,
+            "alt": "Arik",
+            "title": null,
+            "height": 20,
+            "width": 20,
+            "isSrcVariable": false,
+            "externalLink": "authorProfileUrl",
+            "isExternalLinkVariable": true
+          }
+        },
+        { "type": "text", "text": " Arik Chakma." }
+      ]
+    },
+    {
+      "type": "footer",
+      "attrs": {
+        "maily-component": "footer",
+        "textDirection": null,
+        "textAlign": "center"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "You are receiving this because you signed up at maily.to. "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "https://maily.to/unsubscribe",
+                "target": "_blank",
+                "rel": "noopener noreferrer nofollow",
+                "class": null,
+                "isUrlVariable": false
+              }
+            }
+          ],
+          "text": "Unsubscribe"
+        }
+      ]
+    }
+  ]
+}

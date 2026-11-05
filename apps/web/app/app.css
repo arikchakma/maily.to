@@ -1,13 +1,26 @@
 @import 'tailwindcss';
+@import '@maily-to/core/style.css';
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter.woff2') format('woff2');
+}
 
 @theme {
-  --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-inter:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-ink: #ff503e;
+  --color-ink-dim: #fae8e5;
 }
 
 @utility no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -21,8 +34,12 @@
     margin: 0;
   }
 
-  /* Firefox */
   &[type='number'] {
     -moz-appearance: textfield;
   }
+}
+
+:not([data-mly-editor-content], [data-mly-editor-content] *)::selection {
+  background: var(--color-ink-dim);
+  color: var(--color-ink);
 }

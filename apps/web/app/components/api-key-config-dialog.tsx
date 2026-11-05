@@ -1,5 +1,18 @@
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Cog, Loader2Icon, PlugZapIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useCallback } from 'react';
+import type { FormEvent } from 'react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+
+import { httpGet, httpPost } from '~/lib/http';
+
 import {
   Dialog,
   DialogContent,
@@ -8,19 +21,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { httpGet, httpPost } from '~/lib/http';
-import {
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { useCallback } from 'react';
-import type { FormEvent } from 'react';
-import { toast } from 'sonner';
-import { useEffect } from 'react';
+import { Label } from './ui/label';
 
 type ApiKeyConfig = {
   apiKey: string;
@@ -58,7 +60,7 @@ export function ApiKeyConfigDialog(props: ApiKeyConfigDialogProps) {
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries(apiKeyQueryOptions());
+      void queryClient.invalidateQueries(apiKeyQueryOptions());
     },
   });
 
@@ -83,14 +85,15 @@ export function ApiKeyConfigDialog(props: ApiKeyConfigDialogProps) {
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
         <button
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-gray-200 bg-gray-100 text-black duration-200 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Settings"
+          className="flex h-7.5 w-7.5 cursor-pointer items-center justify-center border border-black bg-white text-black transition-colors hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           type="button"
           disabled={isLoading}
         >
-          <Cog className="inline-block" size={16} />
+          <Cog className="inline-block" size={16} aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="w-full min-w-0 max-w-sm overflow-hidden p-4">
+      <DialogContent className="w-full max-w-sm min-w-0 overflow-hidden p-4">
         <DialogHeader>
           <DialogTitle>Configuration</DialogTitle>
           <DialogDescription className="text-balance">
@@ -105,7 +108,7 @@ export function ApiKeyConfigDialog(props: ApiKeyConfigDialogProps) {
               Provider
             </span>
             <select
-              className="mt-2 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-normal ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-2 flex h-10 w-full border border-black bg-white px-3 py-2 text-sm font-normal ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-black focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               name="provider"
               required
               value={provider}
@@ -131,7 +134,7 @@ export function ApiKeyConfigDialog(props: ApiKeyConfigDialogProps) {
           </Label>
 
           <button
-            className="flex h-10 items-center justify-center rounded-md bg-black px-2 py-1 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 items-center justify-center border border-black bg-black px-2 py-1 text-sm text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"
           >
             {isPending ? (

@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @maily-to/app... run build",
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}

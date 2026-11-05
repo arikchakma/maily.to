@@ -1,7 +1,10 @@
-import { useEffect, type RefObject, useRef } from 'react';
 import { MailOpenIcon } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import type { RefObject } from 'react';
 import { toast } from 'sonner';
+
 import { cn } from '~/lib/classname';
+
 import { Button } from './ui/button';
 
 type EmailPreviewIFrameProps = {
@@ -11,10 +14,14 @@ type EmailPreviewIFrameProps = {
   wrapperClassName?: string;
 } & React.HTMLProps<HTMLIFrameElement>;
 
-function renderHTMLToIFrame(
-  ref: RefObject<HTMLIFrameElement | null>,
-  html: string
-) {
+type RenderHTMLToIFrameOptions = {
+  html: string;
+  ref: RefObject<HTMLIFrameElement | null>;
+};
+
+function renderHTMLToIFrame(options: RenderHTMLToIFrameOptions) {
+  const { html, ref } = options;
+
   if (!ref || !ref?.current) {
     return;
   }
@@ -31,7 +38,7 @@ function renderHTMLToIFrame(
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+        <style>@font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('/fonts/inter.woff2') format('woff2'); }</style>
       </head>
       <body>
         ${html}
@@ -57,8 +64,8 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
       return;
     }
 
-    renderHTMLToIFrame(iframeRef, innerHTML);
-  }, [innerHTML, iframeRef, isServer]);
+    renderHTMLToIFrame({ html: innerHTML, ref: iframeRef });
+  }, [innerHTML, isServer]);
 
   function handleOpen() {
     if (innerHTML.trim().length === 0) {
@@ -84,13 +91,14 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
     <div className={cn('relative', wrapperClassName)}>
       <iframe
         title="Email preview"
+        sandbox="allow-same-origin"
         {...defaultProps}
         onLoad={() => {
           if (isServer) {
             return;
           }
 
-          renderHTMLToIFrame(iframeRef, innerHTML);
+          renderHTMLToIFrame({ html: innerHTML, ref: iframeRef });
         }}
         ref={iframeRef}
         srcDoc={isServer ? innerHTML : ''}
@@ -98,7 +106,7 @@ export function EmailPreviewIFrame(props: EmailPreviewIFrameProps) {
 
       {showOpenInNewTab ? (
         <Button
-          className="absolute bottom-0 right-0 h-8 cursor-pointer gap-1.5 rounded-none rounded-tl-md border-l border-t border-gray-200 text-sm font-normal hover:bg-gray-50"
+          className="absolute right-0 bottom-0 h-8 cursor-pointer gap-1.5 rounded-none rounded-tl-md border-t border-l border-gray-200 text-sm font-normal hover:bg-gray-50"
           onClick={handleOpen}
           type="button"
           variant="secondary"

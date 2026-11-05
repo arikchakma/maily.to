@@ -1,4 +1,5 @@
 import { Info } from 'lucide-react';
+
 import {
   Tooltip,
   TooltipContent,
@@ -10,8 +11,11 @@ export function PreviewTextInfo() {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger className="bg-transparent">
-          <Info className="h-3.5 w-3.5 text-gray-500" />
+        <TooltipTrigger
+          className="bg-transparent"
+          aria-label="What is preview text?"
+        >
+          <Info className="h-3.5 w-3.5 text-gray-500" aria-hidden="true" />
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
           <p className="text-sm text-gray-600">

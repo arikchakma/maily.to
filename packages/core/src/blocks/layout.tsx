@@ -1,70 +1,91 @@
-import type { BlockItem } from './types';
 import {
+  CodeXmlIcon,
   ColumnsIcon,
-  Repeat2,
-  MoveVertical,
-  RectangleHorizontal,
-  Minus,
+  SquareIcon,
+  MinusIcon,
+  MoveVerticalIcon,
+  Repeat2Icon,
+  TableIcon,
 } from 'lucide-react';
 
-export const columns: BlockItem = {
-  title: 'Columns',
-  description: 'Add columns to email.',
-  searchTerms: ['layout', 'columns'],
-  icon: <ColumnsIcon className="mly:h-4 mly:w-4" />,
+import type { SlashCommandItem } from '~/utils/slash-command';
+
+export const spacer: SlashCommandItem = {
+  title: 'Spacer',
+  icon: <MoveVerticalIcon size={16} />,
+  description: 'Add space between blocks.',
+  searchTerms: ['space', 'gap'],
   command: ({ editor, range }) => {
-    // @ts-ignore
-    editor
-      .chain()
-      .focus()
-      .deleteRange(range)
-      // @ts-ignore
-      .setColumns()
-      .focus(editor.state.selection.head - 2)
-      .run();
+    editor.chain().focus().deleteRange(range).setSpacer().run();
   },
 };
 
-export const section: BlockItem = {
-  title: 'Section',
-  description: 'Add a section to email.',
-  searchTerms: ['layout', 'section'],
-  icon: <RectangleHorizontal className="mly:h-4 mly:w-4" />,
+export const divider: SlashCommandItem = {
+  title: 'Divider',
+  icon: <MinusIcon size={16} />,
+  description: 'Add a horizontal divider.',
+  searchTerms: ['divider', 'line', 'rule'],
   command: ({ editor, range }) => {
-    // @ts-ignore
+    editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+  },
+};
+
+export const section: SlashCommandItem = {
+  title: 'Section',
+  icon: <SquareIcon size={16} />,
+  description: 'Add a section container.',
+  searchTerms: ['section', 'container', 'box', 'wrapper'],
+  command: ({ editor, range }) => {
     editor.chain().focus().deleteRange(range).setSection().run();
   },
 };
 
-export const repeat: BlockItem = {
+export const columns: SlashCommandItem = {
+  title: 'Columns',
+  icon: <ColumnsIcon size={16} />,
+  description: 'Add a multi-column layout.',
+  searchTerms: ['columns', 'layout', 'grid', 'split'],
+  command: ({ editor, range }) => {
+    editor.chain().focus().deleteRange(range).setColumns().run();
+  },
+};
+
+export const table: SlashCommandItem = {
+  title: 'Table',
+  icon: <TableIcon size={16} />,
+  description: 'Add a table.',
+  searchTerms: ['table', 'grid', 'rows'],
+  command: ({ editor, range }) => {
+    editor
+      .chain()
+      .focus()
+      .deleteRange(range)
+      .insertTable({ cols: 3, rows: 3, withHeaderRow: true })
+      .run();
+  },
+};
+
+export const htmlCodeBlock: SlashCommandItem = {
+  title: 'Custom HTML',
+  icon: <CodeXmlIcon size={16} />,
+  description: 'Insert a custom HTML block.',
+  searchTerms: ['html', 'code', 'custom'],
+  command: ({ editor, range }) => {
+    editor
+      .chain()
+      .focus()
+      .deleteRange(range)
+      .setHtmlCodeBlock({ language: 'html' })
+      .run();
+  },
+};
+
+export const repeat: SlashCommandItem = {
   title: 'Repeat',
-  description: 'Loop over an array of items.',
-  searchTerms: ['repeat', 'for', 'loop'],
-  icon: <Repeat2 className="mly:h-4 mly:w-4" />,
+  icon: <Repeat2Icon size={16} />,
+  description: 'Render the content once for every item in a list.',
+  searchTerms: ['repeat', 'loop', 'iterate', 'for', 'each', 'list', 'array'],
   command: ({ editor, range }) => {
-    // @ts-ignore
     editor.chain().focus().deleteRange(range).setRepeat().run();
-  },
-};
-
-export const spacer: BlockItem = {
-  title: 'Spacer',
-  description: 'Add space between blocks.',
-  searchTerms: ['space', 'gap', 'divider'],
-  icon: <MoveVertical className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setSpacer({ height: 'sm' }).run();
-  },
-};
-
-export const divider: BlockItem = {
-  title: 'Divider',
-  description: 'Add a horizontal divider.',
-  searchTerms: ['divider', 'line'],
-  icon: <Minus className="mly:h-4 mly:w-4" />,
-  command: ({ editor, range }) => {
-    // @ts-ignore
-    editor.chain().focus().deleteRange(range).setHorizontalRule().run();
   },
 };

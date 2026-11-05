@@ -1,5 +1,12 @@
+const GA_ID_PATTERN = /^G-[A-Z0-9]+$/;
+
 export function GoogleAnalytics() {
   const trackingId = import.meta.env.VITE_GA_TRACKING_ID;
+
+  if (!trackingId || !GA_ID_PATTERN.test(trackingId)) {
+    return null;
+  }
+
   const scriptUrl = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
 
   return (
